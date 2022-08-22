@@ -1,9 +1,14 @@
-import Home from './pages/Home';
+import { BrowserRouter } from 'react-router-dom';
+import ConfigRoute from './ConfigRoute';
 import './style/App.scss';
 
 function App() {
   return (
-    <Home/>
+    <BrowserRouter>
+    <ConfigRoute/>
+    </BrowserRouter>
+    
+
   );
 }
 
