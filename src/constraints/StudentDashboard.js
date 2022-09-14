@@ -13,13 +13,13 @@ export const sidebarTab = [
         id: 1,
         icon: PersonIcon,
         text: 'Thông tin tài khoản',
-        link: '/customer/account/edit',
+        link: 'profile',
     },
     {
         id: 2,
         icon: NotificationsIcon,
-        text: 'Thông báo của tôi',
-        link: '/customer/notification'
+        text: 'Danh sách khoá học',
+        link: 'list-course'
     },
     {
         id: 3,
