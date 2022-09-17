@@ -7,7 +7,8 @@ import {
     Button,
     Box,
     TextField,
-    Typography
+    Typography,
+    Divider
 } from '@mui/material'
 import UploadIcon from '@mui/icons-material/Upload';
 import avtDefault from 'assets/img/avatar.jpg'
@@ -107,6 +108,7 @@ function CreateCourse(props) {
                         <Typography align='center' color='primary' fontSize='1.75rem' mb={2}>
                             Thông tin khoá học
                         </Typography>
+                        <Divider/>
                         <form onSubmit={handleSubmit(onSubmit)} >
                             <Stack spacing={2.5}>
                                 <Controller

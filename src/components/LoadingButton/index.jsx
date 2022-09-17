@@ -12,14 +12,14 @@ const style = {
     marginRight:'6px'
 }
 
-const LoadingButton = React.memo(props => {
+const LoadingButton = props => {
     const {  loading,children, ...other } = props;
     return (
         <Button {...other}>
             {loading && <CircularProgress size={24} sx={style}/>} {children}
         </Button>
     );
-})
+}
 
 
 LoadingButton.defaultProps = {

@@ -1,4 +1,4 @@
-import  {useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import {
     Box,
     Card,
@@ -14,6 +14,7 @@ import AssignmentIcon from '@mui/icons-material/Assignment';
 import SendIcon from '@mui/icons-material/Send';
 import Page from 'components/Page'
 import apiCourse from 'apis/apiCourse';
+import { Link } from 'react-router-dom';
 const ListCourse = () => {
     const [courses, setCourses] = useState([])
     const [page, setPage] = useState(1)
@@ -29,7 +30,7 @@ const ListCourse = () => {
             apiCourse.getCourses(params)
                 .then(res => {
                     setCourses(res)
-                    setTotalPage(Math.round(res.pagination.totalRows/limit))
+                    setTotalPage(Math.round(res.pagination.totalRows / limit))
                 })
         }
         getData()
@@ -41,7 +42,9 @@ const ListCourse = () => {
             <Box>
                 <Paper elevation={24}>
                     <Stack direction='row' justifyContent={'flex-end'} p={1.5}>
+                        <Link to='/teacher/create-course'>
                         <Button variant='outlined'>Tạo khoá học</Button>
+                        </Link>
                     </Stack>
                     <Divider></Divider>
                     <Grid container spacing={2} p={1.5}>
@@ -66,11 +69,13 @@ const ListCourse = () => {
                                             direction='row'
                                             justifyContent="center"
                                             spacing={2}>
-                                            <Button
-                                                variant="outlined"
-                                                size="small"
-                                                endIcon={<AssignmentIcon />}
-                                            >Chi tiết</Button>
+                                            <Link to={`/teacher/${item.slug}/list-exam`}>
+                                                <Button
+                                                    variant="outlined"
+                                                    size="small"
+                                                    endIcon={<AssignmentIcon />}
+                                                >Chi tiết</Button>
+                                            </Link>
                                             <Button variant="outlined" size="small"
                                                 endIcon={<SendIcon />}>Chia sẽ</Button>
                                         </Stack>

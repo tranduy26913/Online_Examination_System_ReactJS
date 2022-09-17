@@ -78,7 +78,7 @@ const Register = () => {
                             render={({ field, fieldState: { error } }) => (
                                 <TextField
                                     {...field}
-                                    color='success'
+                                    
                                     size='small'
                                     type='text'
                                     label="Họ và tên"
@@ -94,7 +94,7 @@ const Register = () => {
                             render={({ field, fieldState: { error } }) => (
                                 <TextField
                                     {...field}
-                                    color='success'
+                                    
                                     size='small'
                                     type='text'
                                     label="Tên đăng nhập"
@@ -111,7 +111,7 @@ const Register = () => {
                             render={({ field, fieldState: { error } }) => (
                                 <TextField
                                     {...field}
-                                    color='success'
+                                    
                                     size='small'
                                     type='password'
                                     label="Mật khẩu"
@@ -127,7 +127,7 @@ const Register = () => {
                             render={({ field, fieldState: { error } }) => (
                                 <TextField
                                     {...field}
-                                    color='success'
+                                    
                                     size='small'
                                     type='password'
                                     label="Mật khẩu"
@@ -139,9 +139,9 @@ const Register = () => {
                         />
                         <Stack justifyContent='space-between' alignItems='center' spacing={2}>
 
-                            <Button type='submit' sx={{ width: '120px' }} color='success' variant='contained'>Đăng ký</Button>
+                            <Button type='submit' sx={{ width: '120px' }}  variant='contained'>Đăng ký</Button>
                             <Link to='/login'>
-                                <Button sx={{ width: '120px' }} color='success' variant='contained'>Đăng nhập</Button>
+                                <Button sx={{ width: '120px' }}  variant='contained'>Đăng nhập</Button>
                             </Link>
                         </Stack>
                         <p style={{ textAlign: "center", marginTop: "3rem" }}>Tiếp tục bằng</p>

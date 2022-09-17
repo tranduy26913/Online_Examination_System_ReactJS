@@ -149,9 +149,9 @@ const StudentDashboard = () => {
                 <>
                   <ListItem>
                     <ListItemAvatar>
-                      <Avatar alt="hình đại diện" src={user?.img || avatar} />
+                      <Avatar alt="hình đại diện" src={user?.avatar || avatar} />
                     </ListItemAvatar>
-                    <ListItemText primary="Tài khoản của" secondary={user?.fullName} />
+                    <ListItemText primary="Tài khoản của" secondary={user?.fullname} />
                   </ListItem>
                   <IconButton onClick={handleDrawerClose}>
                     <KeyboardDoubleArrowLeftIcon />
@@ -195,8 +195,13 @@ const StudentDashboard = () => {
                     </ListItemIcon>
 
                     <ListItemText
-                      primary={item.text}
-                      sx={{ opacity: open ? 1 : 0 }}
+                      secondary={item.text}
+                      sx={{ 
+                        opacity: open ? 1 : 0,
+                        '& .MuiTypography-root':{
+                          fontWeight:500 
+                        }
+                       }}
                     />
                   </ListItemButton>
                 </ListItemCustom>

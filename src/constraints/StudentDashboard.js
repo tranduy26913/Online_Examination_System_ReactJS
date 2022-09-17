@@ -25,43 +25,32 @@ export const sidebarTab = [
         id: 3,
         icon: ListAltIcon,
         text: 'Ngân hàng câu hỏi',
-        link: '/bank-question'
+        link: 'bank-question'
     },
     {
         id: 4,
         icon: LocationOnIcon,
-        text: 'Sổ địa chỉ',
-        link: '/customer/address'
+        text: 'Tạo đề thi',
+        link: 'create-exam'
     },
     {
         id: 5,
         icon: CreditCardIcon,
         text: 'Thông tin thanh toán',
-        link: '/customer/paymentcard'
+        link: 'payment'
     },
     {
         id: 6,
         icon: RateReviewIcon,
-        text: 'Nhận xét sản phẩm đã mua',
-        link: '/customer/nhan-xet-san-pham-ban-da-mua'
+        text: 'Thông báo',
+        link: 'notify'
     },
     {
         id: 7,
         icon: FavoriteIcon,
         text: 'Sản phẩm yêu thích',
         link: '/customer/wishlist'
-    },
-    {
-        id: 8,
-        icon: StarHalfIcon,
-        text: 'Nhận xét của tôi',
-        link: '/customer/review'
-    },
-    {
-        id: 9,
-        icon: DiscountIcon,
-        text: 'Mã giảm giá',
-        link: '/customer/coupons'
-    },
+    }
+    
 
 ]

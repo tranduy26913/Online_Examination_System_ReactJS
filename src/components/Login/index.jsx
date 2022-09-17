@@ -61,7 +61,6 @@ const Login = () => {
         apiAuth.getUserWithLogin(params)
             .then(res => {
                 if(res.length!==0){
-
                     dispatch(loginSuccess(res[0]))
                     toast.success("Đăng nhập thành công")
                     navigate('/')
@@ -85,7 +84,6 @@ const Login = () => {
                     </Typography>
                     <Stack spacing={2.5}>
                         <TextField
-                            color='success'
                             size='small'
                             id="outlined-basic"
                             label="Tên đăng nhập"
@@ -123,17 +121,17 @@ const Login = () => {
                         >
 
                             <FormGroup>
-                                <FormControlLabel control={<Checkbox color='success' defaultChecked />} label="Ghi nhớ đăng nhập" />
+                                <FormControlLabel control={<Checkbox defaultChecked />} label="Ghi nhớ đăng nhập" />
                             </FormGroup>
                             <Link to='/forgetPassword'>
-                                <Typography color='success'>Quên mật khẩu?</Typography>
+                                <Typography>Quên mật khẩu?</Typography>
                             </Link>
                         </Stack>
                         <Stack justifyContent='space-between' alignItems='center' spacing={2}>
                             <LoadingButton loading={loading} onClick={handleLogin}
-                                sx={{ width: '120px' }} color='success' variant='contained'>Đăng nhập</LoadingButton>
+                                sx={{ width: '120px' }} variant='contained'>Đăng nhập</LoadingButton>
                             <Link to='/register'>
-                                <Button sx={{ width: '120px' }} color='success' variant='contained'>Đăng ký</Button>
+                                <Button sx={{ width: '120px' }} variant='contained'>Đăng ký</Button>
                             </Link>
                         </Stack>
                     </Stack>
