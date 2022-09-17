@@ -1,7 +1,7 @@
 import {
     styled,
     FormGroup,
-    FormControlLabel,
+    InputBase,
     Switch,
     Stack,
     Paper
@@ -60,6 +60,7 @@ export const IOSSwitch = styled((props) => (
 
 export const StackLabel = styled(Stack)(({ theme }) => ({
     border: `1px solid ${theme.palette.divider}`,
+    width:'100%',
     borderRadius: '8px',
     height: '38px',
     flexDirection: 'row',
@@ -78,7 +79,7 @@ export const StackLabel = styled(Stack)(({ theme }) => ({
     },
     '& input':{
         color: theme.palette.mode === 'dark' ? '#fff':theme.palette.text.primary,
-        height:'36px',
+        height:'38px',
         flex:'1',
         border:`2px solid transparent`,
         padding:'4px 16px',
@@ -87,11 +88,17 @@ export const StackLabel = styled(Stack)(({ theme }) => ({
         fontSize:'14px',
         borderRadius:'0px 8px 8px 0px',
         '&:focus':{
-            border:`2px solid ${theme.palette.primary.light}a0`,
-            borderLeft:'none',
+            border:`2px solid ${theme.palette.primary.light}`,
+            borderLeftColor:'transparent',
         }
     }
 }))
+
+export const Stack2Column = styled(Stack)({
+    flexDirection:'row',
+    width:'100%',
+    gap:'12px'
+})
 
 export const PaperQuestion = styled(Paper)(({ theme }) => ({
     borderTop: `6px solid ${theme.palette.primary.light}`
@@ -102,3 +109,24 @@ export const AccordionSummaryStyle = {
         borderBottom: '1px dotted #bfbfbf'
     }
 }
+
+export const BootstrapInput = styled(InputBase)(({ theme }) => ({
+    flex:1,
+    height:'36px',
+    '& .MuiInputBase-input': {
+      borderRadius: 4,
+      width:'100%',
+      position: 'relative',
+      backgroundColor: 'transparent',
+      //border: '1px solid #ced4da',
+      fontSize: 14,
+      padding: '4px 26px 4px 16px',
+      transition: theme.transitions.create(['border-color', 'box-shadow']),
+      // Use the system font instead of the default Roboto font.
+      '&:focus': {
+        borderRadius: 4,
+        borderColor: '#80bdff',
+        //boxShadow: '0 0 0 0.2rem rgba(0,123,255,.25)',
+      },
+    },
+  }));

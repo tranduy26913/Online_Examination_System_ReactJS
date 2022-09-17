@@ -155,7 +155,8 @@ const ListExaminationTeacher = () => {
             </Paper>
             <Stack spacing={1}>
                 <Paper elevation={24}>
-                    <TableToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName} />
+                    <TableToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName}
+                    button={{display:"Tạo đề kiểm tra",path:'/teacher/create-exam'}} />
 
                     <Scrollbar>
                         <TableContainer sx={{ minWidth: 800 }}>

@@ -13,21 +13,25 @@ import {
   FormGroup,
   RadioGroup,
   Radio,
-  TextField,
+  Select,
+  MenuItem,
 } from '@mui/material'
 import { useTheme } from '@mui/system';
 import CreateQuestion from 'components/Question/CreateQuestion'
 import DetailQuestion from 'components/Question/DetailQuestion'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import moment from 'moment'
-
+import apiCourse from 'apis/apiCourse'
 import {
   PaperQuestion,
   AccordionSummaryStyle,
   StackLabel,
-  IOSSwitch
+  BootstrapInput,
+  Stack2Column
 } from './Component/MUI'
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
+import { useSelector } from 'react-redux';
+import { lightGreen } from '@mui/material/colors';
 /**
  * @param {Date} date 
  */
@@ -59,6 +63,24 @@ const CreateExamination = () => {
   const [pinExam, setPinExam] = useState('')//tự nhập câu hỏi/lấy từ ngân hàng đề
   const [isLimit, setIsLimit] = useState(true)//giới hạn số lần thi
   const [limit, setLimit] = useState(0)//Số lần được phép thi tối đa
+  const [listCourse, setListCourse] = useState([])
+  const [course, setCourse] = useState('');
+ const user = useSelector(state=>state.auth.user)
+  useEffect(()=>{
+    const getCourses = ()=>{
+      const params = {
+        idUser:user.id
+      }
+      apiCourse.getCourses(params)
+      .then(res=>{
+        setListCourse(res)
+      })
+      .catch(err=>{
+        console.log(err);
+      })
+    }
+    getCourses()
+  },[])
 
   const handleChangeQuestion = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
@@ -73,21 +95,17 @@ const CreateExamination = () => {
   const onChangeStartTime = event => {
     const newDate = moment(new Date(event.target.value)).format("YYYY-MM-DDThh:mm");
     setStart(newDate)
-    console.log(newDate);
   }
   const onChangeEndTime = event => {
     const newDate = moment(new Date(event.target.value)).format("YYYY-MM-DDThh:mm");
     setEnd(newDate)
-    console.log(newDate);
   }
 
   const handleSelectQuestionEdit = useCallback((value) => setIdQuestion(value), [])
-  const onChangeDuration = (event) => {
-    setDuration(Number(event.target.value |= 0))
-  }
-  const onChangeLimit = (event) => {
-    setLimit(Number(event.target.value |= 0))
-  }
+  const onChangeDuration = (event) => setDuration(Number(event.target.value |= 0))
+  const onChangeLimit = (event) => setLimit(Number(event.target.value |= 0))
+  const handleChangeCourse = (event) => setCourse(event.target.value)
+
   return (
     <Stack spacing={1}>
       <Paper elevation={12} sx={{ padding: '12px' }}>
@@ -95,34 +113,93 @@ const CreateExamination = () => {
           Thông tin đề thi
         </Typography>
 
+        <Divider />
+
         <Stack spacing={1.5} my={1.5}>
-          <StackLabel alignItems='center'>
+          <StackLabel>
             <Box>Tên đề thi</Box>
             <input type='text' />
           </StackLabel>
 
-          <StackLabel alignItems='center'>
-            <Box>Số câu hỏi</Box>
-            <input type='number' />
-          </StackLabel>
+          <Stack2Column>
 
-          <StackLabel alignItems='center'>
-            <Box>Giám sát tự động</Box>
-            <FormGroup row>
-              <FormControlLabel
-                control={<Switch checked={follow} onChange={() => setFollow(!follow)} />} />
-            </FormGroup>
-          </StackLabel>
+            <StackLabel>
+              <Box>Số câu hỏi</Box>
+              <input type='number' />
+            </StackLabel>
+            <StackLabel>
+              <Box>Thời lượng làm bài (phút)</Box>
+              <input value={duration}
+                //onChange={onChangeDuration} 
+                type='number' min={1}
+                onInput={onChangeDuration} />
+            </StackLabel>
+          </Stack2Column>
 
-          <StackLabel alignItems='center'>
-            <Box>Đảo câu hỏi và đáp án</Box>
-            <FormGroup row>
-              <FormControlLabel
-                control={<Switch checked={shutle} onChange={() => setShutle(!shutle)} />} />
-            </FormGroup>
-          </StackLabel>
+          <Stack2Column>
+            <StackLabel>
+              <Box>Giám sát tự động</Box>
+              <FormGroup row>
+                <FormControlLabel
+                  control={<Switch checked={follow} onChange={() => setFollow(!follow)} />} />
+              </FormGroup>
+            </StackLabel>
 
-          <StackLabel alignItems='center'>
+            <StackLabel>
+              <Box>Đảo câu hỏi và đáp án</Box>
+              <FormGroup row>
+                <FormControlLabel
+                  control={<Switch checked={shutle} onChange={() => setShutle(!shutle)} />} />
+              </FormGroup>
+            </StackLabel>
+          </Stack2Column>
+          <Stack2Column>
+            <StackLabel alignItems='center'>
+              <Box>Thời gian bắt đầu</Box>
+              <input type='datetime-local'
+                onChange={onChangeStartTime}
+                value={start}
+                min="1997-01-01T00:00" max="2030-12-31T00:00"
+                pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}" />
+            </StackLabel>
+            <StackLabel alignItems='center'>
+              <Box>Thời gian kết thúc</Box>
+              <input type='datetime-local'
+                onChange={onChangeEndTime}
+                value={end}
+                min="1997-01-01T00:00" max="2030-12-31T00:00"
+                pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}" />
+            </StackLabel>
+          </Stack2Column>
+
+          <Stack2Column>
+            <StackLabel>
+              <Box>Mật khẩu đề thi</Box>
+              <input type='text'
+                onChange={handleChangePinExam}
+                value={pinExam}
+              />
+            </StackLabel>
+
+            <StackLabel>
+              <Box>Khoá học</Box>
+              <Select
+                value={course}
+                onChange={handleChangeCourse}
+                input={<BootstrapInput />}
+              >
+                {/* <MenuItem value="">
+                  <em>None</em>
+                </MenuItem> */}
+                {
+                  listCourse.map(item=>
+                    <MenuItem value={item.id}>{item.name}</MenuItem>)
+                }
+              </Select>
+            </StackLabel>
+          </Stack2Column>
+
+          <StackLabel>
             <Box>Cho xem đáp án</Box>
             <RadioGroup
               row
@@ -136,7 +213,7 @@ const CreateExamination = () => {
             </RadioGroup>
           </StackLabel>
 
-          <StackLabel alignItems='center'>
+          <StackLabel>
             <Box>Cho xem điểm</Box>
             <RadioGroup
               row
@@ -150,7 +227,7 @@ const CreateExamination = () => {
             </RadioGroup>
           </StackLabel>
 
-          <StackLabel alignItems='center'>
+          <StackLabel>
             <Box>Ai được phép thi</Box>
             <RadioGroup
               row
@@ -164,7 +241,7 @@ const CreateExamination = () => {
             </RadioGroup>
           </StackLabel>
 
-          <StackLabel alignItems='center'>
+          <StackLabel>
             <Box>Cách nhập câu hỏi</Box>
             <RadioGroup
               row
@@ -177,7 +254,7 @@ const CreateExamination = () => {
             </RadioGroup>
           </StackLabel>
 
-          <StackLabel alignItems='center'>
+          <StackLabel>
             <Box>Cách tính điểm</Box>
             <RadioGroup
               row
@@ -190,55 +267,26 @@ const CreateExamination = () => {
               <FormControlLabel value={false} control={<Radio size='small' />} label="Lấy điểm trung bình các lần thi" />
             </RadioGroup>
           </StackLabel>
-          <StackLabel alignItems='center'>
-            <Box>Giới hạn số lần thi</Box>
-            <FormGroup row>
-              <FormControlLabel
-                control={<Switch checked={isLimit} onChange={() => setIsLimit(!isLimit)} />} />
-            </FormGroup>
-          </StackLabel>
+          <Stack2Column>
 
-          {
-            isLimit &&
-            <StackLabel alignItems='center'>
-              <Box>Số lần thi tối đa</Box>
-              <input value={limit}
-                type='number' min={1}
-                onInput={onChangeLimit} />
+            <StackLabel>
+              <Box>Giới hạn số lần thi</Box>
+              <FormGroup row>
+                <FormControlLabel
+                  control={<Switch checked={isLimit} onChange={() => setIsLimit(!isLimit)} />} />
+              </FormGroup>
             </StackLabel>
-          }
 
-          <StackLabel alignItems='center'>
-            <Box>Thời lượng làm bài (phút)</Box>
-            <input value={duration}
-              //onChange={onChangeDuration} 
-              type='number' min={1}
-              onInput={onChangeDuration} />
-          </StackLabel>
-          <StackLabel alignItems='center'>
-            <Box>Thời gian bắt đầu</Box>
-            <input type='datetime-local'
-              onChange={onChangeStartTime}
-              value={start}
-              min="1997-01-01T00:00" max="2030-12-31T00:00"
-              pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}" />
-          </StackLabel>
-          <StackLabel alignItems='center'>
-            <Box>Thời gian kết thúc</Box>
-            <input type='datetime-local'
-              onChange={onChangeEndTime}
-              value={end}
-              min="1997-01-01T00:00" max="2030-12-31T00:00"
-              pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}" />
-          </StackLabel>
-
-          <StackLabel alignItems='center'>
-            <Box>Mật khẩu đề thi</Box>
-            <input type='text'
-              onChange={handleChangePinExam}
-              value={pinExam}
-            />
-          </StackLabel>
+            {
+              isLimit &&
+              <StackLabel>
+                <Box>Số lần thi tối đa</Box>
+                <input value={limit}
+                  type='number' min={1}
+                  onInput={onChangeLimit} />
+              </StackLabel>
+            }
+          </Stack2Column>
 
         </Stack>
 

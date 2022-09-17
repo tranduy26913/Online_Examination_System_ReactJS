@@ -1,9 +1,10 @@
 import PropTypes from 'prop-types';
 // material
 import { styled } from '@mui/material/styles';
-import { Toolbar, Tooltip, IconButton, Typography, OutlinedInput, InputAdornment } from '@mui/material';
+import {Toolbar, Tooltip, IconButton, Typography, OutlinedInput, InputAdornment, Button } from '@mui/material';
 // component
 import Iconify from 'components/Iconify';
+import {Link} from 'react-router-dom'
 
 // ----------------------------------------------------------------------
 
@@ -35,7 +36,7 @@ UserListToolbar.propTypes = {
   onFilterName: PropTypes.func,
 };
 
-export default function UserListToolbar({ numSelected, filterName, onFilterName }) {
+export default function UserListToolbar({ numSelected, filterName, onFilterName, button }) {
   return (
     <RootStyle
       sx={{
@@ -68,7 +69,11 @@ export default function UserListToolbar({ numSelected, filterName, onFilterName 
             <Iconify icon="eva:trash-2-fill" />
           </IconButton>
         </Tooltip>
-      ) : (
+      ) : button ? 
+      <Link to={button.path}>
+      <Button variant='outlined'>{button.display}</Button>
+      </Link>:
+       (
         <Tooltip title="Filter list">
           <IconButton>
             <Iconify icon="ic:round-filter-list" />

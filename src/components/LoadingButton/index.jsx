@@ -12,9 +12,8 @@ const style = {
     marginRight:'6px'
 }
 
-const LoadingButton = (props) => {
+const LoadingButton = props => {
     const {  loading,children, ...other } = props;
-    console.log(props);
     return (
         <Button {...other}>
             {loading && <CircularProgress size={24} sx={style}/>} {children}
