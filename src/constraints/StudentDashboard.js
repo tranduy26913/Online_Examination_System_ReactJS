@@ -24,8 +24,8 @@ export const sidebarTab = [
     {
         id: 3,
         icon: ListAltIcon,
-        text: 'Quản lý đơn hàng',
-        link: '/customer/order/history'
+        text: 'Ngân hàng câu hỏi',
+        link: '/bank-question'
     },
     {
         id: 4,
