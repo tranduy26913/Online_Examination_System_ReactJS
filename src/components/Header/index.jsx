@@ -19,10 +19,24 @@ import {
 import MenuIcon from '@mui/icons-material/Menu';
 import AdbIcon from '@mui/icons-material/Adb';
 import { Link, useLocation } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { logoutSuccess } from 'slices/authSlice';
 
 const pages = ['Trang chủ', 'Khoá học', 'Về chúng tôi'];
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+const settings = [
+  {
+    display: 'Profile',
+    path: 'profile'
+  },
+  {
+    display: 'Khoá học',
+    path: 'list-course'
+  },
+  {
+    display: 'Đăng xuất',
+    path: 'logout'
+  },
+];
 
 const AppBarShadow = styled(AppBar)(({ theme }) => ({
   //boxShadow:`0 4px 10px 4px ${theme.palette.primary.main}`
@@ -38,6 +52,7 @@ function Header() {
   const [opacity, setOpacity] = React.useState(1);
   const location = useLocation()
   const user = useSelector(state => state.auth.user)
+  const dispatch = useDispatch()
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -53,6 +68,11 @@ function Header() {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
+
+  const handleLogout = () => {
+    dispatch(logoutSuccess())
+    setAnchorElUser(null);
+  }
 
   React.useEffect(() => {
     const onChangePath = () => {
@@ -181,12 +201,13 @@ function Header() {
             {user ?
               <>
                 <Tooltip title="Open settings">
-                  <Stack direction='row' alignItems='center' mr={2} spacing={1}>
+                  <Stack direction='row' onClick={handleOpenUserMenu} alignItems='center' mr={2} spacing={1}
+                    sx={{ cursor: 'pointer' }}>
 
-                  <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                    <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-                  </IconButton>
-                  <Typography>{user.fullname}</Typography>
+                    <IconButton sx={{ p: 0 }}>
+                      <Avatar alt="Remy Sharp" src={user.avatar} />
+                    </IconButton>
+                    <Typography>{user.fullname}</Typography>
                   </Stack>
                 </Tooltip>
                 <Menu
@@ -205,11 +226,20 @@ function Header() {
                   open={Boolean(anchorElUser)}
                   onClose={handleCloseUserMenu}
                 >
-                  {settings.map((setting) => (
-                    <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                      <Typography textAlign="center">{setting}</Typography>
-                    </MenuItem>
-                  ))}
+                  {settings.map((setting) => {
+                    return (
+                    setting.path !== 'logout' ?
+                      <Link key={setting.path} to={`${user.role}/${setting.path}`}>
+                        <MenuItem onClick={handleCloseUserMenu}>
+                          <Typography textAlign="center">{setting.display}</Typography>
+                        </MenuItem>
+                      </Link>
+                      :
+                      <MenuItem onClick={handleLogout}>
+                        <Typography textAlign="center">{setting.display}</Typography>
+                      </MenuItem>)
+                  }
+                  )}
                 </Menu>
               </> :
               <Stack direction='row' justifyContent='space-between' p={1} spacing={0.5}>

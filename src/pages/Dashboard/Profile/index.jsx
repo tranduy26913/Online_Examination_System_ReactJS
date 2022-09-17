@@ -56,9 +56,9 @@ const Profile = () => {
     const user = useSelector(state=>state.auth.user);
     const dispatch = useDispatch();
     const [listday, setListday] = useState(Array.from({ length: 31 }, (x, i) => 1 + i))
-    const [day, setDay] = useState(user ? user?.birthDay[2] : 1);
-    const [month, setMonth] = useState(user ? user.birthDay[1] : 1);
-    const [year, setYear] = useState(user ? user.birthDay[0] : 2000);
+    const [day, setDay] = useState(user?.birthDay?[0] : 1);
+    const [month, setMonth] = useState(user?.birthDay?[0] : 1);
+    const [year, setYear] = useState(user?.birthDay?[0] : 2000);
     const [image, setImage] = useState([]);
     const [gender, setGender] = useState(user ? user.gender : "")
     const [fullname, setFullName] = useState(user ? user.fullName : "")
