@@ -1,39 +1,21 @@
-
-import { axiosClient } from "./axiosClient";
-
+import { axiosClient } from "./axiosClient"
 const apiAuth = {
-    postLogin: async (params) => {
-        const myLogin = await axiosClient.post('/auth/login', params)
-        return myLogin.data;
-    },
-    getUserBySocialToken: async (params) => {
-        const myLogin = await axiosClient.get('/auth/social', {params})
-        return myLogin.data;
+    postUser: async (params) => {
+        const res = await axiosClient.post("/users",params)
+        return res.data
     },
 
-    search: async (params) => {
-        const mySearch = await axiosClient.post('', params)
-        return mySearch.data;
+    getUserWithLogin: async (params) => {
+        const res = await axiosClient.get('/users', {params})
+        return res.data
     },
-
-    postCheckPhone: async (params) => {
-        const checkPhone = await axiosClient.post('/auth/verification', params)
-        return checkPhone.data
+    changeSeenProp: async (params,id) => {
+        const res = await axiosClient.patch(`/notifications/${id}`,params)
+        return res.data;
     },
-
-    postRegister: async (params) => {
-        const register = await axiosClient.post('/user/register', params)
-        return register.data
+    deleteNotifyById: async (params) => {
+        const res = await axiosClient.delete(`/notifications/${params.id}`)
+        return res.data;
     },
-    resetPassword:async (params,token) => {
-        const register = await axiosClient.post(`/auth/resetPassword/?token=${token}`, params)
-        return register.data
-    },
-    forgetPassword:async (params) => {
-        const register = await axiosClient.post(`/auth/forgetPassword`, params)
-        return register.data
-    }
-
 }
-
 export default apiAuth;
