@@ -58,14 +58,15 @@ const Login = () => {
             password: password.value
         }
         setLoading(true)
+
         apiAuth.getUserWithLogin(params)
             .then(res => {
-                if(res.length!==0){
+                if (res.length !== 0) {
                     dispatch(loginSuccess(res[0]))
                     toast.success("Đăng nhập thành công")
                     navigate('/')
                 }
-                else{
+                else {
                     toast.error("Sai tên đăng nhập hoặc mật khẩu")
                 }
             })
@@ -129,9 +130,9 @@ const Login = () => {
                         </Stack>
                         <Stack justifyContent='space-between' alignItems='center' spacing={2}>
                             <LoadingButton loading={loading} onClick={handleLogin}
-                                sx={{ width: '120px' }} variant='contained'>Đăng nhập</LoadingButton>
+                                sx={{ width: '136px' }} variant='contained'>Đăng nhập</LoadingButton>
                             <Link to='/register'>
-                                <Button sx={{ width: '120px' }} variant='contained'>Đăng ký</Button>
+                                <Button sx={{ width: '136px' }} variant='contained'>Đăng ký</Button>
                             </Link>
                         </Stack>
                     </Stack>
