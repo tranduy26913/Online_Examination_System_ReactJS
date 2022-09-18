@@ -52,13 +52,13 @@ const avatar = require("../../../assets/img/avatar.png")
 const Profile = () => {
     const Month = Array.from({ length: 12 }, (x, i) => 1 + i);
     const Year = Array.from({ length: 65 }, (x, i) => 1950 + i);
-    const Country = [{ id: "1", name: "Việt Nam" }, { id: "2", name: "America" }, { id: "3", name: "Úc" }];
-    const user = useSelector(state=>state.auth.user);
+    //const Country = [{ id: "1", name: "Việt Nam" }, { id: "2", name: "America" }, { id: "3", name: "Úc" }];
+    const user = useSelector(state => state.auth.user);
     const dispatch = useDispatch();
     const [listday, setListday] = useState(Array.from({ length: 31 }, (x, i) => 1 + i))
-    const [day, setDay] = useState(user?.birthDay?[0] : 1);
-    const [month, setMonth] = useState(user?.birthDay?[0] : 1);
-    const [year, setYear] = useState(user?.birthDay?[0] : 2000);
+    const [day, setDay] = useState(user?.birthDay ? [0] : 1);
+    const [month, setMonth] = useState(user?.birthDay ? [0] : 1);
+    const [year, setYear] = useState(user?.birthDay ? [0] : 2000);
     const [image, setImage] = useState([]);
     const [gender, setGender] = useState(user ? user.gender : "")
     const [fullname, setFullName] = useState(user ? user.fullName : "")
@@ -207,239 +207,242 @@ const Profile = () => {
     }
     return (
         <Stack className="customer-info" spacing={3}>
-            <Typography variant="h6">Thông tin tài khoản</Typography>
-            <Stack direction="row" spacing={3}>
-                <Stack spacing={3} flex='2'>
-                    <Typography>Thông tin cá nhân</Typography>
-                    <Stack direction="row" spacing={4}>
-                        <ClickAwayListener onClickAway={handleClickAwayAvatar}>
-                            <Box sx={{ position: "relative" }} onClick={handleClickAvatar}>
-                                <Badge
-                                    badgeContent={<EditRoundedIcon sx={{ fontSize: "18px", color: "white" }} />}
-                                    overlap="circular"
-                                    anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-                                    color="primary"
-                                >
-                                    <Avatar
-                                        sx={{
-                                            width: 110,
-                                            height: 110,
-                                            border: "3px solid aquamarine",
-                                        }}
-                                        src={image.length === 0 ? user?.img : image[0].data_url}
-                                    />
-                                </Badge>
-                                {openAvatar ? (
-                                    <Stack className="avatar-control">
-                                        {/* <Stack autofocusitem={openAvatar.toString()}> */}
-                                        <Stack>
-                                            <MenuItem onClick={openModalViewAvatar}>
-                                                <WallpaperIcon sx={{ mr: 2 }} color="disabled" />
-                                                Xem ảnh đại diện
-                                            </MenuItem>
+            <Stack direction="row" spacing={2}>
+                    <Paper elevation={24} sx={{flex:2}}>
+                        <Stack p={2} spacing={3} height='100%' >
 
-                                            <MenuItem onClick={openModalUploadAvatar}>
-                                                <VisibilityOutlinedIcon
-                                                    sx={{ mr: 2 }}
-                                                    color="disabled"
-                                                />
-                                                Cập nhật ảnh đại diện
-                                            </MenuItem>
+                            <Typography>Thông tin cá nhân</Typography>
+                            <Stack direction="row" spacing={4}>
+                                <ClickAwayListener onClickAway={handleClickAwayAvatar}>
+                                    <Box sx={{ position: "relative" }} onClick={handleClickAvatar}>
+                                        <Badge
+                                            badgeContent={<EditRoundedIcon sx={{ fontSize: "18px", color: "white" }} />}
+                                            overlap="circular"
+                                            anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                                            color="primary"
+                                        >
+                                            <Avatar
+                                                sx={{
+                                                    width: 110,
+                                                    height: 110,
+                                                    border: "3px solid aquamarine",
+                                                }}
+                                                src={image.length === 0 ? user?.avatar : image[0].data_url}
+                                            />
+                                        </Badge>
+                                        {openAvatar ? (
+                                            <Stack className="avatar-control">
+                                                {/* <Stack autofocusitem={openAvatar.toString()}> */}
+                                                <Stack>
+                                                    <MenuItem onClick={openModalViewAvatar}>
+                                                        <WallpaperIcon sx={{ mr: 2 }} color="disabled" />
+                                                        Xem ảnh đại diện
+                                                    </MenuItem>
 
-                                            <MenuItem onClick={openModalDeleteAvatar}>
-                                                <DeleteIcon sx={{ mr: 2 }} color="disabled" />
-                                                Xóa ảnh đại diện hiện tại
-                                            </MenuItem>
-                                        </Stack>
+                                                    <MenuItem onClick={openModalUploadAvatar}>
+                                                        <VisibilityOutlinedIcon
+                                                            sx={{ mr: 2 }}
+                                                            color="disabled"
+                                                        />
+                                                        Cập nhật ảnh đại diện
+                                                    </MenuItem>
+
+                                                    <MenuItem onClick={openModalDeleteAvatar}>
+                                                        <DeleteIcon sx={{ mr: 2 }} color="disabled" />
+                                                        Xóa ảnh đại diện hiện tại
+                                                    </MenuItem>
+                                                </Stack>
+                                            </Stack>
+                                        ) : null}
+                                    </Box>
+                                </ClickAwayListener>
+
+                                <Stack spacing={3} justifyContent="space-around">
+                                    <Stack
+                                        direction="row"
+                                        spacing={5}
+                                        alignItems="center"
+                                        justifyContent="space-between"
+                                    >
+                                        <label>Họ & tên</label>
+                                        <input id="input-name" placeholder="Thêm họ tên" type="text"
+                                            value={fullname}
+                                            onChange={onChangeFullName}
+                                        />
                                     </Stack>
-                                ) : null}
-                            </Box>
-                        </ClickAwayListener>
 
-                        <Stack spacing={3} justifyContent="space-around">
-                            <Stack
-                                direction="row"
-                                spacing={5}
-                                alignItems="center"
-                                justifyContent="space-between"
+                                </Stack>
+                            </Stack>
+
+                            <Stack direction="row" spacing={9} alignItems="center">
+                                <label>Ngày sinh</label>
+                                <Stack direction="row" spacing={2} alignItems="center">
+                                    <Select
+                                        sx={{ maxHeight: 30, minWidth: 100 }}
+                                        value={day}
+                                        onChange={handleChangeDay}
+                                        displayEmpty
+                                    >
+                                        <MenuItem value="">
+                                            <em>Ngày</em>
+                                        </MenuItem>
+                                        {listday.map(item =>
+                                            <MenuItem key={item} value={item}>{item}</MenuItem>
+                                        )}
+                                    </Select>
+
+                                    <Select
+                                        sx={{ maxHeight: 30, minWidth: 100 }}
+                                        value={month}
+                                        onChange={handleChangeMonth}
+                                        displayEmpty
+                                    >
+                                        <MenuItem value="">
+                                            <em>Tháng</em>
+                                        </MenuItem>
+                                        {Month.map(item =>
+                                            <MenuItem key={item} value={item}>{item}</MenuItem>
+                                        )}
+                                    </Select>
+
+                                    <Select
+                                        sx={{ maxHeight: 30, minWidth: 100 }}
+                                        value={year}
+                                        onChange={handleChangeYear}
+                                        displayEmpty
+                                    >
+                                        <MenuItem value="">
+                                            <em>Năm</em>
+                                        </MenuItem>
+                                        {Year.map(item =>
+                                            <MenuItem key={item} value={item}>{item}</MenuItem>
+                                        )}
+
+                                    </Select>
+                                </Stack>
+                            </Stack>
+
+                            <Stack direction="row" spacing={5} alignItems="center">
+                                <label>Giới tính</label>
+                                <RadioGroup
+                                    row
+                                    aria-labelledby="demo-row-radio-buttons-group-label"
+                                    name="row-radio-buttons-group"
+                                    value={gender}
+                                    onChange={onChangeGender}
+                                >
+                                    <FormControlLabel value="Male" control={<Radio />} label="Nam" />
+                                    <FormControlLabel value="Female" control={<Radio />} label="Nữ" />
+                                    <FormControlLabel
+                                        value="Other"
+                                        control={<Radio />}
+                                        label="Khác"
+                                    />
+                                </RadioGroup>
+                            </Stack>
+
+
+                            <Button variant="contained" sx={{ width: 200, alignSelf: "center" }}
+                            //   onClick={onSaveChange}
                             >
-                                <label>Họ & tên</label>
-                                <input id="input-name" placeholder="Thêm họ tên" type="text"
-                                    value={fullname}
-                                    onChange={onChangeFullName}
+                                {updating && <Loading color="#fff" />}Lưu thay đổi
+                            </Button>
+                        </Stack>
+                    </Paper>
+
+                <Paper elevation={24} sx={{ flex: 1 }}>
+                    <Stack spacing={4} p={2}>
+                        <Typography>Số điện thoại và Email</Typography>
+
+                        <Stack
+                            direction="row"
+                            alignItems="center"
+                            justifyContent="space-between"
+                        >
+                            <Stack direction="row" spacing={1}>
+                                <LocalPhoneOutlinedIcon color="disabled" />
+                                <ListItemText
+                                    sx={{ '& span': { fontSize: "13px" } }}
+                                    primary="Số điện thoại" secondary={user && user.phone} />
+                            </Stack>
+                            <Link to="/customer/account/edit/phone">
+                                <Button size="small" variant="outlined">
+                                    Cập nhật
+                                </Button>
+                            </Link>
+                        </Stack>
+
+                        <Stack
+                            direction="row"
+                            spacing={15}
+                            alignItems="center"
+                            justifyContent="space-between"
+                        >
+                            <Stack direction="row" spacing={1}>
+                                <EmailOutlinedIcon color="disabled" />
+
+                                <ListItemText
+                                    sx={{ '& span': { fontSize: "13px" } }}
+                                    primary="Địa chỉ email"
+                                    secondary={user?.email}
                                 />
                             </Stack>
 
+                            <Link to="/customer/account/edit/email">
+                                <Button size="small" variant="outlined">
+                                    Cập nhật
+                                </Button>
+                            </Link>
                         </Stack>
-                    </Stack>
 
-                    <Stack direction="row" spacing={9} alignItems="center">
-                        <label>Ngày sinh</label>
-                        <Stack direction="row" spacing={2} alignItems="center">
-                            <Select
-                                sx={{ maxHeight: 30, minWidth: 100 }}
-                                value={day}
-                                onChange={handleChangeDay}
-                                displayEmpty
-                            >
-                                <MenuItem value="">
-                                    <em>Ngày</em>
-                                </MenuItem>
-                                {listday.map(item =>
-                                    <MenuItem key={item} value={item}>{item}</MenuItem>
-                                )}
-                            </Select>
-
-                            <Select
-                                sx={{ maxHeight: 30, minWidth: 100 }}
-                                value={month}
-                                onChange={handleChangeMonth}
-                                displayEmpty
-                            >
-                                <MenuItem value="">
-                                    <em>Tháng</em>
-                                </MenuItem>
-                                {Month.map(item =>
-                                    <MenuItem key={item} value={item}>{item}</MenuItem>
-                                )}
-                            </Select>
-
-                            <Select
-                                sx={{ maxHeight: 30, minWidth: 100 }}
-                                value={year}
-                                onChange={handleChangeYear}
-                                displayEmpty
-                            >
-                                <MenuItem value="">
-                                    <em>Năm</em>
-                                </MenuItem>
-                                {Year.map(item =>
-                                    <MenuItem key={item} value={item}>{item}</MenuItem>
-                                )}
-
-                            </Select>
-                        </Stack>
-                    </Stack>
-
-                    <Stack direction="row" spacing={5} alignItems="center">
-                        <label>Giới tính</label>
-                        <RadioGroup
-                            row
-                            aria-labelledby="demo-row-radio-buttons-group-label"
-                            name="row-radio-buttons-group"
-                            value={gender}
-                            onChange={onChangeGender}
+                        <Typography>Bảo mật</Typography>
+                        <Stack
+                            direction="row"
+                            alignItems="center"
+                            justifyContent="space-between"
                         >
-                            <FormControlLabel value="Male" control={<Radio />} label="Nam" />
-                            <FormControlLabel value="Female" control={<Radio />} label="Nữ" />
-                            <FormControlLabel
-                                value="Other"
-                                control={<Radio />}
-                                label="Khác"
-                            />
-                        </RadioGroup>
-                    </Stack>
-
-
-                    <Button variant="contained" sx={{ width: 200, alignSelf: "center" }}
-                    //   onClick={onSaveChange}
-                    >
-                        {updating && <Loading color="#fff" />}Lưu thay đổi
-                    </Button>
-                </Stack>
-
-                <Divider orientation="vertical" flexItem />
-
-                <Stack spacing={4} flex='1'>
-                    <Typography>Số điện thoại và Email</Typography>
-
-                    <Stack
-                        direction="row"
-                        alignItems="center"
-                        justifyContent="space-between"
-                    >
-                        <Stack direction="row" spacing={1}>
-                            <LocalPhoneOutlinedIcon color="disabled" />
-                            <ListItemText
-                                sx={{ '& span': { fontSize: "13px" } }}
-                                primary="Số điện thoại" secondary={user && user.phone} />
+                            <Stack direction="row" spacing={1}>
+                                <LockIcon color="disabled" />
+                                <ListItemText primary="Đổi mật khẩu" />
+                            </Stack>
+                            <Link to="/customer/account/edit/pass">
+                                <Button size="small" variant="outlined">
+                                    Đổi mật khẩu
+                                </Button>
+                            </Link>
                         </Stack>
-                        <Link to="/customer/account/edit/phone">
+
+                        <Typography>Liên kết mạng xã hội</Typography>
+                        <Stack
+                            direction="row"
+                            alignItems="center"
+                            justifyContent="space-between"
+                        >
+                            <Stack direction="row" spacing={1}>
+                                <FacebookRoundedIcon color="primary" />
+                                <ListItemText primary="Facebook" />
+                            </Stack>
                             <Button size="small" variant="outlined">
-                                Cập nhật
+                                Liên kết
                             </Button>
-                        </Link>
-                    </Stack>
-
-                    <Stack
-                        direction="row"
-                        spacing={15}
-                        alignItems="center"
-                        justifyContent="space-between"
-                    >
-                        <Stack direction="row" spacing={1}>
-                            <EmailOutlinedIcon color="disabled" />
-
-                            <ListItemText
-                                sx={{ '& span': { fontSize: "13px" } }}
-                                primary="Địa chỉ email"
-                                secondary={user?.email}
-                            />
                         </Stack>
 
-                        <Link to="/customer/account/edit/email">
+                        <Stack
+                            direction="row"
+                            alignItems="center"
+                            justifyContent="space-between"
+                        >
+                            <Stack direction="row" spacing={1}>
+                                <GoogleIcon color="success" />
+                                <ListItemText primary="Google" />
+                            </Stack>
                             <Button size="small" variant="outlined">
-                                Cập nhật
+                                Liên kết
                             </Button>
-                        </Link>
+                        </Stack>
                     </Stack>
 
-                    <Typography>Bảo mật</Typography>
-                    <Stack
-                        direction="row"
-                        alignItems="center"
-                        justifyContent="space-between"
-                    >
-                        <Stack direction="row" spacing={1}>
-                            <LockIcon color="disabled" />
-                            <ListItemText primary="Đổi mật khẩu" />
-                        </Stack>
-                        <Link to="/customer/account/edit/pass">
-                            <Button size="small" variant="outlined">
-                                Đổi mật khẩu
-                            </Button>
-                        </Link>
-                    </Stack>
-
-                    <Typography>Liên kết mạng xã hội</Typography>
-                    <Stack
-                        direction="row"
-                        alignItems="center"
-                        justifyContent="space-between"
-                    >
-                        <Stack direction="row" spacing={1}>
-                            <FacebookRoundedIcon color="primary" />
-                            <ListItemText primary="Facebook" />
-                        </Stack>
-                        <Button size="small" variant="outlined">
-                            Liên kết
-                        </Button>
-                    </Stack>
-
-                    <Stack
-                        direction="row"
-                        alignItems="center"
-                        justifyContent="space-between"
-                    >
-                        <Stack direction="row" spacing={1}>
-                            <GoogleIcon color="success" />
-                            <ListItemText primary="Google" />
-                        </Stack>
-                        <Button size="small" variant="outlined">
-                            Liên kết
-                        </Button>
-                    </Stack>
-                </Stack>
+                </Paper>
             </Stack>
 
 

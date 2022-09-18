@@ -1,4 +1,5 @@
 import LoadingPage from 'components/LoadingPage';
+import MaintenancePage from 'components/MaintenancePage';
 import React, { Suspense, lazy } from 'react';
 import { Route, Routes,Router } from "react-router-dom";
 const Home = lazy(() => import("./pages/Home"));
@@ -32,6 +33,9 @@ function ConfigRoute() {
             <Route path="create-exam" element={<CreateExamination />} />
             <Route path="create-course" element={<CreateCourse />} />
             <Route path="bank-question" element={<BankQuestion />} />
+            <Route path="payment" element={<MaintenancePage />} />
+            <Route path="notify" element={<MaintenancePage />} />
+            <Route path="statistic" element={<MaintenancePage />} />
           </Route>
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Register />} />

@@ -3,7 +3,7 @@ export default function Typography(theme) {
     MuiTypography: {
       styleOverrides: {
         root: {
-          fontSize: "14px",
+          fontSize: "15px",
         },
       }
     },
