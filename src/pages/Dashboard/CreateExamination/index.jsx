@@ -68,6 +68,8 @@ const CreateExamination = () => {
  const user = useSelector(state=>state.auth.user)
   useEffect(()=>{
     const getCourses = ()=>{
+      if(!user)
+        return
       const params = {
         idUser:user.id
       }

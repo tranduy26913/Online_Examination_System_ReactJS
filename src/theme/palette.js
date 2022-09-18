@@ -155,7 +155,7 @@ const COMMON = {
 
 const palette = {
   light: {
-    //mode: "light",
+    mode: "light",
 
     ...COMMON.light,
 
@@ -184,7 +184,7 @@ const palette = {
     },
   },
   dark: {
-    //mode: "dark",
+    mode: "dark",
     ...COMMON.dark,
 
     text: {

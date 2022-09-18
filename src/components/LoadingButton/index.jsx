@@ -16,7 +16,7 @@ const LoadingButton = props => {
     const {  loading,children, ...other } = props;
     return (
         <Button {...other}>
-            {loading && <CircularProgress size={24} sx={style}/>} {children}
+            {loading && <CircularProgress size={20} sx={style}/>} {children}
         </Button>
     );
 }

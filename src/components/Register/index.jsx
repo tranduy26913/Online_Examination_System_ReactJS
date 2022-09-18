@@ -5,6 +5,7 @@ import {
     Stack,
     Typography,
     TextField,
+    Paper,
 } from '@mui/material'
 
 import './Login.scss'
@@ -50,7 +51,7 @@ const Register = () => {
             fullname,
             username,
             password,
-            role:'student'
+            role:'teacher'
         }
         apiAuth.postUser(params)
         .then(res=>{
@@ -66,7 +67,9 @@ const Register = () => {
         <Page title='Đăng ký'>
 
         <Stack justifyContent='center' direction='row'>
-            <Stack className='login' maxWidth='500px' width='500px' bgcolor='#f5f5f5' p='16px' mt={4}>
+            <Paper>
+
+            <Stack className='login' maxWidth='500px' width='500px'  p='16px' mt={4}>
                 <Typography align='center' color='primary' fontSize='1.75rem' mb={2}>
                     Đăng ký
                 </Typography>
@@ -84,7 +87,7 @@ const Register = () => {
                                     label="Họ và tên"
                                     error={error !== undefined}
                                     helperText={error ? error.message : ''}
-                                    sx={{ backgroundColor: "#fff" }}
+                                   // sx={{ backgroundColor: "#fff" }}
                                     variant="outlined" />
                             )}
                         />
@@ -100,7 +103,7 @@ const Register = () => {
                                     label="Tên đăng nhập"
                                     error={error !== undefined}
                                     helperText={error ? error.message : ''}
-                                    sx={{ backgroundColor: "#fff" }}
+                                    //sx={{ backgroundColor: "#fff" }}
                                     variant="outlined" />
                             )}
                         />
@@ -117,7 +120,7 @@ const Register = () => {
                                     label="Mật khẩu"
                                     error={error !== undefined}
                                     helperText={error ? error.message : ''}
-                                    sx={{ backgroundColor: "#fff" }}
+                                   // sx={{ backgroundColor: "#fff" }}
                                     variant="outlined" />
                             )}
                         />
@@ -133,15 +136,15 @@ const Register = () => {
                                     label="Mật khẩu"
                                     error={error !== undefined}
                                     helperText={error ? error.message : ''}
-                                    sx={{ backgroundColor: "#fff" }}
+                                    //sx={{ backgroundColor: "#fff" }}
                                     variant="outlined" />
                             )}
                         />
                         <Stack justifyContent='space-between' alignItems='center' spacing={2}>
 
-                            <Button type='submit' sx={{ width: '120px' }}  variant='contained'>Đăng ký</Button>
+                            <Button type='submit' sx={{ width: '148px' }}  variant='contained'>Đăng ký</Button>
                             <Link to='/login'>
-                                <Button sx={{ width: '120px' }}  variant='contained'>Đăng nhập</Button>
+                                <Button sx={{ width: '148px' }}  variant='contained'>Đăng nhập</Button>
                             </Link>
                         </Stack>
                         <p style={{ textAlign: "center", marginTop: "3rem" }}>Tiếp tục bằng</p>
@@ -176,6 +179,7 @@ const Register = () => {
                 </form>
 
             </Stack>
+            </Paper>
         </Stack >
         </Page>
     )

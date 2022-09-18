@@ -72,7 +72,20 @@ const MaterialUISwitch = styled(Switch)(({ theme }) => ({
   },
 }));
 
-const pages = ['Trang chủ', 'Khoá học', 'Về chúng tôi'];
+const pages = [
+  {
+    path:'/',
+    display:'Trang chủ'
+  },
+  {
+    path: '/teacher/list-course',
+    display:'Khoá học'
+  },
+  {
+    path:'/aboutus',
+    display: 'Về chúng tôi'
+  }
+]
 const settings = [
   {
     display: 'Profile',
@@ -91,7 +104,7 @@ const settings = [
 const AppBarShadow = styled(AppBar)(({ theme }) => ({
   //boxShadow:`0 4px 10px 4px ${theme.palette.primary.main}`
   //backgroundColor:'#fff',
-  boxShadow: `0 4px 10px 4px #aaa`
+  boxShadow: theme.palette.mode === 'dark'?'none':'0 4px 10px 4px #aaa'
 }))
 
 function Header() {
@@ -147,13 +160,14 @@ function Header() {
   // },[])
   return (
 
-    <AppBarShadow position="sticky" sx={{ opacity }}>
+    <AppBarShadow position="sticky" sx={{ opacity }} color='primary'>
       <Container maxWidth="xl" >
         <Toolbar disableGutters
           sx={{
             height: '56px',
             minHeight: '56px !important',
             justifyContent: isDashboard ? 'flex-end' : 'unset',
+            alignItems:'center'
           }}>
           {isDashboard === false &&
             <>
@@ -205,8 +219,8 @@ function Header() {
                   }}
                 >
                   {pages.map((page) => (
-                    <MenuItem key={page} onClick={handleCloseNavMenu}>
-                      <Typography textAlign="center">{page}</Typography>
+                    <MenuItem key={page.path} onClick={handleCloseNavMenu}>
+                      <Typography textAlign="center">{page.display}</Typography>
                     </MenuItem>
                   ))}
                 </Menu>
@@ -230,15 +244,16 @@ function Header() {
               >
                 Bello Quiz
               </Typography>
-              <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+              <Box height='100%' alignItems='center' sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
                 {pages.map((page) => (
+                  <Link key={page.path} to={page.path}>
                   <Button
-                    key={page}
                     onClick={handleCloseNavMenu}
-                    sx={{ my: 2, color: 'white', display: 'block' }}
+                    sx={{ my: 2, color:'#fff',fontWeight:600,  display: 'block' }}
                   >
-                    {page}
+                    {page.display}
                   </Button>
+                  </Link>
                 ))}
               </Box>
             </>}
