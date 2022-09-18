@@ -48,8 +48,8 @@ export const sidebarTab = [
     {
         id: 7,
         icon: FavoriteIcon,
-        text: 'Sản phẩm yêu thích',
-        link: '/customer/wishlist'
+        text: 'Thống kê',
+        link: 'statistic'
     }
     
 

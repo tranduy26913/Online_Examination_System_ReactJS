@@ -22,7 +22,7 @@ import Scrollbar from 'components/Scrollbar';
 import Label from 'components/Label';
 import SearchNotFound from 'components/SearchNotFound';
 import { TableHeadCustom, TableToolbar, TableMoreMenu } from 'components/TableCustom';
-
+import './ListTest.scss'
 
 
 // ----------------------------------------------------------------------

@@ -26,14 +26,14 @@ function responsiveFontSizes({
   };
 }
 
-// const FONT_PRIMARY = "Montserrat, sans-serif"; // Google Font
-//const FONT_PRIMARY = "Poppins, sans-serif"; // Google Font
-// const FONT_SECONDARY = 'CircularStd, sans-serif'; // Local Font
+const FONT_PRIMARY = "Noto Sans, sans-serif"; // Google Font
+//const FONT_PRIMARY = 'Nunito, sans-serif'; // Google Font
+// const FONT_PRIMARY = 'Source Sans Pro, sans-serif'; // Local Font
 
 const typography = {
-  // htmlFontSize: 16,
-  //fontFamily: FONT_PRIMARY,
-  fontWeightRegular: 400,
+  //htmlFontSize: 14,
+  fontFamily: FONT_PRIMARY,
+  fontWeightRegular: 500,
   fontWeightMedium: 500,
   fontWeightBold: 700,
   h1: {

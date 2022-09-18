@@ -6,6 +6,7 @@ export default function Button(theme) {
           textTransform: "none",
          // background: theme.palette.gradients.main,
           borderRadius: theme.shape.borderRadiusMd,
+          fontSize:'15px'
         },
       },
       defaultProps: {

@@ -42,6 +42,7 @@ const openedMixin = (theme) => ({
   overflowX: 'hidden',
  // position:'sticky',
   top:'56px',
+  height:'calc(100% - 56px)'
 });
 
 const closedMixin = (theme) => ({
@@ -54,7 +55,8 @@ const closedMixin = (theme) => ({
   [theme.breakpoints.up('sm')]: {
     width: `calc(${theme.spacing(8)} + 1px)`,
   },
-  top:'56px'
+  top:'56px',
+  height:'calc(100% - 56px)'
 });
 
 const DrawerHeader = styled('div')(({ theme }) => ({

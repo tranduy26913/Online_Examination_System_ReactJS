@@ -124,7 +124,7 @@ const GREY = {
 // Setting common for dark and white theme
 const COMMON = {
   light: {
-    common: { black: "#000", white: "#fff" },
+    common: { black: "#333", white: "#fff" },
 
     primary: { ...PRIMARY },
     secondary: { ...SECONDARY },
@@ -138,7 +138,7 @@ const COMMON = {
     gradients: GRADIENTS,
   },
   dark: {
-    common: { black: "#000", white: "#fff" },
+    common: { black: "#333", white: "#fff" },
 
     primary: { ...PRIMARY_DARK },
     secondary: { ...SECONDARY_DARK },
@@ -160,8 +160,9 @@ const palette = {
     ...COMMON.light,
 
     text: {
-      primary: alpha("#000", 0.87),
-      secondary: alpha("#000", 0.6),
+//      primary: alpha("#000", 0.87),
+      primary: "#222",
+      secondary: alpha("#000", 0.75),
       disabled: alpha("#000", 0.38),
       primaryChannel: "0 0 0",
       secondaryChannel: "0 0 0",
@@ -188,7 +189,7 @@ const palette = {
 
     text: {
       primary: "#fff",
-      secondary: alpha("#fff", 0.7),
+      secondary: alpha("#fff", 0.75),
       disabled: alpha("#000", 0.5),
       icon: alpha("#fff", 0.5),
       primaryChannel: "255 255 255",

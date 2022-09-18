@@ -77,7 +77,7 @@ const ListCourse = () => {
                                                 >Chi tiết</Button>
                                             </Link>
                                             <Button variant="outlined" size="small"
-                                                endIcon={<SendIcon />}>Chia sẽ</Button>
+                                                endIcon={<SendIcon />}>Chia sẻ</Button>
                                         </Stack>
                                     </Card>
                                 </Grid>)
