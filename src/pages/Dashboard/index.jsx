@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Routes, Route, Link, useLocation } from "react-router-dom";
+import {  Link, useLocation } from "react-router-dom";
 
 import { sidebarTab } from "../../constraints/StudentDashboard";
 
@@ -26,8 +26,9 @@ import { styled } from '@mui/material/styles';
 import MuiDrawer from '@mui/material/Drawer';
 import MenuIcon from '@mui/icons-material/Menu';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
-import {Outlet} from 'react-router-dom'
-import { useSelector } from "react-redux";
+import { Outlet } from 'react-router-dom'
+import { useDispatch, useSelector } from "react-redux";
+import { clearBreadcrumb } from "slices/breadcrumbSlice";
 const avatar = require("../../assets/img/avatar.png")
 
 
@@ -40,9 +41,9 @@ const openedMixin = (theme) => ({
     duration: theme.transitions.duration.enteringScreen,
   }),
   overflowX: 'hidden',
- // position:'sticky',
-  top:'56px',
-  height:'calc(100% - 56px)'
+  // position:'sticky',
+  top: '56px',
+  height: 'calc(100% - 56px)'
 });
 
 const closedMixin = (theme) => ({
@@ -55,8 +56,8 @@ const closedMixin = (theme) => ({
   [theme.breakpoints.up('sm')]: {
     width: `calc(${theme.spacing(8)} + 1px)`,
   },
-  top:'56px',
-  height:'calc(100% - 56px)'
+  top: '56px',
+  height: 'calc(100% - 56px)'
 });
 
 const DrawerHeader = styled('div')(({ theme }) => ({
@@ -94,15 +95,19 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
   }),
 );
 
-const ListItemCustom = styled(ListItem)(({theme})=>({
-  display:'block',
-  padding:'8px',
-  '& .MuiListItemButton-root':{
-    borderRadius:'8px'
+const ListItemCustom = styled(ListItem)(({ theme }) => ({
+  display: 'block',
+  padding: '8px',
+  '& .MuiListItemButton-root': {
+    borderRadius: '8px',
+    '&:hover':{
+      backgroundColor: `${theme.palette.primary.main}60`,
+    }
   },
-  '&.Mui-selected':{
-    '& .MuiListItemButton-root':{
-      backgroundColor:`${theme.palette.primary.main}a0`
+  '&.Mui-selected': {
+    backgroundColor:'transparent',
+    '& .MuiListItemButton-root': {
+      backgroundColor: `${theme.palette.primary.main}a0`,
     },
   }
 }))
@@ -112,16 +117,34 @@ const StudentDashboard = () => {
   const tabId = sidebarTab.find(item => location.pathname.includes(item.link))
 
   const [selectedTabId, setSelectedTabId] = React.useState(tabId?.id || 0);
-  const user = useSelector(state=>state.auth.user)
+  const user = useSelector(state => state.auth.user)
+  const breadcrumbState = useSelector(state => state.breadcrumb.value)
+  const dispatch = useDispatch()
+  const breadcrumbs = (() => {
+    let tmp = []
+    if (breadcrumbState.length > 0) {
+      tmp = breadcrumbState.map(item =>
+        <Link key={item.path} to="/">
+          <Typography>
+            {item.display}
+          </Typography>
+        </Link>
+      )
+    }
 
-  const breadcrumbs = [
-    <Link key="1" color="inherit" to="/" style={{ fontSize: "14px" }}>
-      Trang chủ
-    </Link>,
-    <Typography key="2" color="text.primary" fontSize="14px">
-      {sidebarTab.find(item => item.id === selectedTabId)?.text || ""}
-    </Typography>,
-  ];//
+    return ([
+      <Link key="1" to="/">
+        <Typography>
+          Trang chủ
+        </Typography>
+      </Link>,
+      <Typography key="2">
+        {sidebarTab.find(item => item.id === selectedTabId)?.text || ""}
+      </Typography>,
+      ...tmp
+    ]);//
+  })()
+
   const [open, setOpen] = React.useState(true);
   const handleDrawerClose = () => setOpen(false);
   const handleDrawerOpen = () => setOpen(true);
@@ -133,12 +156,18 @@ const StudentDashboard = () => {
       if (tabId)
         setSelectedTabId(tabId?.id || 0)
     }
+    const removeBreadcrumb = ()=>{
+      dispatch(clearBreadcrumb())
+    }
     handleChangePath()
+    removeBreadcrumb()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname])
+
   React.useEffect(() => {
     document.title =
       sidebarTab.find(item => item.id === selectedTabId)?.text ||
-      "Tiki - Mua hàng online, giá tốt, hàng chuẩn, ship nhanh";
+      "Bello Quiz";
   }, [selectedTabId]);
   return (
     <Box>
@@ -175,7 +204,7 @@ const StudentDashboard = () => {
             {sidebarTab.map((item) => (
               <Link key={item.id} to={item.link}>
                 <ListItemCustom
-                  
+
                   selected={selectedTabId === item.id}
                   onClick={() => setSelectedTabId(item.id)}
                 >
@@ -198,12 +227,12 @@ const StudentDashboard = () => {
 
                     <ListItemText
                       secondary={item.text}
-                      sx={{ 
+                      sx={{
                         opacity: open ? 1 : 0,
-                        '& .MuiTypography-root':{
-                          fontWeight:500 
+                        '& .MuiTypography-root': {
+                          fontWeight: 500
                         }
-                       }}
+                      }}
                     />
                   </ListItemButton>
                 </ListItemCustom>
@@ -211,18 +240,18 @@ const StudentDashboard = () => {
             ))}
           </List>
         </Drawer>
-        
-        <Box flex={1} p={2}>
-          <Paper elevation={24} sx={{padding:'8px 12px',marginBottom:'12px'}}>
 
-          <Breadcrumbs
-            separator={<NavigateNextIcon fontSize="small" />}
-          sx={{fontSize:"14px"}}
-          //
-          >
-            {breadcrumbs}
-          </Breadcrumbs>
-        </Paper>
+        <Box flex={1} p={2}>
+          <Paper elevation={24} sx={{ padding: '8px 12px', marginBottom: '12px' }}>
+
+            <Breadcrumbs
+              separator={<NavigateNextIcon fontSize="small" />}
+              sx={{ fontSize: "14px" }}
+            //
+            >
+              {breadcrumbs}
+            </Breadcrumbs>
+          </Paper>
           <Outlet />
           {/* <Routes>
             <Route path="/profile" element={<Profile />} />

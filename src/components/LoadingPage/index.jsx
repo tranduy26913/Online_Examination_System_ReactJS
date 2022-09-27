@@ -1,6 +1,4 @@
-import { useTheme } from '@mui/system';
 import React from 'react'
-import ReactLoading from "react-loading";
 import { Stack, Box, styled } from '@mui/material'
 import './LoadingPage.scss'
 
@@ -15,11 +13,7 @@ const Roller = styled(Box)(({ theme }) => ({
     }
 }))
 function LoadingPage() {
-    const theme = useTheme()
     return (
-        // <Stack className='container' height='100vh' justifyContent='center' alignItems='center'>
-        //     <ReactLoading type={'bars'} color={theme.palette.primary.main} />
-        // </Stack>
         <Stack className='container' height='100vh' justifyContent='center' alignItems='center'>
 
             <div className="loader-wrapper">

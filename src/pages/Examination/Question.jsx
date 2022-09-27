@@ -7,7 +7,6 @@ import {
   ButtonGroup,
   FormControlLabel,
   styled,
-  Box
 } from '@mui/material'
 import FlagIcon from '@mui/icons-material/Flag';
 import { useState } from 'react'
@@ -60,7 +59,8 @@ const Question = (props) => {
         >
           {
             question.answers.map(item=>
-             <FormControlLabelCustom value={item.id} control={<Radio size='small' />} label={item.value} /> )
+             <FormControlLabelCustom key={item.id}
+              value={item.id} control={<Radio size='small' />} label={item.value} /> )
           }
           
         </RadioGroup>

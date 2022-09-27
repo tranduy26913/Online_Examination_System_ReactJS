@@ -69,7 +69,7 @@ const ListCourse = () => {
                                             direction='row'
                                             justifyContent="center"
                                             spacing={2}>
-                                            <Link to={`/teacher/${item.slug}/list-exam`}>
+                                            <Link to={`list-exam?courseId=${item.id}`}>
                                                 <Button
                                                     variant="outlined"
                                                     size="small"

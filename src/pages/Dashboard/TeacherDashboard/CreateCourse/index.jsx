@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react'
-import PropTypes from 'prop-types'
+import { useState } from 'react'
 import {
     Paper,
     Stack,
@@ -48,6 +47,7 @@ function CreateCourse(props) {
 
     const onSubmit = (data) => {
         const image = 'https://sandla.org/wp-content/uploads/2021/08/english-e1629469809834.jpg'
+        console.log(fileImage)
         const { name, description } = data
         let random = ''
         for(let i=0;i<7;i++){

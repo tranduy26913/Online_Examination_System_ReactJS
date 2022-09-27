@@ -1,9 +1,9 @@
 import React from 'react'
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import ImageUploading, { ImageListType } from "react-images-uploading";
+import ImageUploading from "react-images-uploading";
 import { toast } from 'react-toastify';
-import { loginSuccess, selectUser } from '../../../slices/authSlice'
+import { loginSuccess } from 'slices/authSlice'
 import { useDispatch } from 'react-redux';
 
 import "./Info.scss";
@@ -25,15 +25,11 @@ import {
     Box,
     IconButton,
     Paper,
-    InputBase,
     Divider,
     Badge,
     ClickAwayListener,
-    SelectChangeEvent,
 } from "@mui/material";
 
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import SearchIcon from "@mui/icons-material/Search";
 import LocalPhoneOutlinedIcon from "@mui/icons-material/LocalPhoneOutlined";
 import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import LockIcon from "@mui/icons-material/Lock";
@@ -171,33 +167,31 @@ const Profile = () => {
     const onChangeGender = (event) => {
         setGender(event.target.value);
     }
-    // const onSaveChange = () => {
-    //   if (!(RegExp("\\d+").test(day) && RegExp("\\d+").test(month) && RegExp("\\d+").test(year)
-    //     && country && fullname && gender && nickname)) {
-    //     toast.warning("Vui lòng nhập đầy đủ thông tin !!");
-    //     return
-    //   }
-    //   let birth_day = `${year}-${('0' + month).slice(-2)}-${('0' + day).slice(-2)}`
-    //   const params = {
-    //     birthDay: birth_day,
-    //     country: country.id,
-    //     fullName: fullname,
-    //     gender: gender,
-    //     nickName: nickname
-    //   };
-    //   setUpdating(true)
-    //   apiProfile
-    //     .putChangeInfo(params)
-    //     .then((response) => {
-    //       toast.success("Thay đổi thành công");
-    //       getUserProfile();
-    //     })
-    //     .catch((error) => {
-    //       toast.error("Thay đổi không thành công");
-    //       console.log(error)
-    //     })
-    //     .finally(()=>setUpdating(false))
-    // };
+    const onSaveChange = () => {
+      if (!(RegExp("\\d+").test(day) && RegExp("\\d+").test(month) && RegExp("\\d+").test(year)
+         && fullname && gender)) {
+        toast.warning("Vui lòng nhập đầy đủ thông tin !!");
+        return
+      }
+      let birth_day = `${year}-${('0' + month).slice(-2)}-${('0' + day).slice(-2)}`
+      const params = {
+        birthDay: birth_day,
+        fullName: fullname,
+        gender: gender,
+      };
+      setUpdating(true)
+      apiProfile
+        .putChangeInfo(params)
+        .then((response) => {
+          toast.success("Thay đổi thành công");
+          getUserProfile();
+        })
+        .catch((error) => {
+          toast.error("Thay đổi không thành công");
+          console.log(error)
+        })
+        .finally(()=>setUpdating(false))
+    };
     const getUserProfile = () => {
         apiProfile.getUserProfile()
             .then((res) => {
@@ -343,7 +337,7 @@ const Profile = () => {
 
 
                             <Button variant="contained" sx={{ width: 200, alignSelf: "center" }}
-                            //   onClick={onSaveChange}
+                               onClick={onSaveChange}
                             >
                                 {updating && <Loading color="#fff" />}Lưu thay đổi
                             </Button>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import {useEffect, useState} from 'react'
 import { sentenceCase } from 'change-case';
 import {
     Box,
@@ -22,15 +22,14 @@ import Scrollbar from 'components/Scrollbar';
 import Label from 'components/Label';
 import SearchNotFound from 'components/SearchNotFound';
 import { TableHeadCustom, TableToolbar, TableMoreMenu } from 'components/TableCustom';
-import './ListTest.scss'
+
 import { useDispatch } from 'react-redux';
-import { useLocation, useParams, useSearchParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { changeBreadcrumb } from 'slices/breadcrumbSlice';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import BarChartIcon from '@mui/icons-material/BarChart';
-import apiExamination from 'apis/apiExamination';
 
 
 // ----------------------------------------------------------------------
@@ -41,7 +40,6 @@ const TABLE_HEAD = [
     { id: 'role', label: 'Role', alignRight: false },
     { id: 'isVerified', label: 'Verified', alignRight: false },
     { id: 'status', label: 'Trạng thái', alignRight: false },
-    { id: '' },
 ];
 
 // ----------------------------------------------------------------------
@@ -75,21 +73,15 @@ function applySortFilter(array, comparator, query) {
     return stabilizedThis.map((el) => el[0]);
 }
 
-const ListExaminationTeacher = () => {
-    document.title = "Danh sách bài kiểm tra"
+const TableStudent = () => {
     const [page, setPage] = useState(0);
     const [order, setOrder] = useState('asc');
     const [selected, setSelected] = useState([]);
     const [orderBy, setOrderBy] = useState('name');
     const [filterName, setFilterName] = useState('');
     const [rowsPerPage, setRowsPerPage] = useState(5);
-    const [exams, setExams] = useState([])
     const dispatch = useDispatch()
     const params = useParams()//lấy slug của đường dẫn
-    const location = useLocation()
-    const query = useSearchParams()
-
-    const courseId = query[0].get('courseId')//abcd
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
@@ -99,7 +91,7 @@ const ListExaminationTeacher = () => {
 
     const handleSelectAllClick = (event) => {
         if (event.target.checked) {
-            const newSelecteds = exams.map((n) => n.name);
+            const newSelecteds = tests.map((n) => n.name);
             setSelected(newSelecteds);
             return;
         }
@@ -134,65 +126,22 @@ const ListExaminationTeacher = () => {
         setFilterName(event.target.value);
     };
 
-    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - exams.length) : 0;
+    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - tests.length) : 0;
 
-    const filteredUsers = applySortFilter(exams, getComparator(order, orderBy), filterName);
+    const filteredUsers = applySortFilter(tests, getComparator(order, orderBy), filterName);
 
     const isUserNotFound = filteredUsers.length === 0;
 
-    const handleDeleteExam = (id) => {
+    const handleDeleteExam = (id)=>{
         console.log(id)
     }
 
-    //Effect
-    useEffect(() => {
-        const handleBreadcrumb = () => {
-            dispatch(changeBreadcrumb({
-                path: 'ddd',
-                display: 'Học máy'
-            }))
-        }
-
-        const loadListExam = () => {//lấy danh sách bài kiểm tra
-            const params = {
-                courseId
-            }
-            apiExamination.getExaminations(params)
-                .then(res=>{
-                    setExams(res)
-                })
-        }
-        loadListExam()
-        handleBreadcrumb()
-    }, [])
+   
     return (
-        <Box className='listtest'>
-            <Paper elevation={24}>
-
-                <Stack direction='row' className='listtest__course'>
-                    <Box className='listtest__wrap-img'>
-                        <img src="https://sandla.org/wp-content/uploads/2021/08/english-e1629469809834.jpg" />
-                    </Box>
-                    <Stack spacing={1} className='listtest__wrap-info'>
-                        <Typography
-                            fontSize={'18px'}
-                            color='primary'
-                            className='listtest__course-name'>Khoá học: Học máy </Typography>
-                        <Typography className='listtest__course-desc'>Cuộc thi học thuật trực tuyến </Typography>
-                        <Typography className='listtest__course-desc'>Số lượng bài kiểm tra: 8</Typography>
-                        <Stack flex={1} justifyContent='flex-end' alignItems='flex-start'>
-                            <Button
-                                variant='outlined'
-                                endIcon={<SendIcon />}
-                            >Chia sẻ</Button>
-                        </Stack>
-                    </Stack>
-                </Stack>
-            </Paper>
-            <Stack spacing={1}>
-                <Paper elevation={24}>
+            
+            <Stack>
                     <TableToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName}
-                        button={{ display: "Tạo đề kiểm tra", path: '/teacher/create-exam' }} />
+                    button={{display:"Tạo đề kiểm tra",path:'/teacher/create-exam'}} />
 
                     <Scrollbar>
                         <TableContainer sx={{ minWidth: 800 }}>
@@ -201,7 +150,7 @@ const ListExaminationTeacher = () => {
                                     order={order}
                                     orderBy={orderBy}
                                     headLabel={TABLE_HEAD}
-                                    rowCount={exams.length}
+                                    rowCount={tests.length}
                                     numSelected={selected.length}
                                     onRequestSort={handleRequestSort}
                                     onSelectAllClick={handleSelectAllClick}
@@ -241,32 +190,7 @@ const ListExaminationTeacher = () => {
                                                     </Label>
                                                 </TableCell>
 
-                                                <TableCell align="right">
-                                                    <TableMoreMenu id={id}
-                                                        menu={[
-                                                            {
-                                                                isLink: true,
-                                                                link: '/teacher/statistic-exam',
-                                                                icon: BarChartIcon,
-                                                                func: null,
-                                                                display: 'Thống kê'
-                                                            },
-                                                            {
-                                                                isLink: true,
-                                                                link: `/teacher/detail-exam?examId=${id}`,
-                                                                icon: EditIcon,
-                                                                func: null,
-                                                                display: 'Sửa'
-                                                            },
-                                                            {
-                                                                isLink: false,
-                                                                link: '/',
-                                                                icon: DeleteForeverIcon,
-                                                                func: handleDeleteExam,
-                                                                display: 'Xoá'
-                                                            },
-                                                        ]} />
-                                                </TableCell>
+                                                
                                             </TableRow>
                                         );
                                     })}
@@ -293,21 +217,19 @@ const ListExaminationTeacher = () => {
                     <TablePagination
                         rowsPerPageOptions={[5, 10, 25]}
                         component="div"
-                        count={exams.length}
+                        count={tests.length}
                         rowsPerPage={rowsPerPage}
                         page={page}
                         onPageChange={handleChangePage}
                         onRowsPerPageChange={handleChangeRowsPerPage}
                     />
-                </Paper>
             </Stack>
-        </Box>
     )
 }
 
 const tests = [
     {
-        id: '1',
+        id:'1',
         name: "Bài kiểm tra số 1",
         start: new Date(),
         duration: 30,
@@ -315,7 +237,7 @@ const tests = [
         turns: 10
     },
     {
-        id: '2',
+        id:'2',
         name: "Bài kiểm tra số 2",
         start: new Date(),
         duration: 30,
@@ -323,7 +245,7 @@ const tests = [
         turns: 10
     },
     {
-        id: '3',
+        id:'3',
         name: "Bài kiểm tra số 3",
         start: new Date(),
         duration: 30,
@@ -331,7 +253,7 @@ const tests = [
         turns: 10
     },
     {
-        id: '4',
+        id:'4',
         name: "Bài kiểm tra số 3",
         start: new Date(),
         duration: 30,
@@ -339,7 +261,7 @@ const tests = [
         turns: 10
     },
     {
-        id: '5',
+        id:'5',
         name: "Bài kiểm tra số 3",
         start: new Date(),
         duration: 30,
@@ -355,4 +277,4 @@ const tests = [
     }
 ]
 
-export default ListExaminationTeacher
+export default TableStudent

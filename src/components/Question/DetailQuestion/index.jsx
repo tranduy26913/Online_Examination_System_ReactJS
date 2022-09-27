@@ -2,10 +2,7 @@ import {
   Stack,
   Button,
   Box,
-  Paper,
-  Typography,
-  Accordion,
-  AccordionSummary, AccordionDetails, styled
+  Typography, styled
 } from '@mui/material'
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
@@ -21,25 +18,25 @@ const BoxAnswer = styled(Box)(({ theme }) => ({
 
 
 const DetailQuestion = (props) => {
-
-  const onClickEdit = ()=>{
+  const question = props.question
+  const onClickEdit = () => {
     props.handleEdit(props.id)
   }
   return (
-          <Stack spacing={0.5}>
-            <Typography>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-              malesuada lacus ex, sit amet blandit leo lobortis eget.
-            </Typography>
-            <BoxAnswer><CheckCircleOutlineIcon sx={{ fontSize: '22px' }} color='success' />Đáp án 1</BoxAnswer>
-            <BoxAnswer><CheckCircleOutlineIcon sx={{ fontSize: '22px' }} color='error' />Đáp án 1</BoxAnswer>
-            <BoxAnswer><CheckCircleOutlineIcon sx={{ fontSize: '22px' }} color='error' />Đáp án 1</BoxAnswer>
-            <BoxAnswer><CheckCircleOutlineIcon sx={{ fontSize: '22px' }} color='error' />Đáp án 1</BoxAnswer>
-            <Stack direction='row' justifyContent={'flex-end'}>
-              <Button onClick={onClickEdit} startIcon={<BorderColorIcon/>}>Sửa</Button>
-              <Button startIcon={<DeleteForeverIcon/>}>Xoá</Button>
-            </Stack>
-          </Stack>
+    <Stack spacing={0.5}>
+      <Typography>
+        {question.content}
+      </Typography>
+      {
+        question.answers.map(item =>
+          <BoxAnswer key={item.id}><CheckCircleOutlineIcon sx={{ fontSize: '22px' }} color={item.isCorrect ? 'success' : 'error'} />{item.content}</BoxAnswer>
+        )
+      }
+      <Stack direction='row' justifyContent={'flex-end'}>
+        <Button onClick={onClickEdit} startIcon={<BorderColorIcon />}>Sửa</Button>
+        <Button startIcon={<DeleteForeverIcon />}>Xoá</Button>
+      </Stack>
+    </Stack>
   )
 }
 
