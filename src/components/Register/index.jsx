@@ -1,6 +1,5 @@
 import React from 'react'
 import {
-    Box,
     Button,
     Stack,
     Typography,
@@ -13,26 +12,11 @@ import { Link, useNavigate } from 'react-router-dom';
 import FacebookRoundedIcon from "@mui/icons-material/FacebookRounded";
 import { yupResolver } from '@hookform/resolvers/yup';
 import { schema } from './schema'
-import { useForm, SubmitHandler, Controller } from 'react-hook-form'
+import { useForm, Controller } from 'react-hook-form'
 import apiAuth from 'apis/apiAuth';
 import { toast } from 'react-toastify';
 import Page from 'components/Page';
 
-
-const formInput = [
-    {
-        name: "username",
-        label: "Tên đăng nhập"
-    },
-    {
-        name: "password",
-        label: "Mật khẩu"
-    },
-    {
-        name: "cfPassword",
-        label: "Xác nhận mật khẩu"
-    }
-]
 
 const Register = () => {
     const { handleSubmit, control } = useForm({

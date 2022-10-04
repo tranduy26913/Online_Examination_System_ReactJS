@@ -17,6 +17,11 @@ import { useTheme } from '@mui/system';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { faker } from '@faker-js/faker';
 import { useCallback } from 'react';
+import apiQuestion from 'apis/apiQuestion';
+import apiExamination from 'apis/apiExamination';
+import { useDispatch, useSelector } from 'react-redux';
+import { addQuestion, updateQuestion } from 'slices/questionSlice';
+import LoadingButton from 'components/LoadingButton';
 
 const alpha = Array.from(Array(26)).map((e, i) => i + 65);
 const alphabet = alpha.map((x) => String.fromCharCode(x));
@@ -65,9 +70,15 @@ const BoxDelete = ({ onClick }) => {
 
 const CreateQuestion = (props) => {
   const isEdit = props.edit
-  const [question, setQuestion] = useState(props.question ? props.question : '')
-  const [answers, setAnswers] = useState(props.answers ? props.answers : [])
+  const examId = props.examId
+  const question = props.question
+  const id = props.id
+  const [content, setContent] = useState(question ? question.content : '')
+  const [answers, setAnswers] = useState(question ? question.answers : [])
+  const [loading, setLoading] = useState(false)
   const [typeAnswer, setTypeAnswer] = useState('single')//single:1 đáp án đúng, multi: nhiều đáp án đúng
+  const QUESTIONS = useSelector(state => state.question.value)
+  const dispatch = useDispatch()
 
   const handleChangeTypeAnswer = (e) => {
     setTypeAnswer(e.target.value)
@@ -101,7 +112,11 @@ const CreateQuestion = (props) => {
     const newAnswers = [...answers]
     const answerIndex = answers.findIndex(item => item.id === idAnswer)
     if (answerIndex > -1) {
-      newAnswers[answerIndex].content = e.target.value
+      newAnswers[answerIndex] = {
+        ...answers[answerIndex],
+        content: e.target.value
+      }
+     
       setAnswers(newAnswers)
     }
   }
@@ -126,26 +141,81 @@ const CreateQuestion = (props) => {
     setAnswers(newAnswers)
   }, [answers, typeAnswer])
 
+  const handleCreateQuestion = async () => {
+    const params = {
+      content,
+      maxPoint: 1,
+      tag: [],
+      type: typeAnswer,
+      embededMedia: "",
+      answers
+    }
+    setLoading(true)
+    apiQuestion.postQuestion(params)
+      .then(async (res) => {
+        
+        // let answerResponses = []
+        // for (let i = 0; i < answers.length; i++) {
+        //   const newAnswer = {...answers[i],questionId:res.id}
+        //   const response = await apiQuestion.postAnswers(newAnswer)
+        //   answerResponses.push(response)
+        // }
+        // const newQuestion = {
+        //   ...res,
+        //   answers: answerResponses
+        // }
+        if (examId) {
+          const questionIds = QUESTIONS.map(item => item.id)
+          questionIds.push(res.id)
+          apiExamination.updateExamination({
+            questions: questionIds
+          }, examId)
+
+        }
+        dispatch(addQuestion(res))
+      })
+      .finally(()=>setLoading(false))
+
+  }
+
+  const handleEditQuestion = ()=>{
+    const params = {
+      content,
+      maxPoint: 1,
+      tag: [],
+      type: typeAnswer,
+      embededMedia: "",
+      answers
+    }
+    setLoading(true)
+    apiQuestion.updateQuestion(params,id)
+      .then((res) => {
+        
+        dispatch(updateQuestion(res))
+      })
+      .finally(()=>{
+        setLoading(false)
+        props.handleSelectQuestion("")
+      })
+  }
+
   return (
 
     <Stack spacing={1.5} mb={2} p={2}>
       <Typography fontWeight={600} mb={1}>Nhập nội dung câu hỏi</Typography>
       <CKEditor
         editor={ClassicEditor}
-        data=""
+        data={content}
         onReady={editor => {
           // You can store the "editor" and use when it is needed.
           console.log('Editor is ready to use!', editor);
         }}
         onChange={(event, editor) => {
-          const data = editor.getData();
-          console.log({ event, editor, data });
+          setContent(editor.getData());
         }}
         onBlur={(event, editor) => {
-          console.log('Blur.', editor);
         }}
         onFocus={(event, editor) => {
-          console.log('Focus.', editor);
         }}
       />
       <FormControl>
@@ -161,22 +231,16 @@ const CreateQuestion = (props) => {
         </RadioGroup>
       </FormControl>
       {
-        isEdit ?
-          answers.map((item, index) =>
-            <Stack direction={'row'} width={'100%'} alignItems='flex-end' spacing={2}>
 
-              <TextField variant='standard' size='small' fullWidth
-                label={`Đáp án ${alphabet[index]}`} value={item.content}
-                onChange={e => handleChangeInputAnswer(e, item.id)} />
-              <BoxCheck isCheck={item.isCorrect} onClick={() => handleChooseCorrect(item.id)} />
-              <BoxDelete onClick={() => handleDeleteAnswer(item.id)} />
-            </Stack>) :
+        answers.map((item, index) =>
           <Stack direction={'row'} width={'100%'} alignItems='flex-end' spacing={2}>
 
-            <TextField variant='standard' size='small' fullWidth label='Đáp án A' />
-            <BoxCheck isCheck={false} />
-            <BoxDelete />
-          </Stack>
+            <TextField variant='standard' size='small' fullWidth
+              label={`Đáp án ${alphabet[index]}`} value={item.content}
+              onChange={e => handleChangeInputAnswer(e, item.id)} />
+            <BoxCheck isCheck={item.isCorrect} onClick={() => handleChooseCorrect(item.id)} />
+            <BoxDelete onClick={() => handleDeleteAnswer(item.id)} />
+          </Stack>)
       }
 
       <Stack direction='row' justifyContent='center' >
@@ -184,7 +248,8 @@ const CreateQuestion = (props) => {
       <Stack direction={'row'} spacing={1.5} justifyContent='flex-end'>
         <Button variant='contained' color='error'>Huỷ</Button>
         <Button variant='contained' color='warning'>Làm mới</Button>
-        <Button variant='contained'>Tạo câu hỏi</Button>
+        <LoadingButton loading={loading} variant='contained' 
+        onClick={isEdit?handleEditQuestion:handleCreateQuestion}>{isEdit?'Sửa':'Tạo'} câu hỏi</LoadingButton>
       </Stack>
     </Stack>
 

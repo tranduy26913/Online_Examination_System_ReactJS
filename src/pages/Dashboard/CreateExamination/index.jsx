@@ -30,8 +30,12 @@ import {
   Stack2Column
 } from './Component/MUI'
 import { useCallback, useEffect, useState } from 'react'
-import { useSelector } from 'react-redux';
-import { lightGreen } from '@mui/material/colors';
+import { useDispatch, useSelector } from 'react-redux';
+import apiExamination from 'apis/apiExamination';
+import { toast } from 'react-toastify';
+import {useSearchParams } from 'react-router-dom';
+import apiQuestion from 'apis/apiQuestion';
+import { addQuestion, clearQuestion } from 'slices/questionSlice';
 /**
  * @param {Date} date 
  */
@@ -46,16 +50,22 @@ const toStringDateTime = (date) => {
   return `${year}-${month}-${day}T${hour}:${min}`
 }
 
-const CreateExamination = () => {
+const CreateExamination = (props) => {
   const theme = useTheme()
-  const isCreateQuestion = false
+  const paramUrl = useSearchParams()[0]
+
+  const [isEdit, setIsEdit] = useState(props.isEdit)
+  const [examId, setExamId] = useState(paramUrl.get('examId') || '')
+  const [name, setName] = useState('')
+  const [numberQuestion, setNumberQuestion] = useState(1)
   const [idQuestion, setIdQuestion] = useState('')
   const [expanded, setExpanded] = useState(false);
-  const [follow, setFollow] = useState(false);
+  const [tracking, setTracking] = useState(false);
   const [shutle, setShutle] = useState(false);
   const [viewAnswer, setViewAnswer] = useState('1')
   const [viewMark, setViewMark] = useState('1')
   const [accessExam, setAccessExam] = useState('2')
+  const [typeMark, setTypeMark] = useState('1')
   const [start, setStart] = useState(toStringDateTime(new Date()))//thời gian bắt đầu
   const [end, setEnd] = useState(toStringDateTime(new Date()))//thời gian kết thúc
   const [duration, setDuration] = useState(1)//thời lượng bài thi (phút)
@@ -65,32 +75,70 @@ const CreateExamination = () => {
   const [limit, setLimit] = useState(0)//Số lần được phép thi tối đa
   const [listCourse, setListCourse] = useState([])
   const [course, setCourse] = useState('');
- const user = useSelector(state=>state.auth.user)
-  useEffect(()=>{
-    const getCourses = ()=>{
-      if(!user)
+  const user = useSelector(state => state.auth.user)
+  const QUESTIONS = useSelector(state => state.question.value)
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    const getCourses = () => {
+      if (!user)
         return
       const params = {
-        idUser:user.id
+        idUser: user.id
       }
       apiCourse.getCourses(params)
-      .then(res=>{
-        setListCourse(res)
-      })
-      .catch(err=>{
-        console.log(err);
-      })
+        .then(res => {
+          setListCourse(res)
+        })
+        .catch(err => {
+          console.log(err);
+        })
     }
+
     getCourses()
-  },[])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  useEffect(() => {
+    const getQuestions = () => {
+      if (!user)
+        return
+      if (!examId)
+        return
+      apiExamination.getExaminationsById(examId)
+        .then(res => {
+          try {
+            const exam = res[0]
+            dispatch(clearQuestion())
+            setName(exam.name)
+            const questions = exam.questions
+            questions.forEach(item=>{
+              apiQuestion.getQuestionsById(item)
+                .then(res=>{
+                    const question = res
+                    dispatch(addQuestion(question))
+                })
+            })
+          }
+          catch (err) {
+          }
+        })
+
+    }
+    getQuestions()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [examId])
 
   const handleChangeQuestion = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
   };
 
+  const handleChangeName = event => setName(event.target.value)
+  const handleChangeNumberQuestion = (event) => setNumberQuestion(Number(event.target.value |= 0))
   const handleChangeViewAnswer = event => setViewAnswer(event.target.value)
   const handleChangeViewMark = event => setViewMark(event.target.value)
   const handleChangeAccessExam = event => setAccessExam(event.target.value)
+  const handleChangeTypeMark = event => setTypeMark(event.target.value)
   const handleChangeInputQuestion = event => setInputQuestion(event.target.value)
   const handleChangePinExam = event => setPinExam(event.target.value)
 
@@ -108,6 +156,36 @@ const CreateExamination = () => {
   const onChangeLimit = (event) => setLimit(Number(event.target.value |= 0))
   const handleChangeCourse = (event) => setCourse(event.target.value)
 
+  const handleSubmit = () => {
+    const params = {
+      name,
+      numberQuestion,
+      creatorId: user?.id,
+      courseId: course,
+      description: '',
+      questions: [],
+      tracking,
+      startTime: start,
+      endTime: end,
+      attemptsAllowed: isLimit ? limit : 100,
+      maxPoint: 10,
+      maxTime: duration,
+      questionOrder: shutle,
+      typeMark,
+      viewMark,
+      viewAnswer,
+      allowAccess: accessExam,
+      pin: pinExam
+    }
+    apiExamination.postExamination(params)
+      .then(res => {
+        console.log(res)
+        toast.success("Tạo đề thi thành công")
+        setExamId(res.id)
+        setIsEdit(true)
+      })
+  }
+
   return (
     <Stack spacing={1}>
       <Paper elevation={12} sx={{ padding: '12px' }}>
@@ -120,14 +198,16 @@ const CreateExamination = () => {
         <Stack spacing={1.5} my={1.5}>
           <StackLabel>
             <Box>Tên đề thi</Box>
-            <input type='text' />
+            <input type='text' value={name}
+              onChange={handleChangeName} />
           </StackLabel>
 
           <Stack2Column>
 
             <StackLabel>
               <Box>Số câu hỏi</Box>
-              <input type='number' />
+              <input type='number' value={numberQuestion}
+                onInput={handleChangeNumberQuestion} />
             </StackLabel>
             <StackLabel>
               <Box>Thời lượng làm bài (phút)</Box>
@@ -143,7 +223,7 @@ const CreateExamination = () => {
               <Box>Giám sát tự động</Box>
               <FormGroup row>
                 <FormControlLabel
-                  control={<Switch checked={follow} onChange={() => setFollow(!follow)} />} />
+                  control={<Switch checked={tracking} onChange={() => setTracking(!tracking)} />} />
               </FormGroup>
             </StackLabel>
 
@@ -194,7 +274,7 @@ const CreateExamination = () => {
                   <em>None</em>
                 </MenuItem> */}
                 {
-                  listCourse.map(item=>
+                  listCourse.map(item =>
                     <MenuItem value={item.id}>{item.name}</MenuItem>)
                 }
               </Select>
@@ -260,9 +340,9 @@ const CreateExamination = () => {
             <Box>Cách tính điểm</Box>
             <RadioGroup
               row
-              name="inputQuestion"
-              value={inputQuestion}
-              onChange={handleChangeInputQuestion}
+              name="typeMark"
+              value={typeMark}
+              onChange={handleChangeTypeMark}
             >
               <FormControlLabel value={true} control={<Radio size='small' />} label="Lấy điểm cao nhất" />
               <FormControlLabel value={false} control={<Radio size='small' />} label="Lấy điểm lần thi cuối" />
@@ -293,96 +373,44 @@ const CreateExamination = () => {
         </Stack>
 
         <Stack alignItems='center'>
-          <Button variant='contained'>Lưu cấu hình</Button>
+          <Button variant='contained' onClick={handleSubmit}>Lưu cấu hình</Button>
         </Stack>
       </Paper>
-
-      <Paper sx={{ marginBottom: '12px' }}>
-        <Typography align='center' fontSize='20px' fontWeight={600} sx={{ color: theme.palette.primary.main }}>Danh sách câu hỏi</Typography>
-      </Paper>
       {
-        questions.map(item =>
+        isEdit && <>
+          <Paper sx={{ marginBottom: '12px' }}>
+            <Typography align='center' fontSize='20px' fontWeight={600} sx={{ color: theme.palette.primary.main }}>Danh sách câu hỏi</Typography>
+          </Paper>
+          {
+            QUESTIONS.map((item,index) =>
 
-          <PaperQuestion key={item.id} elevation={12} >
-            <Accordion expanded={item.id === expanded} onChange={handleChangeQuestion(item.id)}>
-              <AccordionSummary sx={AccordionSummaryStyle}
-                expandIcon={<ExpandMoreIcon />}
-              ><Typography>Câu hỏi 1</Typography>
+              <PaperQuestion key={item.id} elevation={12} >
+                <Accordion expanded={item.id === expanded} onChange={handleChangeQuestion(item.id)}>
+                  <AccordionSummary sx={AccordionSummaryStyle}
+                    expandIcon={<ExpandMoreIcon />}
+                  ><Typography>Câu hỏi {index+1}</Typography>
 
-              </AccordionSummary>
-              <AccordionDetails>
-                {idQuestion === item.id ?
-                  <CreateQuestion edit={true} id={idQuestion}
-                    question={item.question}
-                    answers={item.answers} /> : <DetailQuestion id={item.id} handleEdit={handleSelectQuestionEdit} />}
-              </AccordionDetails>
-            </Accordion>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    {idQuestion === item.id ?
+                      <CreateQuestion edit={true} id={idQuestion}
+                      handleSelectQuestion = {handleSelectQuestionEdit}
+                        question={item} /> : <DetailQuestion id={item.id} question={item} handleEdit={handleSelectQuestionEdit} />}
+                  </AccordionDetails>
+                </Accordion>
+              </PaperQuestion>
+
+            )
+          }
+          <PaperQuestion elevation={12} >
+            <CreateQuestion edit={false} id='' examId={examId} />
           </PaperQuestion>
-
-        )
+          {/* <Button variant='contained' onClick={handleCreateQuestion}>Tạo câu hỏi mới</Button> */}
+        </>
       }
-      {/* <CreateQuestion edit={false} id='' /> */}
-      <Button variant='contained'>Tạo câu hỏi mới</Button>
+
     </Stack >
   )
 }
-
-
-const questions = [
-  {
-    id: '1',
-    question: 'Câu hỏi 1',
-    answers: [
-      {
-        id: '1',
-        content: "Đáp án 1"
-      },
-      {
-        id: '2',
-        content: "Đáp án 2"
-      },
-      {
-        id: '3',
-        content: "Đáp án 3"
-      },
-    ]
-  },
-  {
-    id: '2',
-    question: 'Câu hỏi 1',
-    answers: [
-      {
-        id: '1',
-        content: "Đáp án 1"
-      },
-      {
-        id: '2',
-        content: "Đáp án 2"
-      },
-      {
-        id: '3',
-        content: "Đáp án 3"
-      },
-    ]
-  },
-  {
-    id: '3',
-    question: 'Câu hỏi 1',
-    answers: [
-      {
-        id: '1',
-        content: "Đáp án 1"
-      },
-      {
-        id: '2',
-        content: "Đáp án 2"
-      },
-      {
-        id: '3',
-        content: "Đáp án 3"
-      },
-    ]
-  },
-]
 
 export default CreateExamination

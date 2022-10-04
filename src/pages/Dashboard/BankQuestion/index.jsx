@@ -1,5 +1,4 @@
 import {
-    Box,
     Paper,
     styled,
     AccordionSummary,
@@ -26,7 +25,6 @@ const AccordionSummaryStyle = {
 }
 
 const BankQuestion = () => {
-    const isCreateQuestion = false
     const [idQuestion, setIdQuestion] = useState('')
     const [expanded, setExpanded] = React.useState(false);
 
@@ -49,8 +47,8 @@ const BankQuestion = () => {
                         <AccordionDetails>
                             {idQuestion === item.id ?
                                 <CreateQuestion edit={true} id={idQuestion}
-                                    question={item.question}
-                                    answers={item.answers} /> : <DetailQuestion id={item.id} handleEdit={handleSelectQuestionEdit} />}
+                                    question={item} /> : 
+                                    <DetailQuestion question={item} id={item.id} handleEdit={handleSelectQuestionEdit} />}
                         </AccordionDetails>
                     </Accordion>
                 </PaperQuestion>

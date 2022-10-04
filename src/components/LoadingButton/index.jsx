@@ -14,6 +14,7 @@ const style = {
 
 const LoadingButton = props => {
     const {  loading,children, ...other } = props;
+    console.log(loading)
     return (
         <Button {...other}>
             {loading && <CircularProgress size={20} sx={style}/>} {children}

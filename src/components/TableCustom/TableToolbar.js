@@ -3,8 +3,10 @@ import PropTypes from 'prop-types';
 import { styled } from '@mui/material/styles';
 import {Toolbar, Tooltip, IconButton, Typography, OutlinedInput, InputAdornment, Button } from '@mui/material';
 // component
-import Iconify from 'components/Iconify';
 import {Link} from 'react-router-dom'
+import SearchIcon from '@mui/icons-material/Search';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import FilterListIcon from '@mui/icons-material/FilterList';
 
 // ----------------------------------------------------------------------
 
@@ -57,7 +59,7 @@ export default function UserListToolbar({ numSelected, filterName, onFilterName,
           placeholder="Search user..."
           startAdornment={
             <InputAdornment position="start">
-              <Iconify icon="eva:search-fill" sx={{ color: 'text.disabled', width: 20, height: 20 }} />
+              <SearchIcon sx={{ color: 'text.disabled', width: 20, height: 20 }} />
             </InputAdornment>
           }
         />
@@ -66,7 +68,7 @@ export default function UserListToolbar({ numSelected, filterName, onFilterName,
       {numSelected > 0 ? (
         <Tooltip title="Delete">
           <IconButton>
-            <Iconify icon="eva:trash-2-fill" />
+            <DeleteForeverIcon />
           </IconButton>
         </Tooltip>
       ) : button ? 
@@ -76,7 +78,7 @@ export default function UserListToolbar({ numSelected, filterName, onFilterName,
        (
         <Tooltip title="Filter list">
           <IconButton>
-            <Iconify icon="ic:round-filter-list" />
+            <FilterListIcon />
           </IconButton>
         </Tooltip>
       )}

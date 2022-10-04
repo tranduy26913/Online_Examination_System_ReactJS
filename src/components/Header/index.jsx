@@ -19,7 +19,7 @@ import {
 
 import MenuIcon from '@mui/icons-material/Menu';
 import AdbIcon from '@mui/icons-material/Adb';
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { logoutSuccess } from 'slices/authSlice';
 import { toggleTheme } from 'slices/themeSlice';
@@ -74,15 +74,15 @@ const MaterialUISwitch = styled(Switch)(({ theme }) => ({
 
 const pages = [
   {
-    path:'/',
-    display:'Trang chủ'
+    path: '/',
+    display: 'Trang chủ'
   },
   {
     path: '/teacher/list-course',
-    display:'Khoá học'
+    display: 'Khoá học'
   },
   {
-    path:'/aboutus',
+    path: '/aboutus',
     display: 'Về chúng tôi'
   }
 ]
@@ -104,16 +104,13 @@ const settings = [
 const AppBarShadow = styled(AppBar)(({ theme }) => ({
   //boxShadow:`0 4px 10px 4px ${theme.palette.primary.main}`
   //backgroundColor:'#fff',
-  boxShadow: theme.palette.mode === 'dark'?'none':'0 4px 10px 4px #aaa'
+  boxShadow: theme.palette.mode === 'dark' ? 'none' : '0 4px 10px 4px #aaa'
 }))
 
 function Header() {
 
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
-  const [isDashboard, setIsDashboard] = React.useState(false);
-  const [opacity, setOpacity] = React.useState(1);
-  const location = useLocation()
   const user = useSelector(state => state.auth.user)
   const isLight = useSelector(state => state.theme.isLight)
   const dispatch = useDispatch()
@@ -124,7 +121,7 @@ function Header() {
   const handleCloseNavMenu = () => setAnchorElNav(null);
   const handleCloseUserMenu = () => setAnchorElUser(null);
 
-  const handleChangeTheme = ()=>{
+  const handleChangeTheme = () => {
     dispatch(toggleTheme(!isLight))
   }
 
@@ -133,131 +130,105 @@ function Header() {
     setAnchorElUser(null);
   }
 
-  React.useEffect(() => {
-    const onChangePath = () => {
-      const dashboard = location.pathname.includes('student/') || location.pathname.includes('teacher/')
-      //setIsDashboard(dashboard)
 
-    }
-    onChangePath()
-  }, [location.pathname])
-  // React.useEffect(()=>{
-  //   const changeOpacity = ()=>{
-  //     const scrollY = document.body.scrollTop | document.documentElement.scrollTop
-  //     const target = 0.3
-  //     const positionY = 100
-  //     console.log(scrollY)
-  //     if(scrollY < positionY - 1){
-  //       setOpacity(1 - (1 - target)/(positionY - scrollY))
-  //     }
-  //     else
-  //       setOpacity(1 - target)
-  //   }
-  //   window.addEventListener('scroll',changeOpacity)
-  //   return ()=>{
-  //     window.removeEventListener('scroll',changeOpacity)
-  //   }
-  // },[])
   return (
 
-    <AppBarShadow position="sticky" sx={{ opacity }} color='primary'>
+    <AppBarShadow position="sticky"  color='primary'>
       <Container maxWidth="xl" >
         <Toolbar disableGutters
           sx={{
             height: '56px',
             minHeight: '56px !important',
-            justifyContent: isDashboard ? 'flex-end' : 'unset',
-            alignItems:'center'
+            //justifyContent: isDashboard ? 'flex-end' : 'unset',
+            alignItems: 'center'
           }}>
-          {isDashboard === false &&
-            <>
-              <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
-              <Typography
-                variant="h6"
-                noWrap
-                component="a"
-                href="/"
-                sx={{
-                  mr: 2,
-                  display: { xs: 'none', md: 'flex' },
-                  fontFamily: 'monospace',
-                  fontWeight: 700,
-                  color: 'inherit',
-                  textDecoration: 'none',
-                }}
-              >
-                Bello Quiz
-              </Typography>
+          <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
+          <Typography
+            variant="h6"
+            noWrap
+            component="a"
+            href="/"
+            sx={{
+              mr: 2,
+              display: { xs: 'none', md: 'flex' },
+              fontFamily: 'monospace',
+              fontWeight: 700,
+              color: 'inherit',
+              textDecoration: 'none',
+            }}
+          >
+            Bello Quiz
+          </Typography>
 
-              <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
-                <IconButton
-                  size="large"
-                  aria-label="account of current user"
-                  aria-controls="menu-appbar"
-                  aria-haspopup="true"
-                  onClick={handleOpenNavMenu}
-                  color="inherit"
+          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+            <IconButton
+              size="large"
+              aria-label="account of current user"
+              aria-controls="menu-appbar"
+              aria-haspopup="true"
+              onClick={handleOpenNavMenu}
+              color="inherit"
+            >
+              <MenuIcon />
+            </IconButton>
+            <Menu
+              id="menu-appbar"
+              anchorEl={anchorElNav}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'left',
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'left',
+              }}
+              open={Boolean(anchorElNav)}
+              onClose={handleCloseNavMenu}
+              sx={{
+                display: { xs: 'block', md: 'none' },
+              }}
+            >
+              {pages.map((page) => (
+                <MenuItem key={page.path} onClick={handleCloseNavMenu}>
+                  <Typography textAlign="center">{page.display}</Typography>
+                </MenuItem>
+              ))}
+            </Menu>
+          </Box>
+          <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
+          <Typography
+            variant="h5"
+            noWrap
+            component="a"
+            href=""
+            sx={{
+              mr: 2,
+              display: { xs: 'flex', md: 'none' },
+              flexGrow: 1,
+              fontFamily: 'monospace',
+              fontWeight: 700,
+              letterSpacing: '.3rem',
+              color: 'inherit',
+              textDecoration: 'none',
+            }}
+          >
+            Bello Quiz
+          </Typography>
+          <Box height='100%' alignItems='center' sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+            {pages.map((page) => (
+              <Link key={page.path} to={page.path}>
+                <Button
+                  onClick={handleCloseNavMenu}
+                  sx={{ my: 2, color: '#fff', fontWeight: 600, display: 'block' }}
                 >
-                  <MenuIcon />
-                </IconButton>
-                <Menu
-                  id="menu-appbar"
-                  anchorEl={anchorElNav}
-                  anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'left',
-                  }}
-                  keepMounted
-                  transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'left',
-                  }}
-                  open={Boolean(anchorElNav)}
-                  onClose={handleCloseNavMenu}
-                  sx={{
-                    display: { xs: 'block', md: 'none' },
-                  }}
-                >
-                  {pages.map((page) => (
-                    <MenuItem key={page.path} onClick={handleCloseNavMenu}>
-                      <Typography textAlign="center">{page.display}</Typography>
-                    </MenuItem>
-                  ))}
-                </Menu>
-              </Box>
-              <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
-              <Typography
-                variant="h5"
-                noWrap
-                component="a"
-                href=""
-                sx={{
-                  mr: 2,
-                  display: { xs: 'flex', md: 'none' },
-                  flexGrow: 1,
-                  fontFamily: 'monospace',
-                  fontWeight: 700,
-                  letterSpacing: '.3rem',
-                  color: 'inherit',
-                  textDecoration: 'none',
-                }}
-              >
-                Bello Quiz
-              </Typography>
-              <Box height='100%' alignItems='center' sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-                {pages.map((page) => (
-                  <Link key={page.path} to={page.path}>
-                  <Button
-                    onClick={handleCloseNavMenu}
-                    sx={{ my: 2, color:'#fff',fontWeight:600,  display: 'block' }}
-                  >
-                    {page.display}
-                  </Button>
-                  </Link>
-                ))}
-              </Box>
-            </>}
-            <Box><MaterialUISwitch sx={{ m: 1 }} checked={isLight} onChange={handleChangeTheme} /></Box>
+                  {page.display}
+                </Button>
+              </Link>
+            ))}
+          </Box>
+
+          <Box><MaterialUISwitch sx={{ m: 1 }} checked={isLight} onChange={handleChangeTheme} /></Box>
 
           <Box sx={{ flexGrow: 0 }}>
             {user ?
@@ -290,16 +261,16 @@ function Header() {
                 >
                   {settings.map((setting) => {
                     return (
-                    setting.path !== 'logout' ?
-                      <Link key={setting.path} to={`${user.role}/${setting.path}`}>
-                        <MenuItem onClick={handleCloseUserMenu}>
+                      setting.path !== 'logout' ?
+                        <Link key={setting.path} to={`${user.role}/${setting.path}`}>
+                          <MenuItem onClick={handleCloseUserMenu}>
+                            <Typography textAlign="center">{setting.display}</Typography>
+                          </MenuItem>
+                        </Link>
+                        :
+                        <MenuItem key={setting.path} onClick={handleLogout}>
                           <Typography textAlign="center">{setting.display}</Typography>
-                        </MenuItem>
-                      </Link>
-                      :
-                      <MenuItem onClick={handleLogout}>
-                        <Typography textAlign="center">{setting.display}</Typography>
-                      </MenuItem>)
+                        </MenuItem>)
                   }
                   )}
                 </Menu>

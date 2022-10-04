@@ -1,0 +1,35 @@
+.showtotop {
+    opacity: 0;
+    transform: translateY(30%);
+    transition: all ease-in-out 1s;
+}
+
+.active .showtotop {
+    // opacity: 1;
+    opacity: 1;
+    transform: none;
+    //animation: showtop 1s ease-in-out 1 forwards;
+}
+
+@keyframes showtop {
+    0% {
+        opacity: 0;
+        transform: translateY(100%);
+    }
+    25% {
+        opacity: 0.25;
+        transform: translateY(75%);
+    }
+    50% {
+        opacity: 0.5;
+        transform: translateY(50%);
+    }
+    75% {
+        opacity: 0.75;
+        transform: translateY(25%);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0%);
+    }
+}

@@ -1,14 +1,11 @@
 import React, { useState } from 'react'
 import {
-    Box,
     Button,
     Stack,
     Typography,
-    Input,
     OutlinedInput,
     InputLabel,
     InputAdornment,
-    FormHelperText,
     Checkbox,
     FormControl,
     TextField,
@@ -73,7 +70,7 @@ const Login = () => {
             .catch(err => {
                 console.log(err.response.data)
             })
-            .finally(setLoading(false))
+            .finally(()=>setLoading(false))
     }
     return (
         <Page title='Đăng nhập'>

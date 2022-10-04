@@ -1,7 +1,9 @@
+import Page404 from 'components/ErrorPage/Page404';
 import LoadingPage from 'components/LoadingPage';
 import MaintenancePage from 'components/MaintenancePage';
+import StatisticExam from 'pages/Dashboard/StatisticExam';
 import React, { Suspense, lazy } from 'react';
-import { Route, Routes,Router } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import Dashboard from "./pages/Dashboard"
 const Home = lazy(() => import("./pages/Home"));
 //const Dashboard = lazy(() => import("./pages/Dashboard"));
@@ -12,7 +14,7 @@ const ListCourse = lazy(() => import("pages/Dashboard/ListCourse"));
 const ListExaminationStudent = lazy(() => import("pages/Dashboard/ListExaminationStudent"));
 const CreateExamination = lazy(() => import("pages/Dashboard/CreateExamination"));
 const ListExaminationTeacher = lazy(() => import("pages/Dashboard/TeacherDashboard/ListExamination"));
-const Test = lazy(() => import("pages/Test"));
+const Examination = lazy(() => import("pages/Examination"));
 const CreateCourse = lazy(() => import("pages/Dashboard/TeacherDashboard/CreateCourse"));
 const BankQuestion = lazy(() => import("pages/Dashboard/BankQuestion"));
 
@@ -28,7 +30,7 @@ const TEACHER = [
     component:ListCourse
   },
   {
-    path:':slug/list-exam',
+    path:'list-course/list-exam',
     component:ListExaminationTeacher
   },
   {
@@ -55,6 +57,10 @@ const TEACHER = [
     path:'statistic',
     component:MaintenancePage
   },
+  {
+    path:'statistic-exam',
+    component:StatisticExam
+  },
 ]
 function ConfigRoute() {
   return (
@@ -73,13 +79,16 @@ function ConfigRoute() {
               TEACHER.map(item=>
                 <Route key={item.path} path={item.path} element={makeLoading(<item.component />)} />)
             }
+            <Route path='detail-exam' element={makeLoading(<CreateExamination isEdit={true} />)} />
           </Route>
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Register />} />
-          <Route path="test/:id" element={<Test />} />
+          <Route path="exam/:examId" element={<Examination />} />
           <Route path="loading" element={<LoadingPage />} />
           <Route path="aboutus" element={<MaintenancePage />} />
-
+          <Route path="result" element={<MaintenancePage />} />
+          <Route path="review-exam/:id" element={<MaintenancePage />} />
+          <Route path="/*" element={<Page404 />} />
 
 
         </Routes>

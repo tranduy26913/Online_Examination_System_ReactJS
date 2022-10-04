@@ -25,9 +25,9 @@ const ContactUs = () => {
   };
 
   return (
-    <Stack alignItems='center'>
-      <Paper elevation={24}>
-        <Stack p={2} maxWidth='650px'>
+    <Stack alignItems='center' className='home-item'>
+      <Paper elevation={24} className='showtotop'>
+        <Stack p={2} maxWidth='650px' >
           <Typography variant="h4" align='center' color='primary'>
             Contact Us
           </Typography>
