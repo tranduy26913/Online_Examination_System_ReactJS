@@ -3,6 +3,7 @@ import authReducer from "../slices/authSlice";
 import themeReducer from '../slices/themeSlice'
 import questionReducer from '../slices/questionSlice'
 import breadcrumbReducer from 'slices/breadcrumbSlice'
+import answerSheetReducer from 'slices/answerSheetSlice'
 import {
   persistStore,
   persistReducer,
@@ -35,6 +36,7 @@ const rootReducer = combineReducers({
    auth: authReducer,
    theme:themeReducer,
    breadcrumb:breadcrumbReducer,
+   answerSheet:answerSheetReducer,
    question: persistReducer(questionPersistConfig, questionReducer),
    })
 const persistedReducer = persistReducer(persistConfig, rootReducer)

@@ -3,25 +3,37 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
     takeExamId:'',
-    sheet:[],
+    questions:[],
 }
 export const answerSheetSlice = createSlice({
     name: "answerSheet",
     initialState,
     reducers: {
-        loginSuccess: (state, action) => {
-            state.user = action.payload
+        changeAnswer: (state, action) => {
+            const {id, answerIds} = action.payload
+            const duplicate = state.questions.find(item => item.id === id)
+            if(duplicate){
+                state.questions = delItem(state.questions,duplicate)
+            }
+            state.questions = [...state.questions,{id,answerIds}]
         },
-        logoutSuccess: (state, action) => {
-            state.user = null
+        clearAnswers: (state, action) => {
+            state.questions = []
         },
+        deleteAnswer:(state,action) => {
+            const {id} = action.payload
+            state.questions = delItem(state.questions,{id})
+        }
     }
 })
 
+const delItem = (arr, item) => arr.filter(e=> e.id !== item.id)
+
 
 export const {
-    loginSuccess,
-    logoutSuccess,
+    changeAnswer,
+    clearAnswers,
+    deleteAnswer,
 } = answerSheetSlice.actions
 
 export default answerSheetSlice.reducer

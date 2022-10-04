@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import {
     Box,
     Button,
     Stack,
-    Typography
+    Typography,
+    Paper
 } from "@mui/material"
 import Grid from '@mui/material/Unstable_Grid2';
 import { styled, useTheme } from '@mui/material/styles';
@@ -12,19 +13,30 @@ import apiExamination from 'apis/apiExamination';
 import apiQuestion from 'apis/apiQuestion';
 import Page from 'components/Page';
 import { useParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import QuestionMulti from './QuestionMulti';
+import { clearAnswers } from 'slices/answerSheetSlice';
 const ButtonQuestion = styled(Button)(({ theme }) => ({
-    borderRadius: '50%',
+    borderRadius: '6px',
     //padding:'8px',
     width: '100%',
+    height:'54px',
     minWidth: 'unset',
     minHeight: 'unset',
+    fontWeight:600,
     //paddingBottom:'50%',
-    color: '#333',
+    color:  `${theme.palette.mode==='dark'?theme.palette.common.white:theme.palette.common.black}`,
     border: '2px solid #999',
+    borderBottomWidth:'20px',
     '&.done': {
         borderColor: `${theme.palette.primary.main}cc`,
+        color: `${theme.palette.primary.main}`,
         backgroundColor: `${theme.palette.primary.light}40`
+    },
+    '&.flag':{
+        borderColor: `${theme.palette.error.main}`,
+        color: `${theme.palette.error.main}`,
+        backgroundColor: `${theme.palette.error.light}20`
     }
 }));
 const BoxTime = styled(Box)(({ theme }) => ({
@@ -42,12 +54,14 @@ const Examination = () => {
     const theme = useTheme()
     const paramUrl = useParams()
 
-    const [name,setName] = useState('')
+    const [name, setName] = useState('')
     const [examId, setExamId] = useState(paramUrl.examId || '')
     const [questions, setQuestions] = useState([])
-
-    const user = useSelector(state=>state.auth.user)
-    const answerSheet = useSelector(state=>state.answerSheet?.sheet)
+    const [indexQuestion, setIndexQuestion] = useState([])
+    const user = useSelector(state => state.auth.user)
+    const dispatch = useDispatch()
+    const answerSheet = useSelector(state => state.answerSheet?.questions)
+    //console.log(answerSheet)
 
 
     useEffect(() => {
@@ -56,18 +70,29 @@ const Examination = () => {
                 return
             if (!examId)
                 return
+            dispatch(clearAnswers())
             apiExamination.getExaminationsById(examId)
-                .then(res => {
+                .then(async (res) => {
                     try {
                         const exam = res[0]
                         setName(exam.name)
                         const questions = exam.questions
-                        questions.forEach(item => {
-                            apiQuestion.getQuestionsById(item)
-                                .then(res => {
-                                    setQuestions(pre => [...pre,res])
-                                })
-                        })
+                        const newIndexQuestion = []
+                        for (let id of questions) {
+                            const question = await apiQuestion.getQuestionsById(id)
+                            const isDone = checkDone(answerSheet, id)
+                            setQuestions(pre => [...pre, question])
+                            if (isDone)
+                                newIndexQuestion.push({
+                                    isFlag:false,
+                                    isDone:true})
+                            else
+                                newIndexQuestion.push({
+                                    isFlag:false,
+                                    isDone:false})
+                        }
+
+                        setIndexQuestion(newIndexQuestion)
                     }
                     catch (err) {
                     }
@@ -76,6 +101,28 @@ const Examination = () => {
         }
         getQuestions()
     }, [examId])
+
+    const changeStateDoneIndex = useCallback((index, state) => {
+        if (indexQuestion[index]?.isDone !== state) {
+            let newIndexQuestion = [...indexQuestion]
+            newIndexQuestion[index] = {
+                ...newIndexQuestion[index],
+                isDone:state
+            }
+            setIndexQuestion(newIndexQuestion)
+        }
+    }, [indexQuestion])
+    const changeStateFlagIndex = useCallback((index, state) => {
+        if (indexQuestion[index]?.isFlag !== state) {
+            let newIndexQuestion = [...indexQuestion]
+            newIndexQuestion[index] = {
+                ...newIndexQuestion[index],
+                isFlag:state
+            }
+            setIndexQuestion(newIndexQuestion)
+        }
+    }, [indexQuestion])
+
 
     return (
         <Page title={name}>
@@ -90,25 +137,40 @@ const Examination = () => {
                             mb: 2,
                             textAlign: 'center'
                         }}>Bài kiểm tra số 1</Typography>
-                    <Stack direction='row' spacing={1.5}>
+                    <Stack direction='row' spacing={1.5} alignItems='flex-start'>
 
                         <Stack flex={4} spacing={3}>
                             {
-                                questions.map(item =>
-                                    <Question key={item.id} question={item} />)
+                                questions.map((item, index) =>
+                                    <Question key={item.id}
+                                        changeStateDoneIndex={changeStateDoneIndex}
+                                        changeStateFlagIndex={changeStateFlagIndex}
+                                        stateDone={indexQuestion[index]?.isDone}
+                                        stateFlag={indexQuestion[index]?.isFlag}
+                                        question={item} index={index} />)
                             }
                         </Stack>
-                        <Stack flex={1} spacing={1}>
-                            <Typography fontSize='16px' fontWeight={600}>Danh sách câu hỏi</Typography>
-                            <Grid container spacing={0.5}>
-                                {
-                                    questionSample.map((item) =>
-                                        <Grid key={item.id} xs={2}>
-                                            <ButtonQuestion className='done'>{item.index}</ButtonQuestion>
-                                        </Grid>)
-                                }
-                            </Grid>
-                        </Stack>
+                        <Paper elevation={24} sx={{
+                            position: 'sticky',
+                            top: '5rem',
+                            flex: 1
+                        }}>
+
+                            <Stack spacing={1} p={1.5} >
+                                <Typography fontSize='16px' fontWeight={600}>Danh sách câu hỏi</Typography>
+                                <Grid container spacing={0.5}>
+                                    {
+                                        indexQuestion.map((item, index) =>
+                                            <Grid key={index} xs={2}>
+                                                <ButtonQuestion className={`${item.isDone ? 'done':''} ${item.isFlag?'flag':''}`}
+                                                    onClick={() => document.getElementById(`question-${index}`)
+                                                        .scrollIntoView({ block: 'center', behavior: "smooth" })}
+                                                >{index + 1}</ButtonQuestion>
+                                            </Grid>)
+                                    }
+                                </Grid>
+                            </Stack>
+                        </Paper>
                     </Stack>
                 </Box>
                 <BoxTime>
@@ -118,84 +180,9 @@ const Examination = () => {
         </Page>
     )
 }
-const questionSample = [
-    {
-        id: '1',
-        index: 1,
-        question: 'Câu hỏi số 1',
-        answers: [
-            {
-                id: '1',
-                value: 'Concacne'
-            },
-            {
-                id: '2',
-                value: 'Concacne'
-            },
-            {
-                id: '3',
-                value: 'Concacne'
-            },
-            {
-                id: '4',
-                value: 'Concacne'
-            },
-        ],
-        point: 1.00,
-        flag: false,
-        isChoose: false,
-    },
-    {
-        id: '1342',
-        index: 2,
-        question: 'Câu hỏi số 2',
-        answers: [
-            {
-                id: '1',
-                value: 'Concacne'
-            },
-            {
-                id: '2',
-                value: 'Concacne'
-            },
-            {
-                id: '3',
-                value: 'Concacne'
-            },
-            {
-                id: '4',
-                value: 'Concacne'
-            },
-        ],
-        point: 1.00,
-        flag: false,
-        isChoose: true,
-    },
-    {
-        id: '1er',
-        index: 3,
-        question: 'Câu hỏi số 3',
-        answers: [
-            {
-                id: '1',
-                value: 'Concacne'
-            },
-            {
-                id: '2',
-                value: 'Concacne'
-            },
-            {
-                id: '3',
-                value: 'Concacne'
-            },
-            {
-                id: '4',
-                value: 'Concacne'
-            },
-        ],
-        point: 1.00,
-        flag: false,
-        isChoose: true,
-    }
-]
+
+const checkDone = (arr, id) => {
+    return Boolean(arr.find(item => item.id === id))
+}
+
 export default Examination

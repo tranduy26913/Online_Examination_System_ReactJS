@@ -42,10 +42,11 @@ const Testimonial = () => {
         justifyContent: 'center',
         minHeight: '300px',
       }}
+      className='home-item'
     >
       <Grid container spacing={2}>
         {reviews.map((review) => (
-          <Grid item sm={12} md={4} key={review.id}>
+          <Grid item sm={12} md={4} key={review.id}  className='showtotop'>
             <Paper elevation={24} sx={{padding:'12px'}}>
 
                 <CardContent>

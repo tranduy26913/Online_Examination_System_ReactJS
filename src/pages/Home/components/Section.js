@@ -27,7 +27,7 @@ const Section = () => {
     },
   ];
   return (
-    <Stack direction='row' justifyContent='center' mt={2}>
+    <Stack direction='row' justifyContent='center' mt={2}  className='home-item'>
       <Grid container width='100%' justifyContent='space-around'>
         {sectionItems.map((item) => (
           <Grid
@@ -35,8 +35,9 @@ const Section = () => {
             xs={12}
             md={3.5}
             key={item.id}
+            
           >
-            <Paper elevation={24} sx={{ width: '100%', height: '100%' }}>
+            <Paper className='showtotop' elevation={24} sx={{ width: '100%', height: '100%' }}>
 
               <Stack alignItems='center' spacing={2} p={2} >
                 {item.icon}

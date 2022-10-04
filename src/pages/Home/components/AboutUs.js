@@ -5,14 +5,14 @@ import image from 'assets/img/online-study.png'
 const AboutUs = () => {
 
   return (
-    <Stack m='30px 0px 50px 0px' minHeight='500px' alignItems='center' justifyContent='center'>
+    <Stack m='30px 0px 50px 0px' minHeight='500px' alignItems='center' justifyContent='center' className='home-item'>
       <Grid container spacing={6} p='50px' alignItems='center'>
-        <Grid item xs={12} md={5}>
+        <Grid item xs={12} md={5}  className='showtotop'>
           <img src={image} alt="My Team" width='100%' />
         </Grid>
 
-        <Grid item xs={12} md={6}>
-          <Typography variant="h3" fontWeight={700} mb='15px'>
+        <Grid item xs={12} md={6}  className='showtotop' >
+          <Typography variant="h3" fontWeight={700} mb='15px' >
             Thuận tiện - Nhanh chóng - Hiệu quả - Bảo mật
           </Typography>
           <Typography mb='12px'>
