@@ -36,10 +36,12 @@ const typography = {
   fontWeightRegular: 500,
   fontWeightMedium: 500,
   fontWeightBold: 700,
+  
   h1: {
     fontWeight: 700,
     lineHeight: 80 / 64,
     fontSize: pxToRem(40),
+    
     ...responsiveFontSizes({ xs: 48, sm: 52, md: 58, lg: 64 }),
   },
   h2: {
@@ -85,6 +87,7 @@ const typography = {
   body1: {
     lineHeight: 1.5,
     fontSize: pxToRem(16),
+    textShadow: "0px 1px 2px #999",
   },
   body2: {
     lineHeight: 22 / 14,

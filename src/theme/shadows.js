@@ -4,7 +4,7 @@ import palette from "./palette";
 const LIGHT_MODE = palette.light.grey[500];
 
 // Color shadow in Dark mode
-const DARK_MODE = "#888";
+const DARK_MODE = "#444";
 
 const createShadow = (color) => {
   const transparent1 = alpha(color, 0.2);
@@ -45,7 +45,7 @@ export const shadows = {
 };
 
 const createCustomShadow = (color) => {
-  const transparent = alpha(color, 0.16);
+  const transparent = alpha(color, 0.2);
   return {
     z1: `0 1px 2px 0 ${transparent}`,
     z8: `0 8px 16px 0 ${transparent}`,

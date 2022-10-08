@@ -16,7 +16,7 @@ function Home() {
     const items = document.querySelectorAll('.home-item')
     const parallaxScroll = (event)=>{
       items.forEach(item=>{
-      if(item.offsetTop - window.scrollY < 350){
+      if(item.offsetTop - window.scrollY < 300){
         item.classList.add('active')
       }
       else{
@@ -30,7 +30,7 @@ function Home() {
   return (
     <>
       <Page title='Trang chủ'>
-        <Box className='container'>
+        <Box className='container' pb={5}>
           <Hero className='home-item'/>
           <Section className='home-item'/>
           <AboutUs className='home-item'/>
