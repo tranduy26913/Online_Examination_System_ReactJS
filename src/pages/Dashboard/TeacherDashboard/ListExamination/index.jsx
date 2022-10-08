@@ -1,34 +1,26 @@
 import { useEffect, useState } from 'react'
-import { sentenceCase } from 'change-case';
 import {
     Box,
-    Button,
     Stack,
     Checkbox,
     Table,
     TableRow,
     TableBody,
     TableCell,
-    Container,
-    Typography,
     TableContainer,
     TablePagination,
-    Avatar,
     Paper
 } from "@mui/material"
-import Grid from '@mui/material/Unstable_Grid2';
-import SendIcon from '@mui/icons-material/Send';
 import Scrollbar from 'components/Scrollbar';
 import Label from 'components/Label';
 import SearchNotFound from 'components/SearchNotFound';
 import { TableHeadCustom, TableToolbar, TableMoreMenu } from 'components/TableCustom';
 import './ListTest.scss'
 import { useDispatch } from 'react-redux';
-import { useLocation, useParams, useSearchParams } from 'react-router-dom';
+import {  useSearchParams } from 'react-router-dom';
 import { changeBreadcrumb } from 'slices/breadcrumbSlice';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import apiExamination from 'apis/apiExamination';
 
@@ -85,11 +77,9 @@ const ListExaminationTeacher = () => {
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [exams, setExams] = useState([])
     const dispatch = useDispatch()
-    const params = useParams()//lấy slug của đường dẫn
-    const location = useLocation()
     const query = useSearchParams()
 
-    const courseId = query[0].get('courseId')//abcd
+    const courseId = query[0].get('id')//abcd
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
@@ -164,31 +154,10 @@ const ListExaminationTeacher = () => {
         }
         loadListExam()
         handleBreadcrumb()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
     return (
         <Box className='listtest'>
-            <Paper elevation={24}>
-
-                <Stack direction='row' className='listtest__course'>
-                    <Box className='listtest__wrap-img'>
-                        <img src="https://sandla.org/wp-content/uploads/2021/08/english-e1629469809834.jpg" />
-                    </Box>
-                    <Stack spacing={1} className='listtest__wrap-info'>
-                        <Typography
-                            fontSize={'18px'}
-                            color='primary'
-                            className='listtest__course-name'>Khoá học: Học máy </Typography>
-                        <Typography className='listtest__course-desc'>Cuộc thi học thuật trực tuyến </Typography>
-                        <Typography className='listtest__course-desc'>Số lượng bài kiểm tra: 8</Typography>
-                        <Stack flex={1} justifyContent='flex-end' alignItems='flex-start'>
-                            <Button
-                                variant='outlined'
-                                endIcon={<SendIcon />}
-                            >Chia sẻ</Button>
-                        </Stack>
-                    </Stack>
-                </Stack>
-            </Paper>
             <Stack spacing={1}>
                 <Paper elevation={24}>
                     <TableToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName}
@@ -305,54 +274,5 @@ const ListExaminationTeacher = () => {
     )
 }
 
-const tests = [
-    {
-        id: '1',
-        name: "Bài kiểm tra số 1",
-        start: new Date(),
-        duration: 30,
-        numberQuestion: 10,
-        turns: 10
-    },
-    {
-        id: '2',
-        name: "Bài kiểm tra số 2",
-        start: new Date(),
-        duration: 30,
-        numberQuestion: 10,
-        turns: 10
-    },
-    {
-        id: '3',
-        name: "Bài kiểm tra số 3",
-        start: new Date(),
-        duration: 30,
-        numberQuestion: 10,
-        turns: 10
-    },
-    {
-        id: '4',
-        name: "Bài kiểm tra số 3",
-        start: new Date(),
-        duration: 30,
-        numberQuestion: 10,
-        turns: 10
-    },
-    {
-        id: '5',
-        name: "Bài kiểm tra số 3",
-        start: new Date(),
-        duration: 30,
-        numberQuestion: 10,
-        turns: 10
-    },
-    {
-        name: "Bài kiểm tra số 3",
-        start: new Date(),
-        duration: 30,
-        numberQuestion: 10,
-        turns: 10
-    }
-]
 
 export default ListExaminationTeacher

@@ -10,7 +10,8 @@
     body {
         font-family: 'Source Sans Pro', sans-serif;
         background-color: #f5f5f5;
-        color: #333
+        color: #333;
+        text-shadow: 0px 1px 2px #999,
     }
     
     a {
@@ -28,8 +29,4 @@
     td,
     label {
         font-size: 15px;
-    }
-    
-    .color-primary {
-        color: $main-admin-color;
     }

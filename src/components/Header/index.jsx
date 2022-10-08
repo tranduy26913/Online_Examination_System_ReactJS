@@ -262,7 +262,7 @@ function Header() {
                   {settings.map((setting) => {
                     return (
                       setting.path !== 'logout' ?
-                        <Link key={setting.path} to={`${user.role}/${setting.path}`}>
+                        <Link key={setting.path} to={`${user.role.toLowerCase()}/${setting.path}`}>
                           <MenuItem onClick={handleCloseUserMenu}>
                             <Typography textAlign="center">{setting.display}</Typography>
                           </MenuItem>

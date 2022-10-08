@@ -1,6 +1,7 @@
 import Page404 from 'components/ErrorPage/Page404';
 import LoadingPage from 'components/LoadingPage';
 import MaintenancePage from 'components/MaintenancePage';
+import LayoutCourse from 'pages/Course/LayoutCourse';
 import StatisticExam from 'pages/Dashboard/StatisticExam';
 import React, { Suspense, lazy } from 'react';
 import { Route, Routes } from "react-router-dom";
@@ -10,7 +11,7 @@ const Home = lazy(() => import("./pages/Home"));
 const Login = lazy(() => import("./components/Login"));
 const Register = lazy(() => import("./components/Register"));
 const Profile = lazy(() => import("pages/Dashboard/Profile"));
-const ListCourse = lazy(() => import("pages/Dashboard/ListCourse"));
+const ListCourse = lazy(() => import("pages/Course/ListCourse"));
 const ListExaminationStudent = lazy(() => import("pages/Dashboard/ListExaminationStudent"));
 const CreateExamination = lazy(() => import("pages/Dashboard/CreateExamination"));
 const ListExaminationTeacher = lazy(() => import("pages/Dashboard/TeacherDashboard/ListExamination"));
@@ -81,7 +82,11 @@ function ConfigRoute() {
             }
             <Route path='detail-exam' element={makeLoading(<CreateExamination isEdit={true} />)} />
           </Route>
+
           <Route path="login" element={<Login />} />
+          <Route path="course" element={<LayoutCourse />} >
+          <Route index element={<ListExaminationTeacher />} />
+          </Route>
           <Route path="register" element={<Register />} />
           <Route path="exam/:examId" element={<Examination />} />
           <Route path="loading" element={<LoadingPage />} />

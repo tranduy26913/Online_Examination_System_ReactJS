@@ -11,7 +11,8 @@ import {
     TextField,
     IconButton,
     FormControlLabel,
-    FormGroup
+    FormGroup,
+    Paper
 } from '@mui/material'
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
@@ -23,6 +24,11 @@ import { loginSuccess } from 'slices/authSlice';
 import { toast } from 'react-toastify';
 import Page from 'components/Page';
 import LoadingButton from 'components/LoadingButton';
+import { GoogleOAuthProvider } from '@react-oauth/google';
+import LoginFacebook from './LoginFacebook';
+import LoginGoogle from './LoginGoogle';
+
+
 
 const Login = () => {
     const [loading, setLoading] = useState(false);
@@ -70,14 +76,16 @@ const Login = () => {
             .catch(err => {
                 console.log(err.response.data)
             })
-            .finally(()=>setLoading(false))
+            .finally(() => setLoading(false))
     }
     return (
         <Page title='Đăng nhập'>
 
             <Stack justifyContent='center' direction='row'>
-                <Stack className='login' maxWidth='500px' width='500px' bgcolor='#f0f0f0' p='16px' mt={4}>
-                    <Typography align='center' fontSize='1.75rem' mb={2}>
+                <Paper elevation={24}>
+
+                <Stack className='login' maxWidth='500px' width='500px' p='16px' mt={4}>
+                    <Typography color="primary" align='center' fontWeight='600' fontSize='1.75rem' mb={2}>
                         Đăng nhập
                     </Typography>
                     <Stack spacing={2.5}>
@@ -88,7 +96,7 @@ const Login = () => {
                             value={username}
                             onChange={e => setUsername(e.target.value)}
                             variant="outlined" />
-                        <FormControl sx={{ m: 1, width: '100%' }} color='success' variant="outlined" size='small'>
+                        <FormControl sx={{ m: 1, width: '100%' }} variant="outlined" size='small'>
                             <InputLabel
                                 htmlFor="outlined-adornment-password">Mật khẩu</InputLabel>
                             <OutlinedInput
@@ -132,8 +140,20 @@ const Login = () => {
                                 <Button sx={{ width: '136px' }} variant='contained'>Đăng ký</Button>
                             </Link>
                         </Stack>
+                        <p style={{ textAlign: "center", marginTop: "3rem" }}>Tiếp tục bằng</p>
+                        <Stack
+                            direction="row"
+                            justifyContent="center"
+                            alignItems="center"
+                            spacing={2}
+                        >
+                            <LoginFacebook />
+                            <LoginGoogle />
+
+                        </Stack>
                     </Stack>
                 </Stack>
+                </Paper>
             </Stack>
         </Page>
     )
