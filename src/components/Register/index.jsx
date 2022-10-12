@@ -5,6 +5,13 @@ import {
     Typography,
     TextField,
     Paper,
+    FormControlLabel,
+    Radio,
+    FormControl,
+    FormLabel,
+    RadioGroup,
+    Box,
+    Divider
 } from '@mui/material'
 
 import './Login.scss'
@@ -55,6 +62,8 @@ const INPUTS = [
 
 const Register = () => {
     const [loading, setLoading] = useState(false)
+    const [type, setType] = useState('STUDENT');
+
     const { handleSubmit, control } = useForm({
         mode: "onChange",
         resolver: yupResolver(schema),
@@ -65,15 +74,14 @@ const Register = () => {
     const onSubmit = (data) => {
         const { fullname, username, password, email } = data
         const params = {
-            avatar: 'https://1.bp.blogspot.com/-CV8fOXMMw60/YZ-UJ4X9sAI/AAAAAAAACMc/2Svet97exjgNdJ9CeTKUU3OuA-mnCQEzwCLcBGAsYHQ/s595/3a.jpg',
             fullname,
             email,
             username,
             password,
-            role: 'teacher'
+            role: type
         }
         setLoading(true)
-        apiAuth.postUser(params)
+        apiAuth.register(params)
             .then(res => {
                 toast.success("Đăng ký tài khoản thành công")
                 navigate('/login')
@@ -87,43 +95,72 @@ const Register = () => {
     }
 
 
+    const handleChangeType = (event) => {
+        setType(event.target.value);
+    };
+
     return (
         <Page title='Đăng ký'>
 
-            <Stack justifyContent='center' direction='row' my={2}>
-                <Paper elevation={24}>
-                    <Stack className='login' maxWidth='500px' width='500px' p='16px'>
-                        <Typography align='center' color='primary' fontWeight={600} fontSize='1.75rem' mb={2}>
-                            Đăng ký
-                        </Typography>
-                        <form onSubmit={handleSubmit(onSubmit)} >
-                            <Stack spacing={2.5}>
-                                {INPUTS.map(item =>
-                                    <Controller
-                                        name={item.name}
-                                        control={control}
-                                        render={({ field, fieldState: { error } }) => (
-                                            <TextField
-                                                {...field}
-                                                size='small'
-                                                type={item.type}
-                                                label={item.label}
-                                                error={error !== undefined}
-                                                helperText={error ? error.message : ''}
-                                                // sx={{ backgroundColor: "#fff" }}
-                                                variant="outlined" />
-                                        )}
-                                    />)}
+            <Stack justifyContent='center' direction='row'>
+                <Paper elevation={24} sx={{ maxWidth: '800px', width: '100%', margin: "24px" }}>
+                    <Stack className='login' p='16px'>
 
+                        <Stack direction={{ xs: 'column', md: 'row' }}>
+                            <Box flex={3}>
+                                <Typography align='center' color='primary' fontWeight={600} fontSize='1.75rem' mb={2}>
+                                    Đăng ký
+                                </Typography>
+                                <form onSubmit={handleSubmit(onSubmit)} >
+                                    <Stack spacing={1.5}>
+                                        {INPUTS.map(item =>
+                                            <Controller
+                                                name={item.name}
+                                                control={control}
+                                                render={({ field, fieldState: { error } }) => (
+                                                    <TextField
+                                                        {...field}
+                                                        size='small'
+                                                        type={item.type}
+                                                        label={item.label}
+                                                        error={error !== undefined}
+                                                        helperText={error ? error.message : ''}
+                                                        // sx={{ backgroundColor: "#fff" }}
+                                                        variant="outlined" />
+                                                )}
+                                            />)}
 
-                                <Stack justifyContent='space-between' alignItems='center' spacing={2}>
+                                        <FormControl>
+                                            <FormLabel id="demo-controlled-radio-buttons-group">Loại tài khoản</FormLabel>
+                                            <RadioGroup
+                                                name="controlled-radio-buttons-group"
+                                                value={type}
+                                                onChange={handleChangeType}
+                                                row
+                                            >
+                                                <FormControlLabel value="STUDENT" control={<Radio />} label="Học sinh" />
+                                                <FormControlLabel value="TEACHER" control={<Radio />} label="Giáo viên" />
+                                            </RadioGroup>
+                                        </FormControl>
+                                        <Stack justifyContent='space-between' alignItems='center' spacing={2}>
 
-                                    <LoadingButton loading={loading} type='submit' sx={{ width: '148px' }} variant='contained'>Đăng ký</LoadingButton>
-                                    <Link to='/login'>
-                                        <Button sx={{ width: '148px' }} variant='contained'>Đăng nhập</Button>
-                                    </Link>
-                                </Stack>
-                                <p style={{ textAlign: "center", marginTop: "3rem" }}>Tiếp tục bằng</p>
+                                            <LoadingButton loading={loading} type='submit' sx={{ width: '148px' }} variant='contained'>Đăng ký</LoadingButton>
+                                            <Link to='/login'>
+                                                <Button sx={{ width: '148px' }} variant='contained'>Đăng nhập</Button>
+                                            </Link>
+                                        </Stack>
+
+                                        <p style={{ textAlign: "center" }}>
+                                            Bằng việc tiếp tục, bạn đã chấp nhận{" "}
+                                            <a href="/">điều khoản sử dụng</a>
+                                        </p>
+
+                                    </Stack>
+                                </form>
+                            </Box>
+                            <Divider orientation="vertical" flexItem sx={{ padding: "0 8px" }} />
+                            <Stack flex={2} justifyContent="center" spacing={2}>
+                                <p style={{ textAlign: "center", marginTop: "3rem" }}>Hoặc tiếp tục bằng</p>
                                 <Stack
                                     direction="row"
                                     justifyContent="center"
@@ -134,13 +171,8 @@ const Register = () => {
                                     <LoginGoogle />
 
                                 </Stack>
-                                <p style={{ textAlign: "center" }}>
-                                    Bằng việc tiếp tục, bạn đã chấp nhận{" "}
-                                    <a href="/">điều khoản sử dụng</a>
-                                </p>
-
                             </Stack>
-                        </form>
+                        </Stack>
 
                     </Stack>
                 </Paper>

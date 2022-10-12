@@ -7,49 +7,15 @@ import {
     Paper
 } from "@mui/material"
 import Grid from '@mui/material/Unstable_Grid2';
-import { styled, useTheme } from '@mui/material/styles';
+import { useTheme } from '@mui/material/styles';
 import Question from './Question';
 import apiExamination from 'apis/apiExamination';
 import apiQuestion from 'apis/apiQuestion';
 import Page from 'components/Page';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import QuestionMulti from './QuestionMulti';
 import { clearAnswers } from 'slices/answerSheetSlice';
-const ButtonQuestion = styled(Button)(({ theme }) => ({
-    borderRadius: '6px',
-    //padding:'8px',
-    width: '100%',
-    height:'54px',
-    minWidth: 'unset',
-    minHeight: 'unset',
-    fontWeight:600,
-    //paddingBottom:'50%',
-    color:  `${theme.palette.mode==='dark'?theme.palette.common.white:theme.palette.common.black}`,
-    border: '2px solid #999',
-    borderBottomWidth:'20px',
-    '&.done': {
-        borderColor: `${theme.palette.primary.main}cc`,
-        color: `${theme.palette.primary.main}`,
-        backgroundColor: `${theme.palette.primary.light}40`
-    },
-    '&.flag':{
-        borderColor: `${theme.palette.error.main}`,
-        color: `${theme.palette.error.main}`,
-        backgroundColor: `${theme.palette.error.light}20`
-    }
-}));
-const BoxTime = styled(Box)(({ theme }) => ({
-    borderRadius: '2px',
-    color: theme.palette.primary.main,
-    fontWeight: 600,
-    border: `1px solid ${theme.palette.primary.main}`,
-    padding: '0.5rem 1rem',
-    position: 'fixed',
-    right: '2rem',
-    bottom: '2rem',
-    fontSize: '16px',
-}))
+import {ButtonQuestion,BoxTime} from './Examination.style'
 const Examination = () => {
     const theme = useTheme()
     const paramUrl = useParams()

@@ -46,11 +46,9 @@ const LayoutCourse = () => {
         navigate('/list-course')
         toast.warning("Khoá học không xác định")
       }
-      apiCourse.getCourses({
-        id: paramUrl.get("id")
-      })
+      apiCourse.getCourseBySlug(paramUrl.get("id"))
         .then(res => {
-          setCourse(res[0])
+          setCourse(res)
         })
         .catch(err => {
           navigate('/list-course')
@@ -126,9 +124,9 @@ const LayoutCourse = () => {
             <Typography
               fontSize={'18px'}
               color='primary'
-              className='listtest__course-name'>Khoá học: Học máy </Typography>
-            <Typography className='listtest__course-desc'>Cuộc thi học thuật trực tuyến </Typography>
-            <Typography className='listtest__course-desc'>Số lượng bài kiểm tra: 8</Typography>
+              className='listtest__course-name'>Khoá học: {course?.name} </Typography>
+            <Typography className='listtest__course-desc'>{course?.description} </Typography>
+            <Typography className='listtest__course-desc'>Số lượng bài kiểm tra: {course?.exams?.length}</Typography>
             <Stack flex={1} justifyContent='flex-end' alignItems='flex-start'>
               <Button
                 variant='outlined'
