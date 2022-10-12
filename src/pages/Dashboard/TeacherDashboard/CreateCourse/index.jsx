@@ -20,17 +20,20 @@ import { toast } from 'react-toastify';
 import LoadingButton from 'components/LoadingButton'
 import Page from 'components/Page'
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 const alpha = [...Array.from(Array(26)).map((e, i) => i + 65),
-    ...Array.from(Array(26)).map((e, i) => i + 97),
-    ...Array.from(Array(10)).map((e, i) => i + 48)];
+...Array.from(Array(26)).map((e, i) => i + 97),
+...Array.from(Array(10)).map((e, i) => i + 48)];
 const alphabet = alpha.map((x) => String.fromCharCode(x));
 
 function CreateCourse(props) {
     const [image, setImage] = useState(avtDefault)
     const [fileImage, setFileImage] = useState(null)
     const [loading, setLoading] = useState(false)
-    const user = useSelector(state=>state.auth.user) //lấy thông tin user
+    const user = useSelector(state => state.auth.user) //lấy thông tin user
+    const navigate = useNavigate()
+
     const handleChooseImage = e => {
         console.log(e.target.files)
         if (e.target.files.lenght !== 0) {
@@ -50,9 +53,9 @@ function CreateCourse(props) {
         console.log(fileImage)
         const { name, description } = data
         let random = ''
-        for(let i=0;i<7;i++){
-            random += alphabet[Math.floor(Math.random()*alphabet.length)]
-        } 
+        for (let i = 0; i < 7; i++) {
+            random += alphabet[Math.floor(Math.random() * alphabet.length)]
+        }
         const slug = slugify(data.name, {
             replacement: '-',  // replace spaces with replacement character, defaults to `-`
             remove: undefined, // remove characters that match regex, defaults to `undefined`
@@ -60,106 +63,109 @@ function CreateCourse(props) {
             strict: false,     // strip special characters except replacement, defaults to `false`
             locale: 'vi',       // language code of the locale to use
             trim: true         // trim leading and trailing replacement chars, defaults to `true`
-        }) + random
+        }) + '-'+random
         const params = {
             slug,
             name,
             description,
             image,
-            idUser:user.id
+            userId: user.id
         }
         setLoading(true)
-        apiCourse.postCourse(params)
+        apiCourse.createCourse(params)
             .then(res => {
+                navigate(`/course?id=${res.slug}`)
                 toast.success('Tạo khoá học thành công')
             })
             .catch(err => {
                 toast.error('Tạo khoá học thất bại')
             })
-            .finally(setLoading(false))
+            .finally(()=>setLoading(false))
     }
 
     return (
         <Page title='Tạo khoá học mới'>
 
-        <Stack direction='row' spacing={2}>
-            <Box flex={2}>
-                <Paper elevation={24} sx={{ height: '100%' }}>
-                    <Stack p={1.5} alignItems='center' justifyContent={'flex-start'} gap='16px'>
+            <Stack direction='row' spacing={2}>
+                <Box flex={2}>
+                    <Paper elevation={24} sx={{ height: '100%' }}>
+                        <Stack p={1.5} alignItems='center' justifyContent={'flex-start'} gap='16px'>
 
-                        <Avatar
-                            variant="rounded"
-                            alt="Remy Sharp"
-                            src={image}
-                            sx={{ width: 156, height: 156 }}
-                        />
-                        <Button variant='contained' component="label" width='160px'
-                            endIcon={<UploadIcon />}
-                        >
-                            Tải ảnh lên
-                            <input hidden accept="image/*" type="file" onChange={handleChooseImage} />
-                        </Button>
-                    </Stack>
-                </Paper>
-            </Box>
-            <Box flex={3}>
-                <Paper elevation={24} sx={{ height: '100%' }}>
-                    <Stack spacing={1.5} p={1.5}>
-                        <Typography align='center' color='primary' fontSize='1.75rem' mb={2}>
-                            Thông tin khoá học
-                        </Typography>
-                        <Divider/>
-                        <form onSubmit={handleSubmit(onSubmit)} >
-                            <Stack spacing={2.5}>
-                                <Controller
-                                    name={"name"}
-                                    control={control}
-                                    render={({ field, fieldState: { error } }) => (
-                                        <TextField
-                                            {...field}
-                                            color='success'
-                                            size='small'
-                                            type='text'
-                                            label="Tên đăng nhập"
-                                            error={error !== undefined}
-                                            helperText={error ? error.message : ''}
-                                            sx={{ backgroundColor: "#fff" }}
-                                            variant="outlined" />
-                                    )}
-                                />
+                            <Avatar
+                                variant="rounded"
+                                alt="Remy Sharp"
+                                src={image}
+                                sx={{ width: 156, height: 156 }}
+                            />
+                            <Button variant='contained' component="label" width='160px'
+                                endIcon={<UploadIcon />}
+                            >
+                                Tải ảnh lên
+                                <input hidden accept="image/*" type="file" onChange={handleChooseImage} />
+                            </Button>
+                        </Stack>
+                    </Paper>
+                </Box>
+                <Box flex={3}>
+                    <Paper elevation={24} sx={{ height: '100%' }}>
+                        <Stack spacing={1.5} p={1.5}>
+                            <Typography align='center' color='primary' fontSize='1.75rem' mb={2}>
+                                Thông tin khoá học
+                            </Typography>
+                            <Divider />
+                            <form onSubmit={handleSubmit(onSubmit)} >
+                                <Stack spacing={2.5}>
+                                    <Controller
+                                        name={"name"}
+                                        control={control}
+                                        render={({ field, fieldState: { error } }) => (
+                                            <TextField
+                                                {...field}
+                                                color='success'
+                                                size='small'
+                                                type='text'
+                                                label="Tên khoá học"
+                                                error={error !== undefined}
+                                                helperText={error ? error.message : ''}
+                                                //sx={{ backgroundColor: "#fff" }}
+                                                variant="outlined" />
+                                        )}
+                                    />
 
-                                <Controller
-                                    name={"description"}
-                                    control={control}
-                                    render={({ field, fieldState: { error } }) => (
-                                        <TextField
-                                            {...field}
-                                            color='success'
-                                            size='small'
-                                            type='text'
-                                            label="Mô tả khoá học"
-                                            error={error !== undefined}
-                                            helperText={error ? error.message : ''}
-                                            sx={{ backgroundColor: "#fff" }}
-                                            variant="outlined" />
-                                    )}
-                                />
-                                <Stack alignItems='center'>
+                                    <Controller
+                                        name={"description"}
+                                        control={control}
+                                        render={({ field, fieldState: { error } }) => (
+                                            <TextField
+                                                {...field}
+                                                color='success'
+                                                size='small'
+                                                type='text'
+                                                label="Mô tả khoá học"
+                                                error={error !== undefined}
+                                                helperText={error ? error.message : ''}
+                                                //sx={{ backgroundColor: "#fff" }}
+                                                multiline
+                                                rows={5}
+                                                variant="outlined" />
+                                        )}
+                                    />
+                                    <Stack alignItems='center'>
 
-                                    <LoadingButton
-                                        type='submit'
-                                        loading={loading}
-                                        variant="contained"
-                                    >
-                                        Tạo khoá học
-                                    </LoadingButton>
+                                        <LoadingButton
+                                            type='submit'
+                                            loading={loading}
+                                            variant="contained"
+                                        >
+                                            Tạo khoá học
+                                        </LoadingButton>
+                                    </Stack>
                                 </Stack>
-                            </Stack>
-                        </form>
-                    </Stack>
-                </Paper>
-            </Box>
-        </Stack>
+                            </form>
+                        </Stack>
+                    </Paper>
+                </Box>
+            </Stack>
         </Page>
 
     )

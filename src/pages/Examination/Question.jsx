@@ -9,7 +9,10 @@ import {
   styled,
   FormGroup,
     Checkbox,
+    lighten,
+    alpha,
 } from '@mui/material'
+import { darken } from "@mui/material";
 import FlagIcon from '@mui/icons-material/Flag';
 import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
@@ -27,8 +30,9 @@ const StackQuestionContent = styled(Stack)(({theme})=>({
     borderRadius: '8px',
     border: `1px solid ${theme.palette.primary.light}30`,
     padding:'0.75rem',
-    backgroundColor:`${theme.palette.primary.light}20`,
-    borderLeft:`8px solid ${theme.palette.warning.main}b0`,
+    backgroundColor:theme.palette.mode==='dark'?
+      `${darken(theme.palette.primary.main,0.8)}`:`${lighten(theme.palette.primary.main,0.75)}`,
+    borderLeft:`8px solid ${alpha(theme.palette.warning.main,0.78)}`,
     '&.done':{
       borderLeft:`8px solid ${theme.palette.primary.main}b0`,
     }

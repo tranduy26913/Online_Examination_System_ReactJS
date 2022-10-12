@@ -85,8 +85,9 @@ function ConfigRoute() {
 
           <Route path="login" element={<Login />} />
           <Route path="course" element={<LayoutCourse />} >
-          <Route index element={<ListExaminationTeacher />} />
+            <Route index element={<ListExaminationTeacher />} />
           </Route>
+          <Route path="list-course" element={<ListCourse />} />
           <Route path="register" element={<Register />} />
           <Route path="exam/:examId" element={<Examination />} />
           <Route path="loading" element={<LoadingPage />} />

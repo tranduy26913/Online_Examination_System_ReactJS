@@ -38,7 +38,7 @@ const dispatch = useDispatch()
                     sx={{
                         cursor: 'pointer',
                         color: "#4267b2",
-                        fontSize: "3rem"
+                        fontSize: "4.5rem"
                     }} />
             )}
         />
