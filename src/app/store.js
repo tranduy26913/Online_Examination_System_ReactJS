@@ -1,7 +1,7 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import authReducer from "../slices/authSlice";
 import themeReducer from '../slices/themeSlice'
-import questionReducer from '../slices/questionSlice'
+import userReducer from '../slices/userSlice'
 import breadcrumbReducer from 'slices/breadcrumbSlice'
 import answerSheetReducer from 'slices/answerSheetSlice'
 import {
@@ -22,12 +22,12 @@ const persistConfig = {
   key: 'root',
   version: 1,
   storage,
-  blacklist: ['question'],
+  blacklist: ['user'],
   stateReconciler: autoMergeLevel2
 }
 
-const questionPersistConfig = {
-  key: 'question',
+const userPersistConfig = {
+  key: 'user',
   version: 1,
   storage: storageSession,
 }
@@ -37,7 +37,7 @@ const rootReducer = combineReducers({
    theme:themeReducer,
    breadcrumb:breadcrumbReducer,
    answerSheet:answerSheetReducer,
-   question: persistReducer(questionPersistConfig, questionReducer),
+   user: persistReducer(userPersistConfig, userReducer),
    })
 const persistedReducer = persistReducer(persistConfig, rootReducer)
 

@@ -20,7 +20,7 @@ import { useCallback } from 'react';
 import apiQuestion from 'apis/apiQuestion';
 import apiExamination from 'apis/apiExamination';
 import { useDispatch, useSelector } from 'react-redux';
-import { addQuestion, updateQuestion } from 'slices/questionSlice';
+import { addQuestion, updateQuestion } from 'slices/userSlice';
 import LoadingButton from 'components/LoadingButton';
 
 const alpha = Array.from(Array(26)).map((e, i) => i + 65);

@@ -1,4 +1,4 @@
-import React from "react";
+import {useState,useEffect} from "react";
 
 import {  Link } from "react-router-dom";
 
@@ -100,7 +100,7 @@ const ListItemCustom = styled(ListItem)(({ theme }) => ({
 }))
 
 const Sidebar = (props) => {
-  const [open, setOpen] = React.useState(true);
+  const [open, setOpen] = useState(true);
   const handleDrawerClose = () => setOpen(false);
   const handleDrawerOpen = () => setOpen(true);
 
@@ -112,12 +112,12 @@ const Sidebar = (props) => {
             {
               open ?
                 <>
-                  {/* <ListItem>
-                    <ListItemAvatar>
+                  <ListItem>
+                    {/* <ListItemAvatar>
                       <Avatar alt="hình đại diện" src={user?.avatar || avatar} />
-                    </ListItemAvatar>
-                    <ListItemText primary="Tài khoản của" secondary={user?.fullname} />
-                  </ListItem> */}
+                    </ListItemAvatar> */}
+                    <ListItemText primary={props.heading} sx={{fontSize:'16px'}} />
+                  </ListItem>
                   <IconButton onClick={handleDrawerClose}>
                     <KeyboardDoubleArrowLeftIcon />
                   </IconButton></> :

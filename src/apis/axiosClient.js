@@ -1,9 +1,9 @@
 import axios from 'axios';
 import queryString from 'query-string';
 import jwt_decode from 'jwt-decode';
-const baseURL='https://be-oes-fake.herokuapp.com/api/'
-// const baseURL='http://localhost:5000/api'
-//const baseURL='https://nhom3-tiki.herokuapp.com/api'
+//const baseURL='https://be-oes-fake.herokuapp.com/api/'
+ //const baseURL='http://localhost:5000/api'
+const baseURL='https://be-oes.cyclic.app/api'
 export const axiosClient = axios.create({
     baseURL: baseURL,
     headers: {
@@ -15,8 +15,8 @@ export const axiosClient = axios.create({
 
 
 
-const refreshToken = async (user) => {
-    const res = await axiosClient.post('/auth/refreshtoken', { refreshToken: user.refreshToken  }, { headers: { Authorization: `Bearer ${user.accessToken}` }, })
+const getRefreshToken = async (refreshToken) => {
+    const res = await axiosClient.post('/auth/refreshtoken', { refreshToken  })
     return res.data
 }
 
@@ -30,33 +30,32 @@ export const axiosClientWithToken = axios.create({
 });
 
 var myInterceptor = null;
-export const axiosInstance = (user, dispatch, stateSuccess,stateFail) => {
+export const axiosInstance = (accessToken,refreshToken, dispatch, stateSuccess,stateFail) => {
     axiosClientWithToken.interceptors.request.eject(myInterceptor)
     myInterceptor = axiosClientWithToken.interceptors.request.use(
         async (config) => {
             let date = new Date();
-            if(!(user && user.accessToken)){
+            if(!(refreshToken)){
                 return config;
             }
-            const decodeToken = jwt_decode(user?.accessToken);
+            const decodeToken = jwt_decode(accessToken);
             
             if (decodeToken.exp < date.getTime() / 1000) {
                 try{
-                    const newAccessToken = await refreshToken(user);
+                    const response = await getRefreshToken(refreshToken);
 
-                    const newUser = {
-                        ...user,
-                        accessToken: newAccessToken.data.accessToken,
-                        refreshToken: newAccessToken.data.refreshToken
+                    const newToken = {
+                        accessToken: response.accessToken,
+                        refreshToken: response.refreshToken
                     }
-                    dispatch(stateSuccess(newUser))
-                    config.headers['Authorization'] = `Bearer ${newAccessToken.accessToken}`;
+                    dispatch(stateSuccess(newToken))
+                    config.headers['Authorization'] = `Bearer ${response.accessToken}`;
                 }
                 catch(err){
                     dispatch(stateFail(null))
                 }
             }else{
-                config.headers['Authorization'] = `Bearer ${user.accessToken}`;
+                config.headers['Authorization'] = `Bearer ${accessToken}`;
             }
             return config;
         },

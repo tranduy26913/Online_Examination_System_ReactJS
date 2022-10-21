@@ -35,7 +35,7 @@ import apiExamination from 'apis/apiExamination';
 import { toast } from 'react-toastify';
 import {useSearchParams } from 'react-router-dom';
 import apiQuestion from 'apis/apiQuestion';
-import { addQuestion, clearQuestion } from 'slices/questionSlice';
+import { addQuestion, clearQuestion } from 'slices/userSlice';
 /**
  * @param {Date} date 
  */
@@ -76,7 +76,7 @@ const CreateExamination = (props) => {
   const [listCourse, setListCourse] = useState([])
   const [course, setCourse] = useState('');
   const user = useSelector(state => state.auth.user)
-  const QUESTIONS = useSelector(state => state.question.value)
+  const QUESTIONS = useSelector(state => state.user.questions)
   const dispatch = useDispatch()
 
   useEffect(() => {

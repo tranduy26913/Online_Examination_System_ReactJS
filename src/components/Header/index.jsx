@@ -78,7 +78,7 @@ const pages = [
     display: 'Trang chủ'
   },
   {
-    path: '/teacher/list-course',
+    path: '/my/list-course',
     display: 'Khoá học'
   },
   {
@@ -111,7 +111,7 @@ function Header() {
 
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
-  const user = useSelector(state => state.auth.user)
+  const user = useSelector(state => state.user.info)
   const isLight = useSelector(state => state.theme.isLight)
   const dispatch = useDispatch()
 
@@ -262,7 +262,7 @@ function Header() {
                   {settings.map((setting) => {
                     return (
                       setting.path !== 'logout' ?
-                        <Link key={setting.path} to={`${user.role.toLowerCase()}/${setting.path}`}>
+                        <Link key={setting.path} to={`/my/${setting.path}`}>
                           <MenuItem onClick={handleCloseUserMenu}>
                             <Typography textAlign="center">{setting.display}</Typography>
                           </MenuItem>

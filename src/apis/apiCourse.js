@@ -20,7 +20,7 @@ export const axiosClient = axios.create({
         return res.data;
     },
     getCourseBySlug: async (slug) => {
-        const res = await axiosClient.get('/course', {params:{slug}})
+        const res = await axiosClient.get('/courses', {params:{slug}})
         return res.data;
     },
     postCourse: async (params) => {

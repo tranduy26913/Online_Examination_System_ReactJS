@@ -3,34 +3,35 @@ import {  axiosClientWithToken} from "./axiosClient";
 const apiProfile = {
 
     ///authentication
-    putChangeEmail: async (params) => {
-        const res = await axiosClientWithToken.put('/user/profile/changeEmail', params)
-        return res.data;
-    },
     putChangePassword: async (params) => {
-        const res = await axiosClientWithToken.put('/user/profile/changePassword', params)
+        const res = await axiosClientWithToken.put('/user/change-password', params)
         return res.data;
     },
     putUploadAvatar: async (params) => {
-        const res = await axiosClientWithToken.post('/user/profile/uploadAvatar', params,{headers: {
+        const res = await axiosClientWithToken.put('/user/update-avatar', params,{headers: {
             'Content-Type': 'multipart/form-data'
           }})
         return res.data;
     },
-    putChangeInfo: async (params) => {
-        const res = await axiosClientWithToken.put('/user/profile/changeInfo', params)
+    resetAvatar:async() =>{
+        const res = await axiosClientWithToken.put('/user/reset-avatar',)
         return res.data;
     },
-    getUserbyID: async (params) => {
-        const res = await axiosClientWithToken.get(`/user/${params}`)
+    putChangeInfo: async (params) => {
+        const res = await axiosClientWithToken.put('/user/update-profile', params)
         return res.data;
     },
     getUserProfile: async () => {
-        const res = await axiosClientWithToken.get(`/user/profile`)
+        const res = await axiosClientWithToken.get(`/user/info`)
         return res.data;
     },
-    putChangePhone: async (params) => {
-        const res = await axiosClientWithToken.put('/user/profile/changePhone', params)
+    getUserInfo: async () => {
+        const res = await axiosClientWithToken.get(`/user/info-short`)
+        return res.data;
+    },
+    makePayment: async (method) => {
+
+        const res = await axiosClientWithToken.get(`/payment/create-payment/${method.toLowerCase()}`)
         return res.data;
     },
 

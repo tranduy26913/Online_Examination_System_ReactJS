@@ -25,9 +25,9 @@ import { loginSuccess } from 'slices/authSlice';
 import { toast } from 'react-toastify';
 import Page from 'components/Page';
 import LoadingButton from 'components/LoadingButton';
-import { GoogleOAuthProvider } from '@react-oauth/google';
 import LoginFacebook from './LoginFacebook';
 import LoginGoogle from './LoginGoogle';
+import { setUserInfo } from 'slices/userSlice';
 
 
 
@@ -67,6 +67,7 @@ const Login = () => {
             .then(res => {
                 if (res) {
                     dispatch(loginSuccess(res))
+                    dispatch(setUserInfo(res))
                     toast.success("Đăng nhập thành công")
                     navigate('/')
                 }

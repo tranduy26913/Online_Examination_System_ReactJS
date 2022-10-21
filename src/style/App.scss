@@ -23,6 +23,10 @@
         text-transform: none !important;
     }
     
+    input::-ms-reveal {
+        display: none;
+    }
+    
     div,
     input,
     a,
