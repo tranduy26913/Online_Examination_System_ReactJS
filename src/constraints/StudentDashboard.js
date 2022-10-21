@@ -12,42 +12,43 @@ export const sidebarTab = [
         icon: PersonIcon,
         text: 'Thông tin tài khoản',
         link: 'profile',
+        list: ['profile'],
     },
     {
         id: 2,
         icon: NotificationsIcon,
         text: 'Danh sách khoá học',
-        link: 'list-course'
+        link: 'list-course',
+        list: ['list-course'],
     },
     {
         id: 3,
         icon: ListAltIcon,
         text: 'Ngân hàng câu hỏi',
-        link: 'bank-question'
+        link: 'bank-question',
+        list: ['bank-question'],
     },
-    {
-        id: 4,
-        icon: LocationOnIcon,
-        text: 'Tạo đề thi',
-        link: 'create-exam'
-    },
+   
     {
         id: 5,
         icon: CreditCardIcon,
         text: 'Thông tin thanh toán',
-        link: 'payment'
+        link: 'payment',
+        list: ['payment']
     },
     {
         id: 6,
         icon: RateReviewIcon,
         text: 'Thông báo',
-        link: 'notify'
+        link: 'notify',
+        list: ['notify']
     },
     {
         id: 7,
         icon: FavoriteIcon,
         text: 'Thống kê',
-        link: 'statistic'
+        link: 'statistic',
+        list: ['statistic']
     }
     
 
@@ -58,37 +59,34 @@ export const sidebarCourse = [
         id: 1,
         icon: PersonIcon,
         text: 'Danh sách học viên',
-        link: 'profile',
+        link: 'manage-student',
+        list: ['manage-student'],
     },
     {
         id: 2,
         icon: NotificationsIcon,
-        text: 'Danh sách khoá học',
-        link: 'list-course'
+        text: 'Danh sách đề thi',
+        link: 'manage-exam',
+        list:[
+            'manage-exam',
+            'create-exam',
+            'edit-exam',
+            'detail-exam',
+        ]
     },
     {
         id: 3,
         icon: ListAltIcon,
         text: 'Ngân hàng câu hỏi',
-        link: 'bank-question'
-    },
-    {
-        id: 4,
-        icon: LocationOnIcon,
-        text: 'Tạo đề thi',
-        link: 'create-exam'
-    },
-    {
-        id: 5,
-        icon: CreditCardIcon,
-        text: 'Điểm số',
-        link: 'payment'
+        link: 'bank-question',
+        list: ['bank-question']
     },
     {
         id: 6,
         icon: FavoriteIcon,
         text: 'Thống kê',
-        link: 'statistic'
+        link: 'statistic',
+        list: ['statistic'],
     }
     
 

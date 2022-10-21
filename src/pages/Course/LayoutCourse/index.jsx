@@ -24,20 +24,27 @@ import apiCourse from "apis/apiCourse";
 import { toast } from "react-toastify";
 import { useState } from "react";
 import { useCallback } from "react";
+import './ListTest.scss'
+
+const checkSelectedTab = (item, pathname) => {
+  const splitPath = pathname.split('/')
+  if (splitPath.length === 0)
+    return false
+  return item.list.includes(splitPath[splitPath.length - 1])
+}
 
 const LayoutCourse = () => {
   const location = useLocation()
-  const [sidebarTab, setSidebarTab] = useState([...sidebarCourse])
   const [course, setCourse] = useState({})
-  const tabId = sidebarTab.find(item => location.pathname.includes(item.link))
+  const tabId = sidebarCourse.find(item => checkSelectedTab(item, location.pathname))
   const [selectedTabId, setSelectedTabId] = React.useState(tabId?.id || 0);
-  const user = useSelector(state => state.auth.user)
   const breadcrumbState = useSelector(state => state.breadcrumb.value)
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const paramUrl = useSearchParams()[0]
 
-  const handleChangeTab = useCallback(id=>selectedTabId(id),[])
+  const handleChangeTab = useCallback(id=>setSelectedTabId(id),[])
+
   useEffect(() => {
     const loadCourse = () => {
       if (!paramUrl.get("id"))//Nếu không có id course
@@ -46,22 +53,24 @@ const LayoutCourse = () => {
         navigate('/list-course')
         toast.warning("Khoá học không xác định")
       }
-      apiCourse.getCourseBySlug(paramUrl.get("id"))
+      apiCourse.getCourses({
+        id: paramUrl.get("id")
+      })
         .then(res => {
-          setCourse(res)
+          setCourse(res[0])
         })
         .catch(err => {
           navigate('/list-course')
           toast.warning("Khoá học không xác định")
         })
     }
-    loadCourse()
+    //loadCourse()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   React.useEffect(() => {
     const handleChangePath = () => {
-      const tabId = sidebarTab.find(item => location.pathname.includes(item.link))
+      const tabId = sidebarCourse.find(item => checkSelectedTab(item, location.pathname))
       if (tabId)
         setSelectedTabId(tabId?.id || 0)
     }
@@ -92,7 +101,7 @@ const LayoutCourse = () => {
         </Typography>
       </Link>,
       <Typography key="2">
-        {sidebarTab.find(item => item.id === selectedTabId)?.text || ""}
+        {sidebarCourse.find(item => item.id === selectedTabId)?.text || ""}
       </Typography>,
       ...tmp
     ]);//
@@ -100,11 +109,14 @@ const LayoutCourse = () => {
 
   React.useEffect(() => {
     document.title =
-      sidebarTab.find(item => item.id === selectedTabId)?.text ||
+    sidebarCourse.find(item => item.id === selectedTabId)?.text ||
       "Bello Quiz";
   }, [selectedTabId]);
+
   return (
-    <Sidebar sidebarTab={sidebarCourse} selectedTabId={selectedTabId} handleChangeTab={handleChangeTab}>
+    <Sidebar sidebarTab={sidebarCourse} selectedTabId={selectedTabId} 
+    handleChangeTab={handleChangeTab}
+    heading={'Khoá học'}>
       <Paper elevation={24} sx={{ padding: '8px 12px', marginBottom: '12px' }}>
 
         <Breadcrumbs
@@ -124,9 +136,9 @@ const LayoutCourse = () => {
             <Typography
               fontSize={'18px'}
               color='primary'
-              className='listtest__course-name'>Khoá học: {course?.name} </Typography>
-            <Typography className='listtest__course-desc'>{course?.description} </Typography>
-            <Typography className='listtest__course-desc'>Số lượng bài kiểm tra: {course?.exams?.length}</Typography>
+              className='listtest__course-name'>Khoá học: Học máy </Typography>
+            <Typography className='listtest__course-desc'>Cuộc thi học thuật trực tuyến </Typography>
+            <Typography className='listtest__course-desc'>Số lượng bài kiểm tra: 8</Typography>
             <Stack flex={1} justifyContent='flex-end' alignItems='flex-start'>
               <Button
                 variant='outlined'

@@ -6,6 +6,8 @@ import StatisticExam from 'pages/Dashboard/StatisticExam';
 import React, { Suspense, lazy } from 'react';
 import { Route, Routes } from "react-router-dom";
 import Dashboard from "./pages/Dashboard"
+
+import { sidebarCourse,sidebarTab } from "constraints/StudentDashboard";
 const Home = lazy(() => import("./pages/Home"));
 //const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Login = lazy(() => import("./components/Login"));
@@ -14,8 +16,10 @@ const Profile = lazy(() => import("pages/Dashboard/Profile"));
 const ListCourse = lazy(() => import("pages/Course/ListCourse"));
 const ListExaminationStudent = lazy(() => import("pages/Dashboard/ListExaminationStudent"));
 const CreateExamination = lazy(() => import("pages/Dashboard/CreateExamination"));
+const ChangePassword = lazy(() => import("pages/Dashboard/Profile/ChangePassword"));
 const ListExaminationTeacher = lazy(() => import("pages/Dashboard/TeacherDashboard/ListExamination"));
 const Examination = lazy(() => import("pages/Examination"));
+const ListStudent = lazy(() => import("pages/Dashboard/TeacherDashboard/ListStudent"));
 const CreateCourse = lazy(() => import("pages/Dashboard/TeacherDashboard/CreateCourse"));
 const BankQuestion = lazy(() => import("pages/Dashboard/BankQuestion"));
 
@@ -62,6 +66,42 @@ const TEACHER = [
     path:'statistic-exam',
     component:StatisticExam
   },
+  {
+    path:'profile/change-password',
+    component:ChangePassword
+  },
+]
+
+const COURSE_TEACHER = [
+  {
+    path:'create-exam',
+    component:CreateExamination
+  },
+  {
+    path:'manage-exam',
+    component:ListExaminationTeacher
+  },
+  {
+    path:'manage-student',
+    component:ListStudent
+  },
+  {
+    path:'bank-question',
+    component:BankQuestion
+  },
+  {
+    path:'notify',
+    component:MaintenancePage
+  },
+  {
+    path:'statistic',
+    component:MaintenancePage
+  },
+  {
+    path:'statistic-exam',
+    component:StatisticExam
+  },
+  
 ]
 function ConfigRoute() {
   return (
@@ -75,7 +115,7 @@ function ConfigRoute() {
             <Route path="course/list-test" element={<ListExaminationStudent />} />
             <Route path="create-exam" element={<CreateExamination />} />
           </Route>
-          <Route path="teacher" element={<Dashboard />} >
+          <Route path="my" element={<Dashboard sidebarTab={sidebarTab}/>} >
             {
               TEACHER.map(item=>
                 <Route key={item.path} path={item.path} element={makeLoading(<item.component />)} />)
@@ -84,8 +124,12 @@ function ConfigRoute() {
           </Route>
 
           <Route path="login" element={<Login />} />
-          <Route path="course" element={<LayoutCourse />} >
-            <Route index element={<ListExaminationTeacher />} />
+          <Route path="course/:slug" element={<LayoutCourse />} >
+            {
+              COURSE_TEACHER.map(item=>
+                <Route key={item.path} path={item.path} element={makeLoading(<item.component />)} />)
+            }
+             
           </Route>
           <Route path="list-course" element={<ListCourse />} />
           <Route path="register" element={<Register />} />

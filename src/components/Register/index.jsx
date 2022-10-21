@@ -11,8 +11,12 @@ import {
     FormLabel,
     RadioGroup,
     Box,
-    Divider
+    Divider,
+    InputAdornment,
+    IconButton
 } from '@mui/material'
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 import './Login.scss'
 import { Link, useNavigate } from 'react-router-dom';
@@ -25,6 +29,7 @@ import Page from 'components/Page';
 import LoadingButton from 'components/LoadingButton';
 import LoginFacebook from 'components/Login/LoginFacebook';
 import LoginGoogle from 'components/Login/LoginGoogle';
+
 
 
 const INPUTS = [
@@ -46,23 +51,25 @@ const INPUTS = [
         label: 'Tên đăng nhập',
         type: 'text'
     },
-    {
-        id: 4,
-        name: 'password',
-        label: 'Mật khẩu',
-        type: 'password'
-    },
-    {
-        id: 5,
-        name: 'cfPassword',
-        label: 'Xác nhận mật khẩu',
-        type: 'password'
-    },
+    // {
+    //     id: 4,
+    //     name: 'password',
+    //     label: 'Mật khẩu',
+    //     type: 'password'
+    // },
+    // {
+    //     id: 5,
+    //     name: 'cfPassword',
+    //     label: 'Xác nhận mật khẩu',
+    //     type: 'password'
+    // },
 ]
 
 const Register = () => {
     const [loading, setLoading] = useState(false)
     const [type, setType] = useState('STUDENT');
+    const [isShowPassword,setIsShowPassword] = useState(false)
+    const [isShowCfPassword,setIsShowCfPassword] = useState(false)
 
     const { handleSubmit, control } = useForm({
         mode: "onChange",
@@ -129,6 +136,56 @@ const Register = () => {
                                                         variant="outlined" />
                                                 )}
                                             />)}
+                                            <Controller
+                                                name={'password'}
+                                                control={control}
+                                                render={({ field, fieldState: { error } }) => (
+                                                    <TextField
+                                                        {...field}
+                                                        size='small'
+                                                        type={isShowPassword?'text':'password'}
+                                                        label={'Mật khẩu'}
+                                                        error={error !== undefined}
+                                                        helperText={error ? error.message : ''}
+                                                        InputProps={{ 
+                                                            endAdornment:
+                                                            <InputAdornment position="end">
+                                                              <IconButton
+                                                                onClick={()=>setIsShowPassword(pre=>!pre)}
+                                                                edge="end"
+                                                              >
+                                                                {isShowPassword ?  <VisibilityOff />:<Visibility /> }
+                                                              </IconButton>
+                                                            </InputAdornment>
+                                                          }}
+                                                        variant="outlined" />
+                                                )}
+                                            />
+                                            <Controller
+                                                name={'cfPassword'}
+                                                control={control}
+                                                render={({ field, fieldState: { error } }) => (
+                                                    <TextField
+                                                        {...field}
+                                                        size='small'
+                                                        type={isShowCfPassword?'text':'password'}
+                                                        label={'Mật khẩu xác nhận'}
+                                                        error={error !== undefined}
+                                                        helperText={error ? error.message : ''}
+                                                        InputProps={{ 
+                                                            endAdornment:
+                                                            <InputAdornment position="end">
+                                                              <IconButton
+                                                                onClick={()=>setIsShowCfPassword(pre=>!pre)}
+                                                                edge="end"
+                                                              >
+                                                                {isShowCfPassword ? <VisibilityOff /> : <Visibility />}
+                                                              </IconButton>
+                                                            </InputAdornment>
+                                                          }}
+                                                        variant="outlined" />
+                                                )}
+                                            />
 
                                         <FormControl>
                                             <FormLabel id="demo-controlled-radio-buttons-group">Loại tài khoản</FormLabel>

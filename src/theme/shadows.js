@@ -45,7 +45,7 @@ export const shadows = {
 };
 
 const createCustomShadow = (color) => {
-  const transparent = alpha(color, 0.2);
+  const transparent = alpha(color, 0.3);
   return {
     z1: `0 1px 2px 0 ${transparent}`,
     z8: `0 8px 16px 0 ${transparent}`,

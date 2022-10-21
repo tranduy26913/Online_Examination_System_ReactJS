@@ -25,5 +25,6 @@ const apiAuth = {
         return res.data;
     },
     
+    
 }
 export default apiAuth;
