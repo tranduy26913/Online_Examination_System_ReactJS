@@ -28,19 +28,30 @@ const UpgradeAccount = (props) => {
         setMethod(e.target.value)
     }
     const handlePayment = () => {
+        if(method==='Momo'){
+            toast.warning("Chức năng thanh toán với Momo tạm thòi đóng vì bảo trì. Vui lòng chọn hình thức thanh toán khác")
+            return
+        }
+        const params = {
+            amount:50000,
+            bankCode:null,
+            language :'vn'
+        }
         setUploading(true)
         apiProfile
-            .makePayment(method)
+            .makePayment(method,params)
             .then((response) => {
+                console.log(response)
                 if(response.payUrl){
-                    navigate(response.payUrl)
+                    window.location.replace(response.payUrl)
                 }
                 else{
                     toast.success("Lỗi tạo hoá đơn. Vui lòng thử lại");
                 }
             })
             .catch((error) => {
-                toast.error(error.response.data.message);
+                console.log(error.response)
+                toast.error(error.response);
             })
             .finally(() => setUploading(false))
     };

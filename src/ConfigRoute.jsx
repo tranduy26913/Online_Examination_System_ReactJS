@@ -21,7 +21,9 @@ const ListExaminationTeacher = lazy(() => import("pages/Dashboard/TeacherDashboa
 const Examination = lazy(() => import("pages/Examination"));
 const ListStudent = lazy(() => import("pages/Dashboard/TeacherDashboard/ListStudent"));
 const CreateCourse = lazy(() => import("pages/Dashboard/TeacherDashboard/CreateCourse"));
+const Active = lazy(() => import("pages/Active"));
 const BankQuestion = lazy(() => import("pages/Dashboard/BankQuestion"));
+const ResultPayment = lazy(() => import("pages/ResultPayment"));
 
 const makeLoading = (component) => <Suspense fallback={<LoadingPage/>}>{component}</Suspense>
 
@@ -137,6 +139,8 @@ function ConfigRoute() {
           <Route path="loading" element={<LoadingPage />} />
           <Route path="aboutus" element={<MaintenancePage />} />
           <Route path="result" element={<MaintenancePage />} />
+          <Route path="result-payment" element={<ResultPayment />} />
+          <Route path="active/:token" element={<Active />} />
           <Route path="review-exam/:id" element={<MaintenancePage />} />
           <Route path="/*" element={<Page404 />} />
 

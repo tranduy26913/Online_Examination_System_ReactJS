@@ -8,7 +8,10 @@ const AboutUs = () => {
     <Stack m='36px 0px 50px 0px' minHeight='500px' alignItems='center' justifyContent='center' className='home-item'>
       <Grid container spacing={1} p='24px' alignItems='center'>
         <Grid item xs={12} md={4} className='showtotop'>
+          <Stack>
           <img src={image} alt="My Team" width='100%' />
+<Typography fontSize="20px" align='center'>Online Study</Typography>
+          </Stack>
         </Grid>
 
         <Grid item xs={12} md={8} className='showtotop' >

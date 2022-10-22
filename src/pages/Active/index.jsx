@@ -1,56 +1,46 @@
 import { useEffect, useState } from 'react'
 import {  useNavigate, useParams } from 'react-router-dom'
-import {Paper} from '@mui/material'
+import {Paper, Stack,Typography} from '@mui/material'
 import apiAuth from 'apis/apiAuth'
+import LoadingPage from 'components/LoadingPage'
+import { useDispatch } from 'react-redux'
+import { toast } from 'react-toastify'
+import { getMessageError } from 'utils'
+import { loginSuccess } from 'slices/authSlice'
 
 function Active(props) {
     const {token} = useParams()
     const [loadingData,setLoadingData]= useState(true)
-    const [msg,setMsg]=useState("")
-    const [count,setCount] = useState(0)
+    const dispatch = useDispatch()
     const navigate = useNavigate()
 
-    useEffect(async()=>{
-        const params = {
-            key:token
+    useEffect(()=>{
+        const handleActive = ()=>{
+            const params = {
+                token
+            }
+            apiAuth.active(params).then(res=>{
+                setLoadingData(false)
+                toast.success("Kích hoạt thành công")
+                const {message,...data} = res
+                dispatch(loginSuccess(data))
+                navigate('/my/profile')
+            })
+            .catch(err=>{
+                console.log(err)
+                toast.warning(getMessageError(err))
+            })
         }
-        apiAuth.activeAccount(params).then(res=>{
-            setLoadingData(false)
-            setMsg("Kích hoạt thành công")
-            setCount(5);
-        })
-        .catch(err=>{
-            console.log(err)
-            setMsg("Kích hoạt không thành công")
-        })
-    },[token])
+        handleActive()
+    },[])
 
-    useEffect(async()=>{
-        if(loadingData)
-            return
-        setTimeout(()=>{
-            if(count>0){
-                setCount(pre =>pre-1)
-                console.log(count)
-            }
-            else{
-                navigate("/")
-            }
-        },1000)
-    },[count])
     
   return (
     <Paper >
       
-        {loadingData?
+        {loadingData&&
         <>
-        <LoadingData/>
-        <div className='d-flex mt-2'><h4>Đang kích hoạt tài khoản</h4></div>
-        </>
-        :
-        <>
-            <div className='d-flex mt-2'><h4>{msg}</h4></div>
-            <span>Sẽ chuyển đến trang chủ trong {count} giây</span>
+        <LoadingPage content="Đang kích hoạt tài khoản" />
         </>
       }
     </Paper>

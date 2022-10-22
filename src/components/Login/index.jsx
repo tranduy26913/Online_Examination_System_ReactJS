@@ -28,6 +28,7 @@ import LoadingButton from 'components/LoadingButton';
 import LoginFacebook from './LoginFacebook';
 import LoginGoogle from './LoginGoogle';
 import { setUserInfo } from 'slices/userSlice';
+import { getMessageError } from 'utils';
 
 
 
@@ -69,14 +70,14 @@ const Login = () => {
                     dispatch(loginSuccess(res))
                     dispatch(setUserInfo(res))
                     toast.success("Đăng nhập thành công")
-                    navigate('/')
+                    navigate('/my/profile')
                 }
                 else {
                     toast.error("Sai tên đăng nhập hoặc mật khẩu")
                 }
             })
             .catch(err => {
-                console.log(err.response.data)
+                toast.warning(getMessageError(err))
             })
             .finally(() => setLoading(false))
     }

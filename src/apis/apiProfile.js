@@ -29,16 +29,12 @@ const apiProfile = {
         const res = await axiosClientWithToken.get(`/user/info-short`)
         return res.data;
     },
-    makePayment: async (method) => {
+    makePayment: async (method,params) => {
 
-        const res = await axiosClientWithToken.get(`/payment/create-payment/${method.toLowerCase()}`)
+        const res = await axiosClientWithToken.post(`/payment/create-payment/${method.toLowerCase()}`,params)
         return res.data;
     },
 
-    getAllUser: async (params) => {
-        const res = await axiosClientWithToken.get('admin/user/all', params)
-        return res.data;
-    },
 
     
 

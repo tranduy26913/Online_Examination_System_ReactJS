@@ -23,7 +23,7 @@ const persistConfig = {
   version: 1,
   storage,
   blacklist: ['user'],
-  stateReconciler: autoMergeLevel2
+  //stateReconciler: autoMergeLevel2
 }
 
 const userPersistConfig = {
@@ -37,7 +37,8 @@ const rootReducer = combineReducers({
    theme:themeReducer,
    breadcrumb:breadcrumbReducer,
    answerSheet:answerSheetReducer,
-   user: persistReducer(userPersistConfig, userReducer),
+   user:userReducer,
+   //user: persistReducer(userPersistConfig, userReducer),
    })
 const persistedReducer = persistReducer(persistConfig, rootReducer)
 

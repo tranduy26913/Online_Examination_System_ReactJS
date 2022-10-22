@@ -1,15 +1,4 @@
-import axios from 'axios';
-import queryString from 'query-string';
-const baseURL='https://be-oes.cyclic.app/api'
- //const baseURL='http://localhost:5000/api'
-export const axiosClient = axios.create({
-    baseURL: baseURL,
-    headers: {
-        "Content-Type": "application/json"
-    },
-    withCredentials: true,
-    paramsSerializer: (params) => queryString.stringify(params)
-});
+import {  axiosClient,axiosClientWithToken} from "./axiosClient";
 const apiAuth = {
     
     register: async (params) => {
@@ -22,6 +11,14 @@ const apiAuth = {
     },
     active: async (params) => {
         const res = await axiosClient.post(`/auth/active`,params)
+        return res.data;
+    },
+    checkEmail: async (params) => {
+        const res = await axiosClient.post(`/auth/checkemail`,params)
+        return res.data;
+    },
+    checkUsername: async (params) => {
+        const res = await axiosClient.post(`/auth/checkusername`,params)
         return res.data;
     },
     
