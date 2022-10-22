@@ -1,0 +1,1 @@
+export const getMessageError = (err) => err?.response?.data?.message || "Có lỗi xảy ra. Vui lòng thử lại."

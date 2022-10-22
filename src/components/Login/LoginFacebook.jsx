@@ -34,7 +34,7 @@ const dispatch = useDispatch()
             // }}
             render={({ onClick, logout }) => (
                 <FacebookRoundedIcon
-                    onClick={onClick} onLogoutClick={logout}
+                    onClick={onClick} 
                     sx={{
                         cursor: 'pointer',
                         color: "#4267b2",

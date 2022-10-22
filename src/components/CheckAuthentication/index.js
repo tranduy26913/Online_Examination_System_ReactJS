@@ -67,7 +67,7 @@ function CheckAuthentication(props) {
         <>
         {
             loading?<>
-            <LoadingPage />
+            <LoadingPage content='Đang tải dữ liệu...' />
             {/* <Typography>Đang lấy thông tin người dùng. Vui lòng đợi</Typography> */}
             </>
             :props.children
