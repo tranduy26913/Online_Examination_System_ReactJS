@@ -1,6 +1,5 @@
 import { alpha } from "@mui/system";
 import {
-  pink,
   red,
   purple,
   green,

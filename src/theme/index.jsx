@@ -7,7 +7,7 @@ import typography from "./typography";
 import {  useMemo } from "react";
 import { componentsOverride } from "./override";
 import { ThemeProvider } from "@mui/system";
-import { CssBaseline, responsiveFontSizes } from "@mui/material";
+import { CssBaseline } from "@mui/material";
 import {useSelector} from 'react-redux'
 
 

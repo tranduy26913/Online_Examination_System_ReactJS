@@ -12,9 +12,7 @@ const Roller = styled(Box)(({ theme }) => ({
         borderRadius: '50%',
     }
 }))
-const Content = styled(Box)(({ theme }) => ({
-    position: 'absolute'
-}))
+
 function LoadingPage(props) {
     return (
         <Stack className='container' height='100vh' justifyContent='center' alignItems='center'>

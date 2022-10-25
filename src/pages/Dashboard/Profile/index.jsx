@@ -29,7 +29,7 @@ import apiProfile from "../../../apis/apiProfile";
 import { yupResolver } from '@hookform/resolvers/yup';
 import { schema } from './schema'
 import { useForm, Controller } from 'react-hook-form'
-import { setUserInfo, updateAvatar } from 'slices/userSlice';
+import { setUserInfo } from 'slices/userSlice';
 import moment from 'moment';
 import UpgradeAccount from './UpgradeAccount';
 import LoadingButton from "components/LoadingButton";
@@ -51,11 +51,8 @@ const Profile = () => {
     });
 
     const [birthday, setBirthday] = useState(moment(user?.birthday))
-    const [image, setImage] = useState([]);
     const [gender, setGender] = useState(user ? user.gender : "")
-
     const [updating, setUpdating] = useState(false);
-    const [uploading, setUploading] = useState(false);
 
     const handleBirthday = (newValue) => {
         setBirthday(newValue)
@@ -95,7 +92,7 @@ const Profile = () => {
     return (
         <Stack className="customer-info" spacing={3}>
             <Stack direction="row" spacing={2}>
-                <Paper elevation={24} sx={{ flex: 2 }}>
+                <Paper elevation={12} sx={{ flex: 2 }}>
                     <Stack p={2} height='100%' spacing={2} >
 
                         <Typography>Thông tin cá nhân</Typography>
@@ -123,7 +120,7 @@ const Profile = () => {
                             <Grid md={6} xs={12}>
                                 <LocalizationProvider dateAdapter={AdapterMoment}>
                                     <DesktopDatePicker
-                                        inputFormat="MM/DD/YYYY"
+                                        inputFormat="DD/MM/YYYY"
                                         label="Ngày sinh"
                                         value={birthday}
                                         onChange={handleBirthday}
@@ -201,7 +198,7 @@ const Profile = () => {
                     </Stack>
                 </Paper>
 
-                <Paper elevation={24} sx={{ flex: 1 }}>
+                <Paper elevation={12} sx={{ flex: 1 }}>
                     <Stack spacing={4} p={2}>
                         <Typography>Số điện thoại và Email</Typography>
 

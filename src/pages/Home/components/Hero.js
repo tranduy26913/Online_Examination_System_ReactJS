@@ -1,6 +1,4 @@
-import React from 'react';
-import { Grid, Typography, Button, Box, Stack, Avatar } from '@mui/material';
-import myteam from 'assets/img/avatar.jpg';
+import { Grid, Typography, Button, Stack } from '@mui/material';
 import myteam2 from 'assets/img/home-hero.png';
 
 const Hero = () => {

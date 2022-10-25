@@ -1,6 +1,5 @@
 import React from 'react';
-import { Grid, Typography, Button, Stack, Paper } from '@mui/material';
-import bestTeams from 'assets/img/avatar.jpg';
+import { Grid, Typography, Stack, Paper } from '@mui/material';
 import image from 'assets/img/online-study.png'
 const AboutUs = () => {
 

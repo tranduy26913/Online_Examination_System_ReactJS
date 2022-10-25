@@ -5,8 +5,7 @@ import {
   TextField,
   Paper,
   Button,
-  styled,
-  Stack
+    Stack
 } from '@mui/material';
 
 const inputStyle = {
@@ -17,11 +16,10 @@ const ContactUs = () => {
   const [email, setEmail] = useState('');
   const [firstName, setFirstName] = useState('');
   const [subject, setSubject] = useState('');
-  const [message, setMessage] = useState('');
 
   const submitForm = (e) => {
     e.preventDefault();
-    console.log({ email, firstName, subject, message });
+    console.log({ email, firstName, subject });
   };
 
   return (

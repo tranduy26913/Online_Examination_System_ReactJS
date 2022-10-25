@@ -17,8 +17,6 @@ import Loading from "components/Loading";
 import { yupResolver } from '@hookform/resolvers/yup';
 import { schema } from './schema'
 import { useForm, Controller } from 'react-hook-form'
-import { useLocation } from 'react-router-dom';
-import ButtonBack from 'components/ButtonBack';
 
 const INPUTS = [
     {

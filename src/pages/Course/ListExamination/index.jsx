@@ -14,22 +14,21 @@ import {
 import Scrollbar from 'components/Scrollbar';
 import Label from 'components/Label';
 import SearchNotFound from 'components/SearchNotFound';
-import { TableHeadCustom, TableToolbar, TableMoreMenu } from 'components/TableCustom';
-import './ListTest.scss'
-import { useDispatch } from 'react-redux';
-import {  useSearchParams } from 'react-router-dom';
-import { changeBreadcrumb } from 'slices/breadcrumbSlice';
+import { TableToolbar, TableMoreMenu } from 'components/TableCustom';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import BarChartIcon from '@mui/icons-material/BarChart';
-import apiExamination from 'apis/apiExamination';
+import { useContext } from 'react';
+import CourseContext from '../LayoutCourse/CourseContext';
+import apiCourse from 'apis/apiCourse';
+import TableHeadCustom from './component/TableHeadCustom';
 
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
     { id: 'name', label: 'Tên đề thi', alignRight: false },
-    { id: 'na', label: 'Company', alignRight: false },
+    { id: 'count', label: 'Số lượt làm bài', alignRight: false },
     { id: 'role', label: 'Role', alignRight: false },
     { id: 'isVerified', label: 'Verified', alignRight: false },
     { id: 'status', label: 'Trạng thái', alignRight: false },
@@ -71,44 +70,16 @@ const ListExaminationTeacher = () => {
     document.title = "Danh sách bài kiểm tra"
     const [page, setPage] = useState(0);
     const [order, setOrder] = useState('asc');
-    const [selected, setSelected] = useState([]);
     const [orderBy, setOrderBy] = useState('name');
     const [filterName, setFilterName] = useState('');
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [exams, setExams] = useState([])
-    const dispatch = useDispatch()
-    const query = useSearchParams()
-
-    const courseId = query[0].get('id')//abcd
+    const {id} = useContext(CourseContext)
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
         setOrderBy(property);
-    };
-
-    const handleSelectAllClick = (event) => {
-        if (event.target.checked) {
-            const newSelecteds = exams.map((n) => n.name);
-            setSelected(newSelecteds);
-            return;
-        }
-        setSelected([]);
-    };
-
-    const handleClick = (event, name) => {
-        const selectedIndex = selected.indexOf(name);
-        let newSelected = [];
-        if (selectedIndex === -1) {
-            newSelected = newSelected.concat(selected, name);
-        } else if (selectedIndex === 0) {
-            newSelected = newSelected.concat(selected.slice(1));
-        } else if (selectedIndex === selected.length - 1) {
-            newSelected = newSelected.concat(selected.slice(0, -1));
-        } else if (selectedIndex > 0) {
-            newSelected = newSelected.concat(selected.slice(0, selectedIndex), selected.slice(selectedIndex + 1));
-        }
-        setSelected(newSelected);
     };
 
     const handleChangePage = (event, newPage) => {
@@ -130,37 +101,25 @@ const ListExaminationTeacher = () => {
 
     const isUserNotFound = filteredUsers.length === 0;
 
-    const handleDeleteExam = (id) => {
-        console.log(id)
-    }
-
     //Effect
     useEffect(() => {
-        const handleBreadcrumb = () => {
-            dispatch(changeBreadcrumb({
-                path: 'ddd',
-                display: 'Học máy'
-            }))
-        }
-
         const loadListExam = () => {//lấy danh sách bài kiểm tra
             const params = {
-                courseId
+                courseId:id
             }
-            apiExamination.getExaminations(params)
+            apiCourse.getListExamOfCourse(params)
                 .then(res=>{
                     setExams(res)
                 })
         }
         loadListExam()
-        handleBreadcrumb()
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+    }, [id])
     return (
-        <Box className='listtest'>
+        <Box >
             <Stack spacing={1}>
                 <Paper elevation={24}>
-                    <TableToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName}
+                    <TableToolbar  filterName={filterName} onFilterName={handleFilterByName}
                         button={{ display: "Tạo đề kiểm tra", path: '/teacher/create-exam' }} />
 
                     <Scrollbar>
@@ -171,38 +130,22 @@ const ListExaminationTeacher = () => {
                                     orderBy={orderBy}
                                     headLabel={TABLE_HEAD}
                                     rowCount={exams.length}
-                                    numSelected={selected.length}
                                     onRequestSort={handleRequestSort}
-                                    onSelectAllClick={handleSelectAllClick}
                                 />
                                 <TableBody>
                                     {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                                        const { id, name, role, status, company, avatarUrl, isVerified } = row;
-                                        const isItemSelected = selected.indexOf(name) !== -1;
+                                        const { id, name, count, status, company, avatarUrl, isVerified } = row;
 
                                         return (
                                             <TableRow
                                                 hover
                                                 key={id}
                                                 tabIndex={-1}
-                                                role="checkbox"
-                                                selected={isItemSelected}
-                                                aria-checked={isItemSelected}
                                             >
-                                                <TableCell padding="checkbox">
-                                                    <Checkbox checked={isItemSelected} onChange={(event) => handleClick(event, name)} />
-                                                </TableCell>
-                                                {/* <TableCell component="th" scope="row" padding="none">
-                                                    <Stack direction="row" alignItems="center" spacing={2}>
-                                                        <Avatar alt={name} src={avatarUrl} />
-                                                        <Typography variant="subtitle2" noWrap>
-                                                            {name}
-                                                        </Typography>
-                                                    </Stack>
-                                                </TableCell> */}
+                                                
                                                 <TableCell align="left">{name}</TableCell>
-                                                <TableCell align="left">{company}</TableCell>
-                                                <TableCell align="left">{role}</TableCell>
+                                                <TableCell align="left">{count}</TableCell>
+                                                <TableCell align="left">{}</TableCell>
                                                 <TableCell align="left">{isVerified ? 'Yes' : 'No'}</TableCell>
                                                 <TableCell align="left">
                                                     <Label variant="ghost" color={(status === 'banned' && 'error') || 'success'}>
@@ -231,7 +174,7 @@ const ListExaminationTeacher = () => {
                                                                 isLink: false,
                                                                 link: '/',
                                                                 icon: DeleteForeverIcon,
-                                                                func: handleDeleteExam,
+                                                                func: null,
                                                                 display: 'Xoá'
                                                             },
                                                         ]} />

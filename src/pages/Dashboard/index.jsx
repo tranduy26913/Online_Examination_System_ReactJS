@@ -71,7 +71,7 @@ const StudentDashboard = (props) => {
      selectedTabId={selectedTabId}
       handleChangeTab={handleChangeTab}
       heading={"Dashboard"}>
-      <Paper elevation={24} sx={{ padding: '8px 12px', marginBottom: '12px' }}>
+      <Paper elevation={12} sx={{ padding: '8px 12px', marginBottom: '12px' }}>
 
         <Breadcrumbs
           separator={<NavigateNextIcon fontSize="small" />}

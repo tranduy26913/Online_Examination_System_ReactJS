@@ -1,17 +1,4 @@
-import axios from 'axios';
-import queryString from 'query-string';
-import jwt_decode from 'jwt-decode';
-const baseURL='https://be-oes-fake.herokuapp.com/api/'
- //const baseURL='http://localhost:5000/api'
-//const baseURL='https://nhom3-tiki.herokuapp.com/api'
-export const axiosClient = axios.create({
-    baseURL: baseURL,
-    headers: {
-        "Content-Type": "application/json"
-    },
-    withCredentials: true,
-    paramsSerializer: (params) => queryString.stringify(params)
-});
+import { axiosClient,axiosClientWithToken } from "./axiosClient";
 
  const apiCourse = {
 
@@ -23,12 +10,39 @@ export const axiosClient = axios.create({
         const res = await axiosClient.get('/courses', {params:{slug}})
         return res.data;
     },
-    postCourse: async (params) => {
-        const res = await axiosClient.post('/courses', params)
+    getCourseByCourseID: async (params) => {
+        const res = await axiosClient.get('/course/by-courseid', {params})
         return res.data;
     },
+    getListCourseByTeacher: async (params) => {
+        const res = await axiosClientWithToken.get('/course/by-teacher')
+        return res.data;
+    },
+    getListStudentToAdd: async (params) => {
+        const res = await axiosClientWithToken.get('/course/search-student',{params})
+        return res.data;
+    },
+    getListStudentOfCourse: async (params) => {
+        const res = await axiosClientWithToken.get('/course/get-students',{params})
+        return res.data;
+    },
+    getListExamOfCourse: async (params) => {
+        const res = await axiosClientWithToken.get('/course/get-exams',{params})
+        return res.data;
+    },
+    addStudentIntoCourse: async (params) => {
+        const res = await axiosClientWithToken.post('/course/add-student',params)
+        return res.data;
+    },
+    deleteStudentInCourse: async (params) => {
+        const res = await axiosClientWithToken.delete('/course/delete-student',{params})
+        return res.data;
+    },
+    
     createCourse: async (params) => {
-        const res = await axiosClient.post('/course', params)
+        const res = await axiosClient.post('/course', params,{headers: {
+            'Content-Type': 'multipart/form-data'
+          }})
         return res.data;
     },
 }

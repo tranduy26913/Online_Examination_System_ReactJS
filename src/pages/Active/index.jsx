@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import {  useNavigate, useParams } from 'react-router-dom'
-import {Paper, Stack,Typography} from '@mui/material'
+import {Paper} from '@mui/material'
 import apiAuth from 'apis/apiAuth'
 import LoadingPage from 'components/LoadingPage'
 import { useDispatch } from 'react-redux'
@@ -32,6 +32,7 @@ function Active(props) {
             })
         }
         handleActive()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     },[])
 
     

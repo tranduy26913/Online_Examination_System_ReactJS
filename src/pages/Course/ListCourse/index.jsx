@@ -27,13 +27,14 @@ const ListCourse = () => {
                 page,
                 limit
             }
-            apiCourse.getCourses(params)
+            apiCourse.getListCourseByTeacher(params)
                 .then(res => {
                     setCourses(res)
                     setTotalPage(Math.round(res.pagination.totalRows / limit))
                 })
         }
         getData()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     return (
@@ -42,7 +43,7 @@ const ListCourse = () => {
             <Box>
                 <Paper elevation={24}>
                     <Stack direction='row' justifyContent={'flex-end'} p={1.5}>
-                        <Link to='/teacher/create-course'>
+                        <Link to='/my/list-course/create-course'>
                         <Button variant='outlined'>Tạo khoá học</Button>
                         </Link>
                     </Stack>
@@ -51,11 +52,12 @@ const ListCourse = () => {
                         {
                             courses.map(item =>
                                 <Grid key={item.id} lg={3} md={3} xs={6}>
-                                    <Card sx={{ maxWidth: 345, border: "1px solid #00e67660" }}>
+                                    <Card className='hover-element' sx={{ maxWidth: 345, border: "1px solid #00e67660" }}>
                                         <CardMedia
                                             component="img"
                                             height="140"
-                                            image="https://sandla.org/wp-content/uploads/2021/08/english-e1629469809834.jpg"
+                                            width="180"
+                                            image={item.image}
                                             alt="green iguana"
                                         />
                                         <Typography color="primary" variant="h5" component="div"
@@ -69,7 +71,7 @@ const ListCourse = () => {
                                             direction='row'
                                             justifyContent="center"
                                             spacing={2}>
-                                            <Link to={`/course/${item.slug}`}>
+                                            <Link to={`/course/${item.courseId}`}>
                                                 <Button
                                                     variant="outlined"
                                                     size="small"
