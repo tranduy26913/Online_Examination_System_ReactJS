@@ -17,13 +17,14 @@ const ListCourse = lazy(() => import("pages/Course/ListCourse"));
 const ListExaminationStudent = lazy(() => import("pages/Dashboard/ListExaminationStudent"));
 const CreateExamination = lazy(() => import("pages/Dashboard/CreateExamination"));
 const ChangePassword = lazy(() => import("pages/Dashboard/Profile/ChangePassword"));
-const ListExaminationTeacher = lazy(() => import("pages/Dashboard/TeacherDashboard/ListExamination"));
+const ListExaminationTeacher = lazy(() => import("pages/Course/ListExamination"));
 const Examination = lazy(() => import("pages/Examination"));
-const ListStudent = lazy(() => import("pages/Dashboard/TeacherDashboard/ListStudent"));
-const CreateCourse = lazy(() => import("pages/Dashboard/TeacherDashboard/CreateCourse"));
+const ListStudent = lazy(() => import("pages/Course/ListStudent"));
+const CreateCourse = lazy(() => import("pages/Course/CreateCourse"));
 const Active = lazy(() => import("pages/Active"));
 const BankQuestion = lazy(() => import("pages/Dashboard/BankQuestion"));
 const ResultPayment = lazy(() => import("pages/ResultPayment"));
+const ResetPassword = lazy(() => import("pages/ResetPassword"));
 
 const makeLoading = (component) => <Suspense fallback={<LoadingPage/>}>{component}</Suspense>
 
@@ -45,7 +46,7 @@ const TEACHER = [
     component:CreateExamination
   },
   {
-    path:'create-course',
+    path:'list-course/create-course',
     component:CreateCourse
   },
   {
@@ -126,7 +127,8 @@ function ConfigRoute() {
           </Route>
 
           <Route path="login" element={<Login />} />
-          <Route path="course/:slug" element={<LayoutCourse />} >
+          <Route path="course/:courseId" element={<LayoutCourse />} >
+          <Route index element={makeLoading(<ListExaminationTeacher />)} />
             {
               COURSE_TEACHER.map(item=>
                 <Route key={item.path} path={item.path} element={makeLoading(<item.component />)} />)
@@ -142,6 +144,7 @@ function ConfigRoute() {
           <Route path="result-payment" element={<ResultPayment />} />
           <Route path="active/:token" element={<Active />} />
           <Route path="review-exam/:id" element={<MaintenancePage />} />
+          <Route path="reset-password/:token" element={<ResetPassword />} />
           <Route path="/*" element={<Page404 />} />
 
 

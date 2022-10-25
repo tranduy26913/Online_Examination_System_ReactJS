@@ -1,6 +1,5 @@
 import * as Yup from 'yup'
 import _debounce from 'lodash/debounce';
-import axios from 'axios';
 import apiAuth from 'apis/apiAuth';
 
 const checkEmail = _debounce((email, resolve) => {

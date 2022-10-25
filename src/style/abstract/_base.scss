@@ -1,77 +1,5 @@
 @use "./variables" as *;
 @use "./breakpoint" as *;
-@each $color,
-$val in $colors {
-    .color-#{$color} {
-        color: $val;
-    }
-    .bg-#{$color} {
-        background-color: $val;
-    }
-}
-
-@each $val in $numbers {
-    .grid-col-#{$val} {
-        grid-template-columns: repeat($val, 1fr);
-    }
-}
-
-@each $val in $numbers {
-    .grid-col-md-#{$val} {
-        @include tablet {
-            grid-template-columns: repeat($val, 1fr);
-        }
-    }
-}
-
-@each $val in $numbers {
-    .grid-col-sm-#{$val} {
-        @include mobile {
-            grid-template-columns: repeat($val, 1fr);
-        }
-    }
-}
-
-@each $val in $numbers {
-    .col-#{$val} {
-        width: calc($val/12)*100%;
-        padding-left: 15px;
-        padding-right: 15px;
-    }
-}
-
-@each $val in $numbers {
-    .col-md-#{$val} {
-        @include tablet {
-            width: calc($val/12)*100%;
-            // padding-left: 10px;
-            // padding-right: 10px;
-        }
-    }
-}
-
-@each $val in $numbers {
-    .col-sm-#{$val} {
-        @include mobile {
-            width: calc($val/12)*100%;
-            // padding-left: 5px;
-            // padding-right: 5px;
-        }
-    }
-}
-
-@for $i from 1 through 48 {
-    .fs-#{$i} {
-        font-size: #{calc($i/16)}rem !important;
-    }
-}
-
-@for $val from 1 through 10 {
-    .fw-#{$val} {
-        font-weight: $val*100;
-    }
-}
-
 .container {
     width: 100%;
     max-width: 1270px;
@@ -148,6 +76,9 @@ $val in $colors {
     }
 }
 
-.msgError {
-    color: red !important;
+.hover-element {
+    transition: transform 50ms, box-shadow 1s;
+    &:hover {
+        transform: scale(1.01) perspective(0px),
+    }
 }

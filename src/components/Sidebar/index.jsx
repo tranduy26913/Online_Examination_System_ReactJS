@@ -1,4 +1,4 @@
-import {useState,useEffect} from "react";
+import {useState} from "react";
 
 import {  Link } from "react-router-dom";
 
@@ -174,7 +174,7 @@ const Sidebar = (props) => {
           </List>
         </Drawer>
 
-        <Box flex={1} p={2}>
+        <Box flex={1} p={2} width={0}>
           {props.children}          
         </Box>
       </Stack>

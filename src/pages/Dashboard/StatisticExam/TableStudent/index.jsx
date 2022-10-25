@@ -1,35 +1,19 @@
-import {useEffect, useState} from 'react'
-import { sentenceCase } from 'change-case';
+import { useState} from 'react'
 import {
-    Box,
-    Button,
     Stack,
     Checkbox,
     Table,
     TableRow,
     TableBody,
     TableCell,
-    Container,
-    Typography,
     TableContainer,
     TablePagination,
-    Avatar,
-    Paper
 } from "@mui/material"
-import Grid from '@mui/material/Unstable_Grid2';
-import SendIcon from '@mui/icons-material/Send';
 import Scrollbar from 'components/Scrollbar';
 import Label from 'components/Label';
 import SearchNotFound from 'components/SearchNotFound';
 import { TableHeadCustom, TableToolbar, TableMoreMenu } from 'components/TableCustom';
 
-import { useDispatch } from 'react-redux';
-import { useParams } from 'react-router-dom';
-import { changeBreadcrumb } from 'slices/breadcrumbSlice';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import BarChartIcon from '@mui/icons-material/BarChart';
 
 
 // ----------------------------------------------------------------------
@@ -80,8 +64,6 @@ const TableStudent = () => {
     const [orderBy, setOrderBy] = useState('name');
     const [filterName, setFilterName] = useState('');
     const [rowsPerPage, setRowsPerPage] = useState(5);
-    const dispatch = useDispatch()
-    const params = useParams()//lấy slug của đường dẫn
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState,useRef } from 'react'
 import {
     Button,
     Stack,
@@ -29,6 +29,7 @@ import LoginFacebook from './LoginFacebook';
 import LoginGoogle from './LoginGoogle';
 import { setUserInfo } from 'slices/userSlice';
 import { getMessageError } from 'utils';
+import RequestActive from './RequestActive';
 
 
 
@@ -39,6 +40,7 @@ const Login = () => {
         value: '',
         showPassword: false,
     });
+    const passwordRef = useRef()
     const dispatch = useDispatch()
     const navigate = useNavigate()
 
@@ -57,6 +59,14 @@ const Login = () => {
         event.preventDefault();
     };
 
+    const handlePasswordKeyDown = (e) => {
+        if (e.key === 'Enter')
+            handleLogin()
+    }
+    const handleUsernameKeyDown = (e) => {
+        if (e.key === 'Enter')
+            passwordRef.current.focus()
+    }
     const handleLogin = () => {
         const params = {
             username,
@@ -94,20 +104,23 @@ const Login = () => {
                             </Typography>
                             <Stack spacing={2.5}>
                                 <TextField
+                                
                                     size='small'
                                     id="outlined-basic"
                                     label="Tên đăng nhập"
                                     value={username}
+                                    onKeyDown={handleUsernameKeyDown}
                                     onChange={e => setUsername(e.target.value)}
                                     variant="outlined" />
                                 <FormControl sx={{ m: 1, width: '100%' }} variant="outlined" size='small'>
                                     <InputLabel
                                         htmlFor="outlined-adornment-password">Mật khẩu</InputLabel>
                                     <OutlinedInput
+                                    inputRef={passwordRef}
                                         id="outlined-adornment-password"
                                         type={password.showPassword ? 'text' : 'password'}
                                         value={password.value}
-
+                                        onKeyDown={handlePasswordKeyDown}
                                         onChange={handleChange}
                                         endAdornment={
                                             <InputAdornment position="end">
@@ -127,15 +140,17 @@ const Login = () => {
                                 <Stack
                                     direction="row"
                                     justifyContent='space-between'
-                                    alignItems='center'
+                                    alignItems='flex-start'
                                 >
 
                                     <FormGroup>
                                         <FormControlLabel control={<Checkbox defaultChecked />} label="Ghi nhớ đăng nhập" />
                                     </FormGroup>
-                                    <Link to='/forgetPassword'>
-                                        <Typography>Quên mật khẩu?</Typography>
-                                    </Link>
+                                    <Stack alignItems={'flex-end'}>
+
+                                        <RequestActive type='reset-password' />
+                                        <RequestActive type='reactive' />
+                                    </Stack>
                                 </Stack>
                                 <Stack justifyContent='space-between' alignItems='center' spacing={2}>
                                     <LoadingButton loading={loading} onClick={handleLogin}
@@ -148,7 +163,7 @@ const Login = () => {
                         </Stack>
                         <Divider orientation="vertical" flexItem sx={{ padding: "0 8px" }} />
                         <Stack flex={2} justifyContent="center" spacing={2}>
-                            <p style={{ textAlign: "center", marginTop: "3rem" }}>Hoặc tiếp tục bằng</p>
+                            <p style={{ textAlign: "center" }}>Hoặc tiếp tục bằng</p>
                             <Stack
                                 direction="row"
                                 justifyContent="center"

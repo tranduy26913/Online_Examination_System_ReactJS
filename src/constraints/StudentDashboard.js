@@ -19,7 +19,7 @@ export const sidebarTab = [
         icon: NotificationsIcon,
         text: 'Danh sách khoá học',
         link: 'list-course',
-        list: ['list-course'],
+        list: ['list-course','create-course'],
     },
     {
         id: 3,
@@ -55,15 +55,9 @@ export const sidebarTab = [
 ]
 
 export const sidebarCourse = [
+    
     {
         id: 1,
-        icon: PersonIcon,
-        text: 'Danh sách học viên',
-        link: 'manage-student',
-        list: ['manage-student'],
-    },
-    {
-        id: 2,
         icon: NotificationsIcon,
         text: 'Danh sách đề thi',
         link: 'manage-exam',
@@ -73,6 +67,13 @@ export const sidebarCourse = [
             'edit-exam',
             'detail-exam',
         ]
+    },
+    {
+        id: 2,
+        icon: PersonIcon,
+        text: 'Danh sách học viên',
+        link: 'manage-student',
+        list: ['manage-student'],
     },
     {
         id: 3,

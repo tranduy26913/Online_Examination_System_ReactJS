@@ -6,21 +6,19 @@ import {
     Button,
     DialogTitle,
     DialogContent,
-    DialogContentText,
     RadioGroup,
     Radio,
     DialogActions,
     FormControlLabel,
 } from "@mui/material";
 import apiProfile from "apis/apiProfile";
-import Loading from "components/Loading";
 import { useNavigate } from 'react-router-dom';
+import LoadingButton from 'components/LoadingButton';
 
 const UpgradeAccount = (props) => {
     const [uploading, setUploading] = useState(false);
     const [method, setMethod] = useState('Momo')
     const [open, setOpen] = useState(false)
-    const navigate = useNavigate()
 
     const handleClose = () => setOpen(false)
     const handleOpen = () => setOpen(true)
@@ -77,8 +75,8 @@ const UpgradeAccount = (props) => {
 
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleClose}>Huỷ</Button>
-                    <Button onClick={handlePayment}>Thanh toán</Button>
+                    <Button  variant='contained' onClick={handleClose}>Huỷ</Button>
+                    <LoadingButton variant='contained' loading={uploading} onClick={handlePayment}>Thanh toán</LoadingButton>
                 </DialogActions>
             </Dialog>
         </>

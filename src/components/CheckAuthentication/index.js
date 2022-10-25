@@ -8,7 +8,6 @@ import apiProfile from 'apis/apiProfile'
 import { clearUserInfo, setUserInfo } from 'slices/userSlice'
 import { useState } from 'react'
 import LoadingPage from 'components/LoadingPage'
-import Typography from 'theme/override/Typography'
 
 const privatePath = [
     '/my/', '/admin/', '/payment','/course/'

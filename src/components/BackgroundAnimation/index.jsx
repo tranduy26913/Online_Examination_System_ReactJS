@@ -1,5 +1,5 @@
 import { useTheme } from '@mui/material';
-import React, { useState } from 'react'
+import React,{ useEffect } from 'react';
 
 function BackgroundAnimation() {
     const theme = useTheme()
@@ -17,7 +17,7 @@ function BackgroundAnimation() {
 
     console.log('render animation')
 
-    React.useEffect(() => {
+    useEffect(() => {
 
         var rgb = options.lineColor.match(/\d+/g);
         let w, h, id, canvas, ctx, particles;

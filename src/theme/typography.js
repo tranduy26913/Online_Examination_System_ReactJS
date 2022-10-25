@@ -75,21 +75,23 @@ const typography = {
     ...responsiveFontSizes({ xs: 14, sm: 18, md: 18, lg: 18 }),
   },
   subtitle1: {
-    fontWeight: 400,
+    fontWeight: 500,
     lineHeight: 1.5,
     fontSize: pxToRem(16),
   },
   subtitle2: {
-    fontWeight: 400,
+    fontWeight: 500,
     lineHeight: 22 / 14,
     fontSize: pxToRem(14),
   },
   body1: {
+    fontWeight: 500,
     lineHeight: 1.5,
     fontSize: pxToRem(16),
-    textShadow: "0px 1px 2px #999",
+    //textShadow: "0px 1px 0px",
   },
   body2: {
+    fontWeight: 500,
     lineHeight: 22 / 14,
     fontSize: pxToRem(14),
   },

@@ -1,4 +1,4 @@
-import {  axiosClientWithToken} from "./axiosClient";
+import { axiosClient, axiosClientWithToken} from "./axiosClient";
 
 const apiProfile = {
 
@@ -7,8 +7,12 @@ const apiProfile = {
         const res = await axiosClientWithToken.put('/user/change-password', params)
         return res.data;
     },
+    putResetPassword: async (params) => {
+        const res = await axiosClient.post('/auth/reset-password', params)
+        return res.data;
+    },
     putUploadAvatar: async (params) => {
-        const res = await axiosClientWithToken.put('/user/update-avatar', params,{headers: {
+        const res = await axiosClientWithToken.put('/user/update-avatar', params, {headers: {
             'Content-Type': 'multipart/form-data'
           }})
         return res.data;

@@ -1,6 +1,5 @@
 import {
     styled,
-    FormGroup,
     InputBase,
     Switch,
     Stack,

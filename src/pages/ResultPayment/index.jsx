@@ -1,7 +1,7 @@
 import { Stack, Typography } from '@mui/material';
 import Page from 'components/Page';
 import React, { useEffect, useState } from 'react'
-import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 
 function ResultPayment() {
     const navigate = useNavigate()

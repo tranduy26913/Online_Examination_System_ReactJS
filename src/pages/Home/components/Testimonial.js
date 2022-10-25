@@ -1,5 +1,4 @@
-import React from 'react';
-import { Typography, Box, Card, CardContent, Grid, styled, Paper } from '@mui/material';
+import { Typography, Box, CardContent, Grid, Paper } from '@mui/material';
 import { Avatar } from '@mui/material'
 
 

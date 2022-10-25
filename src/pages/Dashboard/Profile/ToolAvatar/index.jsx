@@ -29,8 +29,7 @@ import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import { useSelector, useDispatch } from "react-redux";
 import apiProfile from "apis/apiProfile";
 import Loading from "components/Loading";
-import { setUserInfo, updateAvatar } from 'slices/userSlice';
-import moment from 'moment';
+import { updateAvatar } from 'slices/userSlice';
 
 const premiumStyle = {
     position: 'absolute',

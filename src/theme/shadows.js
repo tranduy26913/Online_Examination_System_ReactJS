@@ -1,15 +1,15 @@
 import { alpha } from "@mui/material";
 import palette from "./palette";
 // Color shadow in Light mode
-const LIGHT_MODE = palette.light.grey[500];
+const LIGHT_MODE = palette.light.grey[700];
 
 // Color shadow in Dark mode
 const DARK_MODE = "#444";
 
 const createShadow = (color) => {
-  const transparent1 = alpha(color, 0.2);
-  const transparent2 = alpha(color, 0.14);
-  const transparent3 = alpha(color, 0.12);
+  const transparent1 = alpha(color, 0.3);
+  const transparent2 = alpha(color, 0.24);
+  const transparent3 = alpha(color, 0.18);
   return [
     "none",
     `0px 2px 1px -1px ${transparent1},0px 1px 1px 0px ${transparent2},0px 1px 3px 0px ${transparent3}`,

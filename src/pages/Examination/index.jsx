@@ -66,6 +66,7 @@ const Examination = () => {
 
         }
         getQuestions()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [examId])
 
     const changeStateDoneIndex = useCallback((index, state) => {
