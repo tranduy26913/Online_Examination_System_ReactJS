@@ -10,11 +10,11 @@ import {
     TablePagination,
     Paper,
     Avatar,
-    Typography
+    Typography,
+    Chip
 } from "@mui/material"
 import Label from 'components/Label';
 import { useDispatch } from 'react-redux';
-import { changeBreadcrumb } from 'slices/breadcrumbSlice';
 import TableMoreMenu from './component/TableMoreMenu'
 import TableToolbar from './component/TableToolbar'
 import { useContext } from 'react';
@@ -24,6 +24,8 @@ import moment from 'moment';
 import { useCallback } from 'react';
 import TableHeadCustom from './component/TableHeadCustom';
 import EmptyList from 'components/UI/EmptyList';
+import { onValue, ref } from 'firebase/database';
+import { database } from 'config/firebaseConfig';
 
 // ----------------------------------------------------------------------
 
@@ -74,7 +76,8 @@ const ListStudent = () => {
     const [orderBy, setOrderBy] = useState('name');
     const [filterName, setFilterName] = useState('');
     const [rowsPerPage, setRowsPerPage] = useState(5);
-    const [exams, setExams] = useState([])
+    const [students, setStudents] = useState([])
+    const [status, setStatus] = useState([])
     const dispatch = useDispatch()
 
     const { id } = useContext(CourseContext)
@@ -84,7 +87,6 @@ const ListStudent = () => {
         setOrder(isAsc ? 'desc' : 'asc');
         setOrderBy(property);
     };
-
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -99,9 +101,9 @@ const ListStudent = () => {
         setFilterName(event.target.value);
     };
 
-    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - exams.length) : 0;
+    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - students.length) : 0;
 
-    const filteredUsers = applySortFilter(exams, getComparator(order, orderBy), filterName);
+    const filteredUsers = applySortFilter(students, getComparator(order, orderBy), filterName);
 
     const isUserNotFound = filteredUsers.length === 0;
 
@@ -111,20 +113,38 @@ const ListStudent = () => {
         }
         apiCourse.getListStudentOfCourse(params)
             .then(res => {
-                setExams(res)
+                setStudents(res)
+                setStatus(res.map(item=>false))
             })
     }, [id])
+
+    useEffect(() => {
+        try {
+            students.forEach(item => {
+                const { _id, ...data } = item
+                if (_id) {
+                    let userStatusDatabaseRef = ref(database, '/status/' + _id);//định nghĩa ref status của 1 user trên firebase
+                    onValue(userStatusDatabaseRef, (snapshot) => {
+                        let newStatus =[...status]
+                        let index = students.findIndex(item=>item._id === _id)
+                        if(snapshot.val())
+                            newStatus[index] = snapshot.val().state === 'online'
+                        else   
+                         newStatus[index] = false
+                        setStatus(newStatus)
+                    })
+                }
+            })
+        }
+        catch (err) {
+
+        }
+    }, [students])
     //Effect
     useEffect(() => {
-        const handleBreadcrumb = () => {
-            dispatch(changeBreadcrumb({
-                path: 'ddd',
-                display: 'Học máy'
-            }))
-        }
+
         if (!id) return
         loadListStudent()
-        handleBreadcrumb()
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [id])
     return (
@@ -141,13 +161,13 @@ const ListStudent = () => {
                                 order={order}
                                 orderBy={orderBy}
                                 headLabel={TABLE_HEAD}
-                                rowCount={exams.length}
+                                rowCount={students.length}
                                 onRequestSort={handleRequestSort}
                             />
                             <TableBody>
-                                
-                                {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                                    const { _id, fullname, birthday, status, gender, count, avatar, isVerified } = row;
+
+                                {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row,index) => {
+                                    const { _id, fullname, birthday,gender, count, avatar, isVerified } = row;
 
                                     return (
                                         <TableRow
@@ -155,7 +175,7 @@ const ListStudent = () => {
                                             key={_id}
                                             tabIndex={-1}
                                             role="checkbox"
-                                            
+
                                         // selected={isItemSelected}
                                         >
                                             <TableCell sx={{ width: '25%' }} component="th" scope="row" padding="none">
@@ -166,15 +186,17 @@ const ListStudent = () => {
                                                     </Typography>
                                                 </Stack>
                                             </TableCell>
-                                            <TableCell sx={{ width: '15%'}} align="center">{gender === 'female' ? "Nữ" : "Nam"}</TableCell>
-                                            <TableCell sx={{ width: '15%'}} align="center">{moment(birthday).format("DD/MM/YYYY")}</TableCell>
-                                            <TableCell sx={{ width: '20%'}} align="center">{count}</TableCell>
-                                            <TableCell sx={{ width: '15%'}} align="center">
-                                                <Label variant="ghost" color={(status === 'banned' && 'error') || 'success'}>
-                                                    status
-                                                </Label>
+                                            <TableCell sx={{ width: '15%' }} align="center">{gender === 'female' ? "Nữ" : "Nam"}</TableCell>
+                                            <TableCell sx={{ width: '15%' }} align="center">{moment(birthday).format("DD/MM/YYYY")}</TableCell>
+                                            <TableCell sx={{ width: '20%' }} align="center">{count}</TableCell>
+                                            <TableCell sx={{ width: '15%' }} align="center">
+                                            <Chip  size="small" 
+                                            label={status[index] ? 'Đang hoạt động' : "Không hoạt động"}
+                                            color={status[index] ? 'primary' : 'error'}
+                                            />
+                                                
                                             </TableCell>
-                                            <TableCell sx={{ width: '10%'}} align="right">
+                                            <TableCell sx={{ width: '10%' }} align="right">
                                                 <TableMoreMenu studentId={_id} reloadList={loadListStudent} />
                                             </TableCell>
                                         </TableRow>
@@ -191,7 +213,7 @@ const ListStudent = () => {
                                 <TableBody>
                                     <TableRow>
                                         <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
-                                            <EmptyList/>
+                                            <EmptyList />
                                         </TableCell>
                                     </TableRow>
                                 </TableBody>
@@ -203,7 +225,7 @@ const ListStudent = () => {
                 <TablePagination
                     rowsPerPageOptions={[5, 10, 25]}
                     component="div"
-                    count={exams.length}
+                    count={students.length}
                     rowsPerPage={rowsPerPage}
                     page={page}
                     onPageChange={handleChangePage}

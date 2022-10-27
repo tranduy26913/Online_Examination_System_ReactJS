@@ -25,6 +25,10 @@ const apiProfile = {
         const res = await axiosClientWithToken.put('/user/update-profile', params)
         return res.data;
     },
+    updateDeviceToken: async (params) => {
+        const res = await axiosClientWithToken.put('/user/update-device-token', params)
+        return res.data;
+    },
     getUserProfile: async () => {
         const res = await axiosClientWithToken.get(`/user/info`)
         return res.data;

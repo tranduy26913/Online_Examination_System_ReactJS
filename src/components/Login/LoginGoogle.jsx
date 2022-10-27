@@ -12,14 +12,15 @@ function LoginGoogle() {
 
     const handleGoogleLogin = useGoogleLogin({
         onSuccess: async (tokenResponse) => {
+            const id = toast.loading("Đang lấy thông tin...")
             apiSocial.loginGoogle({ accessToken: tokenResponse.access_token })
                 .then(res => {
                     dispatch(loginSuccess(res.user))
-                    toast.success("Đăng nhập thành công")
+                    toast.update(id,{render:"Đăng nhập thành công",isLoading:false,type:'success',autoClose:1200})
                     navigate('/')
                 })
                 .catch(err=>{
-                    toast.error("Đăng nhập không thành công. Vui lòng thử lại")
+                    toast.update(id,{render:"Đăng nhập không thành công. Vui lòng thử lại",isLoading:false,type:'warning',autoClose:1200})
                 })
         },
         onError: errorResponse => console.log(errorResponse),

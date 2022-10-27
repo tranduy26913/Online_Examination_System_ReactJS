@@ -10,19 +10,27 @@ import CheckAuthentication from 'components/CheckAuthentication';
 import { useDispatch, useSelector } from 'react-redux';
 import { axiosInstance } from 'apis/axiosClient';
 import { loginSuccess, logoutSuccess } from 'slices/authSlice';
+import StateActivity from 'components/StateActivity';
+import {app} from './config/firebaseConfig'
+import ErrorBoundary from 'components/ErrorPage/ErrorBoundary';
+
 function App() {
   const refreshToken = useSelector((state) => state.auth.refreshToken);
   const accessToken = useSelector((state) => state.auth.accessToken);
   const dispatch = useDispatch();
+  
+ 
   if (accessToken && refreshToken) {
+    
     axiosInstance(accessToken,refreshToken, dispatch, loginSuccess, logoutSuccess);
   }
   return (
-    <BrowserRouter>
+    <BrowserRouter><Header />
+    <ErrorBoundary>
       <CheckAuthentication>
 
         <GoogleOAuthProvider clientId={process.env.REACT_APP_GoogleClientID}>
-          <Header />
+          
           <BackgroundAnimation />
           <ConfigRoute />
           <ToastContainer
@@ -33,8 +41,10 @@ function App() {
             pauseOnFocusLoss
             pauseOnHover={false}
           />
+          <StateActivity/>
         </GoogleOAuthProvider>
       </CheckAuthentication>
+      </ErrorBoundary>
     </BrowserRouter>
 
 

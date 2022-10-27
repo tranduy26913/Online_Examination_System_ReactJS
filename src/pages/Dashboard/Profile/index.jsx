@@ -49,6 +49,7 @@ const Profile = () => {
             school: user?.school || ""
         }
     });
+   
 
     const [birthday, setBirthday] = useState(moment(user?.birthday))
     const [gender, setGender] = useState(user ? user.gender : "")
@@ -60,7 +61,7 @@ const Profile = () => {
 
 
     const onChangeGender = (event) => {
-        setGender(event.target.value);
+        setGender(event.target.value); 
     }
     const onSaveChange = (data) => {
         const { fullname, address, phone, school } = data
@@ -89,6 +90,7 @@ const Profile = () => {
                 dispatch(setUserInfo(newUser))
             })
     }
+   
     return (
         <Stack className="customer-info" spacing={3}>
             <Stack direction="row" spacing={2}>
@@ -174,7 +176,7 @@ const Profile = () => {
                             </Grid>
                             <Grid xs={12}>
                                 <FormControl sx={{ width: '100%' }}>
-                                    <label>Loại tài khoản</label>
+                                    <label>Giới tính</label>
                                     <RadioGroup
                                         row
                                         name="row-radio-buttons-group"
@@ -211,7 +213,7 @@ const Profile = () => {
                                 <DiamondIcon color="primary" />
                                 <ListItemText
                                     sx={{ '& span': { fontSize: "13px" } }}
-                                    primary="Loại tài khoản" secondary={user?.premium ? "VIP PRO" : "FREE"} />
+                                    primary="Loại tài khoản" secondary={user?.premium ? "PREMIUM" : "FREE"} />
                             </Stack>
                             {
                                 !user?.premium &&

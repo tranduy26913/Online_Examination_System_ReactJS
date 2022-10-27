@@ -54,7 +54,7 @@ function CheckAuthentication(props) {
                 setLoading(false)
                 dispatch(clearUserInfo())
                 if (isPrivate) {
-                    toast.warning("Bạn không có quyền truy cập. Vui lòng đăng nhập lại")
+                    //toast.warning("Bạn không có quyền truy cập. Vui lòng đăng nhập lại")
                     navigate('/')
                 }
             }

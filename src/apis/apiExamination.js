@@ -1,4 +1,4 @@
-import { axiosClient, axiosInstance } from "./axiosClient";
+import { axiosClient, axiosClientWithToken, axiosInstance } from "./axiosClient";
 const apiExamination = {
 
     getExaminationsById: async (id) => {
@@ -17,8 +17,8 @@ const apiExamination = {
         const res = await axiosClient.get('/categories', { params })
         return res.data;
     },
-    postExamination:async (params) => {
-        const res = await axiosClient.post('/examinations', params )
+   createExam:async (params) => {
+        const res = await axiosClientWithToken.post('/exam/create-exam', params )
         return res.data;
     },
     updateExamination:async (params,id) => {

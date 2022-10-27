@@ -26,16 +26,16 @@ import {
   PaperQuestion,
   AccordionSummaryStyle,
   StackLabel,
-  BootstrapInput,
   Stack2Column
 } from './Component/MUI'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useContext, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import apiExamination from 'apis/apiExamination';
 import { toast } from 'react-toastify';
-import {useSearchParams } from 'react-router-dom';
+import {useNavigate, useSearchParams } from 'react-router-dom';
 import apiQuestion from 'apis/apiQuestion';
 import { addQuestion, clearQuestion } from 'slices/userSlice';
+import CourseContext from 'pages/Course/LayoutCourse/CourseContext';
 /**
  * @param {Date} date 
  */
@@ -57,47 +57,28 @@ const CreateExamination = (props) => {
   const [isEdit, setIsEdit] = useState(props.isEdit)
   const [examId, setExamId] = useState(paramUrl.get('examId') || '')
   const [name, setName] = useState('')
-  const [numberQuestion, setNumberQuestion] = useState(1)
+  const [numberofQuestion, setNumberofQuestion] = useState(1)
   const [idQuestion, setIdQuestion] = useState('')
   const [expanded, setExpanded] = useState(false);
   const [tracking, setTracking] = useState(false);
-  const [shutle, setShutle] = useState(false);
-  const [viewAnswer, setViewAnswer] = useState('1')
-  const [viewMark, setViewMark] = useState('1')
-  const [accessExam, setAccessExam] = useState('2')
-  const [typeMark, setTypeMark] = useState('1')
+  const [shuffle, setShuffle] = useState(false);
+  const [viewAnswer, setViewAnswer] = useState('no')
+  const [viewMark, setViewMark] = useState('no')
+ // const [accessExam, setAccessExam] = useState('2')
+  const [typeMark, setTypeMark] = useState('max')
   const [start, setStart] = useState(toStringDateTime(new Date()))//thời gian bắt đầu
   const [end, setEnd] = useState(toStringDateTime(new Date()))//thời gian kết thúc
   const [duration, setDuration] = useState(1)//thời lượng bài thi (phút)
-  const [inputQuestion, setInputQuestion] = useState(true)//tự nhập câu hỏi/lấy từ ngân hàng đề
+  //const [inputQuestion, setInputQuestion] = useState(true)//tự nhập câu hỏi/lấy từ ngân hàng đề
   const [pinExam, setPinExam] = useState('')//tự nhập câu hỏi/lấy từ ngân hàng đề
   const [isLimit, setIsLimit] = useState(true)//giới hạn số lần thi
   const [limit, setLimit] = useState(0)//Số lần được phép thi tối đa
-  const [listCourse, setListCourse] = useState([])
-  const [course, setCourse] = useState('');
   const user = useSelector(state => state.auth.user)
+  const {id} = useContext(CourseContext)
   const QUESTIONS = useSelector(state => state.user.questions)
   const dispatch = useDispatch()
-
-  useEffect(() => {
-    const getCourses = () => {
-      if (!user)
-        return
-      const params = {
-        idUser: user.id
-      }
-      apiCourse.getCourses(params)
-        .then(res => {
-          setListCourse(res)
-        })
-        .catch(err => {
-          console.log(err);
-        })
-    }
-
-    getCourses()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+const navigate = useNavigate()
+  
 
   useEffect(() => {
     const getQuestions = () => {
@@ -134,13 +115,19 @@ const CreateExamination = (props) => {
   };
 
   const handleChangeName = event => setName(event.target.value)
-  const handleChangeNumberQuestion = (event) => setNumberQuestion(Number(event.target.value |= 0))
+  const handleChangeNumberQuestion = (event) => {
+    let newValue = Number(event.target.value |= 0)
+    
+     if(newValue > 200)
+      newValue = 200
+    setNumberofQuestion(newValue)
+  }
   const handleChangeViewAnswer = event => setViewAnswer(event.target.value)
   const handleChangeViewMark = event => setViewMark(event.target.value)
-  const handleChangeAccessExam = event => setAccessExam(event.target.value)
   const handleChangeTypeMark = event => setTypeMark(event.target.value)
-  const handleChangeInputQuestion = event => setInputQuestion(event.target.value)
   const handleChangePinExam = event => setPinExam(event.target.value)
+  //const handleChangeInputQuestion = event => setInputQuestion(event.target.value)
+  //const handleChangeAccessExam = event => setAccessExam(event.target.value)
 
   const onChangeStartTime = event => {
     const newDate = moment(new Date(event.target.value)).format("YYYY-MM-DDThh:mm");
@@ -154,35 +141,34 @@ const CreateExamination = (props) => {
   const handleSelectQuestionEdit = useCallback((value) => setIdQuestion(value), [])
   const onChangeDuration = (event) => setDuration(Number(event.target.value |= 0))
   const onChangeLimit = (event) => setLimit(Number(event.target.value |= 0))
-  const handleChangeCourse = (event) => setCourse(event.target.value)
+ // const handleChangeCourse = (event) => setCourse(event.target.value)
 
   const handleSubmit = () => {
     const params = {
       name,
-      numberQuestion,
-      creatorId: user?.id,
-      courseId: course,
+      numberofQuestion,
+      courseId: id,
       description: '',
-      questions: [],
       tracking,
       startTime: start,
       endTime: end,
-      attemptsAllowed: isLimit ? limit : 100,
-      maxPoint: 10,
+      attemptsAllowed: isLimit ? limit : 0,
+      maxPoint: 0,
       maxTime: duration,
-      questionOrder: shutle,
+      shuffle,
       typeMark,
       viewMark,
       viewAnswer,
-      allowAccess: accessExam,
+      //allowAccess: accessExam,
       pin: pinExam
     }
-    apiExamination.postExamination(params)
+    apiExamination.createExam(params)
       .then(res => {
         console.log(res)
         toast.success("Tạo đề thi thành công")
-        setExamId(res.id)
-        setIsEdit(true)
+        //navigate('')
+        // setExamId(res.id)
+        // setIsEdit(true)
       })
   }
 
@@ -206,7 +192,7 @@ const CreateExamination = (props) => {
 
             <StackLabel>
               <Box>Số câu hỏi</Box>
-              <input type='number' value={numberQuestion}
+              <input type='number' value={numberofQuestion} min='1' max='201'
                 onInput={handleChangeNumberQuestion} />
             </StackLabel>
             <StackLabel>
@@ -231,7 +217,7 @@ const CreateExamination = (props) => {
               <Box>Đảo câu hỏi và đáp án</Box>
               <FormGroup row>
                 <FormControlLabel
-                  control={<Switch checked={shutle} onChange={() => setShutle(!shutle)} />} />
+                  control={<Switch checked={shuffle} onChange={() => setShuffle(!shuffle)} />} />
               </FormGroup>
             </StackLabel>
           </Stack2Column>
@@ -263,22 +249,19 @@ const CreateExamination = (props) => {
               />
             </StackLabel>
 
-            <StackLabel>
+            {/* <StackLabel>
               <Box>Khoá học</Box>
               <Select
                 value={course}
                 onChange={handleChangeCourse}
                 input={<BootstrapInput />}
               >
-                {/* <MenuItem value="">
-                  <em>None</em>
-                </MenuItem> */}
                 {
                   listCourse.map(item =>
                     <MenuItem value={item.id}>{item.name}</MenuItem>)
                 }
               </Select>
-            </StackLabel>
+            </StackLabel> */}
           </Stack2Column>
 
           <StackLabel>
@@ -289,9 +272,9 @@ const CreateExamination = (props) => {
               value={viewAnswer}
               onChange={handleChangeViewAnswer}
             >
-              <FormControlLabel value="0" control={<Radio size='small' />} label="Không" />
-              <FormControlLabel value="1" control={<Radio size='small' />} label="Khi thi xong" />
-              <FormControlLabel value="2" control={<Radio size='small' />} label="Khi tất cả thi xong" />
+              <FormControlLabel value="no" control={<Radio size='small' />} label="Không" />
+              <FormControlLabel value="done" control={<Radio size='small' />} label="Khi thi xong" />
+              <FormControlLabel value="alldone" control={<Radio size='small' />} label="Khi tất cả thi xong" />
             </RadioGroup>
           </StackLabel>
 
@@ -303,13 +286,13 @@ const CreateExamination = (props) => {
               value={viewMark}
               onChange={handleChangeViewMark}
             >
-              <FormControlLabel value="0" control={<Radio size='small' />} label="Không" />
-              <FormControlLabel value="1" control={<Radio size='small' />} label="Khi thi xong" />
-              <FormControlLabel value="2" control={<Radio size='small' />} label="Khi tất cả thi xong" />
+              <FormControlLabel value="no" control={<Radio size='small' />} label="Không" />
+              <FormControlLabel value="done" control={<Radio size='small' />} label="Khi thi xong" />
+              <FormControlLabel value="alldone" control={<Radio size='small' />} label="Khi tất cả thi xong" />
             </RadioGroup>
           </StackLabel>
 
-          <StackLabel>
+          {/* <StackLabel>
             <Box>Ai được phép thi</Box>
             <RadioGroup
               row
@@ -321,9 +304,9 @@ const CreateExamination = (props) => {
               <FormControlLabel value="1" control={<Radio size='small' />} label="Đã đăng ký tài khoản" />
               <FormControlLabel value="2" control={<Radio size='small' />} label="Trong khoá học" />
             </RadioGroup>
-          </StackLabel>
+          </StackLabel> */}
 
-          <StackLabel>
+          {/* <StackLabel>
             <Box>Cách nhập câu hỏi</Box>
             <RadioGroup
               row
@@ -334,7 +317,7 @@ const CreateExamination = (props) => {
               <FormControlLabel value={true} control={<Radio size='small' />} label="Tự nhập câu hỏi" />
               <FormControlLabel value={false} control={<Radio size='small' />} label="Lấy từ ngân hàng câu hỏi" />
             </RadioGroup>
-          </StackLabel>
+          </StackLabel> */}
 
           <StackLabel>
             <Box>Cách tính điểm</Box>
@@ -344,9 +327,9 @@ const CreateExamination = (props) => {
               value={typeMark}
               onChange={handleChangeTypeMark}
             >
-              <FormControlLabel value={true} control={<Radio size='small' />} label="Lấy điểm cao nhất" />
-              <FormControlLabel value={false} control={<Radio size='small' />} label="Lấy điểm lần thi cuối" />
-              <FormControlLabel value={false} control={<Radio size='small' />} label="Lấy điểm trung bình các lần thi" />
+              <FormControlLabel value={'max'} control={<Radio size='small' />} label="Lấy điểm cao nhất" />
+              <FormControlLabel value={'last'} control={<Radio size='small' />} label="Lấy điểm lần thi cuối" />
+              <FormControlLabel value={'avg'} control={<Radio size='small' />} label="Lấy điểm trung bình các lần thi" />
             </RadioGroup>
           </StackLabel>
           <Stack2Column>
