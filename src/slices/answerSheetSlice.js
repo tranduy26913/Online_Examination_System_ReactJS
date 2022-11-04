@@ -1,45 +1,46 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-    info:null,
     takeExamId:'',
-    questions:[],
+    result:[],
 }
 export const answerSheetSlice = createSlice({
     name: "answerSheet",
     initialState,
     reducers: {
-        setUserInfo:(state,action)=>{
-            state.info = action.payload
-        },
-        clearUserInfo:(state,action)=>{
-            state.info = null
-        },
         changeAnswer: (state, action) => {
-            const {id, answerIds} = action.payload
-            const duplicate = state.questions.find(item => item.id === id)
+            const {question, answers} = action.payload
+            const duplicate = state.result.find(item => item.question === question)
             if(duplicate){
-                state.questions = delItem(state.questions,duplicate)
+                state.result = delItem(state.result,duplicate)
             }
-            state.questions = [...state.questions,{id,answerIds}]
+            state.result = [...state.result,{question,answers}]
         },
-        clearAnswers: (state, action) => {
-            state.questions = []
+        clearAnswerSheet: (state, action) => {
+            state.result = []
         },
         deleteAnswer:(state,action) => {
-            const {id} = action.payload
-            state.questions = delItem(state.questions,{id})
+            const {question} = action.payload
+            state.result = delItem(state.result,{question})
+        },
+        setTakeExamId:(state,action)=>{
+            state.takeExamId = action.payload
+        },
+        clearTakeExamId :(state) =>{
+            state.takeExamId = ''
         }
     }
 })
 
-const delItem = (arr, item) => arr.filter(e=> e.id !== item.id)
+const delItem = (arr, item) => arr.filter(e=> e.question !== item.question)
 
 
 export const {
     changeAnswer,
-    clearAnswers,
-    deleteAnswer
+    clearAnswerSheet,
+    deleteAnswer,
+    clearTakeExamId,
+    setTakeExamId
 } = answerSheetSlice.actions
 
 export default answerSheetSlice.reducer

@@ -8,32 +8,26 @@ import {
     TableCell,
     TableContainer,
     TablePagination,
-    IconButton,
 } from "@mui/material"
 import Scrollbar from 'components/Scrollbar';
-
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import Label from 'components/Label';
-import SearchNotFound from 'components/SearchNotFound';
-import { TableToolbar, TableMoreMenu } from 'components/TableCustom';
+import { TableToolbar } from 'components/TableCustom';
 import TableHeadCustom from './TableHeadCustom';
 import { useParams } from 'react-router-dom';
 import apiStatistic from 'apis/apiStatistic';
 import { useSelector } from 'react-redux';
 import TakeExamAction from '../TakeExamAction';
 import moment from 'moment';
+import EmptyList from 'components/UI/EmptyList';
 
 
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-    { id: 'name', label: 'Tên đề thi', alignRight: false },
-    { id: 'na', label: 'Điểm', alignRight: false },
-    { id: 'role', label: 'Lần thi', alignRight: false },
+    { id: 'score', label: 'Điểm', alignRight: false },
+    { id: 'na', label: 'Thời gian thi', alignRight: false },
     { id: 'isVerified', label: 'Thời lượng', alignRight: false },
-    { id: 'status', label: 'Thời gian nộp', alignRight: false },
+    { id: 'status', label: 'Trạng thái', alignRight: false },
 ];
 
 // ----------------------------------------------------------------------
@@ -73,7 +67,7 @@ const TableStudent = () => {
     const [orderBy, setOrderBy] = useState('name');
     const [filterName, setFilterName] = useState('');
     const [rowsPerPage, setRowsPerPage] = useState(5);
-    const [exams, setExams] = useState(tests)
+    const [exams, setExams] = useState([])
     const { slug } = useParams()//lấy slug exam
     const role = useSelector(state => state.setting.role)
 
@@ -92,7 +86,7 @@ const TableStudent = () => {
 
     const handleFilterByName = (event) => setFilterName(event.target.value);
 
-    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - tests.length) : 0;
+    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - exams.length) : 0;
 
     const filteredUsers = applySortFilter(exams, getComparator(order, orderBy), filterName);
 
@@ -100,17 +94,11 @@ const TableStudent = () => {
 
     useEffect(() => {
         const getStatistic = () => {
-            const params = { examSlug:slug }
-            let response = null
-            if (role === 'student') {
-                response = apiStatistic.getStatisticExamByStudent(params)
-            }
-            else {
-                response = apiStatistic.getStatisticExamByTeacher(params)
-            }
-            response.then(res => {
-                setExams(res)
-            })
+            const params = { examSlug: slug }
+            apiStatistic.getStatisticExamByStudent(params)
+                .then(res => {
+                    setExams(res)
+                })
         }
         getStatistic()
     }, [role, slug])
@@ -134,8 +122,8 @@ const TableStudent = () => {
                         />
                         <TableBody>
                             {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                                const { id: takeExamId, slug: slugExam, name, submitTime, startTime,points,maxPoints } = row;
-                                const duration = moment(submitTime).diff(startTime,'minutes')
+                                const { id: takeExamId, slug: slugExam, name, submitTime, startTime, points, maxPoints,status } = row;
+                                const duration = moment(submitTime).diff(startTime, 'minutes')
                                 return (
                                     <TableRow
                                         hover
@@ -143,16 +131,16 @@ const TableStudent = () => {
                                         tabIndex={-1}
                                     >
 
-                                        <TableCell align="left">{name}</TableCell>
-                                        <TableCell align="center">{points}/{maxPoints}</TableCell>
+                                        {/* <TableCell align="left">{name}</TableCell> */}
+                                        <TableCell align="left">{Math.round(((points + Number.EPSILON) * 100)) / 100}/{maxPoints}</TableCell>
                                         <TableCell align="left">{moment(startTime).format('DD/MM/YYYY HH:mm')}</TableCell>
-                                        <TableCell align="left">{duration}</TableCell>
+                                        <TableCell align="center">{duration}</TableCell>
                                         <TableCell align="left">
-                                            {submitTime}
+                                        {status === 'not submitted'?'Chưa nộp bài':'Đã nộp'}
                                         </TableCell>
 
                                         <TableCell align="right">
-                                            <TakeExamAction takeExamId={takeExamId}/>
+                                            <TakeExamAction takeExamId={takeExamId} />
                                         </TableCell>
                                     </TableRow>
                                 );
@@ -168,7 +156,7 @@ const TableStudent = () => {
                             <TableBody>
                                 <TableRow>
                                     <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
-                                        <SearchNotFound searchQuery={filterName} />
+                                    <EmptyList />
                                     </TableCell>
                                 </TableRow>
                             </TableBody>
@@ -180,7 +168,7 @@ const TableStudent = () => {
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"
-                count={tests.length}
+                count={exams.length}
                 labelRowsPerPage='Số dòng mỗi trang'
                 rowsPerPage={rowsPerPage}
                 page={page}
@@ -191,54 +179,5 @@ const TableStudent = () => {
     )
 }
 
-const tests = [
-    {
-        id: '1',
-        name: "Bài kiểm tra số 1",
-        submitTime: new Date().toLocaleString(),
-        duration: 30,
-        points: 10,
-        turns: 10
-    },
-    {
-        id: '2',
-        name: "Bài kiểm tra số 2",
-        submitTime: new Date().toLocaleString(),
-        duration: 30,
-        points: 10,
-        turns: 10
-    },
-    {
-        id: '3',
-        name: "Bài kiểm tra số 3",
-        submitTime: new Date().toLocaleString(),
-        duration: 30,
-        points: 10,
-        turns: 10
-    },
-    {
-        id: '4',
-        name: "Bài kiểm tra số 3",
-        submitTime: new Date().toLocaleString(),
-        duration: 30,
-        points: 10,
-        turns: 10
-    },
-    {
-        id: '5',
-        name: "Bài kiểm tra số 3",
-        submitTime: new Date().toLocaleString(),
-        duration: 30,
-        points: 10,
-        turns: 10
-    },
-    {
-        name: "Bài kiểm tra số 3",
-        submitTime: new Date().toLocaleString(),
-        duration: 30,
-        points: 10,
-        turns: 10
-    }
-]
 
 export default TableStudent

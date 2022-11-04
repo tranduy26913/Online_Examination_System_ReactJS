@@ -22,7 +22,7 @@ import AdbIcon from '@mui/icons-material/Adb';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { logoutSuccess } from 'slices/authSlice';
-import { toggleTheme } from 'slices/themeSlice';
+import { changeRole, toggleTheme } from 'slices/settingSlice';
 
 
 const MaterialUISwitch = styled(Switch)(({ theme }) => ({
@@ -95,10 +95,6 @@ const settings = [
     display: 'Khoá học',
     path: 'list-course'
   },
-  {
-    display: 'Đăng xuất',
-    path: 'logout'
-  },
 ];
 
 const AppBarShadow = styled(AppBar)(({ theme }) => ({
@@ -108,11 +104,11 @@ const AppBarShadow = styled(AppBar)(({ theme }) => ({
 }))
 
 function Header() {
-
+  const role = useSelector(state => state.setting.role)
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const user = useSelector(state => state.user.info)
-  const isLight = useSelector(state => state.theme.isLight)
+  const isLight = useSelector(state => state.setting.isLight)
   const dispatch = useDispatch()
 
   const handleOpenNavMenu = (event) => setAnchorElNav(event.currentTarget);
@@ -125,6 +121,11 @@ function Header() {
     dispatch(toggleTheme(!isLight))
   }
 
+  const handleChangeRole = (role)=>{
+    if(role === 'teacher' || role === 'student'){
+      dispatch(changeRole(role))
+    }
+  }
   const handleLogout = () => {
     dispatch(logoutSuccess())
     setAnchorElUser(null);
@@ -133,7 +134,7 @@ function Header() {
 
   return (
 
-    <AppBarShadow position="sticky"  color='primary'>
+    <AppBarShadow position="sticky" color='primary'>
       <Container maxWidth="xl" >
         <Toolbar disableGutters
           sx={{
@@ -261,18 +262,25 @@ function Header() {
                 >
                   {settings.map((setting) => {
                     return (
-                      setting.path !== 'logout' ?
-                        <Link key={setting.path} to={`/my/${setting.path}`}>
-                          <MenuItem onClick={handleCloseUserMenu}>
-                            <Typography textAlign="center">{setting.display}</Typography>
-                          </MenuItem>
-                        </Link>
-                        :
-                        <MenuItem key={setting.path} onClick={handleLogout}>
+                      <Link key={setting.path} to={`/my/${setting.path}`}>
+                        <MenuItem onClick={handleCloseUserMenu}>
                           <Typography textAlign="center">{setting.display}</Typography>
-                        </MenuItem>)
+                        </MenuItem>
+                      </Link>
+
+                    )
+                  })}
+                  {role === 'student' ?
+                    <MenuItem onClick={()=>handleChangeRole('teacher')}>
+                      <Typography textAlign="center">Vào giao diện giáo viên</Typography>
+                    </MenuItem> :
+                    <MenuItem onClick={()=>handleChangeRole('student')}>
+                      <Typography textAlign="center">Vào giao diện học viên</Typography>
+                    </MenuItem>
                   }
-                  )}
+                  <MenuItem onClick={handleLogout}>
+                    <Typography textAlign="center">Đăng xuất</Typography>
+                  </MenuItem>
                 </Menu>
               </> :
               <Stack direction='row' justifyContent='space-between' p={1} spacing={0.5}>

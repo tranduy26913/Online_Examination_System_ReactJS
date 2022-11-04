@@ -1,6 +1,6 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import authReducer from "../slices/authSlice";
-import themeReducer from '../slices/themeSlice'
+import settingReducer from '../slices/settingSlice'
 import userReducer from '../slices/userSlice'
 import breadcrumbReducer from 'slices/breadcrumbSlice'
 import answerSheetReducer from 'slices/answerSheetSlice'
@@ -34,7 +34,7 @@ const userPersistConfig = {
 
 const rootReducer = combineReducers({
    auth: authReducer,
-   theme:themeReducer,
+   setting:settingReducer,
    breadcrumb:breadcrumbReducer,
    answerSheet:answerSheetReducer,
    user:userReducer,

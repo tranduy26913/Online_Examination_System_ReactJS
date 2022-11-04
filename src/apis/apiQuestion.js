@@ -1,29 +1,15 @@
-import { axiosClient } from "./axiosClient";
+import { axiosClient, axiosClientWithToken } from "./axiosClient";
 const apiQuestion = {
-    getQuestionsById: async (id) => {
-        const myReview = await axiosClient.get(`/questions/${id}`)
-        return myReview.data;
-    },
-    postQuestion: async (params) =>{
-        const res = await axiosClient.post('/questions', params)
+   
+    createQuestion: async (params) =>{
+        const res = await axiosClientWithToken.post('question/create-question', params)
         return res.data;
     },
-    postAnswers: async (params) =>{
-        const res = await axiosClient.post('/answers', params)
+    deleteQuestion: async (params) =>{
+        const res = await axiosClientWithToken.delete('question', {params})
         return res.data;
     },
-    updateQuestion: async (params,id) =>{
-        const res = await axiosClient.patch('/questions/'+id, params)
-        return res.data;
-    },
-    getMyRevPurchaseds: async (params) =>{
-        const myRevPurchaseds = await axiosClient.get('', {params})
-        return myRevPurchaseds.data;
-    },
-
-    getRevProduct: async (params) => {
-        const revProduct = await axiosClient.get('', {params})
-        return revProduct.data;
-    },    
+   
+   
 }
 export default apiQuestion; 

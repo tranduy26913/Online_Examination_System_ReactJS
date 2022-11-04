@@ -2,9 +2,6 @@ import {
   Box,
   Paper,
   Divider,
-  AccordionSummary,
-  AccordionDetails,
-  Accordion,
   Button,
   Typography,
   Stack,
@@ -13,29 +10,22 @@ import {
   FormGroup,
   RadioGroup,
   Radio,
-  Select,
-  MenuItem,
 } from '@mui/material'
 import { useTheme } from '@mui/system';
-import CreateQuestion from 'components/Question/CreateQuestion'
-import DetailQuestion from 'components/Question/DetailQuestion'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import moment from 'moment'
-import apiCourse from 'apis/apiCourse'
 import {
-  PaperQuestion,
-  AccordionSummaryStyle,
   StackLabel,
   Stack2Column
 } from './Component/MUI'
-import { useCallback, useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import apiExamination from 'apis/apiExamination';
 import { toast } from 'react-toastify';
-import {useNavigate, useSearchParams } from 'react-router-dom';
-import apiQuestion from 'apis/apiQuestion';
+import { useNavigate, useParams } from 'react-router-dom';
 import { addQuestion, clearQuestion } from 'slices/userSlice';
 import CourseContext from 'pages/Course/LayoutCourse/CourseContext';
+import ExamContext from './ExamContext';
+import LayoutListQuesion from './Component/LayoutListQuesion';
 /**
  * @param {Date} date 
  */
@@ -52,19 +42,17 @@ const toStringDateTime = (date) => {
 
 const CreateExamination = (props) => {
   const theme = useTheme()
-  const paramUrl = useSearchParams()[0]
+  const paramUrl = useParams()
 
   const [isEdit, setIsEdit] = useState(props.isEdit)
-  const [examId, setExamId] = useState(paramUrl.get('examId') || '')
+  const [slug, setSlug] = useState(paramUrl.examSlug || '')
+  const [id, setId] = useState('')
   const [name, setName] = useState('')
   const [numberofQuestion, setNumberofQuestion] = useState(1)
-  const [idQuestion, setIdQuestion] = useState('')
-  const [expanded, setExpanded] = useState(false);
   const [tracking, setTracking] = useState(false);
   const [shuffle, setShuffle] = useState(false);
   const [viewAnswer, setViewAnswer] = useState('no')
   const [viewMark, setViewMark] = useState('no')
- // const [accessExam, setAccessExam] = useState('2')
   const [typeMark, setTypeMark] = useState('max')
   const [start, setStart] = useState(toStringDateTime(new Date()))//thời gian bắt đầu
   const [end, setEnd] = useState(toStringDateTime(new Date()))//thời gian kết thúc
@@ -73,32 +61,27 @@ const CreateExamination = (props) => {
   const [pinExam, setPinExam] = useState('')//tự nhập câu hỏi/lấy từ ngân hàng đề
   const [isLimit, setIsLimit] = useState(true)//giới hạn số lần thi
   const [limit, setLimit] = useState(0)//Số lần được phép thi tối đa
-  const user = useSelector(state => state.auth.user)
-  const {id} = useContext(CourseContext)
-  const QUESTIONS = useSelector(state => state.user.questions)
+  const user = useSelector(state => state.auth.refreshToken)
+  const { courseId, id: courseobjId } = useContext(CourseContext)
   const dispatch = useDispatch()
-const navigate = useNavigate()
-  
+  const navigate = useNavigate()
+
+
 
   useEffect(() => {
     const getQuestions = () => {
-      if (!user)
-        return
-      if (!examId)
-        return
-      apiExamination.getExaminationsById(examId)
+      if (!user) return
+      if (!slug) return
+      apiExamination.getExaminationBySlug(slug)
         .then(res => {
           try {
-            const exam = res[0]
+            const exam = res
             dispatch(clearQuestion())
             setName(exam.name)
+            setId(exam.id || exam._id)
             const questions = exam.questions
-            questions.forEach(item=>{
-              apiQuestion.getQuestionsById(item)
-                .then(res=>{
-                    const question = res
-                    dispatch(addQuestion(question))
-                })
+            questions.forEach(item => {
+              dispatch(addQuestion(item.question))
             })
           }
           catch (err) {
@@ -108,17 +91,13 @@ const navigate = useNavigate()
     }
     getQuestions()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [examId])
+  }, [slug, user])
 
-  const handleChangeQuestion = (panel) => (event, isExpanded) => {
-    setExpanded(isExpanded ? panel : false);
-  };
 
   const handleChangeName = event => setName(event.target.value)
   const handleChangeNumberQuestion = (event) => {
     let newValue = Number(event.target.value |= 0)
-    
-     if(newValue > 200)
+    if (newValue > 200)
       newValue = 200
     setNumberofQuestion(newValue)
   }
@@ -127,7 +106,6 @@ const navigate = useNavigate()
   const handleChangeTypeMark = event => setTypeMark(event.target.value)
   const handleChangePinExam = event => setPinExam(event.target.value)
   //const handleChangeInputQuestion = event => setInputQuestion(event.target.value)
-  //const handleChangeAccessExam = event => setAccessExam(event.target.value)
 
   const onChangeStartTime = event => {
     const newDate = moment(new Date(event.target.value)).format("YYYY-MM-DDThh:mm");
@@ -138,16 +116,14 @@ const navigate = useNavigate()
     setEnd(newDate)
   }
 
-  const handleSelectQuestionEdit = useCallback((value) => setIdQuestion(value), [])
   const onChangeDuration = (event) => setDuration(Number(event.target.value |= 0))
   const onChangeLimit = (event) => setLimit(Number(event.target.value |= 0))
- // const handleChangeCourse = (event) => setCourse(event.target.value)
 
   const handleSubmit = () => {
     const params = {
       name,
       numberofQuestion,
-      courseId: id,
+      courseId: courseobjId,
       description: '',
       tracking,
       startTime: start,
@@ -159,16 +135,14 @@ const navigate = useNavigate()
       typeMark,
       viewMark,
       viewAnswer,
-      //allowAccess: accessExam,
       pin: pinExam
     }
     apiExamination.createExam(params)
       .then(res => {
-        console.log(res)
         toast.success("Tạo đề thi thành công")
-        //navigate('')
-        // setExamId(res.id)
-        // setIsEdit(true)
+        navigate(`/course/${courseId}/detail-exam/${res.slug}`)
+        setSlug(res.slug)
+        setIsEdit(true)
       })
   }
 
@@ -360,36 +334,10 @@ const navigate = useNavigate()
         </Stack>
       </Paper>
       {
-        isEdit && <>
-          <Paper sx={{ marginBottom: '12px' }}>
-            <Typography align='center' fontSize='20px' fontWeight={600} sx={{ color: theme.palette.primary.main }}>Danh sách câu hỏi</Typography>
-          </Paper>
-          {
-            QUESTIONS.map((item,index) =>
-
-              <PaperQuestion key={item.id} elevation={12} >
-                <Accordion expanded={item.id === expanded} onChange={handleChangeQuestion(item.id)}>
-                  <AccordionSummary sx={AccordionSummaryStyle}
-                    expandIcon={<ExpandMoreIcon />}
-                  ><Typography>Câu hỏi {index+1}</Typography>
-
-                  </AccordionSummary>
-                  <AccordionDetails>
-                    {idQuestion === item.id ?
-                      <CreateQuestion edit={true} id={idQuestion}
-                      handleSelectQuestion = {handleSelectQuestionEdit}
-                        question={item} /> : <DetailQuestion id={item.id} question={item} handleEdit={handleSelectQuestionEdit} />}
-                  </AccordionDetails>
-                </Accordion>
-              </PaperQuestion>
-
-            )
-          }
-          <PaperQuestion elevation={12} >
-            <CreateQuestion edit={false} id='' examId={examId} />
-          </PaperQuestion>
-          {/* <Button variant='contained' onClick={handleCreateQuestion}>Tạo câu hỏi mới</Button> */}
-        </>
+        isEdit && 
+        <ExamContext.Provider value={{examId: id}}>
+          <LayoutListQuesion  />
+        </ExamContext.Provider>
       }
 
     </Stack >

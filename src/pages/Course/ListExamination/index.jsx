@@ -9,7 +9,8 @@ import {
     TableCell,
     TableContainer,
     TablePagination,
-    Paper
+    Paper,
+    Chip
 } from "@mui/material"
 import Scrollbar from 'components/Scrollbar';
 import Label from 'components/Label';
@@ -72,9 +73,9 @@ const ListExaminationTeacher = () => {
     const [order, setOrder] = useState('asc');
     const [orderBy, setOrderBy] = useState('name');
     const [filterName, setFilterName] = useState('');
-    const [rowsPerPage, setRowsPerPage] = useState(5);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
     const [exams, setExams] = useState([])
-    const {id} = useContext(CourseContext)
+    const {courseId,id} = useContext(CourseContext)
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
@@ -105,8 +106,9 @@ const ListExaminationTeacher = () => {
     useEffect(() => {
         const loadListExam = () => {//lấy danh sách bài kiểm tra
             const params = {
-                courseId:id
+                courseId
             }
+            console.log(courseId)
             apiCourse.getListExamOfCourse(params)
                 .then(res=>{
                     setExams(res)
@@ -114,16 +116,16 @@ const ListExaminationTeacher = () => {
         }
         loadListExam()
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [id])
+    }, [courseId])
     return (
         <Box >
             <Stack spacing={1}>
                 <Paper elevation={24}>
                     <TableToolbar  filterName={filterName} onFilterName={handleFilterByName}
-                        button={{ display: "Tạo đề kiểm tra", path: 'create-exam' }} />
+                        button={{ display: "Tạo đề kiểm tra", path: `/course/${courseId}/create-exam` }} />
 
                     <Scrollbar>
-                        <TableContainer sx={{ minWidth: 800 }}>
+                        <TableContainer sx={{ minWidth: 800,padding:'0 12px' }}>
                             <Table>
                                 <TableHeadCustom
                                     order={order}
@@ -134,38 +136,39 @@ const ListExaminationTeacher = () => {
                                 />
                                 <TableBody>
                                     {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                                        const { id, name, count, status, company, avatarUrl, isVerified } = row;
+                                        const { id:idExam,slug:slugExam, name, count, status, numberofQuestions, maxTimes, isVerified } = row;
 
                                         return (
                                             <TableRow
                                                 hover
-                                                key={id}
+                                                key={idExam}
                                                 tabIndex={-1}
                                             >
                                                 
                                                 <TableCell align="left">{name}</TableCell>
-                                                <TableCell align="left">{count}</TableCell>
-                                                <TableCell align="left">{}</TableCell>
-                                                <TableCell align="left">{isVerified ? 'Yes' : 'No'}</TableCell>
+                                                <TableCell align="center">{count}</TableCell>
+                                                <TableCell align="left">{numberofQuestions}</TableCell>
+                                                <TableCell align="left">{maxTimes}</TableCell>
                                                 <TableCell align="left">
-                                                    <Label variant="ghost" color={(status === 'banned' && 'error') || 'success'}>
-                                                        status
-                                                    </Label>
+                                                    <Chip  size="small"
+                                                     color={(status === 'puclic' && 'error') || 'primary'}
+                                                     label={status=== 'public' ? 'Đã xuất bản':'Chưa xuất bản'}
+                                                     />
                                                 </TableCell>
 
                                                 <TableCell align="right">
-                                                    <TableMoreMenu id={id}
+                                                    <TableMoreMenu id={idExam}
                                                         menu={[
                                                             {
                                                                 isLink: true,
-                                                                link: '/teacher/statistic-exam',
+                                                                link: `/course/${courseId}/statistic-exam/${slugExam}`,
                                                                 icon: BarChartIcon,
                                                                 func: null,
                                                                 display: 'Thống kê'
                                                             },
                                                             {
                                                                 isLink: true,
-                                                                link: `/teacher/detail-exam?examId=${id}`,
+                                                                link: `/course/${courseId}/detail-exam/${slugExam}`,
                                                                 icon: EditIcon,
                                                                 func: null,
                                                                 display: 'Sửa'
@@ -205,6 +208,7 @@ const ListExaminationTeacher = () => {
                     <TablePagination
                         rowsPerPageOptions={[5, 10, 25]}
                         component="div"
+                        labelRowsPerPage='Số dòng mỗi trang'
                         count={exams.length}
                         rowsPerPage={rowsPerPage}
                         page={page}

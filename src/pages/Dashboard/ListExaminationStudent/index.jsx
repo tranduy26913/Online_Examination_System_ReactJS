@@ -1,45 +1,47 @@
-import React from 'react'
+import { useEffect,useState } from 'react'
 import {
     Box,
-    Button,
+    Paper,
     Stack,
     Typography
 } from "@mui/material"
-import Grid from '@mui/material/Unstable_Grid2';
-import SendIcon from '@mui/icons-material/Send';
-import './ListTest.scss'
 import TestItem from 'components/TestItem';
+import Page from 'components/Page';
+import { useContext } from 'react';
+import CourseContext from 'pages/Course/LayoutCourse/CourseContext';
+import apiCourse from 'apis/apiCourse';
 const ListExaminationStudent = () => {
-    document.title = "Danh sách bài kiểm tra"
+    const [listExam, setListExam] = useState([])
+    const { courseId, id: courseObjid } = useContext(CourseContext)
+
+    useEffect(() => {
+        const getListExam = () => {
+            if (!courseId) return
+
+            apiCourse.getListExamOfCourse({ courseId })
+                .then(res => {
+                    setListExam(res)
+                })
+        }
+
+        getListExam()
+
+    }, [courseId])
+
     return (
-        <Box className='listtest'>
-            <Stack direction='row' className='listtest__course'>
-                <Box className='listtest__wrap-img'>
-                    <img src="https://sandla.org/wp-content/uploads/2021/08/english-e1629469809834.jpg" />
-                </Box>
-                <Stack spacing={1} className='listtest__wrap-info'>
-                    <Typography
-                        fontSize={'18px'}
-                        color='primary'
-                        className='listtest__course-name'>Khoá học: Học máy </Typography>
-                    <Typography className='listtest__course-desc'>Cuộc thi học thuật trực tuyến </Typography>
-                    <Typography className='listtest__course-desc'>Số lượng bài kiểm tra: 8</Typography>
-                    <Stack flex={1} justifyContent='flex-end' alignItems='flex-start'>
-                        <Button
-                            variant='outlined'
-                            endIcon={<SendIcon />}
-                        >Chia sẻ</Button>
-                    </Stack>
+        <Page title='Danh sách bài kiểm tra'>
+
+            <Paper elevation={12}>
+
+                <Stack spacing={1} p={2}>
+                    {
+                        listExam.map(item =>
+                            <TestItem key={item.id} data={item} />
+                        )
+                    }
                 </Stack>
-            </Stack>
-            <Stack spacing={1}>
-                {
-                    tests.map(item =>
-                        <TestItem data={item} />
-                    )
-                }
-            </Stack>
-        </Box>
+            </Paper>
+        </Page>
     )
 }
 

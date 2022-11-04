@@ -3,8 +3,10 @@ import {
     InputBase,
     Switch,
     Stack,
-    Paper
+    Paper,
+    Box
 } from '@mui/material';
+import PropTypes from 'prop-types';
 
 export const IOSSwitch = styled((props) => (
     <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
@@ -59,16 +61,16 @@ export const IOSSwitch = styled((props) => (
 
 export const StackLabel = styled(Stack)(({ theme }) => ({
     border: `1px solid ${theme.palette.divider}`,
-    width:'100%',
+    width: '100%',
     borderRadius: '8px',
     height: '38px',
     flexDirection: 'row',
-    backgroundColor:`${theme.palette.primary.light}18`,
+    backgroundColor: `${theme.palette.primary.light}18`,
     '& .MuiBox-root': {
         width: '200px',
         paddingLeft: '12px',
         height: '100%',
-        borderRadius:'8px 0 0px 8px',
+        borderRadius: '8px 0 0px 8px',
         backgroundColor: `${theme.palette.primary.light}a0`,
         display: 'flex',
         alignItems: 'center'
@@ -76,27 +78,27 @@ export const StackLabel = styled(Stack)(({ theme }) => ({
     '& .MuiFormGroup-root': {
         paddingLeft: '16px'
     },
-    '& input':{
-        color: theme.palette.mode === 'dark' ? '#fff':theme.palette.text.primary,
-        height:'38px',
-        flex:'1',
-        border:`2px solid transparent`,
-        padding:'4px 16px',
-        outline:'none',
-        backgroundColor:'transparent',
-        fontSize:'14px',
-        borderRadius:'0px 8px 8px 0px',
-        '&:focus':{
-            border:`2px solid ${theme.palette.primary.light}`,
-            borderLeftColor:'transparent',
+    '& input': {
+        color: theme.palette.mode === 'dark' ? '#fff' : theme.palette.text.primary,
+        height: '38px',
+        flex: '1',
+        border: `2px solid transparent`,
+        padding: '4px 16px',
+        outline: 'none',
+        backgroundColor: 'transparent',
+        fontSize: '14px',
+        borderRadius: '0px 8px 8px 0px',
+        '&:focus': {
+            border: `2px solid ${theme.palette.primary.light}`,
+            borderLeftColor: 'transparent',
         }
     }
 }))
 
 export const Stack2Column = styled(Stack)({
-    flexDirection:'row',
-    width:'100%',
-    gap:'12px'
+    flexDirection: 'row',
+    width: '100%',
+    gap: '12px'
 })
 
 export const PaperQuestion = styled(Paper)(({ theme }) => ({
@@ -110,22 +112,49 @@ export const AccordionSummaryStyle = {
 }
 
 export const BootstrapInput = styled(InputBase)(({ theme }) => ({
-    flex:1,
-    height:'36px',
+    flex: 1,
+    height: '36px',
     '& .MuiInputBase-input': {
-      borderRadius: 4,
-      width:'100%',
-      position: 'relative',
-      backgroundColor: 'transparent',
-      //border: '1px solid #ced4da',
-      fontSize: 14,
-      padding: '4px 26px 4px 16px',
-      transition: theme.transitions.create(['border-color', 'box-shadow']),
-      // Use the system font instead of the default Roboto font.
-      '&:focus': {
-        borderRadius: 4,
-        borderColor: '#80bdff',
-        //boxShadow: '0 0 0 0.2rem rgba(0,123,255,.25)',
-      },
+        color: theme.palette.mode === 'dark' ? '#fff' : theme.palette.text.primary,
+        height: '38px',
+        flex: '1',
+        border: `2px solid transparent`,
+        padding: '4px 16px',
+        outline: 'none',
+        backgroundColor: 'transparent',
+        fontSize: '14px',
+        borderRadius: '0px 8px 8px 0px',
+        '&:focus': {
+            border: `2px solid ${theme.palette.primary.light}`,
+            borderLeftColor: 'transparent',
+        }
     },
-  }));
+}));
+
+
+export const TabPanel = (props) => {
+    const { children, value, index, ...other } = props;
+
+    return (
+        <div
+            role="tabpanel"
+            hidden={value !== index}
+            id={`full-width-tabpanel-${index}`}
+            aria-labelledby={`full-width-tab-${index}`}
+            {...other}
+        >
+            {value === index && (
+                <Box pt={2}>
+                    {props.children}
+                </Box>
+            )}
+        </div>
+    );
+}
+
+TabPanel.propTypes = {
+    children: PropTypes.node,
+    index: PropTypes.number.isRequired,
+    value: PropTypes.number.isRequired,
+};
+

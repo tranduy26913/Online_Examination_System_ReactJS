@@ -80,7 +80,7 @@ const ListStudent = () => {
     const [status, setStatus] = useState([])
     const dispatch = useDispatch()
 
-    const { id } = useContext(CourseContext)
+    const { courseId } = useContext(CourseContext)
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
@@ -109,14 +109,14 @@ const ListStudent = () => {
 
     const loadListStudent = useCallback(() => {//lấy danh sách bài kiểm tra
         const params = {
-            courseId: id
+            courseId
         }
         apiCourse.getListStudentOfCourse(params)
             .then(res => {
                 setStudents(res)
                 setStatus(res.map(item=>false))
             })
-    }, [id])
+    }, [courseId])
 
     useEffect(() => {
         try {
@@ -143,10 +143,10 @@ const ListStudent = () => {
     //Effect
     useEffect(() => {
 
-        if (!id) return
+        if (!courseId) return
         loadListStudent()
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [id])
+    }, [courseId])
     return (
         <Box width={'100%'}>
             <Paper elevation={24}>

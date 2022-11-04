@@ -5,13 +5,13 @@ function BackgroundAnimation() {
     const theme = useTheme()
 
     var options = {
-        particleColor: theme.palette.mode === 'dark' ? "rgb(200,200,200)" : "rgb(110,110,110)",
-        lineColor: theme.palette.mode === 'dark' ? "rgba(0,181,255,0.5)" : "rgba(0,181,255,0.67)",
+        particleColor: theme.palette.mode === 'dark' ? "rgba(200,200,200,0.7)" : "rgba(110,110,110,0.5)",
+        lineColor: theme.palette.mode === 'dark' ? "rgba(0,181,255,0.54)" : "rgba(0,181,255,0.37)",
         particleAmount: 40,
         defaultRadius: 2,
         variantRadius: 1,
-        defaultSpeed: 0.55,
-        variantSpeed: 0.75,
+        defaultSpeed: 0.35,
+        variantSpeed: 0.45,
         linkRadius: 120
     };
 

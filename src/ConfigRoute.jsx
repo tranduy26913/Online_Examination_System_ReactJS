@@ -2,12 +2,12 @@ import Page404 from 'components/ErrorPage/Page404';
 import LoadingPage from 'components/LoadingPage';
 import MaintenancePage from 'components/MaintenancePage';
 import LayoutCourse from 'pages/Course/LayoutCourse';
-import StatisticExam from 'pages/Dashboard/StatisticExam';
-import React, { Suspense, lazy } from 'react';
+import React, { Suspense, lazy, useEffect, useState } from 'react';
 import { Route, Routes } from "react-router-dom";
 import Dashboard from "./pages/Dashboard"
 
-import { sidebarCourse,sidebarTab } from "constraints/StudentDashboard";
+import { DASHBOARD_STUDENT, DASHBOARD_TEACHER } from "constraints/StudentDashboard";
+import { useSelector } from 'react-redux';
 const Home = lazy(() => import("./pages/Home"));
 //const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Login = lazy(() => import("./components/Login"));
@@ -22,134 +22,200 @@ const Examination = lazy(() => import("pages/Examination"));
 const ListStudent = lazy(() => import("pages/Course/ListStudent"));
 const CreateCourse = lazy(() => import("pages/Course/CreateCourse"));
 const Active = lazy(() => import("pages/Active"));
-const BankQuestion = lazy(() => import("pages/Dashboard/BankQuestion"));
+const QuestionBank = lazy(() => import("pages/Dashboard/QuestionBank"));
+const QuestionBankDetail = lazy(() => import("pages/Dashboard/QuestionBankDetail"));
 const ResultPayment = lazy(() => import("pages/ResultPayment"));
 const ResetPassword = lazy(() => import("pages/ResetPassword"));
+const StatisticExam = lazy(() => import("pages/Course/StatisticExam"));
+const ResultExamination = lazy(() => import("pages/ResultExamination"));
+const ReviewExamination = lazy(() => import("pages/ReviewExamination"));
 
-const makeLoading = (component) => <Suspense fallback={<LoadingPage/>}>{component}</Suspense>
+const makeLoading = (component) => <Suspense fallback={<LoadingPage />}>{component}</Suspense>
 
 const TEACHER = [
   {
-    path:'profile',
-    component:Profile
+    path: 'profile',
+    component: Profile
   },
   {
-    path:'list-course',
-    component:ListCourse
+    path: 'list-course',
+    component: ListCourse
   },
   {
-    path:'list-course/list-exam',
-    component:ListExaminationTeacher
+    path: 'create-exam',
+    component: CreateExamination
   },
   {
-    path:'create-exam',
-    component:CreateExamination
+    path: 'list-course/create-course',
+    component: CreateCourse
   },
   {
-    path:'list-course/create-course',
-    component:CreateCourse
+    path: 'question-bank',
+    component: QuestionBank
   },
   {
-    path:'bank-question',
-    component:BankQuestion
+    path: 'question-bank/:slug',
+    component: QuestionBankDetail
   },
   {
-    path:'payment',
-    component:MaintenancePage
+    path: 'payment',
+    component: MaintenancePage
   },
   {
-    path:'notify',
-    component:MaintenancePage
+    path: 'notify',
+    component: MaintenancePage
   },
   {
-    path:'statistic',
-    component:MaintenancePage
+    path: 'statistic',
+    component: MaintenancePage
   },
   {
-    path:'statistic-exam',
-    component:StatisticExam
+    path: 'statistic-exam',
+    component: StatisticExam
   },
   {
-    path:'profile/change-password',
-    component:ChangePassword
+    path: 'profile/change-password',
+    component: ChangePassword
+  },
+]
+
+const STUDENT = [
+  {
+    path: 'profile',
+    component: Profile
+  },
+  {
+    path: 'list-course',
+    component: ListCourse
+  },
+  {
+    path: 'payment',
+    component: MaintenancePage
+  },
+  {
+    path: 'notify',
+    component: MaintenancePage
+  },
+  {
+    path: 'statistic',
+    component: MaintenancePage
+  },
+  {
+    path: 'profile/change-password',
+    component: ChangePassword
   },
 ]
 
 const COURSE_TEACHER = [
   {
-    path:'create-exam',
-    component:CreateExamination
+    path: 'create-exam',
+    component: CreateExamination
   },
   {
-    path:'manage-exam',
-    component:ListExaminationTeacher
+    path: 'index',
+    component: ListExaminationTeacher
   },
   {
-    path:'manage-student',
-    component:ListStudent
+    path: 'manage-exam',
+    component: ListExaminationTeacher
   },
   {
-    path:'bank-question',
-    component:BankQuestion
+    path: 'manage-student',
+    component: ListStudent
   },
   {
-    path:'notify',
-    component:MaintenancePage
+    path: 'question-bank',
+    component: QuestionBank
   },
   {
-    path:'statistic',
-    component:MaintenancePage
+    path: 'statistic',
+    component: MaintenancePage
   },
   {
-    path:'statistic-exam',
-    component:StatisticExam
+    path: 'statistic-exam/:slug',
+    component: StatisticExam
   },
-  
+]
+
+const COURSE_STUDENT = [
+  {
+    path: 'manage-exam',
+    component: ListExaminationStudent
+  },
+  {
+    path: 'index',
+    component: ListExaminationStudent
+  },
+  {
+    path: 'manage-student',
+    component: ListStudent
+  },
+  {
+    path: 'statistic',
+    component: MaintenancePage
+  },
+  {
+    path: 'statistic-exam/:slug',
+    component: StatisticExam
+  },
 ]
 function ConfigRoute() {
+  const role = useSelector(state => state.setting.role) || 'student'
+  const [dashboardComponents, setDashboardComponents] = useState(role === 'student' ?STUDENT : TEACHER)
+  const [courseComponents, setCourseComponents] = useState(role === 'student' ?COURSE_STUDENT:COURSE_TEACHER)
+  const [sidebarTab,setSidebarTab] = useState(role === 'student' ?DASHBOARD_STUDENT:DASHBOARD_TEACHER)
+  useEffect(() => {
+    if (role === 'teacher') {
+      setDashboardComponents(TEACHER)
+      setCourseComponents(COURSE_TEACHER)
+      setSidebarTab(DASHBOARD_TEACHER)
+    }
+    else {
+      setDashboardComponents(STUDENT)
+      setCourseComponents(COURSE_STUDENT)
+      setSidebarTab(DASHBOARD_STUDENT)
+    }
+
+  }, [role])
+
   return (
-      <Suspense fallback={<LoadingPage/>}>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          {/* Routing customer account */}
-          <Route path="student" element={<Dashboard />} >
-            <Route path="profile" element={<Profile />} />
-            <Route path="list-course" element={<ListCourse />} />
-            <Route path="course/list-test" element={<ListExaminationStudent />} />
-            <Route path="create-exam" element={<CreateExamination />} />
-          </Route>
-          <Route path="my" element={<Dashboard sidebarTab={sidebarTab}/>} >
-            {
-              TEACHER.map(item=>
-                <Route key={item.path} path={item.path} element={makeLoading(<item.component />)} />)
-            }
-            <Route path='detail-exam' element={makeLoading(<CreateExamination isEdit={true} />)} />
-          </Route>
+    <Suspense fallback={<LoadingPage />}>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        {/* Routing customer account */}
 
-          <Route path="login" element={<Login />} />
-          <Route path="course/:courseId" element={<LayoutCourse />} >
-          <Route index element={makeLoading(<ListExaminationTeacher />)} />
-            {
-              COURSE_TEACHER.map(item=>
-                <Route key={item.path} path={item.path} element={makeLoading(<item.component />)} />)
-            }
-             
-          </Route>
-          <Route path="list-course" element={<ListCourse />} />
-          <Route path="register" element={<Register />} />
-          <Route path="exam/:examId" element={<Examination />} />
-          <Route path="loading" element={<LoadingPage />} />
-          <Route path="aboutus" element={<MaintenancePage />} />
-          <Route path="result" element={<MaintenancePage />} />
-          <Route path="result-payment" element={<ResultPayment />} />
-          <Route path="active/:token" element={<Active />} />
-          <Route path="review-exam/:id" element={<MaintenancePage />} />
-          <Route path="reset-password/:token" element={<ResetPassword />} />
-          <Route path="/*" element={<Page404 />} />
+        <Route path="my" element={<Dashboard sidebarTab={sidebarTab} />} >
+          {
+            dashboardComponents.map(item =>
+              <Route key={item.path} path={item.path} element={makeLoading(<item.component />)} />)
+          }
+        </Route>
+
+        <Route path="login" element={<Login />} />
+        <Route path="course/:courseId" element={<LayoutCourse />} >
+          {
+            courseComponents.map(item => {
+              if (item.path === 'index')
+                return <Route key={item.path} index element={makeLoading(<item.component/>)} />
+              else
+                return <Route key={item.path} path={item.path} element={makeLoading(<item.component />)} />
+          })
+        }
+          <Route path='detail-exam/:examSlug' element={makeLoading(<CreateExamination isEdit={true} />)} />
+        </Route>
+        <Route path="register" element={<Register />} />
+        <Route path="exam/:examId" element={<Examination />} />
+        <Route path="aboutus" element={<MaintenancePage />} />
+        <Route path="result-exam/:takeExamId" element={<ResultExamination />} />
+        <Route path="result-payment" element={<ResultPayment />} />
+        <Route path="active/:token" element={<Active />} />
+        <Route path="review-exam/:takeExamId" element={<ReviewExamination />} />
+        <Route path="reset-password/:token" element={<ResetPassword />} />
+        <Route path="/*" element={<Page404 />} />
 
 
-        </Routes>
-      </Suspense>
+      </Routes>
+    </Suspense>
   );
 }
 

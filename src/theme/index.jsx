@@ -12,8 +12,7 @@ import {useSelector} from 'react-redux'
 
 
 export default function ThemeConfig({ children }) {
-  const isLight = useSelector(state=>state.theme.isLight);
-  console.log(isLight);
+  const isLight = useSelector(state=>state.setting.isLight);
   const themeOptions = useMemo(
     () => ({
       palette: isLight ? palette.light : palette.dark,

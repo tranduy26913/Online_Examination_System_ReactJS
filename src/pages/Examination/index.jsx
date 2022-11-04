@@ -4,31 +4,106 @@ import {
     Button,
     Stack,
     Typography,
-    Paper
+    Paper,
+    TextField,
+    Divider
 } from "@mui/material"
 import Grid from '@mui/material/Unstable_Grid2';
 import { useTheme } from '@mui/material/styles';
 import Question from './Question';
-import apiExamination from 'apis/apiExamination';
-import apiQuestion from 'apis/apiQuestion';
 import Page from 'components/Page';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { clearAnswers } from 'slices/answerSheetSlice';
-import {ButtonQuestion,BoxTime} from './Examination.style'
+import { clearAnswers, clearAnswerSheet, clearTakeExamId, setTakeExamId } from 'slices/answerSheetSlice';
+import { ButtonQuestion, BoxTime } from './Examination.style'
+import apiTakeExam from 'apis/apiTakeExam';
 const Examination = () => {
     const theme = useTheme()
     const paramUrl = useParams()
 
     const [name, setName] = useState('')
+    const [pin, setPin] = useState('')
     const [examId, setExamId] = useState(paramUrl.examId || '')
+    const [endTime, setEndTime] = useState()
+
     const [questions, setQuestions] = useState([])
     const [indexQuestion, setIndexQuestion] = useState([])
-    const user = useSelector(state => state.auth.user)
+    const user = useSelector(state => state.user.info)
     const dispatch = useDispatch()
-    const answerSheet = useSelector(state => state.answerSheet?.questions)
-    //console.log(answerSheet)
+    const takeExamId = useSelector(state => state.answerSheet?.takeExamId)
+    const answerSheet = useSelector(state => state.answerSheet?.result)
+    const [countDown, setCountDown] = useState({ hour: 0, minute: 0, second: 0 })
+    const navigate = useNavigate()
 
+    useEffect(() => {
+        const countDown = () => {
+            if (!endTime) return
+            var x = setInterval(function () {
+                // Get today's date and time
+                var now = new Date().getTime();
+                // Find the distance between now and the count down date
+                var distance = endTime - now;
+                //console.log(distance)
+                // Time calculations for days, hours, minutes and seconds
+                setCountDown({
+                    hour: Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+                    minute: Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)),
+                    second: Math.floor((distance % (1000 * 60)) / 1000)
+                })
+                if (distance < 0) {
+                    clearInterval(x);
+                }
+            }, 1000);
+        }
+        countDown()
+    }, [endTime])
+    useEffect(() => {
+        const checkExam = async () => {
+            //dispatch(clearAnswerSheet())
+            const resExam = await apiTakeExam.CheckExam({ slug: examId })
+            if (resExam.message === 'checkpin') {
+                dispatch(clearTakeExamId())
+            }
+            else if (resExam.message === 'valid') {
+                dispatch(setTakeExamId(resExam.takeExamId))
+                setupQuestion(resExam.exam.questions)
+                setEndTime(new Date(resExam.exam.endTime))
+            }
+        }
+        checkExam()
+    }, [])
+
+    const setupQuestion = (questions) => {
+        const newIndexQuestion = []
+        setQuestions([])
+        for (let question of questions) {
+            const isDone = checkDone(answerSheet, question.id)
+            setQuestions(pre => [...pre, question])
+            if (isDone)
+                newIndexQuestion.push({
+                    isFlag: false,
+                    isDone: true
+                })
+            else
+                newIndexQuestion.push({
+                    isFlag: false,
+                    isDone: false
+                })
+        }
+
+        setIndexQuestion(newIndexQuestion)
+    }
+
+    const handleTakeExam = () => {
+        apiTakeExam.CreateTakeExam({ slug: examId, pin })
+            .then(res => {
+                setupQuestion(res.exam.questions)
+                if (takeExamId !== res.takeExamId) {
+                    dispatch(clearAnswerSheet())
+                }
+                dispatch(setTakeExamId(res.takeExamId))
+            })
+    }
 
     useEffect(() => {
         const getQuestions = () => {
@@ -36,33 +111,6 @@ const Examination = () => {
                 return
             if (!examId)
                 return
-            dispatch(clearAnswers())
-            apiExamination.getExaminationsById(examId)
-                .then(async (res) => {
-                    try {
-                        const exam = res[0]
-                        setName(exam.name)
-                        const questions = exam.questions
-                        const newIndexQuestion = []
-                        for (let id of questions) {
-                            const question = await apiQuestion.getQuestionsById(id)
-                            const isDone = checkDone(answerSheet, id)
-                            setQuestions(pre => [...pre, question])
-                            if (isDone)
-                                newIndexQuestion.push({
-                                    isFlag:false,
-                                    isDone:true})
-                            else
-                                newIndexQuestion.push({
-                                    isFlag:false,
-                                    isDone:false})
-                        }
-
-                        setIndexQuestion(newIndexQuestion)
-                    }
-                    catch (err) {
-                    }
-                })
 
         }
         getQuestions()
@@ -74,7 +122,7 @@ const Examination = () => {
             let newIndexQuestion = [...indexQuestion]
             newIndexQuestion[index] = {
                 ...newIndexQuestion[index],
-                isDone:state
+                isDone: state
             }
             setIndexQuestion(newIndexQuestion)
         }
@@ -84,72 +132,107 @@ const Examination = () => {
             let newIndexQuestion = [...indexQuestion]
             newIndexQuestion[index] = {
                 ...newIndexQuestion[index],
-                isFlag:state
+                isFlag: state
             }
             setIndexQuestion(newIndexQuestion)
         }
     }, [indexQuestion])
 
-
+    const handleSubmit = () => {
+        apiTakeExam.submitAnswerSheet({
+            takeExamId,
+            answerSheet
+        })
+        .then(res=>{
+            navigate('/result-exam/'+takeExamId)
+            dispatch(clearTakeExamId)
+        })
+    }
     return (
         <Page title={name}>
+            {!takeExamId ?
+                <Stack width='100%' height='100vh' justifyContent='center' alignItems='center'>
+                    <Box width='100%' maxWidth='500px'>
 
-            <Box className='container' py={2}>
-                <Box>
-                    <Typography
-                        sx={{
-                            fontSize: '20px',
-                            color: theme.palette.primary.main,
-                            fontWeight: 600,
-                            mb: 2,
-                            textAlign: 'center'
-                        }}>Bài kiểm tra số 1</Typography>
-                    <Stack direction='row' spacing={1.5} alignItems='flex-start'>
-
-                        <Stack flex={4} spacing={3}>
-                            {
-                                questions.map((item, index) =>
-                                    <Question key={item.id}
-                                        changeStateDoneIndex={changeStateDoneIndex}
-                                        changeStateFlagIndex={changeStateFlagIndex}
-                                        stateDone={indexQuestion[index]?.isDone}
-                                        stateFlag={indexQuestion[index]?.isFlag}
-                                        question={item} index={index} />)
-                            }
-                        </Stack>
-                        <Paper elevation={24} sx={{
-                            position: 'sticky',
-                            top: '5rem',
-                            flex: 1
-                        }}>
-
-                            <Stack spacing={1} p={1.5} >
-                                <Typography fontSize='16px' fontWeight={600}>Danh sách câu hỏi</Typography>
-                                <Grid container spacing={0.5}>
-                                    {
-                                        indexQuestion.map((item, index) =>
-                                            <Grid key={index} xs={2}>
-                                                <ButtonQuestion className={`${item.isDone ? 'done':''} ${item.isFlag?'flag':''}`}
-                                                    onClick={() => document.getElementById(`question-${index}`)
-                                                        .scrollIntoView({ block: 'center', behavior: "smooth" })}
-                                                >{index + 1}</ButtonQuestion>
-                                            </Grid>)
-                                    }
-                                </Grid>
+                        <Paper>
+                            <Stack p={2} spacing={2} alignItems='center'>
+                                <Typography fontSize='18px' color='primary' align='center'>Nhập mật khẩu đề thi</Typography>
+                                <TextField
+                                    fullWidth
+                                    value={pin}
+                                    onChange={e => setPin(e.target.value)}
+                                    variant='standard' />
+                                <Button variant='contained' onClick={handleTakeExam}>Vào đề thi</Button>
                             </Stack>
                         </Paper>
-                    </Stack>
+                    </Box>
+                </Stack>
+                :
+
+                <Box className='container' py={2}>
+                    <Box>
+                        <Typography
+                            sx={{
+                                fontSize: '20px',
+                                color: theme.palette.primary.main,
+                                fontWeight: 600,
+                                mb: 2,
+                                textAlign: 'center'
+                            }}>Bài kiểm tra số 1</Typography>
+                        <Stack direction='row' spacing={1.5} alignItems='flex-start'>
+
+                            <Stack flex={4} spacing={3}>
+                                {
+                                    questions.map((item, index) =>
+                                        <Question key={item.id}
+                                            changeStateDoneIndex={changeStateDoneIndex}
+                                            changeStateFlagIndex={changeStateFlagIndex}
+                                            stateDone={indexQuestion[index]?.isDone}
+                                            stateFlag={indexQuestion[index]?.isFlag}
+                                            question={item} index={index} />)
+                                }
+                            </Stack>
+                            <Paper elevation={24} sx={{
+                                position: 'sticky',
+                                top: '5rem',
+                                flex: 1
+                            }}>
+
+                                <Stack spacing={1} p={1.5}>
+                                    <Typography fontSize='16px' fontWeight={600}>Danh sách câu hỏi</Typography>
+                                    <Grid container spacing={0.5}>
+                                        {
+                                            indexQuestion.map((item, index) =>
+                                                <Grid key={index} xs={2}>
+                                                    <ButtonQuestion className={`${item.isDone ? 'done' : ''} ${item.isFlag ? 'flag' : ''}`}
+                                                        onClick={() => document.getElementById(`question-${index}`)
+                                                            .scrollIntoView({ block: 'center', behavior: "smooth" })}
+                                                    >{index + 1}</ButtonQuestion>
+                                                </Grid>)
+                                        }
+                                    </Grid>
+                                    <Divider />
+                                    <Stack alignItems='center'>
+
+                                        <Button onClick={handleSubmit} variant='contained'>Nộp bài</Button>
+                                    </Stack>
+                                </Stack>
+                            </Paper>
+                        </Stack>
+                    </Box>
+                    <BoxTime>
+                        {(countDown.hour).toLocaleString('en-US', { minimumIntegerDigits: 2, useGrouping: false })}:
+                        {(countDown.minute).toLocaleString('en-US', { minimumIntegerDigits: 2, useGrouping: false })}:
+                        {(countDown.second).toLocaleString('en-US', { minimumIntegerDigits: 2, useGrouping: false })}
+                    </BoxTime>
                 </Box>
-                <BoxTime>
-                    01:00:00
-                </BoxTime>
-            </Box>
+            }
         </Page>
     )
 }
 
 const checkDone = (arr, id) => {
-    return Boolean(arr.find(item => item.id === id))
+    return Boolean(arr.find(item => item.question === id))
 }
 
 export default Examination

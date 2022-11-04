@@ -2,7 +2,7 @@ import React from "react";
 
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 
-import { sidebarCourse } from "constraints/StudentDashboard";
+import { SIDEBAR_COURSE_TEACHER,SIDEBAR_COURSE_STUDENT } from "constraints/StudentDashboard";
 
 import {
   Button,
@@ -15,7 +15,7 @@ import {
 
 import SendIcon from '@mui/icons-material/Send';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
-import { Outlet} from 'react-router-dom'
+import { Outlet } from 'react-router-dom'
 import Sidebar from "components/Sidebar";
 import { useEffect } from "react";
 import apiCourse from "apis/apiCourse";
@@ -24,6 +24,7 @@ import { useState } from "react";
 import { useCallback } from "react";
 import './ListTest.scss'
 import CourseContext from "./CourseContext";
+import { useSelector } from "react-redux";
 
 const checkSelectedTab = (item, pathname) => {
   const splitPath = pathname.split('/')
@@ -35,14 +36,16 @@ const checkSelectedTab = (item, pathname) => {
 const LayoutCourse = () => {
   const location = useLocation()
   const [course, setCourse] = useState({})
+  const [sidebarCourse, setSidebarCourse] = useState(SIDEBAR_COURSE_STUDENT)
   const tabId = sidebarCourse.find(item => checkSelectedTab(item, location.pathname))
   const [selectedTabId, setSelectedTabId] = React.useState(tabId?.id || 1);
   const navigate = useNavigate()
-  const {courseId} = useParams()
-  
+  const role = useSelector(state=>state.setting.role)
+  const { courseId } = useParams()
+
   //const paramUrl = useSearchParams()[0]
 
-  const handleChangeTab = useCallback(id=>setSelectedTabId(id),[])
+  const handleChangeTab = useCallback(id => setSelectedTabId(id), [])
 
   useEffect(() => {
     const loadCourse = () => {
@@ -51,7 +54,7 @@ const LayoutCourse = () => {
         navigate('/list-course')
         toast.warning("Khoá học không xác định")
       }
-      apiCourse.getCourseByCourseID({courseId})
+      apiCourse.getCourseByCourseID({ courseId })
         .then(res => {
           setCourse(res)
         })
@@ -64,6 +67,14 @@ const LayoutCourse = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  useEffect(()=>{
+    if(role==='teacher')
+      setSidebarCourse(SIDEBAR_COURSE_TEACHER)
+    else{
+      setSidebarCourse(SIDEBAR_COURSE_STUDENT)
+    }
+  },[role])
+
   React.useEffect(() => {
     const handleChangePath = () => {
       const tabId = sidebarCourse.find(item => checkSelectedTab(item, location.pathname))
@@ -75,7 +86,7 @@ const LayoutCourse = () => {
   }, [location.pathname])
 
   const breadcrumbs = (() => {
-    
+
 
     return ([
       <Link key="1" to="/">
@@ -84,10 +95,10 @@ const LayoutCourse = () => {
         </Typography>
       </Link>,
       <Link key="1" to="/my/list-course">
-      <Typography>
-        Danh sách khoá học
-      </Typography>
-    </Link>,
+        <Typography>
+          Danh sách khoá học
+        </Typography>
+      </Link>,
       <Typography key="2">
         {sidebarCourse.find(item => item.id === selectedTabId)?.text || ""}
       </Typography>,
@@ -96,14 +107,14 @@ const LayoutCourse = () => {
 
   React.useEffect(() => {
     document.title =
-    sidebarCourse.find(item => item.id === selectedTabId)?.text ||
+      sidebarCourse.find(item => item.id === selectedTabId)?.text ||
       "Bello Quiz";
   }, [selectedTabId]);
 
   return (
-    <Sidebar sidebarTab={sidebarCourse} selectedTabId={selectedTabId} 
-    handleChangeTab={handleChangeTab}
-    heading={'Khoá học'}>
+    <Sidebar sidebarTab={sidebarCourse} selectedTabId={selectedTabId}
+      handleChangeTab={handleChangeTab}
+      heading={'Khoá học'}>
       <Paper elevation={24} sx={{ padding: '8px 12px', marginBottom: '12px' }}>
 
         <Breadcrumbs
@@ -117,7 +128,7 @@ const LayoutCourse = () => {
 
         <Stack direction='row' className='listtest__course'>
           <Box className='listtest__wrap-img'>
-            <img alt='' src={course.image ||"https://sandla.org/wp-content/uploads/2021/08/english-e1629469809834.jpg"} />
+            <img alt='' src={course.image || "https://sandla.org/wp-content/uploads/2021/08/english-e1629469809834.jpg"} />
           </Box>
           <Stack spacing={1} className='listtest__wrap-info'>
             <Typography
@@ -135,10 +146,10 @@ const LayoutCourse = () => {
           </Stack>
         </Stack>
       </Paper>
-  <CourseContext.Provider value={{id:course?.id || "" }}>
+      <CourseContext.Provider value={{ id: course?.id || "",courseId:course?.courseId || "" }}>
         <Outlet />
       </CourseContext.Provider>
-      
+
     </Sidebar>
   );
 }

@@ -30,6 +30,7 @@ export const ButtonQuestion = styled(Button)(({ theme }) => ({
 export const BoxTime = styled(Box)(({ theme }) => ({
     borderRadius: '2px',
     color: theme.palette.primary.main,
+    backgroundColor:theme.palette.background.paper,
     fontWeight: 600,
     border: `1px solid ${theme.palette.primary.main}`,
     padding: '0.5rem 1rem',

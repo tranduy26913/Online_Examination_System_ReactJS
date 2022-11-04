@@ -21,7 +21,7 @@ export const userSlice = createSlice({
             }
         },
         addQuestion: (state, action) => {
-            state.value = [...state.questions, action.payload]
+            state.questions = [...state.questions, action.payload]
         },
         updateQuestion:(state,action)=>{
             const newQuestion = action.payload
@@ -32,8 +32,14 @@ export const userSlice = createSlice({
                 state.questions = newState
             }
         },
+        deleteQuestion:(state,action)=>{
+            const questionId = action.payload
+            const newQuestions = state.questions.filter(item=>item.id!==questionId)
+           
+                state.questions = newQuestions
+        },
         clearQuestion: (state, action)=>{
-            state.value = []
+            state.questions = []
         }
     }
 })
@@ -42,6 +48,7 @@ export const userSlice = createSlice({
 export const {
     addQuestion,
     updateQuestion,
+    deleteQuestion,
     clearQuestion,
     setUserInfo,
     clearUserInfo,

@@ -2,7 +2,6 @@ import { useCallback, useState, useEffect } from "react";
 
 import { Link, useLocation } from "react-router-dom";
 
-import { sidebarTab } from "../../constraints/StudentDashboard";
 
 import {
   Typography,
@@ -67,7 +66,7 @@ const StudentDashboard = (props) => {
       // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedTabId]);
   return (
-    <Sidebar sidebarTab={sidebarTab}
+    <Sidebar sidebarTab={props.sidebarTab}
      selectedTabId={selectedTabId}
       handleChangeTab={handleChangeTab}
       heading={"Dashboard"}>

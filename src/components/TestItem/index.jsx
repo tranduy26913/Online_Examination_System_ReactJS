@@ -22,12 +22,12 @@ const TestItem = (props) =>{
   return (
     <StackContainer className ='testItem' direction='row' justifyContent={'space-between'} p={1}>
         <Stack flex={1}>
-            <Typography fontSize="14px" >{data.name}</Typography>
+            <Typography fontSize="16px" >{data.name}</Typography>
             <Divider sx={{backgroundColor:theme.palette.primary.light}} />
             <Grid container mt={1}>
                 <Grid xs={12} md={6} lg={3}>
                     <Stack alignItems='center' spacing={1}>
-                        <Typography fontSize="15px" fontWeight="600">Thời gian bắt đầu;</Typography>
+                        <Typography fontSize="15px" fontWeight="600">Thời gian bắt đầu:</Typography>
                         <Typography fontSize="14px">{data.start && data.start.toLocaleString()}</Typography>
                     </Stack>
                 </Grid>
@@ -45,7 +45,7 @@ const TestItem = (props) =>{
                 </Grid>
                 <Grid xs={12} md={6} lg={3}>
                     <Stack alignItems='center' spacing={1}>
-                        <Typography fontSize="15px" fontWeight="600">Thời gian bắt đầu</Typography>
+                        <Typography fontSize="15px" fontWeight="600">Thời gian bắt đầu:</Typography>
                         <Typography fontSize="14px">{data.turns || 0 }</Typography>
                     </Stack>
                 </Grid>
