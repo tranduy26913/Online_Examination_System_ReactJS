@@ -75,7 +75,7 @@ const Examination = () => {
                     }
                 })
                 .catch(err => {
-                    console.log(err.response)
+                    console.log(err)
                     toast.warning(err.response.data.message)
                 })
         }
