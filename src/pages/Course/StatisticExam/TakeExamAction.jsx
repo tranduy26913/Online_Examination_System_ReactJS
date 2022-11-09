@@ -1,11 +1,9 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import {
     Button,
     Dialog,
     DialogActions,
     DialogContent,
-    DialogContentText,
     DialogTitle,
     IconButton,
     Slide,

@@ -14,6 +14,7 @@ import AssignmentIcon from '@mui/icons-material/Assignment';
 import SendIcon from '@mui/icons-material/Send';
 import Page from 'components/Page'
 import apiCourse from 'apis/apiCourse';
+import EmptyList from 'components/UI/EmptyList'
 import { Link } from 'react-router-dom';
 const ListCourse = () => {
     const [courses, setCourses] = useState([])
@@ -40,14 +41,16 @@ const ListCourse = () => {
     return (
         <Page title='Danh sách khoá học'>
 
-            <Box>
-                <Paper elevation={24}>
+            <Paper elevation={24}>
+                <Box>
+
                     <Stack direction='row' justifyContent={'flex-end'} p={1.5}>
                         <Link to='/my/list-course/create-course'>
-                        <Button variant='outlined'>Tạo khoá học</Button>
+                            <Button variant='outlined'>Tạo khoá học</Button>
                         </Link>
                     </Stack>
                     <Divider></Divider>
+                    {courses?.length === 0 && <EmptyList />}
                     <Grid container spacing={2} p={1.5}>
                         {
                             courses.map(item =>
@@ -85,8 +88,8 @@ const ListCourse = () => {
                                 </Grid>)
                         }
                     </Grid>
-                </Paper>
-            </Box>
+                </Box>
+            </Paper>
         </Page>
     )
 }

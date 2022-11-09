@@ -145,9 +145,9 @@ const TableStudent = () => {
 
                                         <TableCell align="left">{name}</TableCell>
                                         <TableCell align="center">{points}/{maxPoints}</TableCell>
-                                        <TableCell align="left">{moment(startTime).format('DD/MM/YYYY HH:mm')}</TableCell>
-                                        <TableCell align="left">{duration}</TableCell>
-                                        <TableCell align="left">
+                                        <TableCell align="center">{moment(startTime).format('DD/MM/YYYY HH:mm')}</TableCell>
+                                        <TableCell align="center">{duration} phút</TableCell>
+                                        <TableCell align="center">
                                             {submitTime}
                                         </TableCell>
 

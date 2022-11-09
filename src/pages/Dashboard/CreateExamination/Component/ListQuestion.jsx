@@ -5,7 +5,6 @@ import {
     Accordion,
     Typography,
 } from '@mui/material'
-import { useTheme } from '@mui/system';
 import CreateQuestion from 'components/Question/CreateQuestion'
 import DetailQuestion from 'components/Question/DetailQuestion'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -20,7 +19,6 @@ import { memo } from 'react';
 import ExamContext from '../ExamContext';
 
 function ListQuestion(props) {
-    const theme = useTheme()
     const {examId} = useContext(ExamContext)
     const QUESTIONS = useSelector(state => state.user.questions)
     const [idQuestion, setIdQuestion] = useState('')

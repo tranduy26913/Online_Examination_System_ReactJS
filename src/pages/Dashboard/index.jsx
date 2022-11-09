@@ -11,8 +11,7 @@ import {
 
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import { Outlet } from 'react-router-dom'
-import { useDispatch, useSelector } from "react-redux";
-import { clearBreadcrumb } from "slices/breadcrumbSlice";
+import { useDispatch } from "react-redux";
 import Sidebar from "components/Sidebar";
 
 
@@ -27,8 +26,6 @@ const StudentDashboard = (props) => {
   const tabId = props.sidebarTab.find(item => checkSelectedTab(item, location.pathname))
 
   const [selectedTabId, setSelectedTabId] = useState(tabId?.id || 0);
-  const breadcrumbState = useSelector(state => state.breadcrumb.value)
-  const dispatch = useDispatch()
   const handleChangeTab = useCallback(id => setSelectedTabId(id), [])
 
   const breadcrumbs = (() => {
@@ -51,11 +48,8 @@ const StudentDashboard = (props) => {
       if (tabId)
         setSelectedTabId(tabId?.id || 0)
     }
-    const removeBreadcrumb = () => {
-      dispatch(clearBreadcrumb())
-    }
+    
     handleChangePath()
-    removeBreadcrumb()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname, props.sidebarTab])
 

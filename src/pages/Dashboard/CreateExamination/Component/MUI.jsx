@@ -60,16 +60,16 @@ export const IOSSwitch = styled((props) => (
 }));
 
 export const StackLabel = styled(Stack)(({ theme }) => ({
-    border: `1px solid ${theme.palette.divider}`,
+    
     width: '100%',
     borderRadius: '8px',
-    height: '38px',
+    //height: '38px',
     flexDirection: 'row',
-    backgroundColor: `${theme.palette.primary.light}18`,
+    
     '& .MuiBox-root': {
         width: '200px',
         paddingLeft: '12px',
-        height: '100%',
+        height: '38px',
         borderRadius: '8px 0 0px 8px',
         backgroundColor: `${theme.palette.primary.light}a0`,
         display: 'flex',
@@ -78,20 +78,39 @@ export const StackLabel = styled(Stack)(({ theme }) => ({
     '& .MuiFormGroup-root': {
         paddingLeft: '16px'
     },
+    '& .MuiFormControl-root':{
+         flex: '1',
+    },
     '& input': {
         color: theme.palette.mode === 'dark' ? '#fff' : theme.palette.text.primary,
+        borderLeftColor: 'transparent',
         height: '38px',
-        flex: '1',
-        border: `2px solid transparent`,
+       border: `1px solid ${theme.palette.divider}`,
         padding: '4px 16px',
         outline: 'none',
-        backgroundColor: 'transparent',
-        fontSize: '14px',
+        backgroundColor: `${theme.palette.primary.light}18`,
+        fontSize: '15px',
         borderRadius: '0px 8px 8px 0px',
         '&:focus': {
             border: `2px solid ${theme.palette.primary.light}`,
-            borderLeftColor: 'transparent',
         }
+    },
+    '& .MuiFormGroup-root': {
+        color: theme.palette.mode === 'dark' ? '#fff' : theme.palette.text.primary,
+        height: '38px',
+        flex: '1',
+        border: `1px solid ${theme.palette.divider}`,
+        borderLeftColor: 'transparent',
+        padding: '0 12px',
+        outline: 'none',
+        backgroundColor: `${theme.palette.primary.light}18`,
+        fontSize: '15px',
+        borderRadius: '0px 8px 8px 0px',
+        
+    },
+    '& .MuiFormHelperText-root':{
+        color: theme.palette.error.light,
+        fontSize:13
     }
 }))
 

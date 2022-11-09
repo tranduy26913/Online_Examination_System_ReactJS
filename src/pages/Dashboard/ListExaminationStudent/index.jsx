@@ -1,9 +1,7 @@
 import { useEffect,useState } from 'react'
 import {
-    Box,
     Paper,
     Stack,
-    Typography
 } from "@mui/material"
 import TestItem from 'components/TestItem';
 import Page from 'components/Page';
@@ -12,7 +10,7 @@ import CourseContext from 'pages/Course/LayoutCourse/CourseContext';
 import apiCourse from 'apis/apiCourse';
 const ListExaminationStudent = () => {
     const [listExam, setListExam] = useState([])
-    const { courseId, id: courseObjid } = useContext(CourseContext)
+    const { courseId} = useContext(CourseContext)
 
     useEffect(() => {
         const getListExam = () => {
@@ -45,28 +43,5 @@ const ListExaminationStudent = () => {
     )
 }
 
-const tests = [
-    {
-        name: "Bài kiểm tra số 1",
-        start: new Date(),
-        duration: 30,
-        numberQuestion: 10,
-        turns: 10
-    },
-    {
-        name: "Bài kiểm tra số 2",
-        start: new Date(),
-        duration: 30,
-        numberQuestion: 10,
-        turns: 10
-    },
-    {
-        name: "Bài kiểm tra số 3",
-        start: new Date(),
-        duration: 30,
-        numberQuestion: 10,
-        turns: 10
-    }
-]
 
 export default ListExaminationStudent

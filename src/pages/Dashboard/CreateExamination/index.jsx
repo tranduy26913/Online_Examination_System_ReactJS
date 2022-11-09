@@ -2,7 +2,6 @@ import {
   Box,
   Paper,
   Divider,
-  Button,
   Typography,
   Stack,
   FormControlLabel,
@@ -10,6 +9,8 @@ import {
   FormGroup,
   RadioGroup,
   Radio,
+  FormHelperText,
+  FormControl,
 } from '@mui/material'
 import { useTheme } from '@mui/system';
 import moment from 'moment'
@@ -26,19 +27,10 @@ import { addQuestion, clearQuestion } from 'slices/userSlice';
 import CourseContext from 'pages/Course/LayoutCourse/CourseContext';
 import ExamContext from './ExamContext';
 import LayoutListQuesion from './Component/LayoutListQuesion';
-/**
- * @param {Date} date 
- */
-
-const toStringDateTime = (date) => {
-  const day = new Intl.DateTimeFormat('en', { day: '2-digit' }).format(date);
-  const month = new Intl.DateTimeFormat('en', { month: '2-digit' }).format(date);
-  const year = date.getFullYear()
-  const time = date.toLocaleTimeString().split(':')
-  const hour = time[0]
-  const min = time[1]
-  return `${year}-${month}-${day}T${hour}:${min}`
-}
+import { yupResolver } from '@hookform/resolvers/yup';
+import { schema } from './schema'
+import { useForm, Controller } from 'react-hook-form'
+import LoadingButton from 'components/LoadingButton';
 
 const CreateExamination = (props) => {
   const theme = useTheme()
@@ -47,26 +39,28 @@ const CreateExamination = (props) => {
   const [isEdit, setIsEdit] = useState(props.isEdit)
   const [slug, setSlug] = useState(paramUrl.examSlug || '')
   const [id, setId] = useState('')
-  const [name, setName] = useState('')
-  const [numberofQuestion, setNumberofQuestion] = useState(1)
   const [tracking, setTracking] = useState(false);
   const [shuffle, setShuffle] = useState(false);
   const [viewAnswer, setViewAnswer] = useState('no')
-  const [viewMark, setViewMark] = useState('no')
-  const [typeMark, setTypeMark] = useState('max')
-  const [start, setStart] = useState(toStringDateTime(new Date()))//thời gian bắt đầu
-  const [end, setEnd] = useState(toStringDateTime(new Date()))//thời gian kết thúc
-  const [duration, setDuration] = useState(1)//thời lượng bài thi (phút)
-  //const [inputQuestion, setInputQuestion] = useState(true)//tự nhập câu hỏi/lấy từ ngân hàng đề
-  const [pinExam, setPinExam] = useState('')//tự nhập câu hỏi/lấy từ ngân hàng đề
+  const [viewPoint, setViewPoint] = useState('no')
+  const [typeofPoint, setTypeofPoint] = useState('max')
   const [isLimit, setIsLimit] = useState(true)//giới hạn số lần thi
-  const [limit, setLimit] = useState(0)//Số lần được phép thi tối đa
+  const [loading, setLoading] = useState(false)//giới hạn số lần thi
+
   const user = useSelector(state => state.auth.refreshToken)
   const { courseId, id: courseobjId } = useContext(CourseContext)
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
-
+  const { handleSubmit, setValue, control } = useForm({
+    mode: "onChange",
+    resolver: yupResolver(schema),
+    reValidateMode: "onChange",
+    defaultValues: {
+      name: "",
+      description: ""
+    }
+  });
 
   useEffect(() => {
     const getQuestions = () => {
@@ -77,7 +71,20 @@ const CreateExamination = (props) => {
           try {
             const exam = res
             dispatch(clearQuestion())
-            setName(exam.name)
+            setValue('name', exam.name)
+            setValue('startTime', moment(exam.startTime).format('YYYY-MM-DDTHH:ss'))
+            setValue('endTime', moment(exam.endTime).format('YYYY-MM-DDTHH:ss'))
+            setValue('maxTimes', exam.maxTimes)
+            setValue('numberofQuestions', exam.numberofQuestions)
+            setTracking(exam.tracking)
+            setViewAnswer(exam.viewAnswer)
+            setViewPoint(exam.viewPoint)
+            setTypeofPoint(exam.typeofPoint)
+            setShuffle(exam.shuffle)
+            if (exam.attemptsAllowed === 0)
+              setIsLimit(false)
+            else
+              setValue('attemptsAllowed', exam.attemptsAllowed)
             setId(exam.id || exam._id)
             const questions = exam.questions
             questions.forEach(item => {
@@ -94,48 +101,30 @@ const CreateExamination = (props) => {
   }, [slug, user])
 
 
-  const handleChangeName = event => setName(event.target.value)
-  const handleChangeNumberQuestion = (event) => {
-    let newValue = Number(event.target.value |= 0)
-    if (newValue > 200)
-      newValue = 200
-    setNumberofQuestion(newValue)
-  }
   const handleChangeViewAnswer = event => setViewAnswer(event.target.value)
-  const handleChangeViewMark = event => setViewMark(event.target.value)
-  const handleChangeTypeMark = event => setTypeMark(event.target.value)
-  const handleChangePinExam = event => setPinExam(event.target.value)
-  //const handleChangeInputQuestion = event => setInputQuestion(event.target.value)
+  const handleChangeViewPoint = event => setViewPoint(event.target.value)
+  const handleChangeTypeofPoint = event => setTypeofPoint(event.target.value)
 
-  const onChangeStartTime = event => {
-    const newDate = moment(new Date(event.target.value)).format("YYYY-MM-DDThh:mm");
-    setStart(newDate)
-  }
-  const onChangeEndTime = event => {
-    const newDate = moment(new Date(event.target.value)).format("YYYY-MM-DDThh:mm");
-    setEnd(newDate)
-  }
 
-  const onChangeDuration = (event) => setDuration(Number(event.target.value |= 0))
-  const onChangeLimit = (event) => setLimit(Number(event.target.value |= 0))
+  const handleCreate = (data) => {
+    const { name, startTime, endTime, maxTimes, attemptsAllowed, pinExam,numberofQuestion } = data
 
-  const handleSubmit = () => {
     const params = {
       name,
       numberofQuestion,
       courseId: courseobjId,
       description: '',
       tracking,
-      startTime: start,
-      endTime: end,
-      attemptsAllowed: isLimit ? limit : 0,
+      startTime,
+      endTime,
+      attemptsAllowed: isLimit ? attemptsAllowed : 0,
       maxPoint: 0,
-      maxTime: duration,
+      maxTimes,
       shuffle,
-      typeMark,
-      viewMark,
+      typeofPoint,
+      viewPoint,
       viewAnswer,
-      pin: pinExam
+      pinExam
     }
     apiExamination.createExam(params)
       .then(res => {
@@ -144,6 +133,36 @@ const CreateExamination = (props) => {
         setSlug(res.slug)
         setIsEdit(true)
       })
+  }
+
+  const handleUpdate = (data) => {
+    const { name, startTime, endTime, maxTimes, attemptsAllowed, pinExam,numberofQuestions } = data
+
+    const params = {
+      id,
+      name,
+      numberofQuestions,
+      courseId: courseobjId,
+      description: '',
+      tracking,
+      startTime,
+      endTime,
+      attemptsAllowed: isLimit ? attemptsAllowed : 0,
+      maxPoints: 0,
+      maxTimes,
+      shuffle,
+      typeofPoint,
+      viewPoint,
+      viewAnswer,
+      pinExam
+    }
+    setLoading(true)
+    apiExamination.updateExam(params)
+      .then(res => {
+        toast.success("Cập nhật cấu hình đề thi thành công")
+        //navigate(`/course/${courseId}/detail-exam/${res.slug}`)
+      })
+      .finally(()=>setLoading(false))
   }
 
   return (
@@ -158,23 +177,60 @@ const CreateExamination = (props) => {
         <Stack spacing={1.5} my={1.5}>
           <StackLabel>
             <Box>Tên đề thi</Box>
-            <input type='text' value={name}
-              onChange={handleChangeName} />
+            <FormControl>
+              <Controller
+                name={"name"}
+                control={control}
+                render={({ field, fieldState: { error } }) => (
+                  <>
+                    <input
+                      {...field}
+                    />
+                    {error && <FormHelperText>{error.message}</FormHelperText>}
+                  </>
+                )}
+              />
+            </FormControl>
           </StackLabel>
 
           <Stack2Column>
-
             <StackLabel>
               <Box>Số câu hỏi</Box>
-              <input type='number' value={numberofQuestion} min='1' max='201'
-                onInput={handleChangeNumberQuestion} />
+              <FormControl>
+              <Controller
+                  name={"numberofQuestions"}
+                  control={control}
+                  render={({ field, fieldState: { error } }) => (
+                    <>
+                      <input
+                        {...field}
+                        type='number' min={1}
+                      />
+                      {error && <FormHelperText>{error.message}</FormHelperText>}
+                    </>
+                  )}
+                />
+              </FormControl>
             </StackLabel>
+
             <StackLabel>
               <Box>Thời lượng làm bài (phút)</Box>
-              <input value={duration}
-                //onChange={onChangeDuration} 
-                type='number' min={1}
-                onInput={onChangeDuration} />
+              <FormControl>
+                <Controller
+                  name={"maxTimes"}
+                  control={control}
+                  render={({ field, fieldState: { error } }) => (
+                    <>
+                      <input
+                        {...field}
+                        type='number' min={1}
+                      />
+                      {error && <FormHelperText>{error.message}</FormHelperText>}
+                    </>
+                  )}
+                />
+              </FormControl>
+
             </StackLabel>
           </Stack2Column>
 
@@ -196,46 +252,66 @@ const CreateExamination = (props) => {
             </StackLabel>
           </Stack2Column>
           <Stack2Column>
-            <StackLabel alignItems='center'>
+            <StackLabel>
               <Box>Thời gian bắt đầu</Box>
-              <input type='datetime-local'
-                onChange={onChangeStartTime}
-                value={start}
-                min="1997-01-01T00:00" max="2030-12-31T00:00"
-                pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}" />
+              <FormControl>
+                <Controller
+                  name={"startTime"}
+                  control={control}
+                  render={({ field, fieldState: { error } }) => (
+                    <>
+                      <input type='datetime-local'
+                        {...field}
+
+                        pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}" />
+                      {error && <FormHelperText>{error.message}</FormHelperText>}
+                    </>
+                  )}
+                />
+              </FormControl>
+
+
             </StackLabel>
-            <StackLabel alignItems='center'>
+            <StackLabel>
               <Box>Thời gian kết thúc</Box>
-              <input type='datetime-local'
-                onChange={onChangeEndTime}
-                value={end}
-                min="1997-01-01T00:00" max="2030-12-31T00:00"
-                pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}" />
+              <FormControl>
+                <Controller
+                  name={"endTime"}
+                  control={control}
+                  render={({ field, fieldState: { error } }) => (
+                    <>
+                      <input type='datetime-local'
+                        {...field}
+                        min="1997-01-01T00:00" max="2030-12-31T00:00"
+                        pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}" />
+                      {error && <FormHelperText>{error.message}</FormHelperText>}
+                    </>
+                  )}
+                />
+              </FormControl>
             </StackLabel>
           </Stack2Column>
 
           <Stack2Column>
             <StackLabel>
               <Box>Mật khẩu đề thi</Box>
-              <input type='text'
-                onChange={handleChangePinExam}
-                value={pinExam}
-              />
+              <FormControl>
+                <Controller
+                  name={"pinExam"}
+                  control={control}
+                  render={({ field, fieldState: { error } }) => (
+                    <>
+                      <input
+                        {...field}
+                      />
+                      {error && <FormHelperText>{error.message}</FormHelperText>}
+                    </>
+                  )}
+                />
+              </FormControl>
             </StackLabel>
 
-            {/* <StackLabel>
-              <Box>Khoá học</Box>
-              <Select
-                value={course}
-                onChange={handleChangeCourse}
-                input={<BootstrapInput />}
-              >
-                {
-                  listCourse.map(item =>
-                    <MenuItem value={item.id}>{item.name}</MenuItem>)
-                }
-              </Select>
-            </StackLabel> */}
+
           </Stack2Column>
 
           <StackLabel>
@@ -256,9 +332,9 @@ const CreateExamination = (props) => {
             <Box>Cho xem điểm</Box>
             <RadioGroup
               row
-              name="viewMark"
-              value={viewMark}
-              onChange={handleChangeViewMark}
+              name="viewPoint"
+              value={viewPoint}
+              onChange={handleChangeViewPoint}
             >
               <FormControlLabel value="no" control={<Radio size='small' />} label="Không" />
               <FormControlLabel value="done" control={<Radio size='small' />} label="Khi thi xong" />
@@ -280,26 +356,14 @@ const CreateExamination = (props) => {
             </RadioGroup>
           </StackLabel> */}
 
-          {/* <StackLabel>
-            <Box>Cách nhập câu hỏi</Box>
-            <RadioGroup
-              row
-              name="inputQuestion"
-              value={inputQuestion}
-              onChange={handleChangeInputQuestion}
-            >
-              <FormControlLabel value={true} control={<Radio size='small' />} label="Tự nhập câu hỏi" />
-              <FormControlLabel value={false} control={<Radio size='small' />} label="Lấy từ ngân hàng câu hỏi" />
-            </RadioGroup>
-          </StackLabel> */}
 
           <StackLabel>
             <Box>Cách tính điểm</Box>
             <RadioGroup
               row
-              name="typeMark"
-              value={typeMark}
-              onChange={handleChangeTypeMark}
+              name="typeofPoint"
+              value={typeofPoint}
+              onChange={handleChangeTypeofPoint}
             >
               <FormControlLabel value={'max'} control={<Radio size='small' />} label="Lấy điểm cao nhất" />
               <FormControlLabel value={'last'} control={<Radio size='small' />} label="Lấy điểm lần thi cuối" />
@@ -307,7 +371,6 @@ const CreateExamination = (props) => {
             </RadioGroup>
           </StackLabel>
           <Stack2Column>
-
             <StackLabel>
               <Box>Giới hạn số lần thi</Box>
               <FormGroup row>
@@ -315,14 +378,24 @@ const CreateExamination = (props) => {
                   control={<Switch checked={isLimit} onChange={() => setIsLimit(!isLimit)} />} />
               </FormGroup>
             </StackLabel>
-
             {
               isLimit &&
               <StackLabel>
                 <Box>Số lần thi tối đa</Box>
-                <input value={limit}
-                  type='number' min={1}
-                  onInput={onChangeLimit} />
+                <FormControl>
+                  <Controller
+                    name={"attemptsAllowed"}
+                    control={control}
+                    render={({ field, fieldState: { error } }) => (
+                      <>
+                        <input
+                          {...field}
+                        />
+                        {error && <FormHelperText>{error.message}</FormHelperText>}
+                      </>
+                    )}
+                  />
+                </FormControl>
               </StackLabel>
             }
           </Stack2Column>
@@ -330,13 +403,14 @@ const CreateExamination = (props) => {
         </Stack>
 
         <Stack alignItems='center'>
-          <Button variant='contained' onClick={handleSubmit}>Lưu cấu hình</Button>
+          <LoadingButton variant='contained' loading={loading}
+          onClick={isEdit?handleSubmit(handleUpdate):handleSubmit(handleCreate)}>Lưu cấu hình</LoadingButton>
         </Stack>
       </Paper>
       {
-        isEdit && 
-        <ExamContext.Provider value={{examId: id}}>
-          <LayoutListQuesion  />
+        isEdit &&
+        <ExamContext.Provider value={{ examId: id }}>
+          <LayoutListQuesion />
         </ExamContext.Provider>
       }
 

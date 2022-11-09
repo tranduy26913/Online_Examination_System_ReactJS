@@ -40,7 +40,19 @@ import { axiosClient,axiosClientWithToken } from "./axiosClient";
     },
     
     createCourse: async (params) => {
-        const res = await axiosClient.post('/course', params,{headers: {
+        const res = await axiosClientWithToken.post('/course', params,{headers: {
+            'Content-Type': 'multipart/form-data'
+          }})
+        return res.data;
+    },
+    updateCourse: async (params) => {
+        const res = await axiosClientWithToken.post('/course/update-course', params,{headers: {
+            'Content-Type': 'multipart/form-data'
+          }})
+        return res.data;
+    },
+    updateFile: async (params) => {
+        const res = await axiosClientWithToken.post('/course/update-file', params,{headers: {
             'Content-Type': 'multipart/form-data'
           }})
         return res.data;

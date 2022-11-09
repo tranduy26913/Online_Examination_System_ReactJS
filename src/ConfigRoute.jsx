@@ -29,6 +29,7 @@ const ResetPassword = lazy(() => import("pages/ResetPassword"));
 const StatisticExam = lazy(() => import("pages/Course/StatisticExam"));
 const ResultExamination = lazy(() => import("pages/ResultExamination"));
 const ReviewExamination = lazy(() => import("pages/ReviewExamination"));
+const ManageFile = lazy(() => import("pages/Course/ManageFile"));
 
 const makeLoading = (component) => <Suspense fallback={<LoadingPage />}>{component}</Suspense>
 
@@ -124,6 +125,10 @@ const COURSE_TEACHER = [
     component: ListStudent
   },
   {
+    path: 'manage-file',
+    component: ManageFile
+  },
+  {
     path: 'question-bank',
     component: QuestionBank
   },
@@ -189,6 +194,7 @@ function ConfigRoute() {
             dashboardComponents.map(item =>
               <Route key={item.path} path={item.path} element={makeLoading(<item.component />)} />)
           }
+          <Route path="list-course/edit-course/:courseId" element={<CreateCourse isEdit={true} />} ></Route>
         </Route>
 
         <Route path="login" element={<Login />} />

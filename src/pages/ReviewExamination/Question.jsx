@@ -12,6 +12,8 @@ import {
     lighten,
     alpha,
 } from '@mui/material'
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline'
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import { darken } from "@mui/material";
 import DOMPurify from 'dompurify'
 import { memo } from 'react';
@@ -32,6 +34,9 @@ const StackQuestionContent = styled(Stack)(({ theme }) => ({
     borderLeft: `8px solid ${alpha(theme.palette.warning.main, 0.78)}`,
     '&.done': {
         borderLeft: `8px solid ${theme.palette.primary.main}b0`,
+    },
+    '&.fail': {
+        borderLeft: `8px solid ${theme.palette.error.main}`,
     }
 }))
 
@@ -47,9 +52,41 @@ const TypographyQuestion = styled(Typography)(({ theme }) => ({
 
 const Question = (props) => {
     const { question } = props
+    const calcPoint = () => {
+        let points = 0
+        let noAnswerCorrect = question.answers.filter(e => e.isCorrect).length //số đáp án đúng
+        let choose = question.choose
+        if (!choose) {
+            if (noAnswerCorrect === 0)
+                points += question.maxPoints
+        }
+        else {
+            if (noAnswerCorrect === 0) {
+                if (choose?.length === 0)
+                    points += question.maxPoints
+            }
+            else {
 
+                let pointEachAnswer = question.maxPoints / noAnswerCorrect
+                question.answers.forEach(answer => {
+                    if (answer.isCorrect) {//
+                        if (choose.includes(answer.id.toString()))
+                        points += pointEachAnswer
+                    }
+                    else {
+                        if (choose.includes(answer.id.toString()))
+                        points -= pointEachAnswer
+                    }
+
+                })
+            }
+        }
+        return points < 0 ? 0 : points
+    }
+    const points = calcPoint()
     return (
-        <StackQuestionContent id={`question-${props.index}`} spacing={1} pr={2} className={props.stateDone ? 'done' : ''} >
+        <StackQuestionContent id={`question-${props.index}`} spacing={1} pr={2}
+         className={points === 0 ? 'fail' : points === question.maxPoints ? 'done' : ''} >
             <TypographyQuestion>Câu hỏi {props.index + 1}</TypographyQuestion>
 
             <Stack flex={1} pb={2}>
@@ -63,28 +100,52 @@ const Question = (props) => {
                         >
                             {
                                 question.answers.map(item =>
-                                    <FormControlLabelCustom key={item.id}
-                                        value={item.id} control={<Radio size='small' />} label={item.content} />)
+                                    <Stack key={item.id} direction='row'>
+                                        <FormControlLabelCustom
+                                            value={item.id} control={<Radio size='small' sx={{ height: '34px' }} />} label={item.content} />
+                                        {item.isCorrect ? <CheckCircleOutlineIcon
+                                            sx={{ fontSize: '22px', margin: '6px 0px 0px 10px' }}
+                                            color={'success'} />
+                                            :
+                                            question.choose?.[0] === item.id && <HighlightOffIcon
+                                                sx={{ fontSize: '22px', margin: '6px 0px 0px 10px' }}
+                                                color={'error'} />}
+                                    </Stack>
+                                )
                             }
 
                         </RadioGroup> :
                         <FormGroup>
                             {
                                 question.answers.map(item =>
-                                    <FormControlLabelCustom key={item.id}
-                                        value={item.id}
-                                        control={<Checkbox
-                                            checked={item.choose?.includes(item.id)}
-                                            size='small'
-                                        />} label={item.content} />)
+                                    <Stack key={item.id} direction='row'>
+                                        <FormControlLabelCustom
+                                            value={item.id}
+                                            control={
+                                                <Checkbox
+                                                    checked={question.choose?.includes(item.id)}
+                                                    size='small'
+                                                />
+                                            } label={item.content} />
+                                        {
+                                            item.isCorrect ?
+                                                <CheckCircleOutlineIcon
+                                                    sx={{ fontSize: '22px', margin: '8px 0px 0px 10px' }}
+                                                    color={'success'} />
+                                                :
+                                                question.choose?.includes(item.id) && <HighlightOffIcon
+                                                    sx={{ fontSize: '22px', margin: '8px 0px 0px 10px' }}
+                                                    color={'error'} />
+                                        }
+                                    </Stack>
+                                )
                             }
                         </FormGroup>
                 }
             </Stack>
-            <ButtonGroup variant="outlined" aria-label="outlined button group">
-                <Button variant='outlined'>Chưa trả lời</Button>
-                <Button variant='outlined'>Điểm: 1.00</Button>
-
+            <ButtonGroup variant="outlined">
+                {/* <Button variant='outlined'>Chưa trả lời</Button> */}
+                <Button variant='outlined'>Điểm: {points}/{question.maxPoints}</Button>
             </ButtonGroup>
         </StackQuestionContent>
     )

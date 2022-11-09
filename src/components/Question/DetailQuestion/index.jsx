@@ -8,12 +8,11 @@ import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import React from 'react'
-import { useContext } from 'react';
-import CourseContext from 'pages/Course/LayoutCourse/CourseContext';
 import apiQuestion from 'apis/apiQuestion';
 import { toast } from 'react-toastify';
 import { useDispatch } from 'react-redux';
 import { deleteQuestion } from 'slices/userSlice';
+import DOMPurify from 'dompurify';
 
 const BoxAnswer = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -48,8 +47,9 @@ const DetailQuestion = (props) => {
   }
   return (
     <Stack spacing={0.5}>
-      <Typography>
-        {question.content}
+      <Typography mb={1} fontSize='16px'
+      dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(question.content) }}>
+      
       </Typography>
       {
         question.answers.map(item =>

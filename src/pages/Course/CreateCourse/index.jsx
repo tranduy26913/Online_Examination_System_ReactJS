@@ -8,18 +8,12 @@ import {
     TextField,
     Typography,
     Divider,
-    ListItemText,
-    FormControl,
-    RadioGroup,
-    Radio,
-    FormControlLabel,
 } from '@mui/material'
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 
 import UploadIcon from '@mui/icons-material/Upload';
-import avtDefault from 'assets/img/avatar.jpg'
 import { yupResolver } from '@hookform/resolvers/yup';
 import { schema } from './schema'
 import { useForm, Controller } from 'react-hook-form'
@@ -29,8 +23,10 @@ import { toast } from 'react-toastify';
 import LoadingButton from 'components/LoadingButton'
 import Page from 'components/Page'
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import moment from 'moment'
+import { useEffect } from 'react';
+import { getMessageError } from 'utils';
 
 const alpha = [...Array.from(Array(26)).map((e, i) => i + 65),
 ...Array.from(Array(26)).map((e, i) => i + 97),
@@ -38,20 +34,21 @@ const alpha = [...Array.from(Array(26)).map((e, i) => i + 65),
 const alphabet = alpha.map((x) => String.fromCharCode(x));
 
 function CreateCourse(props) {
-    const [image, setImage] = useState(avtDefault)
+    const { isEdit } = props
+    const [image, setImage] = useState('https://sandla.org/wp-content/uploads/2021/08/english-e1629469809834.jpg')
     const [fileImage, setFileImage] = useState(null)
     const [loading, setLoading] = useState(false)
-    const [startTime, setStartTime] = useState( moment(new Date()))
+    const [startTime, setStartTime] = useState(moment(new Date()))
     const [endTime, setEndTime] = useState(moment(new Date()).add(60, 'days'))
-    const [error, setError] = useState({isError:false,msg:""})
-    const [updating, setUpdating] = useState(false);
+    const [error, setError] = useState({ isError: false, msg: "" })
     const user = useSelector(state => state.user.info) //lấy thông tin user
+    const { courseId } = useParams()
     const navigate = useNavigate()
 
-    const checkTime = (start, end)=>{
+    const checkTime = (start, end) => {
         let isError = false
         let msg = ""
-        if (start&& end) {
+        if (start && end) {
             if (start.isValid() && end.isValid()) {
                 if (end < start) {
                     isError = true
@@ -68,19 +65,19 @@ function CreateCourse(props) {
                 }
             }
         }
-        else{
+        else {
             isError = true
             msg = "Vui lòng nhập đầy đủ thông tin"
         }
-        setError({isError,msg})
+        setError({ isError, msg })
     }
     const handleStartTime = (newValue) => {
         setStartTime(newValue)
-        checkTime(newValue,endTime)
+        checkTime(newValue, endTime)
     }
     const handleEndTime = (newValue) => {
         setEndTime(newValue)
-        checkTime(startTime,newValue)
+        checkTime(startTime, newValue)
     }
 
     const handleChooseImage = e => {
@@ -88,9 +85,8 @@ function CreateCourse(props) {
             setFileImage(e.target.files[0])
             setImage(URL.createObjectURL(e.target.files[0]))
         }
-        console.log(fileImage)
     }
-    const { handleSubmit, control } = useForm({
+    const { handleSubmit, setValue, control } = useForm({
         mode: "onChange",
         resolver: yupResolver(schema),
         reValidateMode: "onChange",
@@ -101,7 +97,7 @@ function CreateCourse(props) {
     });
 
 
-    const onSubmit = (data) => {
+    const handleCreate = (data) => {
         const { name, description } = data
         let random = ''
         for (let i = 0; i < 7; i++) {
@@ -126,8 +122,8 @@ function CreateCourse(props) {
             description,
             username: user.username,
             file: fileImage,
-            startTime:startTime.toDate(),
-            endTime:endTime.toDate(),
+            startTime: startTime.toDate(),
+            endTime: endTime.toDate(),
         }
         setLoading(true)
         apiCourse.createCourse(params)
@@ -141,6 +137,60 @@ function CreateCourse(props) {
             .finally(() => setLoading(false))
     }
 
+    const handleUpdate = (data) => {
+        const { name, description } = data
+        let random = ''
+        for (let i = 0; i < 7; i++) {
+            random += alphabet[Math.floor(Math.random() * alphabet.length)]
+        }
+        const slug = slugify(data.name, {
+            replacement: '-',  // replace spaces with replacement character, defaults to `-`
+            remove: undefined, // remove characters that match regex, defaults to `undefined`
+            lower: true,      // convert to lower case, defaults to `false`
+            strict: false,     // strip special characters except replacement, defaults to `false`
+            locale: 'vi',       // language code of the locale to use
+            trim: true         // trim leading and trailing replacement chars, defaults to `true`
+        }) + '-' + random
+
+        if (error.isError) {
+            return
+        }
+
+        const params = {
+            slug,
+            courseId,
+            name,
+            description,
+            file: fileImage,
+            startTime: startTime.toDate(),
+            endTime: endTime.toDate(),
+        }
+        setLoading(true)
+        apiCourse.updateCourse(params)
+            .then(res => {
+                navigate(`/course/${res.courseId}`)
+                toast.success(res.message)
+            })
+            .catch(err => {
+                toast.error(getMessageError(err))
+            })
+            .finally(() => setLoading(false))
+    }
+
+    useEffect(() => {
+        const getCourse = () => {
+            apiCourse.getCourseByCourseID({ courseId })
+                .then(res => {
+                    setValue('name', res.name)
+                    setValue('description', res.description)
+                    setImage(res.image)
+                    setStartTime(moment(res.startTime))
+                    setEndTime(moment(res.endTime))
+                })
+        }
+        getCourse()
+    }, [courseId])
+
     return (
         <Page title='Tạo khoá học mới'>
 
@@ -151,7 +201,7 @@ function CreateCourse(props) {
                             <Avatar
                                 variant="rounded"
                                 alt="Remy Sharp"
-                                src={"https://sandla.org/wp-content/uploads/2021/08/english-e1629469809834.jpg"}
+                                src={image}
                                 sx={{ width: 250, height: 250 }}
                             />
                             <Button variant='contained' component="label" width='160px'
@@ -170,7 +220,7 @@ function CreateCourse(props) {
                                 Thông tin khoá học
                             </Typography>
                             <Divider />
-                            <form onSubmit={handleSubmit(onSubmit)} >
+                            
                                 <Stack spacing={2.5}>
                                     <Controller
                                         name={"name"}
@@ -215,7 +265,7 @@ function CreateCourse(props) {
                                             onChange={handleStartTime}
                                             renderInput={(params) => <TextField {...params}
                                                 error={params.error || error.isError}
-                                                helperText={params.error&&"Ngày không hợp lệ"}
+                                                helperText={params.error && "Ngày không hợp lệ"}
                                                 size='small' fullWidth />
                                             }
                                         />
@@ -228,26 +278,25 @@ function CreateCourse(props) {
                                             onChange={handleEndTime}
                                             renderInput={(params) =>
                                                 <TextField
-                                                 {...params} 
-                                                 error={params.error || error.isError}
-                                                 helperText={params.error?"Ngày không hợp lệ":
-                                                 error.isError&&error.msg}
-                                                 size='small' fullWidth />
+                                                    {...params}
+                                                    error={params.error || error.isError}
+                                                    helperText={params.error ? "Ngày không hợp lệ" :
+                                                        error.isError && error.msg}
+                                                    size='small' fullWidth />
                                             }
                                         />
                                     </LocalizationProvider>
                                     <Stack alignItems='center'>
 
                                         <LoadingButton
-                                            onClick={handleSubmit(onSubmit)}
+                                            onClick={isEdit?handleSubmit(handleUpdate):handleSubmit(handleCreate)}
                                             loading={loading}
                                             variant="contained"
                                         >
-                                            Tạo khoá học
+                                            {isEdit?'Cập nhật':'Tạo khoá học'}
                                         </LoadingButton>
                                     </Stack>
                                 </Stack>
-                            </form>
                         </Stack>
                     </Paper>
                 </Box>

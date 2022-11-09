@@ -13,7 +13,6 @@ import {
     Typography,
     Chip
 } from "@mui/material"
-import Label from 'components/Label';
 import { useDispatch } from 'react-redux';
 import TableMoreMenu from './component/TableMoreMenu'
 import TableToolbar from './component/TableToolbar'
@@ -78,7 +77,6 @@ const ListStudent = () => {
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [students, setStudents] = useState([])
     const [status, setStatus] = useState([])
-    const dispatch = useDispatch()
 
     const { courseId } = useContext(CourseContext)
 
@@ -121,7 +119,7 @@ const ListStudent = () => {
     useEffect(() => {
         try {
             students.forEach(item => {
-                const { _id, ...data } = item
+                const { _id } = item
                 if (_id) {
                     let userStatusDatabaseRef = ref(database, '/status/' + _id);//định nghĩa ref status của 1 user trên firebase
                     onValue(userStatusDatabaseRef, (snapshot) => {

@@ -2,7 +2,7 @@ import React from "react";
 
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 
-import { SIDEBAR_COURSE_TEACHER,SIDEBAR_COURSE_STUDENT } from "constraints/StudentDashboard";
+import { SIDEBAR_COURSE_TEACHER, SIDEBAR_COURSE_STUDENT } from "constraints/StudentDashboard";
 
 import {
   Button,
@@ -15,6 +15,7 @@ import {
 
 import SendIcon from '@mui/icons-material/Send';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+import EditIcon from '@mui/icons-material/Edit'
 import { Outlet } from 'react-router-dom'
 import Sidebar from "components/Sidebar";
 import { useEffect } from "react";
@@ -40,7 +41,7 @@ const LayoutCourse = () => {
   const tabId = sidebarCourse.find(item => checkSelectedTab(item, location.pathname))
   const [selectedTabId, setSelectedTabId] = React.useState(tabId?.id || 1);
   const navigate = useNavigate()
-  const role = useSelector(state=>state.setting.role)
+  const role = useSelector(state => state.setting.role)
   const { courseId } = useParams()
 
   //const paramUrl = useSearchParams()[0]
@@ -67,13 +68,13 @@ const LayoutCourse = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  useEffect(()=>{
-    if(role==='teacher')
+  useEffect(() => {
+    if (role === 'teacher')
       setSidebarCourse(SIDEBAR_COURSE_TEACHER)
-    else{
+    else {
       setSidebarCourse(SIDEBAR_COURSE_STUDENT)
     }
-  },[role])
+  }, [role])
 
   React.useEffect(() => {
     const handleChangePath = () => {
@@ -128,7 +129,7 @@ const LayoutCourse = () => {
 
         <Stack direction='row' className='listtest__course'>
           <Box className='listtest__wrap-img'>
-            <img alt='' src={course.image || "https://sandla.org/wp-content/uploads/2021/08/english-e1629469809834.jpg"} />
+            <img alt='' src={course.image } />
           </Box>
           <Stack spacing={1} className='listtest__wrap-info'>
             <Typography
@@ -137,7 +138,13 @@ const LayoutCourse = () => {
               className='listtest__course-name'>Khoá học: {course?.name}</Typography>
             <Typography className='listtest__course-desc'>{course?.description}</Typography>
             <Typography className='listtest__course-desc'>Số lượng bài kiểm tra: {course?.exams?.length}</Typography>
-            <Stack flex={1} justifyContent='flex-end' alignItems='flex-start'>
+            <Stack flex={1} direction='row' spacing={2} justifyContent='flex-start' alignItems='center' >
+              <Link to={`/my/list-course/edit-course/${courseId}`}>
+                <Button
+                  variant='outlined'
+                  endIcon={<EditIcon />}
+                >Chỉnh sửa</Button>
+              </Link>
               <Button
                 variant='outlined'
                 endIcon={<SendIcon />}
@@ -146,7 +153,7 @@ const LayoutCourse = () => {
           </Stack>
         </Stack>
       </Paper>
-      <CourseContext.Provider value={{ id: course?.id || "",courseId:course?.courseId || "" }}>
+      <CourseContext.Provider value={{ id: course?.id || "", courseId: course?.courseId || "" }}>
         <Outlet />
       </CourseContext.Provider>
 

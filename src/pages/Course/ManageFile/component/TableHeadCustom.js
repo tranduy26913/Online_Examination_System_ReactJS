@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 // material
-import { Box, TableRow, TableCell, TableHead, TableSortLabel } from '@mui/material';
+import { Box, Checkbox, TableRow, TableCell, TableHead, TableSortLabel } from '@mui/material';
 
 // ----------------------------------------------------------------------
 
@@ -21,9 +21,7 @@ TableHeadCustom.propTypes = {
   orderBy: PropTypes.string,
   rowCount: PropTypes.number,
   headLabel: PropTypes.array,
-  numSelected: PropTypes.number,
   onRequestSort: PropTypes.func,
-  onSelectAllClick: PropTypes.func,
 };
 
 export default function TableHeadCustom({
@@ -31,9 +29,7 @@ export default function TableHeadCustom({
   orderBy,
   rowCount,
   headLabel,
-  numSelected,
   onRequestSort,
-  onSelectAllClick,
 }) {
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
@@ -42,7 +38,6 @@ export default function TableHeadCustom({
   return (
     <TableHead>
       <TableRow>
-        
         {headLabel.map((headCell) => (
           <TableCell
             key={headCell.id}

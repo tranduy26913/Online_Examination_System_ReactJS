@@ -16,6 +16,8 @@ import Page from 'components/Page';
 import { useParams } from 'react-router-dom';
 import { useEffect } from 'react';
 import apiQuestionBank from 'apis/apiQuestionBank';
+import { useDispatch, useSelector } from 'react-redux';
+import { addQuestion } from 'slices/userSlice';
 
 const PaperQuestion = styled(Paper)(({ theme }) => ({
     borderTop: `6px solid ${theme.palette.primary.light}`
@@ -34,8 +36,9 @@ const QuestionBankDetail = () => {
         description: 'Ngân hàng các câu hỏi môn toán từ dễ đến khó'
     })
     const [idQuestion, setIdQuestion] = useState('')
-    const [questions, setQuestions] = useState(samples)
     const [expanded, setExpanded] = React.useState(false);
+    const dispatch = useDispatch()
+    const QUESTIONS = useSelector(state => state.user.questions)
     const handleChangeQuestion = (panel) => (event, isExpanded) => {
         setExpanded(isExpanded ? panel : false);
     };
@@ -47,7 +50,9 @@ const QuestionBankDetail = () => {
                 .then(res => {
                     const { questions, ...data } = res
                     setQuestionBank(data)
-                    setQuestions(questions)
+                    questions.forEach(item => {
+                        dispatch(addQuestion(item))
+                      })
                 })
         }
         GetData()
@@ -63,13 +68,13 @@ const QuestionBankDetail = () => {
                     </Stack>
                 </Paper>
                 <Stack spacing={1}>
-                    {questions.map(item =>
+                    {QUESTIONS.map((item,index) =>
 
                         <PaperQuestion key={item.id} elevation={12} >
                             <Accordion expanded={item.id === expanded} onChange={handleChangeQuestion(item.id)}>
                                 <AccordionSummary sx={AccordionSummaryStyle}
                                     expandIcon={<ExpandMoreIcon />}
-                                ><Typography>Câu hỏi 1</Typography>
+                                ><Typography>Câu hỏi {index+1}</Typography>
 
                                 </AccordionSummary>
                                 <AccordionDetails>
@@ -90,63 +95,5 @@ const QuestionBankDetail = () => {
         </Page>
     )
 }
-
-
-const samples = [
-    {
-        id: '1',
-        question: 'Câu hỏi 1',
-        answers: [
-            {
-                id: '1',
-                content: "Đáp án 1"
-            },
-            {
-                id: '2',
-                content: "Đáp án 2"
-            },
-            {
-                id: '3',
-                content: "Đáp án 3"
-            },
-        ]
-    },
-    {
-        id: '2',
-        question: 'Câu hỏi 1',
-        answers: [
-            {
-                id: '1',
-                content: "Đáp án 1"
-            },
-            {
-                id: '2',
-                content: "Đáp án 2"
-            },
-            {
-                id: '3',
-                content: "Đáp án 3"
-            },
-        ]
-    },
-    {
-        id: '3',
-        question: 'Câu hỏi 1',
-        answers: [
-            {
-                id: '1',
-                content: "Đáp án 1"
-            },
-            {
-                id: '2',
-                content: "Đáp án 2"
-            },
-            {
-                id: '3',
-                content: "Đáp án 3"
-            },
-        ]
-    },
-]
 
 export default QuestionBankDetail

@@ -1,12 +1,8 @@
-import { firestore, database, messaging } from 'config/firebaseConfig'
-import { collection, addDoc } from '@firebase/firestore'
+import {  database } from 'config/firebaseConfig'
 import { ref, onValue, onDisconnect, set } from 'firebase/database'
-import { onMessage, getToken } from 'firebase/messaging'
 import { useSelector } from 'react-redux'
 import { useEffect } from 'react'
 import { useState } from 'react'
-import { toast } from 'react-toastify'
-import apiProfile from 'apis/apiProfile'
 export default function StateActivity() {
     const user = useSelector(state => state.user.info)
     const [id, setId] = useState(user?._id || '')

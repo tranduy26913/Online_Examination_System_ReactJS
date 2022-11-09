@@ -27,11 +27,11 @@ const apiQuestionBank = {
         return res.data;
     },
     createQuestionIntoQuestionBank:async (params) => {
-         const res = await axiosClientWithToken.post('/question-bank/add-question', params )
+         const res = await axiosClientWithToken.post('/questionbank/add-question', params )
          return res.data;
      },
    deleteQuestionBank:async (params) => {
-        const res = await axiosClientWithToken.delete('/question-bank', params )
+        const res = await axiosClientWithToken.delete('/questionbank', params )
         return res.data;
     },
 

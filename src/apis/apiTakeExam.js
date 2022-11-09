@@ -1,5 +1,5 @@
 
-import { axiosClient, axiosClientWithToken } from "./axiosClient";
+import { axiosClientWithToken } from "./axiosClient";
 
 const apiTakeExam = {
 
@@ -17,6 +17,14 @@ const apiTakeExam = {
     },
     submitAnswerSheet: async (params) => {
         const res = await axiosClientWithToken.post('/takeexam/submit-exam',params)
+        return res.data;
+    },
+    getReviewExam: async (params) => {
+        const res = await axiosClientWithToken.get('/takeexam/get-preview-exam',{params})
+        return res.data;
+    },
+    getResultExam: async (params) => {
+        const res = await axiosClientWithToken.get('/takeexam/get-result-takeexam',{params})
         return res.data;
     },
 

@@ -17,6 +17,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { clearAnswers, clearAnswerSheet, clearTakeExamId, setTakeExamId } from 'slices/answerSheetSlice';
 import { ButtonQuestion, BoxTime } from './Examination.style'
 import apiTakeExam from 'apis/apiTakeExam';
+import { toast } from 'react-toastify';
+import FaceRecognition from './FaceRecognition';
 const Examination = () => {
     const theme = useTheme()
     const paramUrl = useParams()
@@ -25,6 +27,7 @@ const Examination = () => {
     const [pin, setPin] = useState('')
     const [examId, setExamId] = useState(paramUrl.examId || '')
     const [endTime, setEndTime] = useState()
+    const [countExit, setCountExit] = useState(0)
 
     const [questions, setQuestions] = useState([])
     const [indexQuestion, setIndexQuestion] = useState([])
@@ -58,17 +61,22 @@ const Examination = () => {
         countDown()
     }, [endTime])
     useEffect(() => {
-        const checkExam = async () => {
+        const checkExam = () => {
             //dispatch(clearAnswerSheet())
-            const resExam = await apiTakeExam.CheckExam({ slug: examId })
-            if (resExam.message === 'checkpin') {
-                dispatch(clearTakeExamId())
-            }
-            else if (resExam.message === 'valid') {
-                dispatch(setTakeExamId(resExam.takeExamId))
-                setupQuestion(resExam.exam.questions)
-                setEndTime(new Date(resExam.exam.endTime))
-            }
+            apiTakeExam.CheckExam({ slug: examId })
+                .then(resExam => {
+                    if (resExam.message === 'checkpin') {
+                        dispatch(clearTakeExamId())
+                    }
+                    else if (resExam.message === 'valid') {
+                        dispatch(setTakeExamId(resExam.takeExamId))
+                        setupQuestion(resExam.exam.questions)
+                        setEndTime(new Date(resExam.exam.endTime))
+                    }
+                })
+                .catch(err => {
+                    toast.warning(err.response.data.message)
+                })
         }
         checkExam()
     }, [])
@@ -102,6 +110,8 @@ const Examination = () => {
                     dispatch(clearAnswerSheet())
                 }
                 dispatch(setTakeExamId(res.takeExamId))
+                setupQuestion(res.exam.questions)
+                setEndTime(new Date(res.exam.endTime))
             })
     }
 
@@ -143,11 +153,44 @@ const Examination = () => {
             takeExamId,
             answerSheet
         })
-        .then(res=>{
-            navigate('/result-exam/'+takeExamId)
-            dispatch(clearTakeExamId)
-        })
+            .then(res => {
+                navigate('/result-exam/' + takeExamId)
+                dispatch(clearTakeExamId)
+            })
     }
+
+    useEffect(() => {
+        const checkExitBrowser = (e) => {
+            var confirmationMessage = "Bạn có chắc chắn muốn thoát khỏi bài kiểm tra";
+            (e || window.event).returnValue = confirmationMessage; //Gecko + IE
+            return confirmationMessage;                            //Webkit, Safari, Chrome
+        }
+        const changeVisibility = () => {
+
+            if (document.visibilityState === 'visible') {
+                if (countExit === 3) {
+                    toast.warning("Cảnh báo! Bạn đã chuyển Tab 3 lần. Chuyển Tab lần thứ 4 bài thi sẽ tự động được nộp.",
+                        { autoClose: false })
+                }
+            } else {
+                setCountExit(i => i + 1)
+            }
+        }
+        window.addEventListener("beforeunload", checkExitBrowser);
+        document.addEventListener('visibilitychange', changeVisibility)
+        return () => {
+            window.removeEventListener('beforeunload', checkExitBrowser)
+            document.removeEventListener('visibilitychange', changeVisibility)
+        }
+    }, [countExit])
+
+    const sendLog = (action) => {
+        const params = {
+            time: new Date(),
+            action
+        }
+    }
+
     return (
         <Page title={name}>
             {!takeExamId ?
@@ -192,32 +235,38 @@ const Examination = () => {
                                             question={item} index={index} />)
                                 }
                             </Stack>
-                            <Paper elevation={24} sx={{
+                            <Stack flex={1} spacing={2} sx={{
                                 position: 'sticky',
                                 top: '5rem',
-                                flex: 1
+
                             }}>
 
-                                <Stack spacing={1} p={1.5}>
-                                    <Typography fontSize='16px' fontWeight={600}>Danh sách câu hỏi</Typography>
-                                    <Grid container spacing={0.5}>
-                                        {
-                                            indexQuestion.map((item, index) =>
-                                                <Grid key={index} xs={2}>
-                                                    <ButtonQuestion className={`${item.isDone ? 'done' : ''} ${item.isFlag ? 'flag' : ''}`}
-                                                        onClick={() => document.getElementById(`question-${index}`)
-                                                            .scrollIntoView({ block: 'center', behavior: "smooth" })}
-                                                    >{index + 1}</ButtonQuestion>
-                                                </Grid>)
-                                        }
-                                    </Grid>
-                                    <Divider />
-                                    <Stack alignItems='center'>
+                                <Paper elevation={24} >
 
-                                        <Button onClick={handleSubmit} variant='contained'>Nộp bài</Button>
+                                    <Stack spacing={1} p={1.5}>
+                                        <Typography fontSize='16px' fontWeight={600}>Danh sách câu hỏi</Typography>
+                                        <Grid container spacing={0.5}>
+                                            {
+                                                indexQuestion.map((item, index) =>
+                                                    <Grid key={index} xs={2}>
+                                                        <ButtonQuestion className={`${item.isDone ? 'done' : ''} ${item.isFlag ? 'flag' : ''}`}
+                                                            onClick={() => document.getElementById(`question-${index}`)
+                                                                .scrollIntoView({ block: 'center', behavior: "smooth" })}
+                                                        >{index + 1}</ButtonQuestion>
+                                                    </Grid>)
+                                            }
+                                        </Grid>
+                                        <Divider />
+                                        <Stack alignItems='center'>
+
+                                            <Button onClick={handleSubmit} variant='contained'>Nộp bài</Button>
+                                        </Stack>
                                     </Stack>
-                                </Stack>
-                            </Paper>
+                                </Paper>
+                                <Paper elevation={12} sx={{ overflow: 'hidden' }}>
+                                    <FaceRecognition />
+                                </Paper>
+                            </Stack>
                         </Stack>
                     </Box>
                     <BoxTime>

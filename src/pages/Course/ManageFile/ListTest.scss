@@ -1,0 +1,25 @@
+.listtest {
+    &__course {
+        height: 175px;
+        //  border-bottom: 1px dashed #888;
+        padding: 12px 0;
+        margin-bottom: 12px;
+        gap: 12px
+    }
+    &__wrap-img {
+        max-width: 360px;
+        height: 100%;
+        flex: 1;
+        padding: 0px 10px;
+        img {
+            border-radius: 10px;
+            height: 100%;
+            width: 100%;
+        }
+    }
+    &__wrap-info {
+        flex: 3;
+        height: 100%;
+    }
+    &__course-name {}
+}

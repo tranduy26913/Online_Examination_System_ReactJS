@@ -1,9 +1,22 @@
 import { Button, Divider, Paper ,Typography} from '@mui/material'
 import { Stack } from '@mui/system'
-import {Link} from "react-router-dom"
+import {Link, useParams} from "react-router-dom"
 import Page from 'components/Page'
-import React from 'react'
+import { useState,useEffect } from 'react'
+import apiTakeExam from 'apis/apiTakeExam'
 function ResultExamination() {
+    const {takeExamId} = useParams()
+    const [result, setResult] = useState({})
+
+    useEffect(()=>{
+        const getResult = ()=>{
+            apiTakeExam.getResultExam({takeExamId})
+                .then(res=>{
+                    setResult(res)
+                })
+        }
+        getResult()
+    },[takeExamId])
     return (
         <Page title='Kết quả bài thi'>
             <Stack width='100%' height='100vh' justifyContent={'center'} alignItems='center'>
@@ -13,8 +26,11 @@ function ResultExamination() {
                         <Typography variant='h4' color='primary' align='center'>Kết quả bài thi</Typography>
                         <Divider/>
                         <Typography>Bài thi của bạn đã được hệ thống ghi nhận</Typography>
-                        <Typography>Điểm: <strong>10/10</strong></Typography>
-                        <Typography>Lần thi: <strong>2</strong></Typography>
+                        <Typography>Đề thi: <strong>{result?.name}</strong></Typography>
+                        <Typography>Trạng thái: <strong>{result?.status === 'not submitted'?'Chưa nộp':'Đã nộp'}</strong></Typography>
+                        <Typography>Điểm: <strong>{result?.points === undefined?'Không được phép xem điểm':
+                        <>{result?.points}/{result?.maxPoints}</>}</strong></Typography>
+                        <Typography>Lần thi: <strong>{result?.lanThi}</strong></Typography>
                         <Stack direction='row' justifyContent='center' spacing={2}>
                             <Button variant='contained'>Xem đáp án</Button>
                             <Link to='/course'>

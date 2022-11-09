@@ -1,11 +1,12 @@
 import PropTypes from 'prop-types';
 // material
 import { styled } from '@mui/material/styles';
-import {Toolbar, Tooltip, IconButton, Typography, OutlinedInput, InputAdornment } from '@mui/material';
+import {Toolbar, Tooltip, IconButton, Typography, OutlinedInput, InputAdornment, Button } from '@mui/material';
 // component
+import {Link} from 'react-router-dom'
 import SearchIcon from '@mui/icons-material/Search';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import AddStudent from './AddStudent';
+import FilterListIcon from '@mui/icons-material/FilterList';
 
 // ----------------------------------------------------------------------
 
@@ -35,10 +36,9 @@ UserListToolbar.propTypes = {
   numSelected: PropTypes.number,
   filterName: PropTypes.string,
   onFilterName: PropTypes.func,
-  reloadList:PropTypes.func.isRequired
 };
 
-export default function UserListToolbar({ numSelected, filterName, onFilterName, reloadList}) {
+export default function UserListToolbar({ numSelected, filterName, onFilterName, ButtonCustom }) {
   return (
     <RootStyle
       sx={{
@@ -72,9 +72,8 @@ export default function UserListToolbar({ numSelected, filterName, onFilterName,
           </IconButton>
         </Tooltip>
       ) : 
-       (
-        <AddStudent reloadList={reloadList}/>
-      )}
+      <ButtonCustom></ButtonCustom>
+      }
     </RootStyle>
   );
 }

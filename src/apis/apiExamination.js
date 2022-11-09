@@ -1,4 +1,4 @@
-import { axiosClient, axiosClientWithToken, axiosInstance } from "./axiosClient";
+import { axiosClient, axiosClientWithToken } from "./axiosClient";
 const apiExamination = {
 
   
@@ -10,8 +10,8 @@ const apiExamination = {
         const res = await axiosClientWithToken.post('/exam/create-exam', params )
         return res.data;
     },
-    updateExamination:async (params,id) => {
-        const res = await axiosClient.patch(`/examinations/${id}`, params )
+    updateExam:async (params,id) => {
+        const res = await axiosClientWithToken.put(`/exam/update-exam`, params )
         return res.data;
     },
 

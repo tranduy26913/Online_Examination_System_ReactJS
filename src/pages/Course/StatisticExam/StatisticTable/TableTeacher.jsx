@@ -134,7 +134,7 @@ const TableTeacher = () => {
                                         <TableCell align="left">{name}</TableCell>
                                         <TableCell align="center">{Math.round(((points + Number.EPSILON) * 100)) / 100}/{maxPoints}</TableCell>
                                         <TableCell align="left">{moment(startTime).format('DD/MM/YYYY HH:mm')}</TableCell>
-                                        <TableCell align="left">{duration}</TableCell>
+                                        <TableCell align="left">{duration} phút</TableCell>
                                         <TableCell align="left">
                                             {status === 'not submitted'?'Chưa nộp bài':'Đã nộp'}
                                         </TableCell>

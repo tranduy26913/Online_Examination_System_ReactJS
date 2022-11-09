@@ -1,7 +1,6 @@
 import React from 'react'
-import { Button, Stack, Typography, useTheme } from '@mui/material'
+import { Button, Stack, Typography } from '@mui/material'
 import Page from 'components/Page'
-import { Link } from 'react-router-dom'
 import imageErr from 'assets/img/error.png'
 class ErrorBoundary extends React.Component {
     constructor(props) {
@@ -25,7 +24,7 @@ class ErrorBoundary extends React.Component {
                 <Page title='Đường dẫn không tồn tại'>
                     <Stack>
                         <Stack alignSelf='center' flex={1}>
-                            <img src={imageErr} width='380px'></img>
+                            <img alt='error' src={imageErr} width='380px'></img>
                         </Stack>
                         <Stack alignSelf='center' flex={1} spacing={2}>
                             {/* <Typography component={'h1'} fontSize='60px' fontWeight={600}>404</Typography> */}

@@ -27,10 +27,10 @@ import {
 
 } from './MUI'
 import { useContext, useEffect, useState } from 'react'
-import { useSelector } from 'react-redux';
 import { memo } from 'react';
 import apiQuestionBank from 'apis/apiQuestionBank';
 import ExamContext from '../ExamContext';
+import DOMPurify from 'dompurify';
 const BoxAnswer = styled(Box)(({ theme }) => ({
     display: 'flex',
     alignItems: 'center',
@@ -52,8 +52,6 @@ const MenuProps = {
 
 function QuestionInQuestionBank(props) {
     const examId = useContext(ExamContext)
-    const QUESTIONS = useSelector(state => state.user.questions)
-    const [idQuestion, setIdQuestion] = useState('')
     const [expanded, setExpanded] = useState(false);
 
     const handleChangeQuestion = (panel) => (event, isExpanded) => {
@@ -145,10 +143,10 @@ function QuestionInQuestionBank(props) {
 
                     <Stack spacing={1}>
                         {
-                            QUESTIONS.map((question, index) =>
+                            questionsQB.map((question, index) =>
                             question &&
                                 <Stack direction='row' alignItems='center' justifyContent='space-between'>
-                                    <Checkbox defaultChecked />
+                                    <Checkbox  />
                                     <Accordion sx={{ flex: 1 }} 
                                     key={question.id} expanded={question.id === expanded} 
                                     onChange={handleChangeQuestion(question.id)}>
@@ -159,8 +157,8 @@ function QuestionInQuestionBank(props) {
                                         </AccordionSummary>
                                         <AccordionDetails>
                                             <Stack spacing={0.5}>
-                                                <Typography>
-                                                    {question.content}
+                                                <Typography dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(question.content) }}>
+                                                    
                                                 </Typography>
                                                 {
                                                     question.answers.map(item =>
@@ -174,7 +172,9 @@ function QuestionInQuestionBank(props) {
                             )
                         }
                     </Stack>
-                    <Button>Tạo câu hỏi</Button>
+                    <Stack direction='row' justifyContent='center'>
+                        <Button variant='contained'>Thêm câu hỏi</Button>
+                        </Stack>
                 </Stack>
             </Paper>
         </>
