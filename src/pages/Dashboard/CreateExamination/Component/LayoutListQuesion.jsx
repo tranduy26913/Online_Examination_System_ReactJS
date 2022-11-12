@@ -15,6 +15,7 @@ import { useState } from 'react'
 import { memo } from 'react';
 import QuestionInQuestionBank from './QuestionInQuestionBank';
 import ListQuestion from './ListQuestion';
+import QuestionInFile from './QuestionInFile';
 
 
 function LayoutListQuestion(props) {
@@ -51,7 +52,7 @@ function LayoutListQuestion(props) {
                     <QuestionInQuestionBank/>
                 </TabPanel>
                 <TabPanel value={value} index={2} dir={theme.direction}>
-                    Item Three
+                  <QuestionInFile />
                 </TabPanel>
             </Box>
 

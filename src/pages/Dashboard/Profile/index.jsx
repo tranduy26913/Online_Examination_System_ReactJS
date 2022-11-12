@@ -34,6 +34,7 @@ import moment from 'moment';
 import UpgradeAccount from './UpgradeAccount';
 import LoadingButton from "components/LoadingButton";
 import ToolAvatar from "./ToolAvatar";
+import UpgradeRole from "./UpgradeRole";
 
 const Profile = () => {
     const user = useSelector(state => state.user.info);
@@ -93,8 +94,8 @@ const Profile = () => {
    
     return (
         <Stack className="customer-info" spacing={3}>
-            <Stack direction="row" spacing={2}>
-                <Paper elevation={12} sx={{ flex: 2 }}>
+            <Stack direction={{md:'column',lg:'row'}} gap={2} >
+                <Paper elevation={12} sx={{ flex: {md:1,lg:2} }}>
                     <Stack p={2} height='100%' spacing={2} >
 
                         <Typography>Thông tin cá nhân</Typography>
@@ -202,7 +203,7 @@ const Profile = () => {
 
                 <Paper elevation={12} sx={{ flex: 1 }}>
                     <Stack spacing={4} p={2}>
-                        <Typography>Số điện thoại và Email</Typography>
+                        <Typography>Thông tin tài khoản</Typography>
 
                         <Stack
                             direction="row"
@@ -220,6 +221,22 @@ const Profile = () => {
                                 <UpgradeAccount />
                             }
                         </Stack>
+                        <Stack
+                            direction="row"
+                            alignItems="center"
+                            justifyContent="space-between"
+                        >
+                            <Stack direction="row" spacing={1}>
+                                <DiamondIcon color="primary" />
+                                <ListItemText
+                                    sx={{ '& span': { fontSize: "13px" } }}
+                                    primary="Quyền hạn" secondary={user?.role === 'TEACHER' ? "Giáo viên" : "Học sinh"} />
+                            </Stack>
+                            {
+                                user?.role === 'STUDENT'&&
+                                <UpgradeRole />
+                            }
+                        </Stack>
 
                         <Stack
                             direction="row"
@@ -229,14 +246,12 @@ const Profile = () => {
                         >
                             <Stack direction="row" spacing={1}>
                                 <EmailIcon color="primary" />
-
                                 <ListItemText
                                     sx={{ '& span': { fontSize: "13px" } }}
                                     primary="Địa chỉ email"
                                     secondary={user?.email}
                                 />
                             </Stack>
-
                         </Stack>
 
                         <Typography>Bảo mật</Typography>

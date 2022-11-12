@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import {
     Stack,
-    Chip,
+    Button,
     Table,
     TableRow,
     TableBody,
@@ -10,8 +10,7 @@ import {
     TablePagination,
 } from "@mui/material"
 import Scrollbar from 'components/Scrollbar';
-import { TableToolbar } from 'components/TableCustom';
-import TableHeadCustom from './TableHeadCustom';
+import { TableToolbar,TableHeadCustom } from 'components/TableCustom';
 import { useParams } from 'react-router-dom';
 import apiStatistic from 'apis/apiStatistic';
 import { useSelector } from 'react-redux';
@@ -19,15 +18,14 @@ import TakeExamAction from '../TakeExamAction';
 import moment from 'moment';
 import EmptyList from 'components/UI/EmptyList';
 
-
-
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-    { id: 'score', label: 'Điểm', alignRight: false },
-    { id: 'na', label: 'Thời gian thi', alignRight: false },
-    { id: 'isVerified', label: 'Thời lượng', alignRight: false },
-    { id: 'status', label: 'Trạng thái', alignRight: false },
+    { id: 'score', label: 'Điểm', align: 'left' },
+    { id: 'na', label: 'Thời gian thi', align: 'center' },
+    { id: 'isVerified', label: 'Thời lượng', align: 'center' },
+    { id: 'status', label: 'Trạng thái', align: 'center' },
+    { id: 'action', label: 'Thao tác', align: 'right' },
 ];
 
 // ----------------------------------------------------------------------
@@ -102,13 +100,19 @@ const TableStudent = () => {
         }
         getStatistic()
     }, [role, slug])
-
+    const ButtonExportFile = () => {
+        return (
+                <Button variant='outlined'>
+                   Xuất File Excel
+                </Button>  
+        )
+    }
 
     return (
 
         <Stack>
             <TableToolbar filterName={filterName} onFilterName={handleFilterByName}
-                button={{ display: "Xuất File Excel", path: '/teacher/create-exam' }} />
+                ButtonCustom={ButtonExportFile} />
 
             <Scrollbar>
                 <TableContainer sx={{ minWidth: 800, padding: '0 12px' }}>
@@ -133,9 +137,9 @@ const TableStudent = () => {
 
                                         {/* <TableCell align="left">{name}</TableCell> */}
                                         <TableCell align="left">{Math.round(((points + Number.EPSILON) * 100)) / 100}/{maxPoints}</TableCell>
-                                        <TableCell align="left">{moment(startTime).format('DD/MM/YYYY HH:mm')}</TableCell>
+                                        <TableCell align="center">{moment(startTime).format('DD/MM/YYYY HH:mm')}</TableCell>
                                         <TableCell align="center">{duration} phút</TableCell>
-                                        <TableCell align="left">
+                                        <TableCell align="center">
                                         {status === 'not submitted'?'Chưa nộp bài':'Đã nộp'}
                                         </TableCell>
 

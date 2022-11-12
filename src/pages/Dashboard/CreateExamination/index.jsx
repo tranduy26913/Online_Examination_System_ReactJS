@@ -31,6 +31,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { schema } from './schema'
 import { useForm, Controller } from 'react-hook-form'
 import LoadingButton from 'components/LoadingButton';
+import { getMessageError } from 'utils';
 
 const CreateExamination = (props) => {
   const theme = useTheme()
@@ -44,6 +45,7 @@ const CreateExamination = (props) => {
   const [viewAnswer, setViewAnswer] = useState('no')
   const [viewPoint, setViewPoint] = useState('no')
   const [typeofPoint, setTypeofPoint] = useState('max')
+  const [status, setStatus] = useState('')
   const [isLimit, setIsLimit] = useState(true)//giới hạn số lần thi
   const [loading, setLoading] = useState(false)//giới hạn số lần thi
 
@@ -58,7 +60,13 @@ const CreateExamination = (props) => {
     reValidateMode: "onChange",
     defaultValues: {
       name: "",
-      description: ""
+      description: "",
+      pinExam: "",
+      attemptsAllowed: 1,
+      numberofQuestions: 10,
+      maxTimes: 10,
+      startTime: moment(new Date()).format("YYYY-MM-DDTHH:mm"),
+      endTime: ""
     }
   });
 
@@ -81,6 +89,7 @@ const CreateExamination = (props) => {
             setViewPoint(exam.viewPoint)
             setTypeofPoint(exam.typeofPoint)
             setShuffle(exam.shuffle)
+            setStatus(exam.status)
             if (exam.attemptsAllowed === 0)
               setIsLimit(false)
             else
@@ -107,7 +116,7 @@ const CreateExamination = (props) => {
 
 
   const handleCreate = (data) => {
-    const { name, startTime, endTime, maxTimes, attemptsAllowed, pinExam,numberofQuestion } = data
+    const { name, startTime, endTime, maxTimes, attemptsAllowed, pinExam, numberofQuestion } = data
 
     const params = {
       name,
@@ -136,7 +145,7 @@ const CreateExamination = (props) => {
   }
 
   const handleUpdate = (data) => {
-    const { name, startTime, endTime, maxTimes, attemptsAllowed, pinExam,numberofQuestions } = data
+    const { name, startTime, endTime, maxTimes, attemptsAllowed, pinExam, numberofQuestions } = data
 
     const params = {
       id,
@@ -162,7 +171,22 @@ const CreateExamination = (props) => {
         toast.success("Cập nhật cấu hình đề thi thành công")
         //navigate(`/course/${courseId}/detail-exam/${res.slug}`)
       })
-      .finally(()=>setLoading(false))
+      .finally(() => setLoading(false))
+  }
+
+  const handleChangeStatus = () => {
+    const params = {
+      id
+    }
+    let request = apiExamination.PublishExam(params)
+    if (status === 'public')
+      request = apiExamination.CloseExam(params)
+    request.then(res => {
+      toast.success(res.message)
+    })
+      .catch(err => {
+        toast.warning(getMessageError(err))
+      })
   }
 
   return (
@@ -197,7 +221,7 @@ const CreateExamination = (props) => {
             <StackLabel>
               <Box>Số câu hỏi</Box>
               <FormControl>
-              <Controller
+                <Controller
                   name={"numberofQuestions"}
                   control={control}
                   render={({ field, fieldState: { error } }) => (
@@ -342,21 +366,6 @@ const CreateExamination = (props) => {
             </RadioGroup>
           </StackLabel>
 
-          {/* <StackLabel>
-            <Box>Ai được phép thi</Box>
-            <RadioGroup
-              row
-              name="accessExam"
-              value={accessExam}
-              onChange={handleChangeAccessExam}
-            >
-              <FormControlLabel value="0" control={<Radio size='small' />} label="Tất cả mọi người" />
-              <FormControlLabel value="1" control={<Radio size='small' />} label="Đã đăng ký tài khoản" />
-              <FormControlLabel value="2" control={<Radio size='small' />} label="Trong khoá học" />
-            </RadioGroup>
-          </StackLabel> */}
-
-
           <StackLabel>
             <Box>Cách tính điểm</Box>
             <RadioGroup
@@ -370,7 +379,7 @@ const CreateExamination = (props) => {
               <FormControlLabel value={'avg'} control={<Radio size='small' />} label="Lấy điểm trung bình các lần thi" />
             </RadioGroup>
           </StackLabel>
-          <Stack2Column>
+          <Stack2Column direction={{xs:'column',md:'row'}}>
             <StackLabel>
               <Box>Giới hạn số lần thi</Box>
               <FormGroup row>
@@ -402,14 +411,16 @@ const CreateExamination = (props) => {
 
         </Stack>
 
-        <Stack alignItems='center'>
+        <Stack direction ='row' justifyContent='center' spacing={2}>
           <LoadingButton variant='contained' loading={loading}
-          onClick={isEdit?handleSubmit(handleUpdate):handleSubmit(handleCreate)}>Lưu cấu hình</LoadingButton>
+            onClick={isEdit ? handleSubmit(handleUpdate) : handleSubmit(handleCreate)}>Lưu cấu hình</LoadingButton>
+          {status && status !== 'close' && <LoadingButton variant='contained' loading={loading}
+            onClick={handleChangeStatus}>{status === 'private' ? 'Xuất bản' : 'Đóng bài thi'}</LoadingButton>}
         </Stack>
       </Paper>
       {
         isEdit &&
-        <ExamContext.Provider value={{ examId: id }}>
+        <ExamContext.Provider value={{ examId: id,status }}>
           <LayoutListQuesion />
         </ExamContext.Provider>
       }

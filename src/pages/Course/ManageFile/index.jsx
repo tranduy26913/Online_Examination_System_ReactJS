@@ -24,6 +24,7 @@ import { useContext } from 'react';
 import CourseContext from '../LayoutCourse/CourseContext';
 import apiCourse from 'apis/apiCourse';
 import TableHeadCustom from './component/TableHeadCustom';
+import apiUpload from 'apis/apiUpload';
 
 
 // ----------------------------------------------------------------------
@@ -121,7 +122,7 @@ const ListExaminationTeacher = () => {
 
     const handleChooseImage = (e)=>{
         if (e.target.files.lenght !== 0) {
-            apiCourse.updateFile({file:e.target.files[0]})
+            apiUpload.updateFile({file:e.target.files[0]})
             .then(res=>{
                 console.log(res.message)
             })

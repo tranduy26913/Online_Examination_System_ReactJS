@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import {
     Stack,
-    Chip,
+       Button,
     Table,
     TableRow,
     TableBody,
@@ -10,9 +10,9 @@ import {
     TablePagination,
 } from "@mui/material"
 import Scrollbar from 'components/Scrollbar';
-
-import { TableToolbar } from 'components/TableCustom';
-import TableHeadCustom from './TableHeadCustom';
+import * as FileSaver from 'file-saver';
+import * as XLSX from 'xlsx';
+import { TableToolbar, TableHeadCustom} from 'components/TableCustom';
 import { useParams } from 'react-router-dom';
 import apiStatistic from 'apis/apiStatistic';
 import { useSelector } from 'react-redux';
@@ -23,11 +23,12 @@ import EmptyList from 'components/UI/EmptyList';
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-    { id: 'name', label: 'Tên người thi', alignRight: false },
-    { id: 'point', label: 'Điểm', alignRight: false },
-    { id: 'startTime', label: 'Thời gian thi', alignRight: false },
-    { id: 'duration', label: 'Thời lượng', alignRight: false },
-    { id: 'status', label: 'Trạng thái', alignRight: false },
+    { id: 'name', label: 'Tên người thi', align: 'left' },
+    { id: 'point', label: 'Điểm', align: 'center' },
+    { id: 'startTime', label: 'Thời gian thi', align: 'center' },
+    { id: 'duration', label: 'Thời lượng', align: 'center' },
+    { id: 'status', label: 'Trạng thái', align: 'center' },
+    { id: 'action', label: 'Thao tác', align: 'right' },
 ];
 
 // ----------------------------------------------------------------------
@@ -66,7 +67,7 @@ const TableTeacher = () => {
     const [order, setOrder] = useState('asc');
     const [orderBy, setOrderBy] = useState('name');
     const [filterName, setFilterName] = useState('');
-    const [rowsPerPage, setRowsPerPage] = useState(5);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
     const [exams, setExams] = useState([])
     const { slug } = useParams()//lấy slug exam
     const role = useSelector(state => state.setting.role)
@@ -103,12 +104,42 @@ const TableTeacher = () => {
         getStatistic()
     }, [role, slug])
 
+    const fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
+    const fileExtension = '.xlsx';
 
+    const exportToCSV = () => {
+        const fileName = 'Dữ liệu bài thi'
+        let data = filteredUsers.map(item=>{
+            let {name,points,maxPoints,startTime,submitTime,status}=item
+            const duration = moment(submitTime).diff(startTime,'minutes')
+            return {
+                'Họ và tên':name,
+                'Thời gian thi':moment(startTime).format('DD-MM-YYYY HH:mm'),
+                'Thời gian nộp':moment(submitTime).format('DD-MM-YYYY HH:mm'),
+                'Thời lượng làm bài':`${duration} phút`,
+                'Điểm':`${points}/${maxPoints}`,
+                'Trạng thái':status === 'submitted' ? 'Đã nộp':'Chưa nộp'
+            }
+        })
+        const ws = XLSX.utils.json_to_sheet(data);
+        const wb = { Sheets: { 'data': ws }, SheetNames: ['data'] };
+        const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+        data = new Blob([excelBuffer], {type: fileType});
+        FileSaver.saveAs(data, fileName + fileExtension);
+    }
+
+    const ButtonExportFile = () => {
+        return (
+                <Button variant='outlined' onClick={exportToCSV}>
+                   Xuất File Excel
+                </Button>    
+        )
+    }
     return (
 
         <Stack>
             <TableToolbar filterName={filterName} onFilterName={handleFilterByName}
-                button={{ display: "Xuất File Excel", path: '/teacher/create-exam' }} />
+                ButtonCustom={ButtonExportFile} />
 
             <Scrollbar>
                 <TableContainer sx={{ minWidth: 800, padding: '0 12px' }}>
@@ -121,9 +152,10 @@ const TableTeacher = () => {
                             onRequestSort={handleRequestSort}
                         />
                         <TableBody>
-                            {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                                const { id: takeExamId, slug: slugExam, name, submitTime, startTime,points,maxPoints,status } = row;
+                            {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row,index) => {
+                                const { _id: takeExamId,  name, submitTime, startTime,points,maxPoints,status } = row;
                                 const duration = moment(submitTime).diff(startTime,'minutes')
+                                
                                 return (
                                     <TableRow
                                         hover
@@ -133,9 +165,9 @@ const TableTeacher = () => {
 
                                         <TableCell align="left">{name}</TableCell>
                                         <TableCell align="center">{Math.round(((points + Number.EPSILON) * 100)) / 100}/{maxPoints}</TableCell>
-                                        <TableCell align="left">{moment(startTime).format('DD/MM/YYYY HH:mm')}</TableCell>
-                                        <TableCell align="left">{duration} phút</TableCell>
-                                        <TableCell align="left">
+                                        <TableCell align="center">{moment(startTime).format('DD/MM/YYYY HH:mm')}</TableCell>
+                                        <TableCell align="center">{duration} phút</TableCell>
+                                        <TableCell align="center">
                                             {status === 'not submitted'?'Chưa nộp bài':'Đã nộp'}
                                         </TableCell>
 

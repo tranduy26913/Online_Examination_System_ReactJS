@@ -25,7 +25,7 @@ export default function StateActivity() {
             const connectedRef = ref(database, '.info/connected')
             onValue(connectedRef, (snapshot) => {
                 // If we're not currently connected, don't do anything.
-                if (snapshot.val() == false) {
+                if (snapshot.val() === false) {
                     return;
                 };
                 onDisconnect(userStatusDatabaseRef).set(isOfflineForDatabase).then(function () {
@@ -62,7 +62,7 @@ export default function StateActivity() {
                 setId('')
             }
         }
-    }, [user])
+    }, [user,id])
 
 
 

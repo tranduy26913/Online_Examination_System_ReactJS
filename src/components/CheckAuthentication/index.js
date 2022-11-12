@@ -10,7 +10,7 @@ import { useState } from 'react'
 import LoadingPage from 'components/LoadingPage'
 
 const privatePath = [
-    '/my/', '/admin/', '/payment','/course/'
+    '/my/', '/admin/', '/payment','/course/','/exam/','/result-exam/','/review-exam'
 ]
 
 function CheckAuthentication(props) {

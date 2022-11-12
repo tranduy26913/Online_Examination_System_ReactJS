@@ -11,7 +11,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { axiosInstance } from 'apis/axiosClient';
 import { loginSuccess, logoutSuccess } from 'slices/authSlice';
 import StateActivity from 'components/StateActivity';
-import {app} from './config/firebaseConfig'
 import ErrorBoundary from 'components/ErrorPage/ErrorBoundary';
 
 function App() {

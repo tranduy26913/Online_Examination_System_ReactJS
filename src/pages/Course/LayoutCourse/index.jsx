@@ -26,22 +26,25 @@ import { useCallback } from "react";
 import './ListTest.scss'
 import CourseContext from "./CourseContext";
 import { useSelector } from "react-redux";
+//import { CSSTransition } from 'react-transition-group';
 
 const checkSelectedTab = (item, pathname) => {
   const splitPath = pathname.split('/')
   if (splitPath.length === 0)
     return false
-  return item.list.includes(splitPath[splitPath.length - 1])
+  const regex = new RegExp(item.regex)
+  return regex.test(pathname)
 }
 
 const LayoutCourse = () => {
   const location = useLocation()
+  const role = useSelector(state => state.setting.role)
   const [course, setCourse] = useState({})
-  const [sidebarCourse, setSidebarCourse] = useState(SIDEBAR_COURSE_STUDENT)
+  const [sidebarCourse, setSidebarCourse] = useState((role && role === 'teacher' && SIDEBAR_COURSE_TEACHER) || SIDEBAR_COURSE_STUDENT)
   const tabId = sidebarCourse.find(item => checkSelectedTab(item, location.pathname))
   const [selectedTabId, setSelectedTabId] = React.useState(tabId?.id || 1);
   const navigate = useNavigate()
-  const role = useSelector(state => state.setting.role)
+
   const { courseId } = useParams()
 
   //const paramUrl = useSearchParams()[0]
@@ -84,27 +87,32 @@ const LayoutCourse = () => {
     }
     handleChangePath()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location.pathname])
-
-  const breadcrumbs = (() => {
+  }, [location.pathname, sidebarCourse])
 
 
-    return ([
-      <Link key="1" to="/">
-        <Typography>
-          Trang chủ
+  const DashboardBreadcrumbs = () => {
+    const tab = sidebarCourse.find(item => item.id === selectedTabId)
+    return (
+      <Breadcrumbs
+        separator={<NavigateNextIcon fontSize="small" />}
+        sx={{ fontSize: "14px" }}
+      //
+      >
+        <Link key="1" to="/">
+          <Typography>
+            Trang chủ
+          </Typography>
+        </Link>
+        <Link key="1" to="/my/list-course">
+          <Typography>
+            Danh sách khoá học
+          </Typography>
+        </Link>
+        <Typography key="2">
+          {sidebarCourse.find(item => item.id === selectedTabId)?.text || ""}
         </Typography>
-      </Link>,
-      <Link key="1" to="/my/list-course">
-        <Typography>
-          Danh sách khoá học
-        </Typography>
-      </Link>,
-      <Typography key="2">
-        {sidebarCourse.find(item => item.id === selectedTabId)?.text || ""}
-      </Typography>,
-    ]);//
-  })()
+      </Breadcrumbs>)
+  }
 
   React.useEffect(() => {
     document.title =
@@ -115,30 +123,25 @@ const LayoutCourse = () => {
   return (
     <Sidebar sidebarTab={sidebarCourse} selectedTabId={selectedTabId}
       handleChangeTab={handleChangeTab}
-      heading={'Khoá học'}>
-      <Paper elevation={24} sx={{ padding: '8px 12px', marginBottom: '12px' }}>
-
-        <Breadcrumbs
-          separator={<NavigateNextIcon fontSize="small" />}
-          sx={{ fontSize: "14px" }}
-        >
-          {breadcrumbs}
-        </Breadcrumbs>
-      </Paper>
+      heading={'Khoá học'}
+      Breadcrumbs={DashboardBreadcrumbs}>
+      
       <Paper elevation={24}>
 
-        <Stack direction='row' className='listtest__course'>
-          <Box className='listtest__wrap-img'>
-            <img alt='' src={course.image } />
-          </Box>
-          <Stack spacing={1} className='listtest__wrap-info'>
+        <Stack direction={{xs:'column',sm:'row'}} className='listtest__course'>
+          <Stack flex={1} p='0 10px' width={{xs:'60%'}} m={'auto'} sx={{borderRadius:'10px'}}>
+            <img alt='' src={course.image} />
+          </Stack>
+          <Stack  px={2} flex={{xs:1,sm:2,lg:3}} spacing={1}>
             <Typography
               fontSize={'18px'}
               color='primary'
-              className='listtest__course-name'>Khoá học: {course?.name}</Typography>
-            <Typography className='listtest__course-desc'>{course?.description}</Typography>
-            <Typography className='listtest__course-desc'>Số lượng bài kiểm tra: {course?.exams?.length}</Typography>
-            <Stack flex={1} direction='row' spacing={2} justifyContent='flex-start' alignItems='center' >
+              >Khoá học: {course?.name}</Typography>
+            <Typography >{course?.description}</Typography>
+            <Typography >Số lượng bài kiểm tra: {course?.exams?.length}</Typography>
+            <Stack flex={1} direction={{xs:'column',sm:'row'}}
+            
+             spacing={2} justifyContent='flex-start' alignItems='center' >
               <Link to={`/my/list-course/edit-course/${courseId}`}>
                 <Button
                   variant='outlined'

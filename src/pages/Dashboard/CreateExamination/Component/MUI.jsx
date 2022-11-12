@@ -4,7 +4,9 @@ import {
     Switch,
     Stack,
     Paper,
-    Box
+    Box,
+    lighten,
+    darken
 } from '@mui/material';
 import PropTypes from 'prop-types';
 
@@ -60,65 +62,90 @@ export const IOSSwitch = styled((props) => (
 }));
 
 export const StackLabel = styled(Stack)(({ theme }) => ({
-    
     width: '100%',
     borderRadius: '8px',
-    //height: '38px',
     flexDirection: 'row',
-    
+    [theme.breakpoints.down('sm')]: {
+        flexDirection: 'column'
+    },
+
     '& .MuiBox-root': {
         width: '200px',
         paddingLeft: '12px',
-        height: '38px',
         borderRadius: '8px 0 0px 8px',
-        backgroundColor: `${theme.palette.primary.light}a0`,
+        backgroundColor: `${theme.palette.primary.main}c0`,
         display: 'flex',
-        alignItems: 'center'
+        alignItems: 'center',
+        [theme.breakpoints.down('sm')]: {
+            width: '100%',
+            height: '32px',
+            borderRadius: '8px 8px 0px 0px',
+        }
     },
-    '& .MuiFormGroup-root': {
-        paddingLeft: '16px'
-    },
-    '& .MuiFormControl-root':{
-         flex: '1',
+    '& .MuiFormControl-root': {
+        flex: 1,
+        [theme.breakpoints.down('sm')]: {
+            width: '100%',
+            borderRadius: '0px 0px 8px 8px',
+        }
     },
     '& input': {
         color: theme.palette.mode === 'dark' ? '#fff' : theme.palette.text.primary,
         borderLeftColor: 'transparent',
         height: '38px',
-       border: `1px solid ${theme.palette.divider}`,
+        border: `1px solid ${theme.palette.divider}`,
         padding: '4px 16px',
         outline: 'none',
-        backgroundColor: `${theme.palette.primary.light}18`,
+        backgroundColor: `${theme.palette.primary.light}06`,
         fontSize: '15px',
         borderRadius: '0px 8px 8px 0px',
         '&:focus': {
             border: `2px solid ${theme.palette.primary.light}`,
+        },
+        [theme.breakpoints.down('sm')]: {
+            width: '100%',
+            borderRadius: '0px 0px 8px 8px',
         }
     },
     '& .MuiFormGroup-root': {
         color: theme.palette.mode === 'dark' ? '#fff' : theme.palette.text.primary,
-        height: '38px',
-        flex: '1',
+        flex: 1,
         border: `1px solid ${theme.palette.divider}`,
         borderLeftColor: 'transparent',
-        padding: '0 12px',
+        padding: '0 12px 0 16px',
         outline: 'none',
-        backgroundColor: `${theme.palette.primary.light}18`,
+        backgroundColor: `${theme.palette.primary.light}06`,
         fontSize: '15px',
         borderRadius: '0px 8px 8px 0px',
-        
+        [theme.breakpoints.down('sm')]: {
+            width: '100%',
+            borderRadius: '0px 0px 8px 8px',
+        }
+
     },
-    '& .MuiFormHelperText-root':{
+    '& .MuiFormHelperText-root': {
         color: theme.palette.error.light,
-        fontSize:13
+        fontSize: 13
     }
 }))
 
-export const Stack2Column = styled(Stack)({
-    flexDirection: 'row',
+export const Stack2Column = styled(Stack)(({ theme }) => ({
+
+    [theme.breakpoints.down("sm")]: {
+        flexDirection: 'column !important'
+    }
+    , [theme.breakpoints.up("lg")]: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        '&>div': {
+            flex: 1,
+            width: 'calc(50% - 6px)'
+        }
+    },
     width: '100%',
-    gap: '12px'
-})
+    gap: '12px',
+
+}))
 
 export const PaperQuestion = styled(Paper)(({ theme }) => ({
     borderTop: `6px solid ${theme.palette.primary.light}`

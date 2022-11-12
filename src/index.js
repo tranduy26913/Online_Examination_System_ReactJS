@@ -5,8 +5,6 @@ import { store, persistor } from './app/store';
 import { Provider } from "react-redux"
 import { PersistGate } from 'redux-persist/integration/react'
 import ThemeConfig from 'theme';
-import ErrorBoundary from 'components/ErrorPage/ErrorBoundary';
-import { BrowserRouter } from 'react-router-dom';
 
 
 const root = ReactDOM.createRoot(

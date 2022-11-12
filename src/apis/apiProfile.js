@@ -37,6 +37,10 @@ const apiProfile = {
         const res = await axiosClientWithToken.get(`/user/info-short`)
         return res.data;
     },
+    updateRole: async () => {
+        const res = await axiosClientWithToken.put(`/user/update-role`)
+        return res.data;
+    },
     makePayment: async (method,params) => {
 
         const res = await axiosClientWithToken.post(`/payment/create-payment/${method.toLowerCase()}`,params)

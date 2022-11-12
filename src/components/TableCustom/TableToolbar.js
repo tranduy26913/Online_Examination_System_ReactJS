@@ -1,12 +1,9 @@
 import PropTypes from 'prop-types';
 // material
 import { styled } from '@mui/material/styles';
-import {Toolbar, Tooltip, IconButton, Typography, OutlinedInput, InputAdornment, Button } from '@mui/material';
+import {Toolbar, Typography, OutlinedInput, InputAdornment } from '@mui/material';
 // component
-import {Link} from 'react-router-dom'
 import SearchIcon from '@mui/icons-material/Search';
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import FilterListIcon from '@mui/icons-material/FilterList';
 
 // ----------------------------------------------------------------------
 
@@ -34,11 +31,12 @@ const SearchStyle = styled(OutlinedInput)(({ theme }) => ({
 
 UserListToolbar.propTypes = {
   numSelected: PropTypes.number,
+  placeholder: PropTypes.string,
   filterName: PropTypes.string,
   onFilterName: PropTypes.func,
 };
 
-export default function UserListToolbar({ numSelected, filterName, onFilterName, button }) {
+export default function UserListToolbar({ numSelected, filterName,placeholder, onFilterName, ButtonCustom }) {
   return (
     <RootStyle
       sx={{
@@ -56,7 +54,7 @@ export default function UserListToolbar({ numSelected, filterName, onFilterName,
         <SearchStyle
           value={filterName}
           onChange={onFilterName}
-          placeholder="Search user..."
+          placeholder={placeholder || 'Tìm kiếm tên...'}
           startAdornment={
             <InputAdornment position="start">
               <SearchIcon sx={{ color: 'text.disabled', width: 20, height: 20 }} />
@@ -65,23 +63,7 @@ export default function UserListToolbar({ numSelected, filterName, onFilterName,
         />
       )}
 
-      {numSelected > 0 ? (
-        <Tooltip title="Delete">
-          <IconButton>
-            <DeleteForeverIcon />
-          </IconButton>
-        </Tooltip>
-      ) : button ? 
-      <Link to={button.path}>
-      <Button variant='outlined'>{button.display}</Button>
-      </Link>:
-       (
-        <Tooltip title="Filter list">
-          <IconButton>
-            <FilterListIcon />
-          </IconButton>
-        </Tooltip>
-      )}
+      {ButtonCustom && <ButtonCustom />}
     </RootStyle>
   );
 }

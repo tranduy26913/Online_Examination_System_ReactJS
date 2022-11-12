@@ -121,8 +121,8 @@ function Header() {
     dispatch(toggleTheme(!isLight))
   }
 
-  const handleChangeRole = (role)=>{
-    if(role === 'teacher' || role === 'student'){
+  const handleChangeRole = (role) => {
+    if (role === 'teacher' || role === 'student') {
       dispatch(changeRole(role))
     }
   }
@@ -143,7 +143,7 @@ function Header() {
             //justifyContent: isDashboard ? 'flex-end' : 'unset',
             alignItems: 'center'
           }}>
-          <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
+          {/* <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
           <Typography
             variant="h6"
             noWrap
@@ -159,9 +159,9 @@ function Header() {
             }}
           >
             Bello Quiz
-          </Typography>
+          </Typography> */}
 
-          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+          <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
             <IconButton
               size="large"
               aria-label="account of current user"
@@ -197,25 +197,28 @@ function Header() {
               ))}
             </Menu>
           </Box>
-          <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
-          <Typography
-            variant="h5"
-            noWrap
-            component="a"
-            href=""
-            sx={{
-              mr: 2,
-              display: { xs: 'flex', md: 'none' },
-              flexGrow: 1,
-              fontFamily: 'monospace',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
-              color: 'inherit',
-              textDecoration: 'none',
-            }}
-          >
-            Bello Quiz
-          </Typography>
+          <Stack direction='row' sx={{ display: { xs: 'none', sm: 'flex' } }}>
+
+            <AdbIcon sx={{ mr: 1 }} />
+            <Typography
+              variant="h5"
+              noWrap
+              component="a"
+              href=""
+              sx={{
+                mr: 2,
+                fontSize: { xs: '14px', sm: '18px' },
+                flexGrow: 1,
+                fontFamily: 'monospace',
+                fontWeight: 700,
+                letterSpacing: '.3rem',
+                color: 'inherit',
+                textDecoration: 'none',
+              }}
+            >
+              Bello Quiz
+            </Typography>
+          </Stack>
           <Box height='100%' alignItems='center' sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {pages.map((page) => (
               <Link key={page.path} to={page.path}>
@@ -229,19 +232,20 @@ function Header() {
             ))}
           </Box>
 
-          <Box><MaterialUISwitch sx={{ m: 1 }} checked={isLight} onChange={handleChangeTheme} /></Box>
-
-          <Box sx={{ flexGrow: 0 }}>
+          <Stack direction='row' alignItems='center' justifyContent='flex-end'flex={1}>
+            <MaterialUISwitch sx={{ m: 1 }} checked={isLight} onChange={handleChangeTheme} />
+          
+          <Box sx={{ flexGrow: 0, minWidth:'140px' }}>
             {user ?
               <>
-                <Tooltip title="Open settings">
+                <Tooltip title={user.fullname}>
                   <Stack direction='row' onClick={handleOpenUserMenu} alignItems='center' mr={2} spacing={1}
                     sx={{ cursor: 'pointer' }}>
 
                     <IconButton sx={{ p: 0 }}>
                       <Avatar alt="Remy Sharp" src={user.avatar} />
                     </IconButton>
-                    <Typography>{user.fullname}</Typography>
+                    <Typography className='text-overflow-1-lines'>{user.fullname}</Typography>
                   </Stack>
                 </Tooltip>
                 <Menu
@@ -271,10 +275,10 @@ function Header() {
                     )
                   })}
                   {role === 'student' ?
-                    <MenuItem onClick={()=>handleChangeRole('teacher')}>
+                    <MenuItem onClick={() => handleChangeRole('teacher')}>
                       <Typography textAlign="center">Vào giao diện giáo viên</Typography>
                     </MenuItem> :
-                    <MenuItem onClick={()=>handleChangeRole('student')}>
+                    <MenuItem onClick={() => handleChangeRole('student')}>
                       <Typography textAlign="center">Vào giao diện học viên</Typography>
                     </MenuItem>
                   }
@@ -294,6 +298,8 @@ function Header() {
               </Stack>
             }
           </Box>
+          </Stack>
+
         </Toolbar>
       </Container>
     </AppBarShadow>

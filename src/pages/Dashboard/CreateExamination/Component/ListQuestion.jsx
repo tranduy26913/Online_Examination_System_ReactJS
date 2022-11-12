@@ -18,8 +18,8 @@ import { useSelector } from 'react-redux';
 import { memo } from 'react';
 import ExamContext from '../ExamContext';
 
-function ListQuestion(props) {
-    const {examId} = useContext(ExamContext)
+function ListQuestion() {
+    const {examId,status} = useContext(ExamContext)
     const QUESTIONS = useSelector(state => state.user.questions)
     const [idQuestion, setIdQuestion] = useState('')
     const [expanded, setExpanded] = useState(false);
@@ -53,9 +53,12 @@ function ListQuestion(props) {
 
                     )
                 }
+                {
+                    status === 'private' &&
                 <PaperQuestion elevation={12} >
                     <CreateQuestion isEdit={false} id='' examId={examId} />
                 </PaperQuestion>
+                }
             </Stack>
         </>
     )

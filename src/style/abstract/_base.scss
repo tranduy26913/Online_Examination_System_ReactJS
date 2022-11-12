@@ -52,33 +52,18 @@
     text-overflow: ellipsis;
 }
 
-.text-secondary {
-    color: #666 !important;
-}
-
-.row {
-    display: flex;
-    flex-wrap: wrap;
-    margin-left: -15px;
-    margin-right: -15px;
-}
-
-.text-with-icon {
-    display: inline-flex;
-    align-items: center;
-    cursor: pointer;
-    &:hover {
-        color: $main-color;
-    }
-    i {
-        font-size: 1rem;
-        margin-right: 4px;
-    }
-}
-
 .hover-element {
     transition: transform 50ms, box-shadow 1s;
     &:hover {
         transform: scale(1.01) perspective(0px),
     }
+}
+
+.animation-appear {
+    opacity: 0.01;
+}
+
+.animation-appear.animation-appear-active {
+    opacity: 1;
+    transition: opacity 500ms ease-in;
 }

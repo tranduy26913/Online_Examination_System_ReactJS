@@ -7,7 +7,7 @@ export const schema = Yup.object().shape({
     .min(5, "Tên kiểm tra ít nhất 5 kí tự"),
   pinExam: Yup
     .string(),
-    attemptsAllowed: Yup
+  attemptsAllowed: Yup
     .number()
     .required('Vui lòng nhập vào trường này')
     .min(1, "Số lần thi ít nhất là 1"),

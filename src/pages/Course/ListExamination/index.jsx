@@ -9,29 +9,30 @@ import {
     TableContainer,
     TablePagination,
     Paper,
-    Chip
+    Chip,
+    Button
 } from "@mui/material"
 import Scrollbar from 'components/Scrollbar';
 import SearchNotFound from 'components/SearchNotFound';
-import { TableToolbar, TableMoreMenu } from 'components/TableCustom';
+import { TableToolbar, TableMoreMenu,TableHeadCustom } from 'components/TableCustom';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import { useContext } from 'react';
 import CourseContext from '../LayoutCourse/CourseContext';
 import apiCourse from 'apis/apiCourse';
-import TableHeadCustom from './component/TableHeadCustom';
+import { Link } from 'react-router-dom';
 
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-    { id: 'name', label: 'Tên đề thi', alignRight: false },
-    { id: 'count', label: 'Số lượt làm bài', alignRight: false },
-    { id: 'numberofQuestions', label: 'Số lượng câu hỏi', alignRight: false },
-    { id: 'maxTimes', label: 'Thời lượng', alignRight: false },
-    { id: 'status', label: 'Trạng thái', alignRight: false },
-    { id: '' },
+    { id: 'name', label: 'Tên đề thi', align: 'left' },
+    { id: 'count', label: 'Số lượt làm bài', align: 'center' },
+    { id: 'numberofQuestions', label: 'Số lượng câu hỏi', align: 'center' },
+    { id: 'maxTimes', label: 'Thời lượng', align: 'center' },
+    { id: 'status', label: 'Trạng thái', align: 'center' },
+    { id: 'action', label: 'Thao tác', align: 'right' },,
 ];
 
 // ----------------------------------------------------------------------
@@ -73,7 +74,7 @@ const ListExaminationTeacher = () => {
     const [filterName, setFilterName] = useState('');
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [exams, setExams] = useState([])
-    const {courseId,id} = useContext(CourseContext)
+    const { courseId, id } = useContext(CourseContext)
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
@@ -108,22 +109,32 @@ const ListExaminationTeacher = () => {
             }
             console.log(courseId)
             apiCourse.getListExamOfCourse(params)
-                .then(res=>{
+                .then(res => {
                     setExams(res)
                 })
         }
         loadListExam()
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [courseId])
+
+    const ButtonCreateExam = () => {
+        return (
+            <Link to={`/course/${courseId}/create-exam`}>
+                <Button variant='outlined'>
+                    Tạo đề thi
+                </Button>
+            </Link>
+        )
+    }
     return (
         <Box >
             <Stack spacing={1}>
                 <Paper elevation={24}>
-                    <TableToolbar  filterName={filterName} onFilterName={handleFilterByName}
-                        button={{ display: "Tạo đề kiểm tra", path: `/course/${courseId}/create-exam` }} />
+                    <TableToolbar filterName={filterName} onFilterName={handleFilterByName}
+                        ButtonCustom={ButtonCreateExam} />
 
                     <Scrollbar>
-                        <TableContainer sx={{ minWidth: 800,padding:'0 12px' }}>
+                        <TableContainer sx={{ minWidth: 800, padding: '0 12px' }}>
                             <Table>
                                 <TableHeadCustom
                                     order={order}
@@ -134,7 +145,7 @@ const ListExaminationTeacher = () => {
                                 />
                                 <TableBody>
                                     {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                                        const { id:idExam,slug:slugExam, name, count, status, numberofQuestions, maxTimes, isVerified } = row;
+                                        const { id: idExam, slug: slugExam, name, count, status, numberofQuestions, maxTimes, isVerified } = row;
 
                                         return (
                                             <TableRow
@@ -142,16 +153,16 @@ const ListExaminationTeacher = () => {
                                                 key={idExam}
                                                 tabIndex={-1}
                                             >
-                                                
+
                                                 <TableCell align="left">{name}</TableCell>
-                                                <TableCell align="left">{count}</TableCell>
-                                                <TableCell align="left">{numberofQuestions}</TableCell>
-                                                <TableCell align="left">{maxTimes} phút</TableCell>
-                                                <TableCell align="left">
-                                                    <Chip  size="small"
-                                                     color={(status === 'puclic' && 'error') || 'primary'}
-                                                     label={status=== 'public' ? 'Đã xuất bản':'Chưa xuất bản'}
-                                                     />
+                                                <TableCell align="center">{count}</TableCell>
+                                                <TableCell align="center">{numberofQuestions}</TableCell>
+                                                <TableCell align="center">{maxTimes} phút</TableCell>
+                                                <TableCell align="center">
+                                                    <Chip size="small"
+                                                        color={(status === 'puclic' && 'error') || 'primary'}
+                                                        label={status === 'public' ? 'Đã xuất bản' : 'Chưa xuất bản'}
+                                                    />
                                                 </TableCell>
 
                                                 <TableCell align="right">

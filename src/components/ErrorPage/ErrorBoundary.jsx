@@ -21,7 +21,7 @@ class ErrorBoundary extends React.Component {
             return this.props.children;
         else
             return (
-                <Page title='Đường dẫn không tồn tại'>
+                <Page title='Có lỗi xảy ra'>
                     <Stack>
                         <Stack alignSelf='center' flex={1}>
                             <img alt='error' src={imageErr} width='380px'></img>

@@ -30,6 +30,7 @@ import LoginGoogle from './LoginGoogle';
 import { setUserInfo } from 'slices/userSlice';
 import { getMessageError } from 'utils';
 import RequestActive from './RequestActive';
+import { changeRole } from 'slices/settingSlice';
 
 
 
@@ -79,6 +80,9 @@ const Login = () => {
                 if (res) {
                     dispatch(loginSuccess(res))
                     dispatch(setUserInfo(res))
+                    if(res.role === 'TEACHER'){
+                        dispatch(changeRole('teacher'))
+                    }
                     toast.success("Đăng nhập thành công")
                     navigate("/my/profile")
                 }

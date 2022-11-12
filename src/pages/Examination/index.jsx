@@ -6,7 +6,10 @@ import {
     Typography,
     Paper,
     TextField,
-    Divider
+    Divider,
+    Accordion,
+    AccordionSummary,
+    AccordionDetails
 } from "@mui/material"
 import Grid from '@mui/material/Unstable_Grid2';
 import { useTheme } from '@mui/material/styles';
@@ -18,14 +21,15 @@ import { clearAnswers, clearAnswerSheet, clearTakeExamId, setTakeExamId } from '
 import { ButtonQuestion, BoxTime } from './Examination.style'
 import apiTakeExam from 'apis/apiTakeExam';
 import { toast } from 'react-toastify';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import FaceRecognition from './FaceRecognition';
+import { getMessageError } from 'utils';
 const Examination = () => {
     const theme = useTheme()
-    const paramUrl = useParams()
+    const { examId } = useParams()
 
     const [name, setName] = useState('')
     const [pin, setPin] = useState('')
-    const [examId, setExamId] = useState(paramUrl.examId || '')
     const [endTime, setEndTime] = useState()
     const [countExit, setCountExit] = useState(0)
 
@@ -72,11 +76,13 @@ const Examination = () => {
                         dispatch(setTakeExamId(resExam.takeExamId))
                         setupQuestion(resExam.exam.questions)
                         setEndTime(new Date(resExam.exam.endTime))
+                        setName(resExam.exam.name)
                     }
                 })
                 .catch(err => {
                     console.log(err)
-                    toast.warning(err.response.data.message)
+                    toast.warning(getMessageError(err), { autoClose: false })
+                    navigate('/')
                 })
         }
         checkExam()
@@ -113,20 +119,14 @@ const Examination = () => {
                 dispatch(setTakeExamId(res.takeExamId))
                 setupQuestion(res.exam.questions)
                 setEndTime(new Date(res.exam.endTime))
+                setName(res.exam.name)
+            })
+            .catch(err => {
+                toast.warning(getMessageError(err), { autoClose: false })
+                navigate('/')
             })
     }
 
-    useEffect(() => {
-        const getQuestions = () => {
-            if (!user)
-                return
-            if (!examId)
-                return
-
-        }
-        getQuestions()
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [examId])
 
     const changeStateDoneIndex = useCallback((index, state) => {
         if (indexQuestion[index]?.isDone !== state) {
@@ -156,7 +156,7 @@ const Examination = () => {
         })
             .then(res => {
                 navigate('/result-exam/' + takeExamId)
-                dispatch(clearTakeExamId)
+                dispatch(clearTakeExamId())
             })
     }
 
@@ -192,6 +192,18 @@ const Examination = () => {
         }
     }
 
+    const style = {
+
+        flexDirection: { xs: 'column', md: 'row' },
+        gap:'12px',
+        '&>div:nth-of-type(1)': {
+            'order': { xs: 2, md: 1 }
+        },
+        '&>div:nth-of-type(2)': {
+            'order': { xs: 1, md: 2 },
+            width: '100%'
+        }
+    }
     return (
         <Page title={name}>
             {!takeExamId ?
@@ -222,10 +234,10 @@ const Examination = () => {
                                 fontWeight: 600,
                                 mb: 2,
                                 textAlign: 'center'
-                            }}>Bài kiểm tra số 1</Typography>
-                        <Stack direction='row' spacing={1.5} alignItems='flex-start'>
+                            }}>{name}</Typography>
+                        <Stack sx={style} alignItems='flex-start'>
 
-                            <Stack flex={4} spacing={3}>
+                            <Stack width='100%' flex={{ xs: 1,md:3, lg: 4 }} spacing={3}>
                                 {
                                     questions.map((item, index) =>
                                         <Question key={item.id}
@@ -239,24 +251,41 @@ const Examination = () => {
                             <Stack flex={1} spacing={2} sx={{
                                 position: 'sticky',
                                 top: '5rem',
-
                             }}>
 
                                 <Paper elevation={24} >
-
                                     <Stack spacing={1} p={1.5}>
-                                        <Typography fontSize='16px' fontWeight={600}>Danh sách câu hỏi</Typography>
-                                        <Grid container spacing={0.5}>
-                                            {
-                                                indexQuestion.map((item, index) =>
-                                                    <Grid key={index} xs={2}>
-                                                        <ButtonQuestion className={`${item.isDone ? 'done' : ''} ${item.isFlag ? 'flag' : ''}`}
-                                                            onClick={() => document.getElementById(`question-${index}`)
-                                                                .scrollIntoView({ block: 'center', behavior: "smooth" })}
-                                                        >{index + 1}</ButtonQuestion>
-                                                    </Grid>)
-                                            }
-                                        </Grid>
+
+                                        <Accordion
+                                            sx={{
+                                                boxShadow: 'none'
+                                            }} defaultExpanded disableGutters TransitionProps={{ unmountOnExit: true }}>
+                                            <AccordionSummary
+                                                expandIcon={<ExpandMoreIcon />}
+                                                aria-controls="panel1a-content"
+                                                id="panel1a-header"
+                                            >
+                                                <Typography fontSize='16px' fontWeight={600}>Danh sách câu hỏi</Typography>
+                                            </AccordionSummary>
+                                            <AccordionDetails sx={{
+                                                padding: 0
+                                            }}>
+
+                                                <Grid container spacing={0.5}>
+                                                    {
+                                                        indexQuestion.map((item, index) =>
+                                                            <Grid key={index} xs={1.5} sm={1} md={3} lg={2}>
+                                                                <ButtonQuestion className={`${item.isDone ? 'done' : ''} ${item.isFlag ? 'flag' : ''}`}
+                                                                    onClick={() => document.getElementById(`question-${index}`)
+                                                                        .scrollIntoView({ block: 'center', behavior: "smooth" })}
+                                                                >{index + 1}</ButtonQuestion>
+                                                            </Grid>)
+                                                    }
+                                                </Grid>
+                                            </AccordionDetails>
+                                        </Accordion>
+
+
                                         <Divider />
                                         <Stack alignItems='center'>
 
@@ -264,9 +293,9 @@ const Examination = () => {
                                         </Stack>
                                     </Stack>
                                 </Paper>
-                                <Paper elevation={12} sx={{ overflow: 'hidden' }}>
+                                {/* <Paper elevation={12} sx={{ overflow: 'hidden' }}>
                                     <FaceRecognition />
-                                </Paper>
+                                </Paper> */}
                             </Stack>
                         </Stack>
                     </Box>

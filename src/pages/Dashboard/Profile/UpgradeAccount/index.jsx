@@ -12,7 +12,6 @@ import {
     FormControlLabel,
 } from "@mui/material";
 import apiProfile from "apis/apiProfile";
-import { useNavigate } from 'react-router-dom';
 import LoadingButton from 'components/LoadingButton';
 
 const UpgradeAccount = (props) => {

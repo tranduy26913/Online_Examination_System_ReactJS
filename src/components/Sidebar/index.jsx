@@ -1,6 +1,6 @@
-import {useState} from "react";
+import { useState } from "react";
 
-import {  Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import {
   List,
@@ -12,6 +12,7 @@ import {
   IconButton,
   Stack,
   Box,
+  Paper
 } from "@mui/material";
 
 import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
@@ -57,7 +58,7 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 }));
 
 
-const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
+const Drawer = styled(MuiDrawer)(
   ({ theme, open }) => ({
     width: drawerWidth,
     flexShrink: 0,
@@ -87,95 +88,144 @@ const ListItemCustom = styled(ListItem)(({ theme }) => ({
   padding: '8px',
   '& .MuiListItemButton-root': {
     borderRadius: '8px',
-    '&:hover':{
+    '&:hover': {
       backgroundColor: `${theme.palette.primary.main}60`,
     }
   },
   '&.Mui-selected': {
-    backgroundColor:'transparent',
+    backgroundColor: 'transparent',
     '& .MuiListItemButton-root': {
       backgroundColor: `${theme.palette.primary.main}a0`,
     },
   }
 }))
 
+
 const Sidebar = (props) => {
+  const { Breadcrumbs } = props
   const [open, setOpen] = useState(true);
-  const handleDrawerClose = () => setOpen(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  const handleDrawerToggle = () => {
+    setOpen(true)
+    setMobileOpen(!mobileOpen);
+    console.log(!mobileOpen);
+  };
+  const handleDrawerClose = () => {
+    setOpen(false);
+    setMobileOpen(false);
+  }
   const handleDrawerOpen = () => setOpen(true);
 
+  const drawer = (
+    <>
+      <DrawerHeader>
+        {
+          open ?
+            <>
+              <ListItem>
+                {/* <ListItemAvatar>
+                      <Avatar alt="hình đại diện" src={user?.avatar || avatar} />
+                    </ListItemAvatar> */}
+                <ListItemText primary={props.heading} sx={{ fontSize: '16px' }} />
+              </ListItem>
+              <IconButton onClick={handleDrawerClose}>
+                <KeyboardDoubleArrowLeftIcon />
+              </IconButton></> :
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              onClick={handleDrawerOpen}
+            >
+              <MenuIcon />
+            </IconButton>
+        }
+
+      </DrawerHeader>
+
+      <Divider />
+
+      <List>
+        {props.sidebarTab.map((item) => (
+          <Link key={item.id} to={item.link}>
+            <ListItemCustom
+              selected={props.selectedTabId === item.id}
+              onClick={() => props.handleChangeTab(item.id)}
+            >
+              <ListItemButton
+                sx={{
+                  minHeight: 48,
+                  justifyContent: open ? "initial" : "center",
+                  px: 2,
+                }}
+              >
+                <ListItemIcon
+                  sx={{
+                    minWidth: 0,
+                    mr: open ? 1.5 : "auto",
+                    justifyContent: "center",
+                  }}
+                >
+                  {<item.icon />}
+                </ListItemIcon>
+
+                <ListItemText
+                  secondary={item.text}
+                  sx={{
+                    opacity: open ? 1 : 0,
+                    '& .MuiTypography-root': {
+                      fontWeight: 500
+                    }
+                  }}
+                />
+              </ListItemButton>
+            </ListItemCustom>
+          </Link>
+        ))}
+      </List>
+    </>
+  )
+  
   return (
     <Box>
       <Stack direction="row" className="customer-account">
-        <Drawer variant="permanent" open={open}>
-          <DrawerHeader>
-            {
-              open ?
-                <>
-                  <ListItem>
-                    {/* <ListItemAvatar>
-                      <Avatar alt="hình đại diện" src={user?.avatar || avatar} />
-                    </ListItemAvatar> */}
-                    <ListItemText primary={props.heading} sx={{fontSize:'16px'}} />
-                  </ListItem>
-                  <IconButton onClick={handleDrawerClose}>
-                    <KeyboardDoubleArrowLeftIcon />
-                  </IconButton></> :
-                <IconButton
-                  color="inherit"
-                  aria-label="open drawer"
-                  onClick={handleDrawerOpen}
-                >
-                  <MenuIcon />
-                </IconButton>
-            }
-
-          </DrawerHeader>
-
-          <Divider />
-
-          <List>
-            {props.sidebarTab.map((item) => (
-              <Link key={item.id} to={item.link}>
-                <ListItemCustom
-                  selected={props.selectedTabId === item.id}
-                  onClick={() => props.handleChangeTab(item.id)}
-                >
-                  <ListItemButton
-                    sx={{
-                      minHeight: 48,
-                      justifyContent: open ? "initial" : "center",
-                      px: 2,
-                    }}
-                  >
-                    <ListItemIcon
-                      sx={{
-                        minWidth: 0,
-                        mr: open ? 1.5 : "auto",
-                        justifyContent: "center",
-                      }}
-                    >
-                      {<item.icon />}
-                    </ListItemIcon>
-
-                    <ListItemText
-                      secondary={item.text}
-                      sx={{
-                        opacity: open ? 1 : 0,
-                        '& .MuiTypography-root': {
-                          fontWeight: 500
-                        }
-                      }}
-                    />
-                  </ListItemButton>
-                </ListItemCustom>
-              </Link>
-            ))}
-          </List>
+        <Drawer variant="permanent" open={open}
+          sx={{
+            display: { xs:'none', md: 'block' },
+            
+          }}
+          >
+          {drawer}
+        </Drawer>
+        <Drawer
+        variant='temporary'
+          open={mobileOpen}
+          onClose={handleDrawerToggle}
+          sx={{
+            display: { xs:'block' ,sm: 'block', md: 'none' },
+            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth,height: '100%',top:0 },
+          }}
+        >
+          {drawer}
         </Drawer>
 
         <Box flex={1} p={2} width={0}>
-          {props.children}          
+          <Paper elevation={12} sx={{ padding: '8px 12px', marginBottom: '12px' }}>
+            <Stack direction='row' alignItems='center'>
+              <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              edge="start"
+              onClick={handleDrawerToggle}
+              sx={{ mr: 2, display: { md: 'none' } }}
+            >
+              <MenuIcon />
+            </IconButton>
+            {Breadcrumbs && <Breadcrumbs />}
+            </Stack>
+            
+          </Paper>
+          {props.children}
         </Box>
       </Stack>
     </Box>

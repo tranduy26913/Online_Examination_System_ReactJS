@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect ,useLayoutEffect} from 'react';
 import * as faceapi from "face-api.js";
 import { Box } from '@mui/material';
 
@@ -6,9 +6,14 @@ function FaceRecognition() {
     const videoRef = useRef();
     const canvasRef = useRef();
     const intervalRef = useRef();
-    useEffect(() => {
+    useLayoutEffect(() => {
         startVideo();
         videoRef && loadModels();
+
+        return ()=>{
+           videoRef.current.srcObject.getTracks().forEach(track => track.stop())
+            clearInterval(intervalRef.current)
+        }
     }, []);
     const startVideo = () => {
         navigator.mediaDevices.getUserMedia({ video: true })
@@ -55,11 +60,7 @@ function FaceRecognition() {
             // faceapi.draw.drawFaceExpressions(canvasRef.current, resized);
         }, 200)
     }
-    useEffect(()=>{
-        return ()=>{
-            clearInterval(intervalRef.current)
-        }
-    },[])
+    
     return (
         <>
             <Box sx={{ width: '240px',height:'180px', position: 'relative' }}>

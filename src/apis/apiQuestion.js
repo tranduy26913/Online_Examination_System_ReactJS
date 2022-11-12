@@ -5,6 +5,10 @@ const apiQuestion = {
         const res = await axiosClientWithToken.post('question/create-question', params)
         return res.data;
     },
+    createQuestionByFile: async (params) =>{
+        const res = await axiosClientWithToken.post('question/create-question-by-file', params)
+        return res.data;
+    },
     deleteQuestion: async (params) =>{
         const res = await axiosClientWithToken.delete('question', {params})
         return res.data;

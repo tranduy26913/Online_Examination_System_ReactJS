@@ -11,24 +11,17 @@ import {
 } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { CKEditor } from '@ckeditor/ckeditor5-react';
-//import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import CheckIcon from '@mui/icons-material/Check';
 import { useTheme } from '@mui/system';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { useCallback } from 'react';
-import apiQuestion from 'apis/apiQuestion';
 import { useDispatch, useSelector } from 'react-redux';
-import { addQuestion, updateQuestion } from 'slices/userSlice';
+import {  updateQuestionInFile } from 'slices/userSlice';
 import LoadingButton from 'components/LoadingButton';
-import { toast } from 'react-toastify';
-import apiQuestionBank from 'apis/apiQuestionBank';
 import { MyUploadAdapter } from './MyCustomUploadAdapterPlugin';
 import DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
 
-//import SimpleUploadAdapter from '@ckeditor/ckeditor5-upload/src/adapters/simpleuploadadapter';
-//import Image from '@ckeditor/ckeditor5-image/src/image';
-//import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
-const alpha = Array.from(Array(26)).map((e, i) => i + 65);
+const alpha = Array.from(Array(10)).map((e, i) => i + 65);
 const alphabet = alpha.map((x) => String.fromCharCode(x));
 
 const BoxCheck = ({ isCheck, onClick }) => {
@@ -74,18 +67,21 @@ const BoxDelete = ({ onClick }) => {
 }
 
 const CreateQuestion = (props) => {
-  const { isEdit, examId, questionBankId, question, id } = props
+  const { question, id } = props
   const [content, setContent] = useState(question ? question.content : '')
-  const [answers, setAnswers] = useState(question ? question.answers : [])
+  const [answers, setAnswers] = useState(question ?question.answers: [])
   const [maxPoints, setMaxPoints] = useState()
   const [loading, setLoading] = useState(false)
   const [typeAnswer, setTypeAnswer] = useState('single')//single:1 đáp án đúng, multi: nhiều đáp án đúng
   const dispatch = useDispatch()
   const refreshToken = useSelector(state => state.auth.refreshToken)
 
+  const handleChangeMaxPoints = (e) => {
+    setMaxPoints(e.target.value)
+  }
+
   useEffect(()=>{
     if(question){
-      console.log(question)
       setContent(question.content)
       setMaxPoints(question.maxPoints)
       setTypeAnswer(question.type)
@@ -93,10 +89,6 @@ const CreateQuestion = (props) => {
       setAnswers(newAnswers)
     }
   },[question])
-
-  const handleChangeMaxPoints = (e) => {
-    setMaxPoints(e.target.value)
-  }
 
   const handleChangeTypeAnswer = (e) => {
     setTypeAnswer(e.target.value)
@@ -153,63 +145,22 @@ const CreateQuestion = (props) => {
           return newAnswer
         })
       }
-      else
+      else  
         newAnswers[answerIndex].isCorrect = !newAnswers[answerIndex].isCorrect
     }
     setAnswers(newAnswers)
   }, [answers, typeAnswer])
 
-  const handleCreateQuestion = async () => {
-    const params = {
-      content,
-      maxPoints,
-      type: typeAnswer,
-      image: "",
-      answers,
-      examId
-    }
-    let response = null
-    if (examId) {
-      params.examId = examId
-      response = apiQuestion.createQuestion(params)
-    }
-    else {
-      params.questionBankId = questionBankId
-      response = apiQuestionBank.createQuestionIntoQuestionBank(params)
-    }
-    setLoading(true)
-    response.then((res) => {
-      let newQuestion = res.question
-      dispatch(addQuestion(newQuestion))
-      handleClearData()
-      toast.success('Tạo câu hỏi mới thành công')
-    })
-      .catch(err => {
-        toast.warning('Tạo câu hỏi mới thất bại')
-      })
-      .finally(() => setLoading(false))
-
-  }
 
   const handleEditQuestion = () => {
     const params = {
+      id,
       content,
-      maxPoint: 1,
-      tag: [],
+      maxPoints,
       type: typeAnswer,
-      embededMedia: "",
       answers
     }
-    setLoading(true)
-    apiQuestion.updateQuestion(params, id)
-      .then((res) => {
-
-        dispatch(updateQuestion(res))
-      })
-      .finally(() => {
-        setLoading(false)
-        props.handleSelectQuestion("")
-      })
+    dispatch(updateQuestionInFile(params))
   }
 
   const handleClearData = () => {
@@ -226,7 +177,7 @@ const CreateQuestion = (props) => {
         editor={DecoupledEditor}
         data={content}
         onReady={editor => {
-          
+
           editor.ui
             .getEditableElement()
             .parentElement.insertBefore(
@@ -241,7 +192,7 @@ const CreateQuestion = (props) => {
         onChange={(event, editor) => {
           setContent(editor.getData());
         }}
-        
+
       />
       <TextField
         label='Điểm tối đa'
@@ -280,7 +231,7 @@ const CreateQuestion = (props) => {
         {/* <Button variant='contained' color='error'>Huỷ</Button> */}
         <Button onClick={handleClearData} variant='contained' color='warning'>Làm mới</Button>
         <LoadingButton loading={loading} variant='contained'
-          onClick={isEdit ? handleEditQuestion : handleCreateQuestion}>{isEdit ? 'Sửa' : 'Tạo'} câu hỏi</LoadingButton>
+          onClick={handleEditQuestion}> Lưu câu hỏi</LoadingButton>
       </Stack>
     </Stack>
 

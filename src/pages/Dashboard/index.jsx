@@ -11,7 +11,6 @@ import {
 
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import { Outlet } from 'react-router-dom'
-import { useDispatch } from "react-redux";
 import Sidebar from "components/Sidebar";
 
 
@@ -19,7 +18,8 @@ const checkSelectedTab = (item, pathname) => {
   const splitPath = pathname.split('/')
   if (splitPath.length === 0)
     return false
-  return item.list.includes(splitPath[splitPath.length - 1])
+  const regex = new RegExp(item.regex)
+  return regex.test(pathname)
 }
 const StudentDashboard = (props) => {
   const location = useLocation()
@@ -28,19 +28,25 @@ const StudentDashboard = (props) => {
   const [selectedTabId, setSelectedTabId] = useState(tabId?.id || 0);
   const handleChangeTab = useCallback(id => setSelectedTabId(id), [])
 
-  const breadcrumbs = (() => {
+  const DashboardBreadcrumbs = () => {
     const tab = props.sidebarTab.find(item => item.id === selectedTabId)
-    return ([
-      <Link key="1" to="/">
-        <Typography>
-          Trang chủ
-        </Typography>
-      </Link>,
-      <Link key="2"  to={tab?.link || "/"}>
-        {tab?.text || ""}
-      </Link>
-    ]);//
-  })()
+    return (
+      <Breadcrumbs
+        separator={<NavigateNextIcon fontSize="small" />}
+        sx={{ fontSize: "14px" }}
+      //
+      >
+        <Link key="1" to="/">
+          <Typography>
+            Trang chủ
+          </Typography>
+        </Link>,
+        <Link key="2" to={tab?.link || "/"}>
+          {tab?.text || ""}
+        </Link>
+
+      </Breadcrumbs>)
+  }
 
   useEffect(() => {
     const handleChangePath = () => {
@@ -48,7 +54,7 @@ const StudentDashboard = (props) => {
       if (tabId)
         setSelectedTabId(tabId?.id || 0)
     }
-    
+
     handleChangePath()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname, props.sidebarTab])
@@ -57,23 +63,15 @@ const StudentDashboard = (props) => {
     document.title =
       props.sidebarTab.find(item => item.id === selectedTabId)?.text ||
       "Bello Quiz";
-      // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedTabId]);
   return (
-    <Sidebar sidebarTab={props.sidebarTab}
-     selectedTabId={selectedTabId}
+    <Sidebar
+      sidebarTab={props.sidebarTab}
+      selectedTabId={selectedTabId}
       handleChangeTab={handleChangeTab}
+      Breadcrumbs = {DashboardBreadcrumbs}
       heading={"Dashboard"}>
-      <Paper elevation={12} sx={{ padding: '8px 12px', marginBottom: '12px' }}>
-
-        <Breadcrumbs
-          separator={<NavigateNextIcon fontSize="small" />}
-          sx={{ fontSize: "14px" }}
-        //
-        >
-          {breadcrumbs}
-        </Breadcrumbs>
-      </Paper>
       <Outlet />
     </Sidebar>
   );

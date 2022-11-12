@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback} from 'react'
 import {
     Box,
     Stack,
@@ -13,28 +13,26 @@ import {
     Typography,
     Chip
 } from "@mui/material"
-import { useDispatch } from 'react-redux';
 import TableMoreMenu from './component/TableMoreMenu'
-import TableToolbar from './component/TableToolbar'
+import {TableToolbar,TableHeadCustom} from 'components/TableCustom'
 import { useContext } from 'react';
 import CourseContext from '../LayoutCourse/CourseContext';
 import apiCourse from 'apis/apiCourse';
 import moment from 'moment';
-import { useCallback } from 'react';
-import TableHeadCustom from './component/TableHeadCustom';
 import EmptyList from 'components/UI/EmptyList';
 import { onValue, ref } from 'firebase/database';
 import { database } from 'config/firebaseConfig';
+import AddStudent from './component/AddStudent';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-    { id: 'fullname', label: 'Họ và tên', alignRight: 'left' },
-    { id: 'gender', label: 'Giới tính', alignRight: 'center' },
-    { id: 'birthday', label: 'Ngày sinh', alignRight: 'center' },
-    { id: 'numofexam', label: 'Số đề đã làm', alignRight: 'center' },
-    { id: 'status', label: 'Trạng thái', alignRight: 'center' },
-    { id: 'action', label: 'Thao tác', alignRight: 'right' },
+    { id: 'fullname', label: 'Họ và tên', align: 'left' },
+    { id: 'gender', label: 'Giới tính', align: 'center' },
+    { id: 'birthday', label: 'Ngày sinh', align: 'center' },
+    { id: 'numofexam', label: 'Số đề đã làm', align: 'center' },
+    { id: 'status', label: 'Trạng thái', align: 'center' },
+    { id: 'action', label: 'Thao tác', align: 'right' },
 ];
 
 // ----------------------------------------------------------------------
@@ -145,12 +143,18 @@ const ListStudent = () => {
         loadListStudent()
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [courseId])
+
+    const ButtonCustom = ()=>{
+        return (
+            <AddStudent reloadList={loadListStudent}/>
+        )
+    }
     return (
         <Box width={'100%'}>
             <Paper elevation={24}>
 
                 <TableToolbar filterName={filterName} onFilterName={handleFilterByName}
-                    reloadList={loadListStudent} />
+                    ButtonCustom={ButtonCustom} />
                 <Box px={2}>
 
                     <TableContainer>
