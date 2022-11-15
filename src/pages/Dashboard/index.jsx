@@ -5,8 +5,7 @@ import { Link, useLocation } from "react-router-dom";
 
 import {
   Typography,
-  Breadcrumbs,
-  Paper
+  Breadcrumbs
 } from "@mui/material";
 
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';

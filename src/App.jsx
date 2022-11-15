@@ -12,37 +12,41 @@ import { axiosInstance } from 'apis/axiosClient';
 import { loginSuccess, logoutSuccess } from 'slices/authSlice';
 import StateActivity from 'components/StateActivity';
 import ErrorBoundary from 'components/ErrorPage/ErrorBoundary';
+import ScrollToTop from 'components/ScrollToTop';
 
 function App() {
   const refreshToken = useSelector((state) => state.auth.refreshToken);
   const accessToken = useSelector((state) => state.auth.accessToken);
   const dispatch = useDispatch();
-  
- 
+
+
   if (accessToken && refreshToken) {
-    
-    axiosInstance(accessToken,refreshToken, dispatch, loginSuccess, logoutSuccess);
+
+    axiosInstance(accessToken, refreshToken, dispatch, loginSuccess, logoutSuccess);
   }
   return (
-    <BrowserRouter><Header />
-    <ErrorBoundary>
-      <CheckAuthentication>
+    <BrowserRouter>
+      <Header />
+      <ErrorBoundary>
+        <ScrollToTop />
 
-        <GoogleOAuthProvider clientId={process.env.REACT_APP_GoogleClientID}>
-          
-          <BackgroundAnimation />
-          <ConfigRoute />
-          <ToastContainer
-            autoClose={1500}
-            hideProgressBar={false}
-            newestOnTop={false}
-            closeOnClick
-            pauseOnFocusLoss
-            pauseOnHover={false}
-          />
-          <StateActivity/>
-        </GoogleOAuthProvider>
-      </CheckAuthentication>
+        <CheckAuthentication>
+
+          <GoogleOAuthProvider clientId={process.env.REACT_APP_GoogleClientID}>
+
+            <BackgroundAnimation />
+            <ConfigRoute />
+            <ToastContainer
+              autoClose={1500}
+              hideProgressBar={false}
+              newestOnTop={false}
+              closeOnClick
+              pauseOnFocusLoss
+              pauseOnHover={false}
+            />
+            <StateActivity />
+          </GoogleOAuthProvider>
+        </CheckAuthentication>
       </ErrorBoundary>
     </BrowserRouter>
 

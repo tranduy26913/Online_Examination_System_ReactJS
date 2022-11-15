@@ -5,6 +5,7 @@ import {
   Typography, styled
 } from '@mui/material'
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import React from 'react'
@@ -53,7 +54,12 @@ const DetailQuestion = (props) => {
       </Typography>
       {
         question.answers.map(item =>
-          <BoxAnswer key={item.id}><CheckCircleOutlineIcon sx={{ fontSize: '22px' }} color={item.isCorrect ? 'success' : 'error'} />{item.content}</BoxAnswer>
+          <BoxAnswer key={item.id}>
+            {item.isCorrect?<CheckCircleOutlineIcon sx={{ fontSize: '22px' }} color={'success'} />
+            :<HighlightOffIcon sx={{ fontSize: '22px' }} color={'error'} />}
+            
+
+            {item.content}</BoxAnswer>
         )
       }
       <Stack direction='row' justifyContent={'flex-end'}>

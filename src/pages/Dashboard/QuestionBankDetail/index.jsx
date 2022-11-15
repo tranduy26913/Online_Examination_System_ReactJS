@@ -17,7 +17,7 @@ import { useParams } from 'react-router-dom';
 import { useEffect } from 'react';
 import apiQuestionBank from 'apis/apiQuestionBank';
 import { useDispatch, useSelector } from 'react-redux';
-import { addQuestion } from 'slices/userSlice';
+import { addQuestion, clearQuestion } from 'slices/userSlice';
 
 const PaperQuestion = styled(Paper)(({ theme }) => ({
     borderTop: `6px solid ${theme.palette.primary.light}`
@@ -46,6 +46,7 @@ const QuestionBankDetail = () => {
     const handleSelectQuestionEdit = useCallback((value) => setIdQuestion(value), [])
     useEffect(() => {
         const GetData = () => {
+            dispatch(clearQuestion())
             apiQuestionBank.getQuestionsByQB({ slug })
                 .then(res => {
                     const { questions, ...data } = res

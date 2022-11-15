@@ -4,9 +4,7 @@ import {
     Switch,
     Stack,
     Paper,
-    Box,
-    lighten,
-    darken
+    Box
 } from '@mui/material';
 import PropTypes from 'prop-types';
 
@@ -71,6 +69,7 @@ export const StackLabel = styled(Stack)(({ theme }) => ({
 
     '& .MuiBox-root': {
         width: '200px',
+        height:'40px',
         paddingLeft: '12px',
         borderRadius: '8px 0 0px 8px',
         backgroundColor: `${theme.palette.primary.main}c0`,
@@ -82,6 +81,10 @@ export const StackLabel = styled(Stack)(({ theme }) => ({
             borderRadius: '8px 8px 0px 0px',
         }
     },
+    '& .MuiBox-root.LabelFormControl': {
+        
+        height:'unset'
+    },
     '& .MuiFormControl-root': {
         flex: 1,
         [theme.breakpoints.down('sm')]: {
@@ -92,7 +95,7 @@ export const StackLabel = styled(Stack)(({ theme }) => ({
     '& input': {
         color: theme.palette.mode === 'dark' ? '#fff' : theme.palette.text.primary,
         borderLeftColor: 'transparent',
-        height: '38px',
+        height: '40px',
         border: `1px solid ${theme.palette.divider}`,
         padding: '4px 16px',
         outline: 'none',

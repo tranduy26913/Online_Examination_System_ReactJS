@@ -1,4 +1,4 @@
-import React, { useState,useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import {
     Button,
     Stack,
@@ -20,7 +20,7 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import './Login.scss'
 import { Link, useNavigate } from 'react-router-dom';
 import apiAuth from 'apis/apiAuth';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { loginSuccess } from 'slices/authSlice';
 import { toast } from 'react-toastify';
 import Page from 'components/Page';
@@ -44,6 +44,7 @@ const Login = () => {
     const passwordRef = useRef()
     const dispatch = useDispatch()
     const navigate = useNavigate()
+    const user = useSelector(state => state.user?.info)
 
     const handleChange = (event) => {
         setPassword({ ...password, value: event.target.value });
@@ -80,7 +81,7 @@ const Login = () => {
                 if (res) {
                     dispatch(loginSuccess(res))
                     dispatch(setUserInfo(res))
-                    if(res.role === 'TEACHER'){
+                    if (res.role === 'TEACHER') {
                         dispatch(changeRole('teacher'))
                     }
                     toast.success("Đăng nhập thành công")
@@ -95,6 +96,12 @@ const Login = () => {
             })
             .finally(() => setLoading(false))
     }
+
+    useEffect(() => {
+        if (user) {
+            navigate('/my/profile')
+        }
+    }, [user])
     return (
         <Page title='Đăng nhập'>
 
@@ -108,7 +115,7 @@ const Login = () => {
                             </Typography>
                             <Stack spacing={2.5}>
                                 <TextField
-                                
+
                                     size='small'
                                     id="outlined-basic"
                                     label="Tên đăng nhập"
@@ -120,7 +127,7 @@ const Login = () => {
                                     <InputLabel
                                         htmlFor="outlined-adornment-password">Mật khẩu</InputLabel>
                                     <OutlinedInput
-                                    inputRef={passwordRef}
+                                        inputRef={passwordRef}
                                         id="outlined-adornment-password"
                                         type={password.showPassword ? 'text' : 'password'}
                                         value={password.value}

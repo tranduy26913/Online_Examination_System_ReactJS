@@ -7,7 +7,9 @@ import {
     Stack,
     Divider
 } from '@mui/material'
-
+import AssignmentIcon from '@mui/icons-material/Assignment'
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import React, { useCallback, useState } from 'react'
 import { useEffect } from 'react';
 import apiQuestionBank from 'apis/apiQuestionBank';
@@ -16,8 +18,11 @@ import CreateQuestionBank from './CreateQuestionBank';
 import { toast } from 'react-toastify';
 import { Link } from 'react-router-dom';
 import EmptyList from 'components/UI/EmptyList';
+import { useSelector } from 'react-redux';
+
 
 const QuestionBank = () => {
+    const role = useSelector(state=>state.setting?.role)
     const [questionBanks, setQuestionBanks] = useState([])
 
     useEffect(() => {
@@ -44,13 +49,13 @@ const QuestionBank = () => {
         <Paper>
             <Stack spacing={1} p={2}>
                 <Stack direction='row' justifyContent='flex-end' mb={1}>
-                    <CreateQuestionBank  variant='outlined' reloadList={reloadList} />
+                    <CreateQuestionBank variant='outlined' reloadList={reloadList} />
                 </Stack>
                 <Divider />
                 <Grid container spacing={2}>
                     {questionBanks.length === 0 && <EmptyList />}
                     {questionBanks.map(item =>
-                        <Grid xs={12} md={4} lg={3}>
+                        <Grid key={item.id}xs={12} sm={6} md={4} lg={3}>
                             <Card sx={{ maxWidth: 345 }}>
                                 <CardContent>
                                     <Typography gutterBottom variant="h5" component="div">
@@ -61,13 +66,20 @@ const QuestionBank = () => {
                                     </Typography>
                                 </CardContent>
                                 <Divider />
-                                <Stack direction='row' flexWrap='wrap' justifyContent='space-evenly' gap={1} py={1}>
+                                <Stack 
+                                direction='row' flexWrap='wrap'
+                                justifyContent='space-evenly' gap={0.5} py={0.5}>
                                     <Link to={`/my/question-bank/${item.slug}`}>
-                                        <Button variant='outlined' sx={{ width: '70px' }} size="small">Chi tiết</Button>
+                                        <Button variant='outlined' sx={{ width: '100px' }} size="small"
+                                        endIcon={<AssignmentIcon/>}>Chi tiết</Button>
                                     </Link>
                                     <CreateQuestionBank slug={item.slug} edit={true} reloadList={reloadList} 
-                                     variant='outlined' sx={{ width: '70px' }} size="small">Sửa</CreateQuestionBank>
-                                    <Button variant='outlined' sx={{ width: '70px' }} size="small">Xoá</Button>
+                                     variant='outlined' sx={{ width: '100px' }} size="small"
+                                     endIcon={<EditIcon/>}>
+                                        Sửa
+                                        </CreateQuestionBank>
+                                    <Button variant='outlined' sx={{ width: '100px' }} size="small"
+                                    endIcon={<DeleteForeverIcon/>}>Xoá</Button>
                                 </Stack>
                             </Card>
                         </Grid>

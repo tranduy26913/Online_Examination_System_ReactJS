@@ -31,6 +31,7 @@ const openedMixin = (theme) => ({
   overflowX: 'hidden',
   // position:'sticky',
   top: '56px',
+  borderRight:'1px solid rgba(0,0,0,0.07)',
   height: 'calc(100% - 56px)'
 });
 
@@ -45,7 +46,9 @@ const closedMixin = (theme) => ({
     width: `calc(${theme.spacing(8)} + 1px)`,
   },
   top: '56px',
+  borderRight:'1px solid rgba(0,0,0,0.07)',
   height: 'calc(100% - 56px)'
+  
 });
 
 const DrawerHeader = styled('div')(({ theme }) => ({
@@ -64,6 +67,7 @@ const Drawer = styled(MuiDrawer)(
     flexShrink: 0,
     whiteSpace: 'nowrap',
     boxSizing: 'border-box',
+    
     ...(open && {
       ...openedMixin(theme),
       '& .MuiDrawer-paper': openedMixin(theme),
@@ -109,7 +113,6 @@ const Sidebar = (props) => {
   const handleDrawerToggle = () => {
     setOpen(true)
     setMobileOpen(!mobileOpen);
-    console.log(!mobileOpen);
   };
   const handleDrawerClose = () => {
     setOpen(false);

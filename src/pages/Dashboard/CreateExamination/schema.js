@@ -11,10 +11,10 @@ export const schema = Yup.object().shape({
     .number()
     .required('Vui lòng nhập vào trường này')
     .min(1, "Số lần thi ít nhất là 1"),
-  numberofQuestions: Yup
-    .number()
-    .required('Vui lòng nhập vào trường này')
-    .min(1, "Số câu hỏi ít nhất là 1"),
+  // numberofQuestions: Yup
+  //   .number()
+  //   .required('Vui lòng nhập vào trường này')
+  //   .min(1, "Số câu hỏi ít nhất là 1"),
   maxTimes: Yup
     .number()
     .transform((value) => (isNaN(value) ? 0 : value))

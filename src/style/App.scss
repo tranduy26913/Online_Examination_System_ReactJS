@@ -7,6 +7,23 @@
         -webkit-tap-highlight-color: transparent;
     }
     
+    // body a,
+    // body button,
+    // body [type='button'],
+    // body input[type='reset'],
+    // body input[type='submit'],
+    // body [role="button"],
+    //  ::-webkit-search-cancel-button,
+    //  ::-webkit-search-decoration,
+    //  ::-webkit-scrollbar-button,
+    //  ::-webkit-file-upload-button {
+    //     cursor: url('../assets/img/pointer.png') 4 1, pointer !important;
+    // }
+    // html,
+    // body,
+    // body select {
+    //     cursor: url('../assets/img/cursor.png') 0 1, auto !important;
+    // }
     body {
         font-family: 'Source Sans Pro', sans-serif;
         background-color: #f5f5f5;
@@ -20,6 +37,7 @@
             background-color: #3498db;
             border-radius: 3px
         }
+        ;
     }
     
     a {

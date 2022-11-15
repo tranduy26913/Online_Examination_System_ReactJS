@@ -9,9 +9,8 @@ import {
   FormLabel,
   FormControl
 } from '@mui/material'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { CKEditor } from '@ckeditor/ckeditor5-react';
-//import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import CheckIcon from '@mui/icons-material/Check';
 import { useTheme } from '@mui/system';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
@@ -24,10 +23,8 @@ import { toast } from 'react-toastify';
 import apiQuestionBank from 'apis/apiQuestionBank';
 import { MyUploadAdapter } from './MyCustomUploadAdapterPlugin';
 import DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
+import ExamContext from 'pages/Dashboard/CreateExamination/ExamContext';
 
-//import SimpleUploadAdapter from '@ckeditor/ckeditor5-upload/src/adapters/simpleuploadadapter';
-//import Image from '@ckeditor/ckeditor5-image/src/image';
-//import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
 const alpha = Array.from(Array(26)).map((e, i) => i + 65);
 const alphabet = alpha.map((x) => String.fromCharCode(x));
 
@@ -42,11 +39,11 @@ const BoxCheck = ({ isCheck, onClick }) => {
         width: '30px',
         border: `1px solid ${theme.palette.primary.main}`,
         borderRadius: '4px',
-        backgroundColor: isCheck ? theme.palette.primary.main : '#fff'
+        backgroundColor: isCheck ? theme.palette.primary.main :  theme.palette.background.paper
       }}>
       <CheckIcon
         sx={{
-          color: isCheck ? '#fff' : theme.palette.primary.main,
+          color: isCheck ?  theme.palette.background.paper : theme.palette.primary.main,
           fontSize: '18px'
         }} />
     </Stack>
@@ -77,22 +74,23 @@ const CreateQuestion = (props) => {
   const { isEdit, examId, questionBankId, question, id } = props
   const [content, setContent] = useState(question ? question.content : '')
   const [answers, setAnswers] = useState(question ? question.answers : [])
-  const [maxPoints, setMaxPoints] = useState()
+  const [maxPoints, setMaxPoints] = useState(1)
   const [loading, setLoading] = useState(false)
   const [typeAnswer, setTypeAnswer] = useState('single')//single:1 đáp án đúng, multi: nhiều đáp án đúng
   const dispatch = useDispatch()
   const refreshToken = useSelector(state => state.auth.refreshToken)
+  const {reloadExam} = useContext(ExamContext) || {}
 
-  useEffect(()=>{
-    if(question){
+  useEffect(() => {
+    if (question) {
       console.log(question)
       setContent(question.content)
       setMaxPoints(question.maxPoints)
       setTypeAnswer(question.type)
-      let newAnswers = question.answers?.map(item=>({...item})) || []
+      let newAnswers = question.answers?.map(item => ({ ...item })) || []
       setAnswers(newAnswers)
     }
-  },[question])
+  }, [question])
 
   const handleChangeMaxPoints = (e) => {
     setMaxPoints(e.target.value)
@@ -113,7 +111,7 @@ const CreateQuestion = (props) => {
   const handleAddAnswer = () => {
     let len = (answers.length || 0) + 1
     const newAnswer = {
-      id: len,
+      id: String(len),
       content: '',
       isCorrect: false,
     }
@@ -127,7 +125,7 @@ const CreateQuestion = (props) => {
   }, [answers])
 
   const handleChangeInputAnswer = (e, idAnswer) => {
-    const newAnswers = [...answers]
+    const newAnswers = answers.map(e=>({...e}))
     const answerIndex = answers.findIndex(item => item.id === idAnswer)
     if (answerIndex > -1) {
       newAnswers[answerIndex] = {
@@ -140,14 +138,14 @@ const CreateQuestion = (props) => {
   }
 
   const handleChooseCorrect = useCallback((idAnswer) => {
-    let newAnswers = [...answers]
+    let newAnswers = answers.map(e=>({...e}))
     const answerIndex = answers.findIndex(item => item.id === idAnswer)
     if (answerIndex > -1) {
       if (typeAnswer === 'single') {
         newAnswers = newAnswers.map(item => {
           const newAnswer = item
           if (newAnswer.id === idAnswer)
-            newAnswer.isCorrect = !newAnswer.isCorrect
+            newAnswer.isCorrect = true
           else
             newAnswer.isCorrect = false
           return newAnswer
@@ -156,10 +154,47 @@ const CreateQuestion = (props) => {
       else
         newAnswers[answerIndex].isCorrect = !newAnswers[answerIndex].isCorrect
     }
-    setAnswers(newAnswers)
+    if(checkAnswers(newAnswers)) {
+      setAnswers(newAnswers)
+    }
+    else {
+      toast.warning('Câu hỏi phải có ít nhất 1 đáp án đúng')
+      return
+    }
+
   }, [answers, typeAnswer])
 
+  const checkAnswers = (answers) => {
+    return answers.some(e => e.isCorrect)
+  }
+  const checkQuestion = ()=>{
+    if (!content){
+      toast.warning('Câu hỏi phải có nội dung')
+      return false
+    }
+    if (Number(maxPoints) <= 0){
+      toast.warning('Điểm tối đa phải lớn hơn 0')
+      return false
+    }
+    if (Number.isNaN(Number(maxPoints))){
+      toast.warning('Điểm tối đa không hợp lệ')
+      return false
+    }
+    if (answers.length === 0) {
+      toast.warning('Câu hỏi phải có ít nhất 1 đáp án')
+      return false
+    }
+    if(!checkAnswers(answers)) {
+      toast.warning('Câu hỏi phải có ít nhất 1 đáp án đúng')
+      return false
+    }
+    return true
+  }
+
   const handleCreateQuestion = async () => {
+    
+    if (!checkQuestion()) return
+    
     const params = {
       content,
       maxPoints,
@@ -179,6 +214,7 @@ const CreateQuestion = (props) => {
     }
     setLoading(true)
     response.then((res) => {
+      reloadExam()
       let newQuestion = res.question
       dispatch(addQuestion(newQuestion))
       handleClearData()
@@ -192,19 +228,23 @@ const CreateQuestion = (props) => {
   }
 
   const handleEditQuestion = () => {
+    if (!checkQuestion(answers)) return
+
     const params = {
+      examId,
+      questionId:id,
       content,
-      maxPoint: 1,
-      tag: [],
+      maxPoints,
       type: typeAnswer,
-      embededMedia: "",
       answers
     }
     setLoading(true)
     apiQuestion.updateQuestion(params, id)
       .then((res) => {
-
-        dispatch(updateQuestion(res))
+        reloadExam()
+        toast.success("Sửa câu hỏi thành công")
+        const {id,type,content,answers,maxPoints} = res.updatedQuestion
+        dispatch(updateQuestion({id,type,content,answers,maxPoints}))
       })
       .finally(() => {
         setLoading(false)
@@ -226,7 +266,7 @@ const CreateQuestion = (props) => {
         editor={DecoupledEditor}
         data={content}
         onReady={editor => {
-          
+
           editor.ui
             .getEditableElement()
             .parentElement.insertBefore(
@@ -236,12 +276,11 @@ const CreateQuestion = (props) => {
           editor.plugins.get("FileRepository").createUploadAdapter = (loader) => {
             return new MyUploadAdapter(loader, refreshToken);
           };
-          console.log('Editor is ready to use!', editor);
         }}
         onChange={(event, editor) => {
           setContent(editor.getData());
         }}
-        
+
       />
       <TextField
         label='Điểm tối đa'
@@ -264,7 +303,7 @@ const CreateQuestion = (props) => {
       {
 
         answers.map((item, index) =>
-          <Stack direction={'row'} width={'100%'} alignItems='flex-end' spacing={2}>
+          <Stack key={item.id} direction={'row'} width={'100%'} alignItems='flex-end' spacing={2}>
 
             <TextField variant='standard' size='small' fullWidth
               label={`Đáp án ${alphabet[index]}`} value={item.content}

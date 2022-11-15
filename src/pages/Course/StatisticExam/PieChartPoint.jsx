@@ -9,7 +9,6 @@ import { fNumber } from 'utils/formatNumber';
 // ----------------------------------------------------------------------
 
 const CHART_HEIGHT = 372;
-const LEGEND_HEIGHT = 72;
 
 const ChartWrapperStyle = styled('div')(({ theme }) => ({
   height: CHART_HEIGHT,

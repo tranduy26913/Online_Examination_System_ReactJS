@@ -7,12 +7,14 @@ import {
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import React from 'react'
+import HighlightOffIcon from '@mui/icons-material/HighlightOff'
+import React, { useContext } from 'react'
 import apiQuestion from 'apis/apiQuestion';
 import { toast } from 'react-toastify';
 import { useDispatch } from 'react-redux';
 import { deleteQuestion } from 'slices/userSlice';
 import DOMPurify from 'dompurify';
+import ExamContext from 'pages/Dashboard/CreateExamination/ExamContext';
 
 const BoxAnswer = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -25,6 +27,7 @@ const BoxAnswer = styled(Box)(({ theme }) => ({
 const DetailQuestion = (props) => {
   const question = props.question
   const examId = props.examId
+  const {status,reloadExam} = useContext(ExamContext) || {status:'public'}
   const dispatch = useDispatch()
   const onClickEdit = () => {
     props.handleEdit(props.id)
@@ -37,6 +40,7 @@ const DetailQuestion = (props) => {
     const id = toast.loading("Đang xoá...")
     apiQuestion.deleteQuestion(params)
     .then(res=>{
+      reloadExam()
       dispatch(deleteQuestion(props.id))
       toast.update(id,{render:'Xoá câu hỏi thành công',isLoading:false,type:'success',autoClose:1200})
     })
@@ -53,12 +57,18 @@ const DetailQuestion = (props) => {
       </Typography>
       {
         question.answers.map(item =>
-          <BoxAnswer key={item.id}><CheckCircleOutlineIcon sx={{ fontSize: '22px' }} color={item.isCorrect ? 'success' : 'error'} />{item.content}</BoxAnswer>
+          <BoxAnswer key={item.id}>
+            {item?.isCorrect?
+            <CheckCircleOutlineIcon sx={{ fontSize: '22px' }} color={'success'} />
+            :<HighlightOffIcon sx={{ fontSize: '22px' }} color={'error'} />
+            }
+            {item.content}
+            </BoxAnswer>
         )
       }
       <Stack direction='row' justifyContent={'flex-end'}>
         <Button onClick={onClickEdit} startIcon={<BorderColorIcon />}>Sửa</Button>
-        <Button onClick={handleDeleteQuestion} startIcon={<DeleteForeverIcon />}>Xoá</Button>
+        {status !== 'public' && <Button onClick={handleDeleteQuestion} startIcon={<DeleteForeverIcon />}>Xoá</Button>}
       </Stack>
     </Stack>
   )

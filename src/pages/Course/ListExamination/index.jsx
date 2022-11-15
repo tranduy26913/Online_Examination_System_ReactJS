@@ -13,8 +13,7 @@ import {
     Button
 } from "@mui/material"
 import Scrollbar from 'components/Scrollbar';
-import SearchNotFound from 'components/SearchNotFound';
-import { TableToolbar, TableMoreMenu,TableHeadCustom } from 'components/TableCustom';
+import { TableToolbar, TableMoreMenu, TableHeadCustom } from 'components/TableCustom';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import BarChartIcon from '@mui/icons-material/BarChart';
@@ -22,6 +21,9 @@ import { useContext } from 'react';
 import CourseContext from '../LayoutCourse/CourseContext';
 import apiCourse from 'apis/apiCourse';
 import { Link } from 'react-router-dom';
+import EmptyList from 'components/UI/EmptyList';
+import Page from 'components/Page';
+import LoadingRoller from 'components/LoadingPage/LoadingRoller';
 
 
 // ----------------------------------------------------------------------
@@ -32,7 +34,7 @@ const TABLE_HEAD = [
     { id: 'numberofQuestions', label: 'Số lượng câu hỏi', align: 'center' },
     { id: 'maxTimes', label: 'Thời lượng', align: 'center' },
     { id: 'status', label: 'Trạng thái', align: 'center' },
-    { id: 'action', label: 'Thao tác', align: 'right' },,
+    { id: 'action', label: 'Thao tác', align: 'right' },
 ];
 
 // ----------------------------------------------------------------------
@@ -67,14 +69,14 @@ function applySortFilter(array, comparator, query) {
 }
 
 const ListExaminationTeacher = () => {
-    document.title = "Danh sách bài kiểm tra"
     const [page, setPage] = useState(0);
     const [order, setOrder] = useState('asc');
     const [orderBy, setOrderBy] = useState('name');
     const [filterName, setFilterName] = useState('');
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [exams, setExams] = useState([])
-    const { courseId, id } = useContext(CourseContext)
+    const [loadingData, setLoadingData] = useState(false)
+    const { courseId } = useContext(CourseContext)
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
@@ -107,11 +109,12 @@ const ListExaminationTeacher = () => {
             const params = {
                 courseId
             }
-            console.log(courseId)
+            setLoadingData(true)
             apiCourse.getListExamOfCourse(params)
                 .then(res => {
-                    setExams(res)
+                    setExams(res?.reverse() || [])
                 })
+                .finally(()=>setLoadingData(false))
         }
         loadListExam()
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -127,106 +130,110 @@ const ListExaminationTeacher = () => {
         )
     }
     return (
-        <Box >
-            <Stack spacing={1}>
-                <Paper elevation={24}>
-                    <TableToolbar filterName={filterName} onFilterName={handleFilterByName}
-                        ButtonCustom={ButtonCreateExam} />
+        <Page title="Danh sách bài kiểm tra">
 
-                    <Scrollbar>
-                        <TableContainer sx={{ minWidth: 800, padding: '0 12px' }}>
-                            <Table>
-                                <TableHeadCustom
-                                    order={order}
-                                    orderBy={orderBy}
-                                    headLabel={TABLE_HEAD}
-                                    rowCount={exams.length}
-                                    onRequestSort={handleRequestSort}
-                                />
-                                <TableBody>
-                                    {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                                        const { id: idExam, slug: slugExam, name, count, status, numberofQuestions, maxTimes, isVerified } = row;
+            <Box >
+                <Stack spacing={1}>
+                    <Paper elevation={24}>
+                        <TableToolbar filterName={filterName} onFilterName={handleFilterByName}
+                            ButtonCustom={ButtonCreateExam} />
 
-                                        return (
-                                            <TableRow
-                                                hover
-                                                key={idExam}
-                                                tabIndex={-1}
-                                            >
+                        <Scrollbar>
+                            <TableContainer sx={{ minWidth: 800, padding: '0 12px' }}>
+                                <Table>
+                                    <TableHeadCustom
+                                        order={order}
+                                        orderBy={orderBy}
+                                        headLabel={TABLE_HEAD}
+                                        rowCount={exams.length}
+                                        onRequestSort={handleRequestSort}
+                                    />
+                                    <TableBody>
+                                        {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                                            const { id: idExam, slug: slugExam, name, count, status, numberofQuestions, maxTimes } = row;
+                                            if(!idExam) return <></>
+                                            return (
+                                                <TableRow
+                                                    hover
+                                                    key={idExam}
+                                                    tabIndex={-1}
+                                                >
 
-                                                <TableCell align="left">{name}</TableCell>
-                                                <TableCell align="center">{count}</TableCell>
-                                                <TableCell align="center">{numberofQuestions}</TableCell>
-                                                <TableCell align="center">{maxTimes} phút</TableCell>
-                                                <TableCell align="center">
-                                                    <Chip size="small"
-                                                        color={(status === 'puclic' && 'error') || 'primary'}
-                                                        label={status === 'public' ? 'Đã xuất bản' : 'Chưa xuất bản'}
-                                                    />
-                                                </TableCell>
+                                                    <TableCell align="left">{name}</TableCell>
+                                                    <TableCell align="center">{count}</TableCell>
+                                                    <TableCell align="center">{numberofQuestions}</TableCell>
+                                                    <TableCell align="center">{maxTimes} phút</TableCell>
+                                                    <TableCell align="center">
+                                                        <Chip size="small"
+                                                            color={status === 'public' ? 'primary' : 'warning'}
+                                                            label={status === 'public' ? 'Đã xuất bản' :
+                                                                status === 'private' ? 'Chưa xuất bản' : 'Đã đóng'}
+                                                        />
+                                                    </TableCell>
 
-                                                <TableCell align="right">
-                                                    <TableMoreMenu id={idExam}
-                                                        menu={[
-                                                            {
-                                                                isLink: true,
-                                                                link: `/course/${courseId}/statistic-exam/${slugExam}`,
-                                                                icon: BarChartIcon,
-                                                                func: null,
-                                                                display: 'Thống kê'
-                                                            },
-                                                            {
-                                                                isLink: true,
-                                                                link: `/course/${courseId}/detail-exam/${slugExam}`,
-                                                                icon: EditIcon,
-                                                                func: null,
-                                                                display: 'Sửa'
-                                                            },
-                                                            {
-                                                                isLink: false,
-                                                                link: '/',
-                                                                icon: DeleteForeverIcon,
-                                                                func: null,
-                                                                display: 'Xoá'
-                                                            },
-                                                        ]} />
+                                                    <TableCell align="right">
+                                                        <TableMoreMenu id={idExam}
+                                                            menu={[
+                                                                {
+                                                                    isLink: true,
+                                                                    link: `/course/${courseId}/statistic-exam/${slugExam}`,
+                                                                    icon: BarChartIcon,
+                                                                    func: null,
+                                                                    display: 'Thống kê'
+                                                                },
+                                                                {
+                                                                    isLink: true,
+                                                                    link: `/course/${courseId}/detail-exam/${slugExam}`,
+                                                                    icon: EditIcon,
+                                                                    func: null,
+                                                                    display: 'Sửa'
+                                                                },
+                                                                {
+                                                                    isLink: false,
+                                                                    link: '/',
+                                                                    icon: DeleteForeverIcon,
+                                                                    func: null,
+                                                                    display: 'Xoá'
+                                                                },
+                                                            ]} />
+                                                    </TableCell>
+                                                </TableRow>
+                                            );
+                                        })}
+                                        {emptyRows > 0 && (
+                                            <TableRow style={{ height: 53 * emptyRows }}>
+                                                <TableCell colSpan={6} />
+                                            </TableRow>
+                                        )}
+                                    </TableBody>
+
+                                    {isUserNotFound && (
+                                        <TableBody>
+                                            <TableRow>
+                                                <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
+                                                    {loadingData?<LoadingRoller/>:<EmptyList />}                                                   
                                                 </TableCell>
                                             </TableRow>
-                                        );
-                                    })}
-                                    {emptyRows > 0 && (
-                                        <TableRow style={{ height: 53 * emptyRows }}>
-                                            <TableCell colSpan={6} />
-                                        </TableRow>
+                                        </TableBody>
                                     )}
-                                </TableBody>
+                                </Table>
+                            </TableContainer>
+                        </Scrollbar>
 
-                                {isUserNotFound && (
-                                    <TableBody>
-                                        <TableRow>
-                                            <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
-                                                <SearchNotFound searchQuery={filterName} />
-                                            </TableCell>
-                                        </TableRow>
-                                    </TableBody>
-                                )}
-                            </Table>
-                        </TableContainer>
-                    </Scrollbar>
-
-                    <TablePagination
-                        rowsPerPageOptions={[5, 10, 25]}
-                        component="div"
-                        labelRowsPerPage='Số dòng mỗi trang'
-                        count={exams.length}
-                        rowsPerPage={rowsPerPage}
-                        page={page}
-                        onPageChange={handleChangePage}
-                        onRowsPerPageChange={handleChangeRowsPerPage}
-                    />
-                </Paper>
-            </Stack>
-        </Box>
+                        <TablePagination
+                            rowsPerPageOptions={[5, 10, 25]}
+                            component="div"
+                            labelRowsPerPage='Số dòng mỗi trang'
+                            count={exams.length}
+                            rowsPerPage={rowsPerPage}
+                            page={page}
+                            onPageChange={handleChangePage}
+                            onRowsPerPageChange={handleChangeRowsPerPage}
+                        />
+                    </Paper>
+                </Stack>
+            </Box>
+        </Page>
     )
 }
 

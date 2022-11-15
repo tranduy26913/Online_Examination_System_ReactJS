@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback} from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import {
     Box,
     Stack,
@@ -14,7 +14,7 @@ import {
     Chip
 } from "@mui/material"
 import TableMoreMenu from './component/TableMoreMenu'
-import {TableToolbar,TableHeadCustom} from 'components/TableCustom'
+import { TableToolbar, TableHeadCustom } from 'components/TableCustom'
 import { useContext } from 'react';
 import CourseContext from '../LayoutCourse/CourseContext';
 import apiCourse from 'apis/apiCourse';
@@ -23,6 +23,8 @@ import EmptyList from 'components/UI/EmptyList';
 import { onValue, ref } from 'firebase/database';
 import { database } from 'config/firebaseConfig';
 import AddStudent from './component/AddStudent';
+import Page from 'components/Page';
+import LoadingRoller from 'components/LoadingPage/LoadingRoller';
 
 // ----------------------------------------------------------------------
 
@@ -67,7 +69,6 @@ function applySortFilter(array, comparator, query) {
 }
 
 const ListStudent = () => {
-    document.title = "Danh sách học sinh"
     const [page, setPage] = useState(0);
     const [order, setOrder] = useState('asc');
     const [orderBy, setOrderBy] = useState('name');
@@ -75,7 +76,7 @@ const ListStudent = () => {
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [students, setStudents] = useState([])
     const [status, setStatus] = useState([])
-
+    const [loadingData, setLoadingData] = useState(false)
     const { courseId } = useContext(CourseContext)
 
     const handleRequestSort = (event, property) => {
@@ -107,11 +108,13 @@ const ListStudent = () => {
         const params = {
             courseId
         }
+        setLoadingData(true)
         apiCourse.getListStudentOfCourse(params)
             .then(res => {
-                setStudents(res)
-                setStatus(res.map(item=>false))
+                setStudents(res?.reverse() || [])
+                setStatus(res.map(item => false))
             })
+            .finally(() => setLoadingData(false))
     }, [courseId])
 
     useEffect(() => {
@@ -121,12 +124,12 @@ const ListStudent = () => {
                 if (_id) {
                     let userStatusDatabaseRef = ref(database, '/status/' + _id);//định nghĩa ref status của 1 user trên firebase
                     onValue(userStatusDatabaseRef, (snapshot) => {
-                        let newStatus =[...status]
-                        let index = students.findIndex(item=>item._id === _id)
-                        if(snapshot.val())
+                        let newStatus = [...status]
+                        let index = students.findIndex(item => item._id === _id)
+                        if (snapshot.val())
                             newStatus[index] = snapshot.val().state === 'online'
-                        else   
-                         newStatus[index] = false
+                        else
+                            newStatus[index] = false
                         setStatus(newStatus)
                     })
                 }
@@ -135,6 +138,7 @@ const ListStudent = () => {
         catch (err) {
 
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [students])
     //Effect
     useEffect(() => {
@@ -144,97 +148,99 @@ const ListStudent = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [courseId])
 
-    const ButtonCustom = ()=>{
+    const ButtonCustom = () => {
         return (
-            <AddStudent reloadList={loadListStudent}/>
+            <AddStudent reloadList={loadListStudent} />
         )
     }
     return (
-        <Box width={'100%'}>
-            <Paper elevation={24}>
+        <Page title='Danh sách học viên'>
+            <Box width={'100%'}>
+                <Paper elevation={24}>
 
-                <TableToolbar filterName={filterName} onFilterName={handleFilterByName}
-                    ButtonCustom={ButtonCustom} />
-                <Box px={2}>
+                    <TableToolbar filterName={filterName} onFilterName={handleFilterByName}
+                        ButtonCustom={ButtonCustom} />
+                    <Box px={2}>
 
-                    <TableContainer>
-                        <Table sx={{ minWidth: 800 }}>
-                            <TableHeadCustom
-                                order={order}
-                                orderBy={orderBy}
-                                headLabel={TABLE_HEAD}
-                                rowCount={students.length}
-                                onRequestSort={handleRequestSort}
-                            />
-                            <TableBody>
+                        <TableContainer>
+                            <Table sx={{ minWidth: 800 }}>
+                                <TableHeadCustom
+                                    order={order}
+                                    orderBy={orderBy}
+                                    headLabel={TABLE_HEAD}
+                                    rowCount={students.length}
+                                    onRequestSort={handleRequestSort}
+                                />
+                                <TableBody>
 
-                                {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row,index) => {
-                                    const { _id, fullname, birthday,gender, count, avatar, isVerified } = row;
+                                    {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
+                                        const { _id, fullname, birthday, gender, count, avatar } = row;
 
-                                    return (
-                                        <TableRow
-                                            hover
-                                            key={_id}
-                                            tabIndex={-1}
-                                            role="checkbox"
+                                        return (
+                                            <TableRow
+                                                hover
+                                                key={_id}
+                                                tabIndex={-1}
+                                                role="checkbox"
 
-                                        // selected={isItemSelected}
-                                        >
-                                            <TableCell sx={{ width: '25%' }} component="th" scope="row" padding="none">
-                                                <Stack direction="row" alignItems="center" spacing={2} pl={1.5}>
-                                                    <Avatar alt={fullname} src={avatar} />
-                                                    <Typography >
-                                                        {fullname}
-                                                    </Typography>
-                                                </Stack>
-                                            </TableCell>
-                                            <TableCell sx={{ width: '15%' }} align="center">{gender === 'female' ? "Nữ" : "Nam"}</TableCell>
-                                            <TableCell sx={{ width: '15%' }} align="center">{moment(birthday).format("DD/MM/YYYY")}</TableCell>
-                                            <TableCell sx={{ width: '20%' }} align="center">{count}</TableCell>
-                                            <TableCell sx={{ width: '15%' }} align="center">
-                                            <Chip  size="small" 
-                                            label={status[index] ? 'Đang hoạt động' : "Không hoạt động"}
-                                            color={status[index] ? 'primary' : 'error'}
-                                            />
-                                                
-                                            </TableCell>
-                                            <TableCell sx={{ width: '10%' }} align="right">
-                                                <TableMoreMenu studentId={_id} reloadList={loadListStudent} />
+                                            // selected={isItemSelected}
+                                            >
+                                                <TableCell sx={{ width: '25%' }} component="th" scope="row" padding="none">
+                                                    <Stack direction="row" alignItems="center" spacing={2} pl={1.5}>
+                                                        <Avatar alt={fullname} src={avatar} />
+                                                        <Typography >
+                                                            {fullname}
+                                                        </Typography>
+                                                    </Stack>
+                                                </TableCell>
+                                                <TableCell sx={{ width: '15%' }} align="center">{gender === 'female' ? "Nữ" : "Nam"}</TableCell>
+                                                <TableCell sx={{ width: '15%' }} align="center">{moment(birthday).format("DD/MM/YYYY")}</TableCell>
+                                                <TableCell sx={{ width: '20%' }} align="center">{count}</TableCell>
+                                                <TableCell sx={{ width: '15%' }} align="center">
+                                                    <Chip size="small"
+                                                        label={status[index] ? 'Đang hoạt động' : "Không hoạt động"}
+                                                        color={status[index] ? 'primary' : 'error'}
+                                                    />
+
+                                                </TableCell>
+                                                <TableCell sx={{ width: '10%' }} align="right">
+                                                    <TableMoreMenu studentId={_id} reloadList={loadListStudent} />
+                                                </TableCell>
+                                            </TableRow>
+                                        );
+                                    })}
+                                    {emptyRows > 0 && (
+                                        <TableRow style={{ height: 53 * emptyRows }}>
+                                            <TableCell colSpan={6} />
+                                        </TableRow>
+                                    )}
+                                </TableBody>
+
+                                {isUserNotFound && (
+                                    <TableBody>
+                                        <TableRow>
+                                            <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
+                                                {loadingData ? <LoadingRoller/>:<EmptyList />}
                                             </TableCell>
                                         </TableRow>
-                                    );
-                                })}
-                                {emptyRows > 0 && (
-                                    <TableRow style={{ height: 53 * emptyRows }}>
-                                        <TableCell colSpan={6} />
-                                    </TableRow>
+                                    </TableBody>
                                 )}
-                            </TableBody>
+                            </Table>
+                        </TableContainer>
+                    </Box>
 
-                            {isUserNotFound && (
-                                <TableBody>
-                                    <TableRow>
-                                        <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
-                                            <EmptyList />
-                                        </TableCell>
-                                    </TableRow>
-                                </TableBody>
-                            )}
-                        </Table>
-                    </TableContainer>
-                </Box>
-
-                <TablePagination
-                    rowsPerPageOptions={[5, 10, 25]}
-                    component="div"
-                    count={students.length}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    onPageChange={handleChangePage}
-                    onRowsPerPageChange={handleChangeRowsPerPage}
-                />
-            </Paper>
-        </Box>
+                    <TablePagination
+                        rowsPerPageOptions={[5, 10, 25]}
+                        component="div"
+                        count={students.length}
+                        rowsPerPage={rowsPerPage}
+                        page={page}
+                        onPageChange={handleChangePage}
+                        onRowsPerPageChange={handleChangeRowsPerPage}
+                    />
+                </Paper>
+            </Box>
+        </Page>
     )
 }
 

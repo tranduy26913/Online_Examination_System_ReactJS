@@ -35,11 +35,16 @@ function CheckAuthentication(props) {
                     if (isPrivate)
                         navigate('/')
                 }
+                setLoading(false)
                 if (!user) {
                     apiProfile.getUserInfo()
                         .then(res => {
                             dispatch(setUserInfo(res))
+                            
                         })
+                        // .catch(err=>{
+                        //     navigate('/')
+                        // })
                         .finally(()=>setLoading(false))
                     // dispatch(logoutSuccess())
                     // 
