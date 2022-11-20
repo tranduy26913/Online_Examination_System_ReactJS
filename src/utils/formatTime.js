@@ -1,4 +1,5 @@
 import { format, formatDistanceToNow } from 'date-fns';
+import moment from 'moment';
 
 // ----------------------------------------------------------------------
 
@@ -18,4 +19,16 @@ export function fToNow(date) {
   return formatDistanceToNow(new Date(date), {
     addSuffix: true,
   });
+}
+
+export function calcDurationTime(diff) {
+  let duration = moment.duration(diff, 'seconds')
+  let years = duration.years()
+  let months = duration.months()
+  let days = duration.days()
+  let hours = duration.hours()
+  let minutes = duration.minutes()
+  let seconds = duration.seconds()
+  return `${years? years + ' năm ':''}${months?months + ' tháng ':''}${days?days + ' ngày ':''}`
+  +  `${hours? hours + ' giờ ':''}${minutes?minutes + ' phút ':''}${seconds + ' giây '}`
 }

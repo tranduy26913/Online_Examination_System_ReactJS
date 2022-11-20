@@ -14,27 +14,28 @@ import {
     TableHead,
     TablePagination,
     TableRow,
+    Tooltip,
     useMediaQuery,
     useTheme
 } from '@mui/material'
-import MoreVertIcon from '@mui/icons-material/MoreVert';
+import InfoIcon from '@mui/icons-material/Info';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
-  });
+});
 function TakeExamAction({ takeExamId }) {
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
     const [open, setOpen] = React.useState(false);
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
 
-  const handleClose = () => {
-    setOpen(false);
-  };
+    const handleClose = () => {
+        setOpen(false);
+    };
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -46,9 +47,13 @@ function TakeExamAction({ takeExamId }) {
     };
     return (
         <>
-            <IconButton onClick={handleClickOpen}>
-                <MoreVertIcon width={20} height={20} />
-            </IconButton>
+            <Tooltip title='Chi tiết'>
+                <IconButton onClick={handleClickOpen}>
+                    <InfoIcon color='primary' width={20} height={20} />
+                </IconButton>
+
+            </Tooltip>
+
             <Dialog
                 open={open}
                 fullScreen={fullScreen}
@@ -60,8 +65,8 @@ function TakeExamAction({ takeExamId }) {
                 aria-describedby="alert-dialog-slide-description"
             >
                 <DialogTitle>{"Use Google's location service?"}</DialogTitle>
-                <DialogContent sx={{overflow:'hidden', height:480}}>
-                    <TableContainer sx={{ maxHeight: 350,width:'100%' }}>
+                <DialogContent sx={{ overflow: 'hidden', height: 480 }}>
+                    <TableContainer sx={{ maxHeight: 350, width: '100%' }}>
                         <Table stickyHeader aria-label="sticky table">
                             <TableHead>
                                 <TableRow>
@@ -69,7 +74,7 @@ function TakeExamAction({ takeExamId }) {
                                         <TableCell
                                             key={column.id}
                                             align={column.align}
-                                            sx={{ backgroundColor:theme.palette.background.paper,minWidth: column.minWidth }}
+                                            sx={{ backgroundColor: theme.palette.background.paper, minWidth: column.minWidth }}
                                         >
                                             {column.label}
                                         </TableCell>

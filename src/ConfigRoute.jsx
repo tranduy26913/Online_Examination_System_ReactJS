@@ -30,6 +30,11 @@ const StatisticExam = lazy(() => import("pages/Course/StatisticExam"));
 const ResultExamination = lazy(() => import("pages/ResultExamination"));
 const ReviewExamination = lazy(() => import("pages/ReviewExamination"));
 const ManageFile = lazy(() => import("pages/Course/ManageFile"));
+const CreateAssignment = lazy(() => import("pages/Course/Assignment/CreateAssignment"));
+const SubmitAssignment = lazy(() => import("pages/Course/Assignment/SubmitAssignment"));
+const ManageAssignment = lazy(() => import("pages/Course/Assignment/ManageAssignment"));
+const ManageAssignmentStudent = lazy(() => import("pages/Course/Assignment/ManageAssignmentStudent"));
+const ViewAssignmentSubmission = lazy(() => import("pages/Course/Assignment/ViewAssignmentSubmission"));
 
 const makeLoading = (component) => <Suspense fallback={<LoadingPage />}>{component}</Suspense>
 
@@ -125,6 +130,18 @@ const COURSE_TEACHER = [
     component: ListStudent
   },
   {
+    path: 'manage-assignment',
+    component: ManageAssignment
+  },
+  {
+    path: 'create-assignment',
+    component: CreateAssignment
+  },
+  {
+    path: 'assignment-submission/:slug',
+    component: ViewAssignmentSubmission
+  },
+  {
     path: 'manage-file',
     component: ManageFile
   },
@@ -150,6 +167,14 @@ const COURSE_STUDENT = [
   {
     path: 'index',
     component: ListExaminationStudent
+  },
+  {
+    path: 'manage-assignment',
+    component: ManageAssignmentStudent
+  },
+  {
+    path: 'submit-assignment/:slug',
+    component: SubmitAssignment
   },
   {
     path: 'manage-student',
@@ -208,6 +233,7 @@ function ConfigRoute() {
           })
         }
           <Route path='detail-exam/:examSlug' element={makeLoading(<CreateExamination isEdit={true} />)} />
+          <Route path='assignment/:slug' element={makeLoading(<CreateAssignment isEdit={true} />)} />
         </Route>
         <Route path="register" element={<Register />} />
         <Route path="exam/:examId" element={<Examination />} />

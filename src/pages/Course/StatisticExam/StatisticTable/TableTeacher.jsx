@@ -1,20 +1,20 @@
-import { useEffect, useState } from 'react'
+import {  useState } from 'react'
 import {
     Stack,
-       Button,
+    Button,
     Table,
     TableRow,
     TableBody,
     TableCell,
     TableContainer,
     TablePagination,
+    Chip
 } from "@mui/material"
 import Scrollbar from 'components/Scrollbar';
 import * as FileSaver from 'file-saver';
 import * as XLSX from 'xlsx';
-import { TableToolbar, TableHeadCustom} from 'components/TableCustom';
+import { TableToolbar, TableHeadCustom } from 'components/TableCustom';
 import { useParams } from 'react-router-dom';
-import apiStatistic from 'apis/apiStatistic';
 import { useSelector } from 'react-redux';
 import TakeExamAction from '../TakeExamAction';
 import moment from 'moment';
@@ -28,6 +28,7 @@ const TABLE_HEAD = [
     { id: 'startTime', label: 'Thời gian thi', align: 'center' },
     { id: 'duration', label: 'Thời lượng', align: 'center' },
     { id: 'status', label: 'Trạng thái', align: 'center' },
+    { id: 'result', label: 'Kết quả', align: 'center' },
     { id: 'action', label: 'Thao tác', align: 'right' },
 ];
 
@@ -62,15 +63,12 @@ function applySortFilter(array, comparator, query) {
     return stabilizedThis.map((el) => el[0]);
 }
 
-const TableTeacher = () => {
+const TableTeacher = ({ exams }) => {
     const [page, setPage] = useState(0);
     const [order, setOrder] = useState('asc');
     const [orderBy, setOrderBy] = useState('name');
     const [filterName, setFilterName] = useState('');
     const [rowsPerPage, setRowsPerPage] = useState(10);
-    const [exams, setExams] = useState([])
-    const { slug } = useParams()//lấy slug exam
-    const role = useSelector(state => state.setting.role)
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
@@ -93,46 +91,36 @@ const TableTeacher = () => {
 
     const isUserNotFound = filteredUsers.length === 0;
 
-    useEffect(() => {
-        const getStatistic = () => {
-            const params = { examSlug:slug }
-           apiStatistic.getStatisticExamByTeacher(params)
-            .then(res => {
-                setExams(res)
-            })
-        }
-        getStatistic()
-    }, [role, slug])
 
-    const fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
-    const fileExtension = '.xlsx';
 
     const exportToCSV = () => {
+        const fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
+        const fileExtension = '.xlsx';
         const fileName = 'Dữ liệu bài thi'
-        let data = filteredUsers.map(item=>{
-            let {name,points,maxPoints,startTime,submitTime,status}=item
-            const duration = moment(submitTime).diff(startTime,'minutes')
+        let data = filteredUsers.map(item => {
+            let { name, points, maxPoints, startTime, submitTime, status } = item
+            const duration = moment(submitTime).diff(startTime, 'minutes')
             return {
-                'Họ và tên':name,
-                'Thời gian thi':moment(startTime).format('DD-MM-YYYY HH:mm'),
-                'Thời gian nộp':moment(submitTime).format('DD-MM-YYYY HH:mm'),
-                'Thời lượng làm bài':`${duration} phút`,
-                'Điểm':`${points}/${maxPoints}`,
-                'Trạng thái':status === 'submitted' ? 'Đã nộp':'Chưa nộp'
+                'Họ và tên': name,
+                'Thời gian thi': moment(startTime).format('DD-MM-YYYY HH:mm'),
+                'Thời gian nộp': moment(submitTime).format('DD-MM-YYYY HH:mm'),
+                'Thời lượng làm bài': `${duration} phút`,
+                'Điểm': `${points}/${maxPoints}`,
+                'Trạng thái': status === 'submitted' ? 'Đã nộp' : 'Chưa nộp'
             }
         })
         const ws = XLSX.utils.json_to_sheet(data);
         const wb = { Sheets: { 'data': ws }, SheetNames: ['data'] };
         const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
-        data = new Blob([excelBuffer], {type: fileType});
+        data = new Blob([excelBuffer], { type: fileType });
         FileSaver.saveAs(data, fileName + fileExtension);
     }
 
     const ButtonExportFile = () => {
         return (
-                <Button variant='outlined' onClick={exportToCSV}>
-                   Xuất File Excel
-                </Button>    
+            <Button variant='outlined' onClick={exportToCSV}>
+                Xuất File Excel
+            </Button>
         )
     }
     return (
@@ -152,9 +140,9 @@ const TableTeacher = () => {
                             onRequestSort={handleRequestSort}
                         />
                         <TableBody>
-                            {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row,index) => {
-                                const { _id: takeExamId,  name, submitTime, startTime,points,maxPoints,status } = row;
-                                const duration = moment(submitTime).diff(startTime,'minutes')
+                            {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
+                                const { _id: takeExamId, name, submitTime, startTime, points, maxPoints, status } = row;
+                                const duration = moment(submitTime).diff(startTime, 'minutes')
                                 
                                 return (
                                     <TableRow
@@ -168,11 +156,17 @@ const TableTeacher = () => {
                                         <TableCell align="center">{moment(startTime).format('DD/MM/YYYY HH:mm')}</TableCell>
                                         <TableCell align="center">{duration} phút</TableCell>
                                         <TableCell align="center">
-                                            {status === 'not submitted'?'Chưa nộp bài':'Đã nộp'}
+                                            {status === 'not submitted' ? 'Chưa nộp bài' : 'Đã nộp'}
+                                        </TableCell>
+                                        <TableCell align="center">
+                                            <Chip
+                                            color={points/maxPoints <5 ?'error':'primary'}
+                                            label={points/maxPoints <5 ? 'Chưa đạt' : 'Đạt'}
+                                            />
                                         </TableCell>
 
                                         <TableCell align="right">
-                                            <TakeExamAction takeExamId={takeExamId}/>
+                                            <TakeExamAction takeExamId={takeExamId} />
                                         </TableCell>
                                     </TableRow>
                                 );
@@ -188,7 +182,7 @@ const TableTeacher = () => {
                             <TableBody>
                                 <TableRow>
                                     <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
-                                    <EmptyList />
+                                        <EmptyList />
                                     </TableCell>
                                 </TableRow>
                             </TableBody>

@@ -23,7 +23,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import apiExamination from 'apis/apiExamination';
 import { toast } from 'react-toastify';
 import { useNavigate, useParams } from 'react-router-dom';
-import { addQuestion, clearQuestion } from 'slices/userSlice';
+import { addQuestion, clearQuestion, replaceListQuestion } from 'slices/userSlice';
 import CourseContext from 'pages/Course/LayoutCourse/CourseContext';
 import ExamContext from './ExamContext';
 import LayoutListQuesion from './Component/LayoutListQuesion';
@@ -101,10 +101,7 @@ const CreateExamination = (props) => {
             else
               setValue('attemptsAllowed', exam.attemptsAllowed)
             setId(exam.id || exam._id)
-            const questions = exam.questions
-            questions.forEach(item => {
-              dispatch(addQuestion(item.question))
-            })
+            dispatch(replaceListQuestion(exam.questions.map(e=>e.question)))
           }
           catch (err) {
           }
@@ -122,6 +119,7 @@ const CreateExamination = (props) => {
         const exam = res
         setNumberofQuestions(exam.numberofQuestions)
         setMaxPoints(exam.maxPoints)
+        dispatch(replaceListQuestion(exam.questions.map(e=>e.question)))
       }
       catch (err) {
       }
@@ -373,7 +371,7 @@ const CreateExamination = (props) => {
               <FormControlLabel value={'avg'} control={<Radio size='small' />} label="Lấy điểm trung bình các lần thi" />
             </RadioGroup>
           </StackLabel>
-          <Stack2Column direction={{ xs: 'column', md: 'row' }}>
+          <Stack2Column>
             <StackLabel>
               <Box>Giới hạn số lần thi</Box>
               <FormGroup row>

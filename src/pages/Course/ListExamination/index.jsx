@@ -13,10 +13,7 @@ import {
     Button
 } from "@mui/material"
 import Scrollbar from 'components/Scrollbar';
-import { TableToolbar, TableMoreMenu, TableHeadCustom } from 'components/TableCustom';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import BarChartIcon from '@mui/icons-material/BarChart';
+import { TableToolbar, TableHeadCustom } from 'components/TableCustom';
 import { useContext } from 'react';
 import CourseContext from '../LayoutCourse/CourseContext';
 import apiCourse from 'apis/apiCourse';
@@ -24,6 +21,7 @@ import { Link } from 'react-router-dom';
 import EmptyList from 'components/UI/EmptyList';
 import Page from 'components/Page';
 import LoadingRoller from 'components/LoadingPage/LoadingRoller';
+import TableMoreMenu from './TableMoreMenu';
 
 
 // ----------------------------------------------------------------------
@@ -171,31 +169,8 @@ const ListExaminationTeacher = () => {
                                                         />
                                                     </TableCell>
 
-                                                    <TableCell align="right">
-                                                        <TableMoreMenu id={idExam}
-                                                            menu={[
-                                                                {
-                                                                    isLink: true,
-                                                                    link: `/course/${courseId}/statistic-exam/${slugExam}`,
-                                                                    icon: BarChartIcon,
-                                                                    func: null,
-                                                                    display: 'Thống kê'
-                                                                },
-                                                                {
-                                                                    isLink: true,
-                                                                    link: `/course/${courseId}/detail-exam/${slugExam}`,
-                                                                    icon: EditIcon,
-                                                                    func: null,
-                                                                    display: 'Sửa'
-                                                                },
-                                                                {
-                                                                    isLink: false,
-                                                                    link: '/',
-                                                                    icon: DeleteForeverIcon,
-                                                                    func: null,
-                                                                    display: 'Xoá'
-                                                                },
-                                                            ]} />
+                                                    <TableCell align="right" sx={{width:'10%'}}>
+                                                        <TableMoreMenu slug={slugExam}/>
                                                     </TableCell>
                                                 </TableRow>
                                             );

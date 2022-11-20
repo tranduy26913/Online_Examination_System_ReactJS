@@ -2,6 +2,7 @@ import { Accordion, AccordionDetails, AccordionSummary, Button, Paper, Stack, Ty
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import React, { useCallback, useContext, useState } from 'react'
 import UploadIcon from '@mui/icons-material/Upload'
+import DownloadIcon from '@mui/icons-material/Download';
 import * as XLSX from "xlsx";
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -22,7 +23,7 @@ const alpha = Array.from(Array(10)).map((e, i) => i + 97);
 const alphabet = alpha.map((x) => String.fromCharCode(x));
 
 function QuestionInFile() {
-    const { examId } = useContext(ExamContext)
+    const { examId,reloadExam } = useContext(ExamContext)
     const QUESTIONS = useSelector(state => state.user.questionsInFile)
     const [idQuestion, setIdQuestion] = useState('')
     const [expanded, setExpanded] = useState(false);
@@ -167,11 +168,9 @@ function QuestionInFile() {
             questions: QUESTIONS
         })
             .then(res => {
-                QUESTIONS.forEach(element => {
-                    dispatch(addQuestion(element))
-                });
-                toast.success('Thêm câu hỏi thành công')
+                                toast.success('Thêm câu hỏi thành công')
                 dispatch(clearQuestionInFile())
+                reloadExam()
             })
             .catch(err => {
                 toast.warning(getMessageError(err))
@@ -183,10 +182,26 @@ function QuestionInFile() {
     return (
         <Paper>
             <Stack direction='row' spacing={2} p={2}>
+                <Button variant='contained' component="label" width='160px' color='success'
+                    endIcon={<DownloadIcon />}
+                >
+                    Tải mẫu Excel
+                    <input hidden type="file" onInput={handleChooseImage}
+                    //onChange={handleChooseImage} 
+                    />
+                </Button>
+                <Button variant='contained' component="label" width='160px' color='success'
+                    endIcon={<DownloadIcon />}
+                >
+                    Tải mẫu Word
+                    <input hidden type="file" onInput={handleChooseImage}
+                    //onChange={handleChooseImage} 
+                    />
+                </Button>
                 <Button variant='contained' component="label" width='160px'
                     endIcon={<UploadIcon />}
                 >
-                    Chọn File
+                    Chọn File Excel
                     <input hidden type="file" onInput={handleChooseImage}
                     //onChange={handleChooseImage} 
                     />

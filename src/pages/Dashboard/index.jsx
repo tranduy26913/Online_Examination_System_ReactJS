@@ -32,7 +32,7 @@ const StudentDashboard = (props) => {
     return (
       <Breadcrumbs
         separator={<NavigateNextIcon fontSize="small" />}
-        sx={{ fontSize: "14px" }}
+        sx={{ fontSize: "14px",color:'#000'}}
       //
       >
         <Link key="1" to="/">

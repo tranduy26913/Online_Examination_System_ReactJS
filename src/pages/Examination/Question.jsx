@@ -126,14 +126,16 @@ const Question = (props) => {
             </FormGroup>
         }
       </Stack>
-      <ButtonGroup variant="outlined" aria-label="outlined button group">
-        <Button
-          variant='outlined' onClick={handleChangeStateFlag}
-          startIcon={<FlagIcon />}>{props.stateFlag ? 'Huỷ đặt cờ' : 'Đặt cờ'}</Button>
-        <Button variant='outlined'>Chưa trả lời</Button>
-        <Button variant='outlined'>Điểm: 1.00</Button>
+      <Stack>
 
+      <ButtonGroup color={props.stateDone?'primary':'warning'}aria-label="outlined button group">
+        <Button
+          variant='contained' onClick={handleChangeStateFlag}
+          startIcon={<FlagIcon color={props.stateFlag ?'error':'inherit'}/>}>{props.stateFlag ? 'Huỷ đặt cờ' : 'Đặt cờ'}</Button>
+        <Button variant='contained'>{props.stateDone ?'Đã trả lời':'Chưa trả lời'}</Button>
+        <Button variant='contained'>Điểm: {question.maxPoints}</Button>
       </ButtonGroup>
+      </Stack>
     </StackQuestionContent>
   )
 }

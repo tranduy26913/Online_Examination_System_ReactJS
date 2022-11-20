@@ -10,6 +10,10 @@ const apiExamination = {
         const res = await axiosClientWithToken.post('/exam/create-exam', params )
         return res.data;
     },
+    addQuestionWithQB:async (params) => {
+        const res = await axiosClientWithToken.post('/exam/add-question-with-questionbank', params )
+        return res.data;
+    },
     updateExam:async (params,id) => {
         const res = await axiosClientWithToken.put(`/exam/update-exam`, params )
         return res.data;

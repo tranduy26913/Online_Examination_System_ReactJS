@@ -12,7 +12,8 @@ import {
   IconButton,
   Stack,
   Box,
-  Paper
+  Paper,
+  Tooltip
 } from "@mui/material";
 
 import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
@@ -20,7 +21,7 @@ import { styled } from '@mui/material/styles';
 import MuiDrawer from '@mui/material/Drawer';
 import MenuIcon from '@mui/icons-material/Menu';
 
-const drawerWidth = 240;
+const drawerWidth = 200;
 
 const openedMixin = (theme) => ({
   width: drawerWidth,
@@ -31,7 +32,7 @@ const openedMixin = (theme) => ({
   overflowX: 'hidden',
   // position:'sticky',
   top: '56px',
-  borderRight:'1px solid rgba(0,0,0,0.07)',
+  borderRight: '1px solid rgba(0,0,0,0.07)',
   height: 'calc(100% - 56px)'
 });
 
@@ -46,9 +47,9 @@ const closedMixin = (theme) => ({
     width: `calc(${theme.spacing(8)} + 1px)`,
   },
   top: '56px',
-  borderRight:'1px solid rgba(0,0,0,0.07)',
+  borderRight: '1px solid rgba(0,0,0,0.07)',
   height: 'calc(100% - 56px)'
-  
+
 });
 
 const DrawerHeader = styled('div')(({ theme }) => ({
@@ -67,7 +68,7 @@ const Drawer = styled(MuiDrawer)(
     flexShrink: 0,
     whiteSpace: 'nowrap',
     boxSizing: 'border-box',
-    
+
     ...(open && {
       ...openedMixin(theme),
       '& .MuiDrawer-paper': openedMixin(theme),
@@ -107,7 +108,7 @@ const ListItemCustom = styled(ListItem)(({ theme }) => ({
 
 const Sidebar = (props) => {
   const { Breadcrumbs } = props
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const handleDrawerToggle = () => {
@@ -151,10 +152,12 @@ const Sidebar = (props) => {
       <List>
         {props.sidebarTab.map((item) => (
           <Link key={item.id} to={item.link}>
+
             <ListItemCustom
               selected={props.selectedTabId === item.id}
               onClick={() => props.handleChangeTab(item.id)}
             >
+
               <ListItemButton
                 sx={{
                   minHeight: 48,
@@ -162,16 +165,18 @@ const Sidebar = (props) => {
                   px: 2,
                 }}
               >
-                <ListItemIcon
-                  sx={{
-                    minWidth: 0,
-                    mr: open ? 1.5 : "auto",
-                    justifyContent: "center",
-                  }}
-                >
-                  {<item.icon />}
-                </ListItemIcon>
 
+                <Tooltip title={item.text}  placement="right">
+                  <ListItemIcon
+                    sx={{
+                      minWidth: 0,
+                      mr: open ? 1.5 : "auto",
+                      justifyContent: "center",
+                    }}
+                  >
+                    {<item.icon />}
+                  </ListItemIcon>
+                </Tooltip>
                 <ListItemText
                   secondary={item.text}
                   sx={{
@@ -182,31 +187,33 @@ const Sidebar = (props) => {
                   }}
                 />
               </ListItemButton>
+
             </ListItemCustom>
+
           </Link>
         ))}
       </List>
     </>
   )
-  
+
   return (
     <Box>
       <Stack direction="row" className="customer-account">
         <Drawer variant="permanent" open={open}
           sx={{
-            display: { xs:'none', md: 'block' },
-            
+            display: { xs: 'none', md: 'block' },
+
           }}
-          >
+        >
           {drawer}
         </Drawer>
         <Drawer
-        variant='temporary'
+          variant='temporary'
           open={mobileOpen}
           onClose={handleDrawerToggle}
           sx={{
-            display: { xs:'block' ,sm: 'block', md: 'none' },
-            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth,height: '100%',top:0 },
+            display: { xs: 'block', sm: 'block', md: 'none' },
+            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth, height: '100%', top: 0 },
           }}
         >
           {drawer}
@@ -216,17 +223,17 @@ const Sidebar = (props) => {
           <Paper elevation={12} sx={{ padding: '8px 12px', marginBottom: '12px' }}>
             <Stack direction='row' alignItems='center'>
               <IconButton
-              color="inherit"
-              aria-label="open drawer"
-              edge="start"
-              onClick={handleDrawerToggle}
-              sx={{ mr: 2, display: { md: 'none' } }}
-            >
-              <MenuIcon />
-            </IconButton>
-            {Breadcrumbs && <Breadcrumbs />}
+                color="inherit"
+                aria-label="open drawer"
+                edge="start"
+                onClick={handleDrawerToggle}
+                sx={{ mr: 2, display: { md: 'none' } }}
+              >
+                <MenuIcon />
+              </IconButton>
+              {Breadcrumbs && <Breadcrumbs />}
             </Stack>
-            
+
           </Paper>
           {props.children}
         </Box>

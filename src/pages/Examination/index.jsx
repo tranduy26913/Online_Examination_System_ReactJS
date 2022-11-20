@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useState } from 'react'
 import {
     Box,
     Button,
@@ -17,13 +17,15 @@ import Question from './Question';
 import Page from 'components/Page';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { clearAnswers, clearAnswerSheet, clearTakeExamId, setTakeExamId } from 'slices/answerSheetSlice';
+import { clearAnswerSheet, clearTakeExamId, setTakeExamId } from 'slices/answerSheetSlice';
 import { ButtonQuestion, BoxTime } from './Examination.style'
 import apiTakeExam from 'apis/apiTakeExam';
 import { toast } from 'react-toastify';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import FaceRecognition from './FaceRecognition';
 import { getMessageError } from 'utils';
+import LoadingRoller from 'components/LoadingPage/LoadingRoller';
+import checkPinImg from 'assets/img/check-pin.png'
 const Examination = () => {
     const theme = useTheme()
     const { examId } = useParams()
@@ -32,6 +34,7 @@ const Examination = () => {
     const [pin, setPin] = useState('')
     const [endTime, setEndTime] = useState()
     const [countExit, setCountExit] = useState(0)
+    const [loadingExam, setLoadingExam] = useState(true)
 
     const [questions, setQuestions] = useState([])
     const [indexQuestion, setIndexQuestion] = useState([])
@@ -59,14 +62,17 @@ const Examination = () => {
                 })
                 if (distance < 0) {
                     clearInterval(x);
+                    handleSubmit();
                 }
             }, 1000);
         }
         countDown()
     }, [endTime])
-    useEffect(() => {
+    useLayoutEffect(() => {
         const checkExam = () => {
             //dispatch(clearAnswerSheet())
+            setLoadingExam(true)
+            dispatch(clearTakeExamId())
             apiTakeExam.CheckExam({ slug: examId })
                 .then(resExam => {
                     if (resExam.message === 'checkpin') {
@@ -84,6 +90,7 @@ const Examination = () => {
                     toast.warning(getMessageError(err), { autoClose: false })
                     navigate('/')
                 })
+                .finally(()=>{setLoadingExam(false)})
         }
         checkExam()
     }, [])
@@ -122,8 +129,11 @@ const Examination = () => {
                 setName(res.exam.name)
             })
             .catch(err => {
-                toast.warning(getMessageError(err), { autoClose: false })
-                navigate('/')
+                const text = getMessageError(err)
+                toast.warning(text)
+                if(text==='Sai mật khẩu'){
+                    navigate('/')
+                }
             })
     }
 
@@ -157,6 +167,7 @@ const Examination = () => {
             .then(res => {
                 navigate('/result-exam/' + takeExamId)
                 dispatch(clearTakeExamId())
+                dispatch(clearAnswerSheet())
             })
     }
 
@@ -206,15 +217,21 @@ const Examination = () => {
     }
     return (
         <Page title={name}>
-            {!takeExamId ?
+            {
+            loadingExam ? <LoadingRoller /> :
+            !takeExamId ?
                 <Stack width='100%' height='100vh' justifyContent='center' alignItems='center'>
                     <Box width='100%' maxWidth='500px'>
 
                         <Paper>
                             <Stack p={2} spacing={2} alignItems='center'>
                                 <Typography fontSize='18px' color='primary' align='center'>Nhập mật khẩu đề thi</Typography>
+                                <Stack flex={1}>
+                                    <img style={{margin:'0 auto'}} width='80%' alt='check-pin' src={checkPinImg}/>
+                                    </Stack>
                                 <TextField
                                     fullWidth
+                                    placeholder='Nhập mật khẩu'
                                     value={pin}
                                     onChange={e => setPin(e.target.value)}
                                     variant='standard' />

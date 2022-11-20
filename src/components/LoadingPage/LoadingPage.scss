@@ -13,7 +13,7 @@ $body-bg: #55c1FA;
 
 /* ----- Loader ----- */
 
-$loader-duration: 1.2s;
+$loader-duration: 1.6s;
 $loader-iteration-count: infinite;
 $loader-direction: normal;
 .loading-page {
@@ -377,22 +377,22 @@ $loader-direction: normal;
 
 #loader2 {
     &:after {
-        -webkit-animation-delay: 0.15s;
-        animation-delay: 0.15s;
+        -webkit-animation-delay: 0.2s;
+        animation-delay: 0.2s;
     }
     .roller {
-        -webkit-animation-delay: 0.15s;
-        animation-delay: 0.15s;
+        -webkit-animation-delay: 0.2s;
+        animation-delay: 0.2s;
     }
 }
 
 #loader3 {
     &:after {
-        -webkit-animation-delay: 0.3s;
-        animation-delay: 0.3s;
+        -webkit-animation-delay: 0.4s;
+        animation-delay: 0.4s;
     }
     .roller {
-        -webkit-animation-delay: 0.3s;
-        animation-delay: 0.3s;
+        -webkit-animation-delay: 0.4s;
+        animation-delay: 0.4s;
     }
 }

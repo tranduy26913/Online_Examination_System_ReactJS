@@ -55,7 +55,7 @@ const LayoutCourse = () => {
     const loadCourse = () => {
       if (!courseId)//Nếu không có id course
       {
-        navigate('/list-course')
+        navigate('/my/list-course')
         toast.warning("Khoá học không xác định")
       }
       apiCourse.getCourseByCourseID({ courseId })
@@ -63,7 +63,7 @@ const LayoutCourse = () => {
           setCourse(res)
         })
         .catch(err => {
-          navigate('/list-course')
+          navigate('/my/list-course')
           toast.warning("Khoá học không xác định")
         })
     }
@@ -95,11 +95,11 @@ const LayoutCourse = () => {
     return (
       <Breadcrumbs
         separator={<NavigateNextIcon fontSize="small" />}
-        sx={{ fontSize: "14px" }}
+        sx={{ fontSize: "14px",color:'#000' }}
       //
       >
         <Link key="1" to="/">
-          <Typography>
+          <Typography >
             Trang chủ
           </Typography>
         </Link>
@@ -142,12 +142,15 @@ const LayoutCourse = () => {
             <Stack flex={1} direction={{xs:'column',sm:'row'}}
             
              spacing={2} justifyContent='flex-start' alignItems='center' >
+              {
+                role === 'teacher' &&
               <Link to={`/my/list-course/edit-course/${courseId}`}>
                 <Button
                   variant='outlined'
                   endIcon={<EditIcon />}
                 >Chỉnh sửa</Button>
               </Link>
+              }
               <Button
                 variant='outlined'
                 endIcon={<SendIcon />}

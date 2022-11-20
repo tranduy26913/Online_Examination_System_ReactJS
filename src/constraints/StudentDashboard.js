@@ -1,23 +1,26 @@
 import PersonIcon from "@mui/icons-material/Person";
-import NotificationsIcon from '@mui/icons-material/Notifications';
 import ListAltIcon from '@mui/icons-material/ListAlt';
-import CreditCardIcon from '@mui/icons-material/CreditCard';
-import RateReviewIcon from '@mui/icons-material/RateReview';
+// import NotificationsIcon from '@mui/icons-material/Notifications';
+// import CreditCardIcon from '@mui/icons-material/CreditCard';
+// import RateReviewIcon from '@mui/icons-material/RateReview';
 import FavoriteIcon from '@mui/icons-material/Favorite';
+import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
+import TipsAndUpdatesIcon from '@mui/icons-material/TipsAndUpdates';
+import SchoolIcon from '@mui/icons-material/School';
 /* eslint-disable */
 export const DASHBOARD_TEACHER = [
     {
         id: 1,
         icon: PersonIcon,
-        text: 'Thông tin tài khoản',
+        text: 'Tài khoản',
         link: 'profile',
         list: ['profile'],
         regex:'^\/my\/profile\/?'
     },
     {
         id: 2,
-        icon: NotificationsIcon,
-        text: 'Danh sách khoá học',
+        icon: SchoolIcon,
+        text: 'Khoá học',
         link: 'list-course',
         list: ['list-course','create-course'],
 
@@ -26,28 +29,28 @@ export const DASHBOARD_TEACHER = [
     {
         id: 3,
         icon: ListAltIcon,
-        text: 'Ngân hàng câu hỏi',
+        text: 'N.hàng Câu Hỏi',
         link: 'question-bank',
         list: ['question-bank'],
         regex:'^\/my\/question-bank\/?'
     },
    
-    {
-        id: 5,
-        icon: CreditCardIcon,
-        text: 'Thông tin thanh toán',
-        link: 'payment',
-        list: ['payment'],
-        regex:'^\/my\/payment\/?$'
-    },
-    {
-        id: 6,
-        icon: RateReviewIcon,
-        text: 'Thông báo',
-        link: 'notify',
-        list: ['notify'],
-        regex:'^\/my\/notify\/?$'
-    },
+    // {
+    //     id: 5,
+    //     icon: CreditCardIcon,
+    //     text: 'Thông tin thanh toán',
+    //     link: 'payment',
+    //     list: ['payment'],
+    //     regex:'^\/my\/payment\/?$'
+    // },
+    // {
+    //     id: 6,
+    //     icon: NotificationsIcon,
+    //     text: 'Thông báo',
+    //     link: 'notify',
+    //     list: ['notify'],
+    //     regex:'^\/my\/notify\/?$'
+    // },
     {
         id: 7,
         icon: FavoriteIcon,
@@ -61,36 +64,36 @@ export const DASHBOARD_STUDENT = [
     {
         id: 1,
         icon: PersonIcon,
-        text: 'Thông tin tài khoản',
+        text: 'Tài khoản',
         link: 'profile',
         list: ['profile'],
         regex:'^\/my\/profile\/?'
     },
     {
         id: 2,
-        icon: NotificationsIcon,
-        text: 'Danh sách khoá học',
+        icon: SchoolIcon,
+        text: 'Khoá học',
         link: 'list-course',
         list: ['list-course'],
         regex:'^\/my\/list-course\/?'
     },
    
-    {
-        id: 5,
-        icon: CreditCardIcon,
-        text: 'Thông tin thanh toán',
-        link: 'payment',
-        list: ['payment'],
-        regex:'^\/my\/payment\/?$'
-    },
-    {
-        id: 6,
-        icon: RateReviewIcon,
-        text: 'Thông báo',
-        link: 'notify',
-        list: ['notify'],
-        regex:'^\/my\/notify\/?$'
-    },
+    // {
+    //     id: 5,
+    //     icon: CreditCardIcon,
+    //     text: 'Thanh toán',
+    //     link: 'payment',
+    //     list: ['payment'],
+    //     regex:'^\/my\/payment\/?$'
+    // },
+    // {
+    //     id: 6,
+    //     icon: NotificationsIcon,
+    //     text: 'Thông báo',
+    //     link: 'notify',
+    //     list: ['notify'],
+    //     regex:'^\/my\/notify\/?$'
+    // },
     {
         id: 7,
         icon: FavoriteIcon,
@@ -105,8 +108,8 @@ export const SIDEBAR_COURSE_TEACHER = [
     
     {
         id: 1,
-        icon: NotificationsIcon,
-        text: 'Danh sách đề thi',
+        icon: TipsAndUpdatesIcon,
+        text: 'Đề thi',
         link: 'manage-exam',
         list:[
             'manage-exam',
@@ -118,22 +121,30 @@ export const SIDEBAR_COURSE_TEACHER = [
     },
     {
         id: 2,
+        icon: AssignmentTurnedInIcon,
+        text: 'Bài tập',
+        link: 'manage-assignment',
+        
+        regex:'^\/course\/.*(\\\d)\/(manage-assignment|create-assignment|assignment|assignment-submission)\/?'
+    },
+    {
+        id: 3,
         icon: PersonIcon,
-        text: 'Danh sách học viên',
+        text: 'Học viên',
         link: 'manage-student',
         list: ['manage-student'],
         regex:'^\/course\/.*(\\\d)\/manage-student\/?'
     },
     {
-        id: 3,
+        id: 4,
         icon: ListAltIcon,
-        text: 'Ngân hàng câu hỏi',
+        text: 'N.hàng câu hỏi',
         link: 'question-bank',
         list: ['question-bank'],
         regex:'^\/course\/.*(\\d)\/question-bank\/?'
     },
     {
-        id: 6,
+        id: 5,
         icon: FavoriteIcon,
         text: 'Thống kê',
         link: 'statistic',
@@ -147,8 +158,8 @@ export const SIDEBAR_COURSE_STUDENT = [
     
     {
         id: 1,
-        icon: NotificationsIcon,
-        text: 'Danh sách đề thi',
+        icon: TipsAndUpdatesIcon,
+        text: 'Đề thi',
         link: 'manage-exam',
         list:[
             'manage-exam',
@@ -157,8 +168,16 @@ export const SIDEBAR_COURSE_STUDENT = [
     },
     {
         id: 2,
+        icon: AssignmentTurnedInIcon,
+        text: 'Bài tập',
+        link: 'manage-assignment',
+        
+        regex:'^\/course\/.*(\\\d)\/(manage-assignment|create-assignment|assignment|assignment-submission)\/?'
+    },
+    {
+        id: 3,
         icon: PersonIcon,
-        text: 'Danh sách học viên',
+        text: 'Học viên',
         link: 'manage-student',
         list: ['manage-student'],
         regex:'^\/course\/.*(\\d)\/manage-student\/?'

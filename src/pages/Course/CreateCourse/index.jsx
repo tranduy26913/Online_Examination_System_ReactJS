@@ -35,7 +35,7 @@ const alphabet = alpha.map((x) => String.fromCharCode(x));
 
 function CreateCourse(props) {
     const { isEdit } = props
-    const [image, setImage] = useState('https://sandla.org/wp-content/uploads/2021/08/english-e1629469809834.jpg')
+    const [image, setImage] = useState('https://prod-discovery.edx-cdn.org/media/course/image/156313d6-f892-4b08-9cee-43ea582f4dfb-7b98c686abcc.small.png')
     const [fileImage, setFileImage] = useState(null)
     const [loading, setLoading] = useState(false)
     const [startTime, setStartTime] = useState(moment(new Date()))

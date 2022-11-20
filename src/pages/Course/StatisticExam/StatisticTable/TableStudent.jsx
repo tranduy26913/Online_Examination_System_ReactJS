@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import {  useState } from 'react'
 import {
     Stack,
     Button,
@@ -8,15 +8,17 @@ import {
     TableCell,
     TableContainer,
     TablePagination,
+    Chip
 } from "@mui/material"
 import Scrollbar from 'components/Scrollbar';
-import { TableToolbar,TableHeadCustom } from 'components/TableCustom';
+import { TableToolbar, TableHeadCustom } from 'components/TableCustom';
 import { useParams } from 'react-router-dom';
-import apiStatistic from 'apis/apiStatistic';
 import { useSelector } from 'react-redux';
 import TakeExamAction from '../TakeExamAction';
 import moment from 'moment';
 import EmptyList from 'components/UI/EmptyList';
+import FileSaver from 'file-saver';
+import * as XLSX from 'xlsx';
 
 // ----------------------------------------------------------------------
 
@@ -59,15 +61,12 @@ function applySortFilter(array, comparator, query) {
     return stabilizedThis.map((el) => el[0]);
 }
 
-const TableStudent = () => {
+const TableStudent = ({ exams }) => {
     const [page, setPage] = useState(0);
     const [order, setOrder] = useState('asc');
     const [orderBy, setOrderBy] = useState('name');
     const [filterName, setFilterName] = useState('');
     const [rowsPerPage, setRowsPerPage] = useState(5);
-    const [exams, setExams] = useState([])
-    const { slug } = useParams()//lấy slug exam
-    const role = useSelector(state => state.setting.role)
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
@@ -90,21 +89,33 @@ const TableStudent = () => {
 
     const isUserNotFound = filteredUsers.length === 0;
 
-    useEffect(() => {
-        const getStatistic = () => {
-            const params = { examSlug: slug }
-            apiStatistic.getStatisticExamByStudent(params)
-                .then(res => {
-                    setExams(res)
-                })
-        }
-        getStatistic()
-    }, [role, slug])
+    const exportToCSV = () => {
+        const fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
+        const fileExtension = '.xlsx';
+        const fileName = 'Dữ liệu bài thi'
+        let data = filteredUsers.map(item => {
+            let { name, points, maxPoints, startTime, submitTime, status } = item
+            const duration = moment(submitTime).diff(startTime, 'minutes')
+            return {
+                'Họ và tên': name,
+                'Thời gian thi': moment(startTime).format('DD-MM-YYYY HH:mm'),
+                'Thời gian nộp': moment(submitTime).format('DD-MM-YYYY HH:mm'),
+                'Thời lượng làm bài': `${duration} phút`,
+                'Điểm': `${points}/${maxPoints}`,
+                'Trạng thái': status === 'submitted' ? 'Đã nộp' : 'Chưa nộp'
+            }
+        })
+        const ws = XLSX.utils.json_to_sheet(data);
+        const wb = { Sheets: { 'data': ws }, SheetNames: ['data'] };
+        const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+        data = new Blob([excelBuffer], { type: fileType });
+        FileSaver.saveAs(data, fileName + fileExtension);
+    }
     const ButtonExportFile = () => {
         return (
-                <Button variant='outlined'>
-                   Xuất File Excel
-                </Button>  
+            <Button variant='outlined' onClick={exportToCSV}>
+                Xuất File Excel
+            </Button>
         )
     }
 
@@ -126,7 +137,7 @@ const TableStudent = () => {
                         />
                         <TableBody>
                             {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                                const { id: takeExamId, slug: slugExam, name, submitTime, startTime, points, maxPoints,status } = row;
+                                const { id: takeExamId, slug: slugExam, name, submitTime, startTime, points, maxPoints, status } = row;
                                 const duration = moment(submitTime).diff(startTime, 'minutes')
                                 return (
                                     <TableRow
@@ -140,9 +151,12 @@ const TableStudent = () => {
                                         <TableCell align="center">{moment(startTime).format('DD/MM/YYYY HH:mm')}</TableCell>
                                         <TableCell align="center">{duration} phút</TableCell>
                                         <TableCell align="center">
-                                        {status === 'not submitted'?'Chưa nộp bài':'Đã nộp'}
+                                            {status === 'not submitted' ? 'Chưa nộp bài' : 'Đã nộp'}
                                         </TableCell>
-
+                                        <Chip
+                                            color={points/maxPoints <=5 ?'error':'primary'}
+                                            label={points/maxPoints <=5 ? 'Chưa đạt' : 'Đạt'}
+                                            />
                                         <TableCell align="right">
                                             <TakeExamAction takeExamId={takeExamId} />
                                         </TableCell>
@@ -160,7 +174,7 @@ const TableStudent = () => {
                             <TableBody>
                                 <TableRow>
                                     <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
-                                    <EmptyList />
+                                        <EmptyList />
                                     </TableCell>
                                 </TableRow>
                             </TableBody>

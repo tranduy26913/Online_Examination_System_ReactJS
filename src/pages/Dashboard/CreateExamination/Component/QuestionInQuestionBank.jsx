@@ -31,12 +31,16 @@ import { memo } from 'react';
 import apiQuestionBank from 'apis/apiQuestionBank';
 import ExamContext from '../ExamContext';
 import DOMPurify from 'dompurify';
+import apiExamination from 'apis/apiExamination';
+import { toast } from 'react-toastify';
+import { useDispatch } from 'react-redux';
+import { addQuestion } from 'slices/userSlice';
 const BoxAnswer = styled(Box)(({ theme }) => ({
     display: 'flex',
     alignItems: 'center',
     fontSize: '14px',
     gap: '10px'
-  }))
+}))
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {
@@ -51,20 +55,21 @@ const MenuProps = {
 
 
 function QuestionInQuestionBank(props) {
-    const examId = useContext(ExamContext)
+    const { examId,reloadExam } = useContext(ExamContext)
     const [expanded, setExpanded] = useState(false);
 
     const handleChangeQuestion = (panel) => (event, isExpanded) => {
         setExpanded(isExpanded ? panel : false);
     };
     const [questionsQB, setQuestionsQB] = useState([])
-    const [isLimit, setIsLimit] = useState(true)//giới hạn số lần thi
+    const [isRandom, setIsRandom] = useState(true)//giới hạn số lần thi
     const [limit, setLimit] = useState(0)//Số lần được phép thi tối đa
     const onChangeLimit = (event) => setLimit(Number(event.target.value |= 0))
 
     const [questionBanks, setQuestionBanks] = useState([]);
     const [selectedQB, setSelectedQB] = useState([]);
-
+    const [selectedQuestion, setSelectedQuestion] = useState([])
+    const dispatch = useDispatch()
     const handleChangeQB = (event) => {
         const {
             target: { value },
@@ -74,6 +79,35 @@ function QuestionInQuestionBank(props) {
             typeof value === 'string' ? value.split(',') : value,
         );
     };
+
+    const handleChooseQuestion = (id) => {
+        let newList = [...selectedQuestion]
+        if (selectedQuestion.includes(id))
+            setSelectedQuestion(newList.filter(item => item !== id))
+        else{
+            newList.push(id)
+            setSelectedQuestion(newList)
+        }
+            
+    }
+
+    const handleCreate = () => {
+        apiExamination.addQuestionWithQB({
+            random: isRandom,
+            examId,
+            questionBankSlug: selectedQB[0],
+            numberofNeedQuestions: limit,
+            questionIds: selectedQuestion
+        })
+            .then(res => {
+                toast.success('Thêm thành công')
+                if (res.questions) {
+                    res.questions.forEach(item => {
+                        dispatch(addQuestion(item))
+                    })
+                }
+            })
+    }
 
     useEffect(() => {
         const loadQB = () => {
@@ -126,12 +160,12 @@ function QuestionInQuestionBank(props) {
                             <Box>Chọn ngẫu nhiên</Box>
                             <FormGroup row>
                                 <FormControlLabel
-                                    control={<Switch checked={isLimit} onChange={() => setIsLimit(!isLimit)} />} />
+                                    control={<Switch checked={isRandom} onChange={() => setIsRandom(!isRandom)} />} />
                             </FormGroup>
                         </StackLabel>
 
                         {
-                            isLimit &&
+                            isRandom &&
                             <StackLabel>
                                 <Box>Số câu hỏi cần chọn</Box>
                                 <input value={limit}
@@ -144,12 +178,13 @@ function QuestionInQuestionBank(props) {
                     <Stack spacing={1}>
                         {
                             questionsQB.map((question, index) =>
-                            question &&
+                                question &&
                                 <Stack direction='row' alignItems='center' justifyContent='space-between'>
-                                    <Checkbox  />
-                                    <Accordion sx={{ flex: 1 }} 
-                                    key={question.id} expanded={question.id === expanded} 
-                                    onChange={handleChangeQuestion(question.id)}>
+                                    <Checkbox checked={selectedQuestion.includes(question.id)}
+                                        onChange={() => handleChooseQuestion(question.id)} />
+                                    <Accordion sx={{ flex: 1 }}
+                                        key={question.id} expanded={question.id === expanded}
+                                        onChange={handleChangeQuestion(question.id)}>
                                         <AccordionSummary sx={AccordionSummaryStyle}
                                             expandIcon={<ExpandMoreIcon />}
                                         ><Typography>Câu hỏi {index + 1}</Typography>
@@ -158,7 +193,7 @@ function QuestionInQuestionBank(props) {
                                         <AccordionDetails>
                                             <Stack spacing={0.5}>
                                                 <Typography dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(question.content) }}>
-                                                    
+
                                                 </Typography>
                                                 {
                                                     question.answers.map(item =>
@@ -173,8 +208,8 @@ function QuestionInQuestionBank(props) {
                         }
                     </Stack>
                     <Stack direction='row' justifyContent='center'>
-                        <Button variant='contained'>Thêm câu hỏi</Button>
-                        </Stack>
+                        <Button onClick={handleCreate} variant='contained'>Thêm câu hỏi</Button>
+                    </Stack>
                 </Stack>
             </Paper>
         </>

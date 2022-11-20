@@ -24,6 +24,9 @@ export const userSlice = createSlice({
         addQuestion: (state, action) => {
             state.questions = [...state.questions, action.payload]
         },
+        replaceListQuestion: (state, action) => {
+            state.questions = [...action.payload]
+        },
         updateQuestion:(state,action)=>{
             const newQuestion = action.payload
             const index = state.questions.findIndex(item=>item.id===newQuestion.id)
@@ -69,6 +72,7 @@ export const userSlice = createSlice({
 
 export const {
     addQuestion,
+    replaceListQuestion,
     updateQuestion,
     deleteQuestion,
     clearQuestion,

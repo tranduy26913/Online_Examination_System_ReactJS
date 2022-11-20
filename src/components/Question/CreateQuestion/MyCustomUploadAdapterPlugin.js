@@ -4,7 +4,7 @@ export class MyUploadAdapter {
         this.loader = loader;
         this.token = 'Bearer '+token;
         // URL where to send files.
-        this.url = process.env.REACT_APP_BASEURL+'upload/image';
+        this.url = 'https://be-oes.vercel.app/api/'+'upload/image';
     }
 
     // Starts the upload process.

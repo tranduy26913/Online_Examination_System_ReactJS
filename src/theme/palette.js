@@ -16,11 +16,14 @@ import {
 /** PRIMARY */
 const PRIMARY = {
   light: lightBlue["A200"],
-  main: lightBlue["A700"],
+  main: lightBlue["500"],
   dark: lightBlue["A700"],
   contrastText: "#fff",
 };
 const PRIMARY_DARK = {
+  // light: teal["A200"],
+  // main: teal["A400"],
+  // dark: teal["A700"],
   light: teal["A200"],
   main: teal["A400"],
   dark: teal["A700"],
@@ -69,7 +72,7 @@ const SUCCESS_DARK = {
 /** WARNING */
 const WARNING = {
   light: amber["A200"],
-  main: amber["A400"],
+  main: amber["600"],
   dark: amber["A700"],
   contrastText: "#fff",
 };
@@ -82,7 +85,7 @@ const WARNING_DARK = {
 /** ERROR */
 const ERROR = {
   light: red["A200"],
-  main: red["A400"],
+  main: red["700"],
   dark: red["A700"],
   contrastText: "#fff",
 };
@@ -119,6 +122,8 @@ const GREY = {
   500_48: alpha("#919EAB", 0.48),
   500_56: alpha("#919EAB", 0.56),
   500_80: alpha("#919EAB", 0.8),
+  main: "#919EAB",
+  contrastText: "#fff",
 };
 // Setting common for dark and white theme
 const COMMON = {
@@ -160,7 +165,7 @@ const palette = {
 
     text: {
 //      primary: alpha("#000", 0.87),
-      primary: "#222",
+      primary: "#111",
       secondary: alpha("#000", 0.75),
       disabled: alpha("#000", 0.38),
       primaryChannel: "0 0 0",
