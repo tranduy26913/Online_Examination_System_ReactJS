@@ -11,7 +11,7 @@ import AssignmentItem from './AssignmentItem';
 import moment from 'moment';
 import apiAssignment from 'apis/apiAssignment';
 const ListAssignmentStudent = () => {
-    const [listAssignment, setListAssignment] = useState(Samples)
+    const [listAssignment, setListAssignment] = useState([])
     const { courseId} = useContext(CourseContext)
 
     useEffect(() => {
@@ -47,55 +47,5 @@ const ListAssignmentStudent = () => {
         </Page>
     )
 }
-
-
-const Samples = [
-    {
-        id:'123',
-        slug:1,
-        name:'Bài tập 1',
-        numberofSubmission:4,
-        startTime:moment().subtract(2,'days').toDate().toISOString(),
-        endTime:moment().add(5,'days').toDate().toISOString(),
-        status:'private',
-    },
-    {
-        id:'1234',
-        slug:1,
-        name:'Bài tập 2',
-        numberofSubmission:4,
-        startTime:moment().subtract(2,'days').toDate().toISOString(),
-        endTime:moment().add(5,'days').toDate().toISOString(),
-        status:'public',
-    },
-    {
-        id:'12356',
-        slug:1,
-        name:'Bài tập 3',
-        numberofSubmission:4,
-        startTime:moment().subtract(2,'days').toDate().toISOString(),
-        endTime:moment().add(5,'days').toDate().toISOString(),
-        status:'close',
-    },
-    {
-        id:'123536',
-        slug:1,
-        name:'Bài tập 4',
-        numberofSubmission:4,
-        startTime:moment().subtract(2,'days').toDate().toISOString(),
-        endTime:moment().add(5,'days').toDate().toISOString(),
-        status:'close',
-    },
-    {
-        id:'121356',
-        slug:1,
-        name:'Bài tập 5',
-        numberofSubmission:4,
-        startTime:moment().subtract(2,'days').toDate().toISOString(),
-        endTime:moment().add(5,'days').toDate().toISOString(),
-        status:'close',
-    },
-]
-
 
 export default ListAssignmentStudent

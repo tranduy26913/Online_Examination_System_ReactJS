@@ -30,14 +30,13 @@ import { useSelector, useDispatch } from "react-redux";
 import apiProfile from "apis/apiProfile";
 import Loading from "components/Loading";
 import { updateAvatar } from 'slices/userSlice';
+import { Player } from "@lottiefiles/react-lottie-player";
 
 const premiumStyle = {
     position: 'absolute',
-    top: 0,
-    left: 0,
-    height: '36%',
-    width: '54%',
-    transform: 'translate(-38%, -38%) rotate(-45deg)'
+    bottom: '-10%',
+    left: '0',
+    // transform: 'translate(-38%, -38%) rotate(-45deg)'
 }
 function ToolAvatar() {
     const user = useSelector(state => state.user.info);
@@ -65,7 +64,7 @@ function ToolAvatar() {
 
     const openModalDeleteAvatar = () => setModalDeleteAvatar(true);
     const closeModalDeleteAvatar = () => setModalDeleteAvatar(false);
-   
+
     const handleClickAvatar = () => {
         setOpenAvatar((prev) => !prev);
     };
@@ -92,7 +91,7 @@ function ToolAvatar() {
         setModalUploadAvatar(false);
         apiProfile.putUploadAvatar(param)
             .then(res => {
-                toast.update(id, { render: "Cập nhật ảnh đại diện thành công", type: "success", isLoading: false,autoClose:"1200" })
+                toast.update(id, { render: "Cập nhật ảnh đại diện thành công", type: "success", isLoading: false, autoClose: "1200" })
                 if (res.avatar) {
                     dispatch(updateAvatar(res.avatar))
                 }
@@ -138,7 +137,14 @@ function ToolAvatar() {
                         />
                         {user?.premium &&
                             <Tooltip title="Tài khoản Premium">
-                                <Avatar src={premium} variant="rounded" sx={premiumStyle} />
+                                <Box sx={premiumStyle} >
+                                    <Player
+                                        autoplay
+                                        loop
+                                        src="https://assets7.lottiefiles.com/packages/lf20_rZQs81.json"
+                                        style={{ height: '52px', width: '52px' }}
+                                    />
+                                </Box>
                             </Tooltip>}
                     </Badge>
                     {openAvatar ? (

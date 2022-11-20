@@ -20,6 +20,7 @@ import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrow
 import { styled } from '@mui/material/styles';
 import MuiDrawer from '@mui/material/Drawer';
 import MenuIcon from '@mui/icons-material/Menu';
+import { Player } from "@lottiefiles/react-lottie-player";
 
 const drawerWidth = 200;
 
@@ -131,7 +132,13 @@ const Sidebar = (props) => {
                 {/* <ListItemAvatar>
                       <Avatar alt="hình đại diện" src={user?.avatar || avatar} />
                     </ListItemAvatar> */}
-                <ListItemText primary={props.heading} sx={{ fontSize: '16px' }} />
+                <Player
+                  autoplay
+                  loop
+                  style={{ height: '46px', width: '46px' }}
+                  src={'https://assets1.lottiefiles.com/private_files/lf30_juqdjgia.json'}
+                />
+                <ListItemText color='primary' primary={props.heading} sx={{ fontSize: '16px', textTransform: 'uppercase', color: 'primary !important' }} />
               </ListItem>
               <IconButton onClick={handleDrawerClose}>
                 <KeyboardDoubleArrowLeftIcon />
@@ -141,7 +148,12 @@ const Sidebar = (props) => {
               aria-label="open drawer"
               onClick={handleDrawerOpen}
             >
-              <MenuIcon />
+              <Player
+                autoplay
+                loop
+                src="https://assets2.lottiefiles.com/private_files/lf30_3zseffbb.json"
+                style={{ height: '46px', width: '46px' }}
+              />
             </IconButton>
         }
 
@@ -166,7 +178,7 @@ const Sidebar = (props) => {
                 }}
               >
 
-                <Tooltip title={item.text}  placement="right">
+                <Tooltip title={item.text} placement="right">
                   <ListItemIcon
                     sx={{
                       minWidth: 0,

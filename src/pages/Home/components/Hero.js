@@ -1,4 +1,5 @@
-import { Grid, Typography, Button, Stack } from '@mui/material';
+import { Player } from '@lottiefiles/react-lottie-player';
+import { Grid, Typography, Button, Stack, Box } from '@mui/material';
 import myteam2 from 'assets/img/home-hero.png';
 
 const Hero = () => {
@@ -8,11 +9,11 @@ const Hero = () => {
       <Grid container spacing={6} p='50px' alignItems='center'>
         <Grid item xs={12} md={7}>
           <Typography variant="h3" fontWeight={700} pb='15px'>
-          Nền tảng tạo đề thi trắc nghiệm
+            Nền tảng tạo đề thi trắc nghiệm
           </Typography>
           <Typography variant="h6" pb='30px'>
-          Tạo đề thi, game trắc nghiệm nhanh chóng với nhiều dạng câu hỏi.
-Giám sát thí sinh hiệu quả, thống kê trực quan...
+            Tạo đề thi, game trắc nghiệm nhanh chóng với nhiều dạng câu hỏi.
+            Giám sát thí sinh hiệu quả, thống kê trực quan...
           </Typography>
           <Button
             variant="contained"
@@ -23,7 +24,16 @@ Giám sát thí sinh hiệu quả, thống kê trực quan...
           </Button>
         </Grid>
         <Grid item xs={12} md={5}>
-          <img src={myteam2} alt="My Team" width='100%' style={{borderRadius:'12px'}} />
+          <Box style={{ borderRadius: '12px' }}  >
+            <Player
+              autoplay
+              loop
+              src="https://assets9.lottiefiles.com/packages/lf20_aljpo8bg.json"
+              style={{ width: '100%' }}
+            >
+            </Player>
+          </Box>
+          {/* <img src={myteam2} alt="My Team" width='100%' style={{ borderRadius: '12px' }} /> */}
         </Grid>
       </Grid>
     </Stack>

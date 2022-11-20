@@ -1,7 +1,6 @@
 import {  useState } from 'react'
 import {
     Stack,
-    Button,
     Table,
     TableRow,
     TableBody,
@@ -11,14 +10,12 @@ import {
     Chip
 } from "@mui/material"
 import Scrollbar from 'components/Scrollbar';
-import * as FileSaver from 'file-saver';
-import * as XLSX from 'xlsx';
+
 import { TableToolbar, TableHeadCustom } from 'components/TableCustom';
-import { useParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 import TakeExamAction from '../TakeExamAction';
 import moment from 'moment';
 import EmptyList from 'components/UI/EmptyList';
+import ButtonExport from 'components/ButtonExport';
 
 // ----------------------------------------------------------------------
 
@@ -93,11 +90,8 @@ const TableTeacher = ({ exams }) => {
 
 
 
-    const exportToCSV = () => {
-        const fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
-        const fileExtension = '.xlsx';
-        const fileName = 'Dữ liệu bài thi'
-        let data = filteredUsers.map(item => {
+    const handleData = () => {
+       return filteredUsers.map(item => {
             let { name, points, maxPoints, startTime, submitTime, status } = item
             const duration = moment(submitTime).diff(startTime, 'minutes')
             return {
@@ -109,18 +103,12 @@ const TableTeacher = ({ exams }) => {
                 'Trạng thái': status === 'submitted' ? 'Đã nộp' : 'Chưa nộp'
             }
         })
-        const ws = XLSX.utils.json_to_sheet(data);
-        const wb = { Sheets: { 'data': ws }, SheetNames: ['data'] };
-        const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
-        data = new Blob([excelBuffer], { type: fileType });
-        FileSaver.saveAs(data, fileName + fileExtension);
     }
 
     const ButtonExportFile = () => {
         return (
-            <Button variant='outlined' onClick={exportToCSV}>
-                Xuất File Excel
-            </Button>
+            <ButtonExport variant='outlined' dataExport={handleData()}>
+            </ButtonExport>
         )
     }
     return (

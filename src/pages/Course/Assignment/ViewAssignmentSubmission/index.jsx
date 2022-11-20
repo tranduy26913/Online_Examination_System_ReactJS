@@ -24,13 +24,15 @@ import apiSubmission from 'apis/apiSubmission';
 import ChangePoint from './component/ChangePoint';
 import { calcDurationTime } from 'utils/formatTime';
 import CourseContext from 'pages/Course/LayoutCourse/CourseContext';
+import apiSubmitAssignment from 'apis/apiSubmitassignment';
+import ButtonExport from 'components/ButtonExport';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
     { id: 'fullname', label: 'Họ và tên', align: 'left' },
     { id: 'submitTime', label: 'Thời gian nộp', align: 'center' },
-    { id: 'point', label: 'Điểm', align: 'center' },
+    { id: 'points', label: 'Điểm', align: 'center' },
     { id: 'status', label: 'Trạng thái', align: 'center' },
     { id: 'action', label: 'Thao tác', align: 'right' },
 ];
@@ -72,7 +74,7 @@ const ListSubmission = () => {
     const [orderBy, setOrderBy] = useState('name');
     const [filterName, setFilterName] = useState('');
     const [rowsPerPage, setRowsPerPage] = useState(25);
-    const [submissions, setSubmissions] = useState(Samples)
+    const [submissions, setSubmissions] = useState([])
     const [loadingData, setLoadingData] = useState(false)
     const { courseId } = useContext(CourseContext)
     const { slug } = useParams()
@@ -107,25 +109,47 @@ const ListSubmission = () => {
             slug
         }
         setLoadingData(true)
-        apiSubmission.getListSubmissionByAssignment(params)
+        apiSubmitAssignment.getSubmitAssignmentBySlug(params)
             .then(res => {
+
                 setSubmissions(res?.reverse() || [])
             })
             .finally(() => setLoadingData(false))
     }, [slug])
 
-    
+
     //Effect
     useEffect(() => {
 
         if (!slug) return
-        //loadListSubmission()
+        loadListSubmission()
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [slug])
 
-    const ButtonCustom = () => {
+    const handleData = () => {
+        return filteredUsers.map(item => {
+            let { fullname, points, maxPoints, submitTime, endTime } = item
+            let diffTime = 0
+            let duration = ''
+            let status = 'Chưa nộp'
+            if (submitTime) {
+                diffTime = moment(endTime).diff(submitTime, 'seconds')
+                duration = (diffTime >= 0 ? 'Nộp sớm ' : 'Nộp trễ ') + calcDurationTime(Math.abs(diffTime))
+                status = 'Đã nộp'
+            }
+            return {
+                'Họ và tên': fullname,
+                'Thời gian nộp': status === 'Đã nộp' && moment(submitTime).format("LLLL"),
+                'Điểm': (points===null || points === undefined)?'Chưa chấm điểm':`${points}/${maxPoints}`,
+                'Trạng thái': status === 'Đã nộp' ? duration : 'Chưa nộp'
+            }
+        })
+    }
+
+    const ButtonExportFile = () => {
         return (
-            <Button variant='outlined'>Tải về</Button>
+            <ButtonExport variant='outlined' dataExport={handleData()}>
+            </ButtonExport>
         )
     }
     return (
@@ -134,7 +158,7 @@ const ListSubmission = () => {
                 <Paper elevation={24}>
 
                     <TableToolbar filterName={filterName} onFilterName={handleFilterByName}
-                        ButtonCustom={ButtonCustom} />
+                        ButtonCustom={ButtonExportFile} />
                     <Box px={2}>
 
                         <TableContainer>
@@ -149,40 +173,44 @@ const ListSubmission = () => {
                                 <TableBody>
 
                                     {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
-                                        const { _id, fullname, point, maxPoints, submitTime,endTime } = row;
+                                        const { id, fullname, avatar, points, maxPoints, submitTime, endTime } = row;
                                         let diffTime = 0
-                                        let duration = 'Nộp sớm 0 giây'
+                                        let duration = ''
                                         let status = 'Chưa nộp'
-                                        if(submitTime){
-                                            diffTime = moment(submitTime).diff(endTime,'seconds')
-                                            duration = diffTime>=0 ? 'Nộp sớm ':'Nộp trễ ' + calcDurationTime(Math.abs(diffTime))
+                                        if (submitTime) {
+                                            diffTime = moment(endTime).diff(submitTime, 'seconds')
+                                            duration = diffTime >= 0 ? 'Nộp sớm ' : 'Nộp trễ ' + calcDurationTime(Math.abs(diffTime))
                                             status = 'Đã nộp'
                                         }
                                         return (
                                             <TableRow
                                                 hover
-                                                key={_id}
+                                                key={id}
                                                 tabIndex={-1}
                                                 role="checkbox"
                                             >
-                                                <TableCell sx={{ width: '15%',paddingLeft:2 }} component="th" scope="row" padding="none">
-                                                  
+                                                <TableCell sx={{ width: '25%', paddingLeft: 2 }} component="th" scope="row" padding="none">
+                                                    <Stack direction="row" alignItems="center" spacing={2} pl={1.5}>
+                                                        <Avatar alt={fullname} src={avatar} />
+                                                        <Typography >
                                                             {fullname}
+                                                        </Typography>
+                                                    </Stack>
                                                 </TableCell>
-                                                <TableCell sx={{ width: '20%' }} align="center">{moment(submitTime).format("DD/MM/YYYY HH:mm:ss A")}</TableCell>
+                                                <TableCell sx={{ width: '20%' }} align="center">{status === 'Đã nộp' && moment(submitTime).format("LLLL")}</TableCell>
                                                 <TableCell sx={{ width: '20%' }} align="center">
-                                                    {point === null ? 'Chưa chấm điểm':
-                                                    `${point}/${maxPoints}`
+                                                    {(points === null || points === undefined) ? 'Chưa chấm điểm' :
+                                                        `${points}/${maxPoints}`
                                                     }
-                                                    
+
                                                 </TableCell>
-                                                <TableCell sx={{ width: '25%' }} align="center">
-                                                    {duration}
+                                                <TableCell sx={{ width: '20%' }} align="center">
+                                                    {status === 'Đã nộp' ? duration : 'Chưa nộp'}
                                                 </TableCell>
-                                                
-                                                <TableCell sx={{ width: '20%' }} align="right">
-                                                    {status === 'Đã nộp' && 
-                                                    <ChangePoint id={_id} reloadList={loadListSubmission}/>}
+
+                                                <TableCell sx={{ width: '15%' }} align="right">
+                                                    {status === 'Đã nộp' &&
+                                                        <ChangePoint maxPoints={maxPoints} submitAssignmentId={id} reloadList={loadListSubmission} />}
                                                 </TableCell>
                                             </TableRow>
                                         );
@@ -198,7 +226,7 @@ const ListSubmission = () => {
                                     <TableBody>
                                         <TableRow>
                                             <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
-                                                {loadingData ? <LoadingRoller/>:<EmptyList />}
+                                                {loadingData ? <LoadingRoller /> : <EmptyList />}
                                             </TableCell>
                                         </TableRow>
                                     </TableBody>
@@ -221,25 +249,5 @@ const ListSubmission = () => {
         </Page>
     )
 }
-
-const Samples =[
-    {
-        _id:'dđ',
-        fullname:'Trần Duy',
-        submitTime:moment().add(1,'days').toDate().toISOString(),
-        endTime:moment().toDate().toISOString(),
-        maxPoints:10,
-        point:0
-    },
-    {
-        _id:'dđc',
-        fullname:'Trần Duy 2',
-        submitTime:moment().subtract(1,'days').subtract(7500,'seconds').toDate().toISOString(),
-        endTime:moment().toDate().toISOString(),
-        maxPoints:10,
-        point:null
-    }
-]
-
 
 export default ListSubmission

@@ -18,43 +18,50 @@ import { useContext } from 'react';
 import { toast } from 'react-toastify';
 import { getMessageError } from 'utils';
 import LoadingButton from 'components/LoadingButton';
-import CourseContext from 'pages/Course/LayoutCourse/CourseContext';
+import apiSubmitAssignment from 'apis/apiSubmitassignment';
+import DOMPurify from 'dompurify';
 
 
-function ChangePoint(props) {
+function ChangePoint({ submitAssignmentId, maxPoints, reloadList }) {
     const [open, setOpen] = React.useState(false);
-    const [selectedId, setSelectedId] = React.useState('');
-    const [search, setSearch] = React.useState('')
-    const [submission, setSubmission] = React.useState({})
+    const [points, setPoints] = React.useState(0);
+    const [content, setContent] = React.useState('')
     const [loading, setLoading] = React.useState(false)
-    const { id } = useContext(CourseContext)
 
-    const handleChangeSearch = (e) => {
-        setSearch(e.target.value)
+    const onChangePoints = (e) => {
+        setPoints(e.target.value)
     }
 
     const handleClickOpen = () => setOpen(true);
     const handleClose = () => {
-        setSearch("");
-        setSelectedId('')
         setOpen(false);
     }
+    React.useEffect(() => {
+        apiSubmitAssignment.getSubmitAssignmentById({ id: submitAssignmentId })
+            .then(res => {
+                const { submitAssignment } = res;
+                if (submitAssignment) {
+                    let { content, points } = submitAssignment
+                    setContent(content)
+                    setPoints(points || 0)
+                }
+            })
+    }, [submitAssignmentId])
 
-    const handleChangePoint = () => {
-        if (!selectedId) {
-            toast.warning("Vui lòng chọn học viên cần thêm")
+    const handleChangePoints = () => {
+        if (points !== 0 && !points) {
+            toast.warning("Vui lòng nhập điểm")
             return
         }
         setLoading(true)
-        apiCourse.ChangePointIntoCourse({
-            studentId: selectedId,
-            courseId: id
+        apiSubmitAssignment.ChangePointSubmitAssignment({
+            submitAssignmentId,
+            points
         })
             .then(res => {
-                toast.success("Thêm học viên thành công")
-               
-                setSelectedId("")
-                props.reloadList()
+                toast.success("Chấm điểm thành công")
+                reloadList()
+                setOpen(false)
             })
             .catch(err => {
                 toast.warning(getMessageError(err))
@@ -73,34 +80,35 @@ function ChangePoint(props) {
                 open={open} onClose={handleClose} maxWidth='lg' fullWidth>
                 <DialogTitle align='center' color='primary'>Nội dung bài nộp</DialogTitle>
                 <DialogContent dividers={true}>
-                    <Typography></Typography>
-
-                    <Stack direction='row' alignItems='center' mb={2}>
+                    <Stack direction='row' alignItems='flex-end' mb={2}>
                         <TextField
-                            autoFocus
+                            align='center'
+                            sx={{width:'90px'}}
                             type="text"
-                            placeholder='Nhập điểm'
+                            label='Nhập điểm'
                             variant="standard"
-                            focused
-                            onChange={handleChangeSearch}
-                            value={search}
-                        />
-                        /{submission?.maxPoints}
+                            onChange={onChangePoints}
+                            value={points}
+                        />&nbsp;
+                        {` / ${maxPoints} Điểm`}
                     </Stack>
-                    <Paper variant="outlined" square>
+                    <Paper elevation={3} square>
 
-                    <Box width='100%' height='400px' >
-                        {!submission?.content ? <EmptyList text='Nội dung trống'/> :
-                            <Box>
+                        <Box width='100%' p={1.5} height='400px' >
+                            {!content ? <EmptyList text='Nội dung trống' /> :
 
-                            </Box>
-                        }
-                    </Box>
+                                <Typography
+                                    dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(content) }} />
+
+                            }
+                        </Box>
                     </Paper>
                 </DialogContent>
                 <DialogActions>
                     <Button variant='contained' color='error' onClick={handleClose}>Huỷ</Button>
-                    <LoadingButton disabled={!selectedId} loading={loading} variant='contained' onClick={handleChangePoint}>Chấm điểm</LoadingButton>
+                    <LoadingButton loading={loading}
+                        variant='contained' onClick={handleChangePoints}>
+                        Chấm điểm</LoadingButton>
                 </DialogActions>
             </Dialog>
         </div>

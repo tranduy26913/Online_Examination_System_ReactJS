@@ -34,14 +34,14 @@ function StatisticExam(props) {
   }, [role, slug])
 
   const count = exams.length
-  const avgPoints = (count && exams.reduce((total, cur) => total + cur.points, 0) / count) || 0
+  const avgPoints = (count && exams.reduce((total, cur) => total + cur.points, 0) / count).toFixed(2) || 0
   const maxPoints = (count && exams[0].maxPoints) || null
   const avgDuration = (() => {
     let duration = 0
     exams.forEach(e => {
       duration += moment(e.submitTime).diff(e.startTime, 'minutes')
     })
-    return (count && duration / count) || 0
+    return (count && duration / count).toFixed(2) || 0
   })()
 
   const summary = (() => {

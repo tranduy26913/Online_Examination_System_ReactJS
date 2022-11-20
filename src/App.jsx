@@ -13,13 +13,36 @@ import { loginSuccess, logoutSuccess } from 'slices/authSlice';
 import StateActivity from 'components/StateActivity';
 import ErrorBoundary from 'components/ErrorPage/ErrorBoundary';
 import ScrollToTop from 'components/ScrollToTop';
+import moment from 'moment'
+import 'moment/locale/vi';
 
 function App() {
   const refreshToken = useSelector((state) => state.auth.refreshToken);
   const accessToken = useSelector((state) => state.auth.accessToken);
   const dispatch = useDispatch();
 
+  try{
+    moment.locale('vi',{
+      weekdays : 'Chủ nhật_Thứ hai_Thứ ba_Thứ tư_Thứ năm_Thứ sáu_Thứ bảy'.split('_'),
+      longDateFormat : {
+        LT : 'HH:mm',
+        LTS : 'HH:mm:ss',
+        L : 'DD/MM/YYYY',
+        LL : 'D MMMM YYYY',
+        LLL : 'D MMMM YYYY HH:mm',
+        //LLLL : 'dddd D MMMM YYYY HH:mm',
+        LLLL: 'dddd D MMMM YYYY HH:mm:ss'
+    },
+    relativeTime : {
+      ss : '%d giây',
+      mm: "%dm",
+      hh: "%dh",
+  }
+    })
+    console.log(moment().format('LLLL'))
+  }catch(err){
 
+  }
   if (accessToken && refreshToken) {
 
     axiosInstance(accessToken, refreshToken, dispatch, loginSuccess, logoutSuccess);

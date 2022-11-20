@@ -4,6 +4,10 @@ const apiAssignment = {
         const res = await axiosClientWithToken.get('/assignment/by-slug', { params})
         return res.data;
     },
+    getAssignmentBySlugOfStudent: async (params) => {
+        const res = await axiosClientWithToken.get('/assignment/by-slug-of-student', { params})
+        return res.data;
+    },
     getAssignmentsByCourseOfTeacher: async (params) => {
         const res = await axiosClientWithToken.get('/assignment/assignment-by-course-of-teacher', { params })
         return res.data;

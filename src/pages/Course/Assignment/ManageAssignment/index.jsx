@@ -70,7 +70,7 @@ const ManageAssignment = () => {
     const [orderBy, setOrderBy] = useState('updatedAt');
     const [filterName, setFilterName] = useState('');
     const [rowsPerPage, setRowsPerPage] = useState(10);
-    const [assignments, setAssignments] = useState(Samples)
+    const [assignments, setAssignments] = useState([])
     const [loadingData, setLoadingData] = useState(false)
     const { courseId } = useContext(CourseContext)
 
@@ -210,36 +210,5 @@ const ManageAssignment = () => {
         </Page>
     )
 }
-
-const Samples = [
-    {
-        id: '123',
-        slug: 1,
-        name: 'Bài tập 1',
-        numberofSubmission: 4,
-        startTime: moment().subtract(2, 'days').toDate().toISOString(),
-        endTime: moment().add(5, 'days').toDate().toISOString(),
-        status: 'private',
-    },
-    {
-        id: '1234',
-        slug: 1,
-        name: 'Bài tập 2',
-        numberofSubmission: 4,
-        startTime: moment().subtract(2, 'days').toDate().toISOString(),
-        endTime: moment().add(5, 'days').toDate().toISOString(),
-        status: 'public',
-    },
-    {
-        id: '12356',
-        slug: 1,
-        name: 'Bài tập 3',
-        numberofSubmission: 4,
-        startTime: moment().subtract(2, 'days').toDate().toISOString(),
-        endTime: moment().add(5, 'days').toDate().toISOString(),
-        status: 'close',
-    },
-]
-
 
 export default ManageAssignment
