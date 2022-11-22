@@ -170,7 +170,7 @@ const ManageAssignment = () => {
 
                                                 </TableCell>
                                                 <TableCell sx={{ width: '10%' }} align="right">
-                                                    <TableMoreMenu assignmentSlug={slug} reloadList={loadListAssignment} />
+                                                    <TableMoreMenu id={id} assignmentSlug={slug} reloadList={loadListAssignment} />
                                                 </TableCell>
                                             </TableRow>
                                         );

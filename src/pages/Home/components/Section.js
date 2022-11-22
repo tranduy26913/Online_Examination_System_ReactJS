@@ -27,7 +27,8 @@ const Section = () => {
     },
   ];
   return (
-    <Stack direction='row' justifyContent='center' mt={2}  className='home-item'>
+    <Stack alignItems='center'  mt={2} spacing={2} className='home-item'>
+      <Typography align='center' color='primary' fontSize='24px'>Khám phá tính năng nổi bật của Bello Quiz</Typography>
       <Grid container width='100%' justifyContent='space-around'>
         {sectionItems.map((item) => (
           <Grid

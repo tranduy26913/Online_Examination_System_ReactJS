@@ -26,7 +26,7 @@ const ListCourse = () => {
     const [totalPage, setTotalPage] = useState(5)
     const [loadingData, setLoadingData] = useState(false)
     const limit = 10
-
+console.log('COurse')
     useEffect(() => {
         const getData = () => {
             const params = {

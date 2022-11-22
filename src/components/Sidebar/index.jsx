@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 import { Link } from "react-router-dom";
 
@@ -16,12 +16,10 @@ import {
   Tooltip
 } from "@mui/material";
 
-import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
 import { styled } from '@mui/material/styles';
 import MuiDrawer from '@mui/material/Drawer';
+import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
 import MenuIcon from '@mui/icons-material/Menu';
-import { Player } from "@lottiefiles/react-lottie-player";
-
 const drawerWidth = 200;
 
 const openedMixin = (theme) => ({
@@ -121,8 +119,9 @@ const Sidebar = (props) => {
     setMobileOpen(false);
   }
   const handleDrawerOpen = () => setOpen(true);
+  console.log('sidebar');
 
-  const drawer = (
+  const MyDrawer = () => (
     <>
       <DrawerHeader>
         {
@@ -132,28 +131,33 @@ const Sidebar = (props) => {
                 {/* <ListItemAvatar>
                       <Avatar alt="hình đại diện" src={user?.avatar || avatar} />
                     </ListItemAvatar> */}
-                <Player
+                {/* <Player
                   autoplay
                   loop
                   style={{ height: '46px', width: '46px' }}
                   src={'https://assets1.lottiefiles.com/private_files/lf30_juqdjgia.json'}
-                />
+                /> */}
                 <ListItemText color='primary' primary={props.heading} sx={{ fontSize: '16px', textTransform: 'uppercase', color: 'primary !important' }} />
               </ListItem>
               <IconButton onClick={handleDrawerClose}>
-                <KeyboardDoubleArrowLeftIcon />
+                {/* <Player
+                  autoplay
+                  loop
+                  src="https://assets6.lottiefiles.com/packages/lf20_mte9qfuj.json"
+                  style={{ marginRight: '4px', height: '36px', width: '36px' }}
+                /> */}
+                 <KeyboardDoubleArrowLeftIcon />
               </IconButton></> :
             <IconButton
               color="inherit"
-              aria-label="open drawer"
+
               onClick={handleDrawerOpen}
             >
-              <Player
-                autoplay
-                loop
-                src="https://assets2.lottiefiles.com/private_files/lf30_3zseffbb.json"
-                style={{ height: '46px', width: '46px' }}
-              />
+              {/* <MyComponent
+               src={'https://assets1.lottiefiles.com/private_files/lf30_juqdjgia.json'}
+                style={{ height: '52px', width: '52px' }}
+              /> */}
+              <MenuIcon />
             </IconButton>
         }
 
@@ -217,7 +221,8 @@ const Sidebar = (props) => {
 
           }}
         >
-          {drawer}
+          <MyDrawer />
+          {/* {drawer} */}
         </Drawer>
         <Drawer
           variant='temporary'
@@ -228,10 +233,11 @@ const Sidebar = (props) => {
             '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth, height: '100%', top: 0 },
           }}
         >
-          {drawer}
+          <MyDrawer />
+          {/* {drawer} */}
         </Drawer>
 
-        <Box flex={1} p={2} width={0}>
+        <Box flex={1} p={2} width={0} key="content-dashboard">
           <Paper elevation={12} sx={{ padding: '8px 12px', marginBottom: '12px' }}>
             <Stack direction='row' alignItems='center'>
               <IconButton

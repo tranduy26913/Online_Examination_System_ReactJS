@@ -197,8 +197,10 @@ function Header() {
               ))}
             </Menu>
           </Box>
-          <Stack direction='row' sx={{ display: { xs: 'none', sm: 'flex' } }}>
+          <Link to='/'>
 
+          <Stack direction='row' sx={{ display: { xs: 'none', sm: 'flex' } }}>
+         
             <AdbIcon sx={{ mr: 1 }} />
             <Typography
               variant="h5"
@@ -219,6 +221,7 @@ function Header() {
               Bello Quiz
             </Typography>
           </Stack>
+          </Link>
           <Box height='100%' alignItems='center' sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {pages.map((page) => (
               <Link key={page.path} to={page.path}>

@@ -4,7 +4,7 @@ import MaintenancePage from 'components/MaintenancePage';
 import LayoutCourse from 'pages/Course/LayoutCourse';
 import React, { Suspense, lazy, useEffect, useState } from 'react';
 import { Route, Routes } from "react-router-dom";
-import Dashboard from "./pages/Dashboard"
+import Dashboard from "pages/Dashboard"
 
 import { DASHBOARD_STUDENT, DASHBOARD_TEACHER } from "constraints/StudentDashboard";
 import { useSelector } from 'react-redux';

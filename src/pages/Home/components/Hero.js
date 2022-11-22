@@ -1,6 +1,5 @@
 import { Player } from '@lottiefiles/react-lottie-player';
 import { Grid, Typography, Button, Stack, Box } from '@mui/material';
-import myteam2 from 'assets/img/home-hero.png';
 
 const Hero = () => {
 
@@ -9,11 +8,14 @@ const Hero = () => {
       <Grid container spacing={6} p='50px' alignItems='center'>
         <Grid item xs={12} md={7}>
           <Typography variant="h3" fontWeight={700} pb='15px'>
-            Nền tảng tạo đề thi trắc nghiệm
+            Nền tảng tạo đề thi và bài tập trực tuyến
           </Typography>
           <Typography variant="h6" pb='30px'>
-            Tạo đề thi, game trắc nghiệm nhanh chóng với nhiều dạng câu hỏi.
-            Giám sát thí sinh hiệu quả, thống kê trực quan...
+            Tạo đề thi trắc nghiệm nhanh chóng với nhiều dạng câu hỏi,giao bài tập dễ dàng. 
+            Giám sát thí sinh hiệu quả, thống kê trực quan.
+          </Typography>
+          <Typography variant="h6" pb='30px'>
+           
           </Typography>
           <Button
             variant="contained"

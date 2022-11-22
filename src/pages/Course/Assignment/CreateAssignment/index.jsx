@@ -71,6 +71,7 @@ const CreateAssignment = (props) => {
             setValue('name', res.name)
             setValue('startTime', res.startTime.substring(0, 16))
             setValue('endTime', res.endTime.substring(0, 16))
+            setValue('maxPoints', res.maxPoints)
             setStatus(res.status)
             setAllowReSubmit(res.allowReSubmit)
             setAllowSubmitLate(res.allowSubmitLate)

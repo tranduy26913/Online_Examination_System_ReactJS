@@ -24,6 +24,10 @@ const apiAssignment = {
         const res = await axiosClientWithToken.put(`/assignment/update`, params)
         return res.data;
     },
+    deleteAssignment: async (params, id) => {
+        const res = await axiosClientWithToken.delete(`/assignment/`, {params})
+        return res.data;
+    },
     PublishAssignment: async (params, id) => {
         const res = await axiosClientWithToken.put(`/assignment/public`, params)
         return res.data;

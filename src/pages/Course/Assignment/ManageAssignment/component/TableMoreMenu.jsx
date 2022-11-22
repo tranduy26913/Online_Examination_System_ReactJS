@@ -1,7 +1,7 @@
 import { useRef, useState, useContext } from 'react';
 // material
 import {
-  Menu, MenuItem, IconButton, ListItemIcon, ListItemText,
+  IconButton,
   Slide,
   Dialog,
   DialogTitle,
@@ -31,15 +31,14 @@ UserMoreMenu.propTypes = {
   studentId: PropTypes.string.isRequired,
   reloadList: PropTypes.func.isRequired
 }
-export default function UserMoreMenu({ assignmentSlug, reloadList }) {
+export default function UserMoreMenu({ id,assignmentSlug, reloadList }) {
   const [dialog, setDialog] = useState(false)
-  const { courseId, id: courseObjId } = useContext(CourseContext)//lấy id khoá học
+  const { courseId} = useContext(CourseContext)//lấy id khoá học
 
   const handleDeleteAssignment = () => {
     setDialog(false)
-    apiAssignment.deleteStudentInCourse({
-      assignmentSlug,
-      courseId: courseObjId
+    apiAssignment.deleteAssignment({
+      id
     })
       .then(res => {
         toast.success('Xoá học viên thành công')
@@ -89,7 +88,7 @@ export default function UserMoreMenu({ assignmentSlug, reloadList }) {
         <DialogTitle>{"Xoá học viên khỏi khoá học?"}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-slide-description">
-            Tất cả thông tin của học viên trong khoá học sẽ bị xoá. Bạn có chắn chắn xoá học viên này khỏi khoá học không?
+           Bạn có chắn chắn xoá bài tập này khỏi khoá học không?
           </DialogContentText>
         </DialogContent>
         <DialogActions>

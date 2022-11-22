@@ -139,6 +139,7 @@ function ToolAvatar() {
                             <Tooltip title="Tài khoản Premium">
                                 <Box sx={premiumStyle} >
                                     <Player
+                                    id='eeee'
                                         autoplay
                                         loop
                                         src="https://assets7.lottiefiles.com/packages/lf20_rZQs81.json"

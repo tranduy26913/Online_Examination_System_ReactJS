@@ -103,14 +103,16 @@ const LayoutCourse = () => {
             Trang chủ
           </Typography>
         </Link>
-        <Link key="1" to="/my/list-course">
+        <Link key="2" to="/my/list-course">
           <Typography>
             Danh sách khoá học
           </Typography>
         </Link>
+        <Link key="3" to={`/course/${courseId}/${tab?.link}`}>
         <Typography key="2">
-          {sidebarCourse.find(item => item.id === selectedTabId)?.text || ""}
+          {tab?.text || ""}
         </Typography>
+        </Link>
       </Breadcrumbs>)
   }
 

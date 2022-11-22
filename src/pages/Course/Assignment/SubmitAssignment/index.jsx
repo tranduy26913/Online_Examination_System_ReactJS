@@ -28,6 +28,7 @@ import { MyUploadAdapter } from 'config/MyCustomUploadAdapterPlugin';
 import DOMPurify from 'dompurify';
 import { calcDurationTime } from 'utils/formatTime';
 import apiSubmitAssignment from 'apis/apiSubmitassignment';
+import { ContentWrap } from 'components/UI/Content';
 
 const SubmitAssignment = (props) => {
   const theme = useTheme()
@@ -150,6 +151,29 @@ const SubmitAssignment = (props) => {
     }
     return text
   })()
+
+  const editable = (() => {
+    if (!isSubmitted) return false
+    if (status === 'close') return false
+    if (!allowReSubmit) return false
+    if (allowSubmitLate) return true
+    if (duration < 0) return false
+    return true
+  })()
+  const creatable = (() => {
+    if (isSubmitted) return false
+    if (allowSubmitLate) return true
+    if (duration < 0) return false
+    return true
+  })()
+  const deletable = (() => {
+    if (!isSubmitted) return false
+    if (status === 'close') return false
+    if (!allowReSubmit) return false
+    if (allowSubmitLate) return true
+    if (duration < 0) return false
+    return true
+  })()
   return (
     <Stack spacing={1.5}>
       <Paper elevation={6} sx={{ padding: '12px' }}>
@@ -195,9 +219,10 @@ const SubmitAssignment = (props) => {
 
             </AccordionSummary>
             <AccordionDetails>
-              <Paper elevation={6} sx={{ padding: 2 }}>
-
+              <Paper elevation={6}>
+              <ContentWrap>
                 <Typography dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(content) }} />
+              </ContentWrap>
               </Paper>
             </AccordionDetails>
           </Accordion>
@@ -222,7 +247,7 @@ const SubmitAssignment = (props) => {
                   return new MyUploadAdapter(loader, accessToken);
                 };
               }}
-            
+
               onChange={(event, editor) => {
                 setContentSubmission(editor.getData());
               }}
@@ -231,22 +256,21 @@ const SubmitAssignment = (props) => {
           </Stack>
           <Stack direction='row' justifyContent='center' spacing={2}>
             {
-              (allowSubmitLate && duration===0) && (
-              isSubmitted ? (
-                allowReSubmit && <LoadingButton variant='contained' loading={loading}
-                  onClick={handleUpdate} >
-                  Sửa bài làm
-                </LoadingButton>)
-                :
-                <LoadingButton variant='contained' loading={loading}
-                  onClick={handleCreate}>
-                  Nộp bài làm
-                </LoadingButton>
-              )
+              editable && <LoadingButton variant='contained' loading={loading}
+                onClick={handleUpdate} >
+                Sửa bài làm
+              </LoadingButton>
             }
-            {isSubmitted && allowReSubmit &&
+
+            {creatable && <LoadingButton variant='contained' loading={loading}
+              onClick={handleCreate}>
+              Nộp bài làm
+            </LoadingButton>}
+
+            {deletable &&
               <LoadingButton color='error' variant='contained' loading={loadingDelete}
                 onClick={handleDelete}>Loại bỏ bài nộp</LoadingButton>
+
             }
           </Stack>
         </Stack>

@@ -29,7 +29,7 @@ function Home() {
   },[])
   return (
     <>
-      <Page title='Trang chủ'>
+      <Page title='Bello Quiz - Hệ thống giáo dục trực tuyến'>
         <Box className='container' pb={5}>
           <Hero className='home-item'/>
           <Section className='home-item'/>
