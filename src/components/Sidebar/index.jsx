@@ -119,7 +119,6 @@ const Sidebar = (props) => {
     setMobileOpen(false);
   }
   const handleDrawerOpen = () => setOpen(true);
-  console.log('sidebar');
 
   const MyDrawer = () => (
     <>

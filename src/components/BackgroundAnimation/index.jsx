@@ -15,8 +15,6 @@ function BackgroundAnimation() {
         linkRadius: 120
     };
 
-    console.log('render animation')
-
     useEffect(() => {
 
         var rgb = options.lineColor.match(/\d+/g);

@@ -21,26 +21,25 @@ function App() {
   const accessToken = useSelector((state) => state.auth.accessToken);
   const dispatch = useDispatch();
 
-  try{
-    moment.locale('vi',{
-      weekdays : 'Chủ nhật_Thứ hai_Thứ ba_Thứ tư_Thứ năm_Thứ sáu_Thứ bảy'.split('_'),
-      longDateFormat : {
-        LT : 'HH:mm',
-        LTS : 'HH:mm:ss',
-        L : 'DD/MM/YYYY',
-        LL : 'D MMMM YYYY',
-        LLL : 'D MMMM YYYY HH:mm',
+  try {
+    moment.updateLocale('vi', {
+      weekdays: 'Chủ nhật_Thứ hai_Thứ ba_Thứ tư_Thứ năm_Thứ sáu_Thứ bảy'.split('_'),
+      longDateFormat: {
+        LT: 'HH:mm',
+        LTS: 'HH:mm:ss',
+        L: 'DD/MM/YYYY',
+        LL: 'D MMMM YYYY',
+        LLL: 'D MMMM YYYY HH:mm',
         //LLLL : 'dddd D MMMM YYYY HH:mm',
         LLLL: 'dddd D MMMM YYYY HH:mm:ss'
-    },
-    relativeTime : {
-      ss : '%d giây',
-      mm: "%dm",
-      hh: "%dh",
-  }
+      },
+      relativeTime: {
+        ss: '%d giây',
+        mm: "%dm",
+        hh: "%dh",
+      }
     })
-    console.log(moment().format('LLLL'))
-  }catch(err){
+  } catch (err) {
 
   }
   if (accessToken && refreshToken) {
