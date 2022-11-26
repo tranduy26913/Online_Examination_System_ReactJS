@@ -175,7 +175,7 @@ const palette = {
     divider: alpha("#000", 0.12),
 
     background: {
-      paper: "#f5f5f5",
+      paper: "#fbfbfb",
       default: alpha(PRIMARY.main,0.08),
     },
 
