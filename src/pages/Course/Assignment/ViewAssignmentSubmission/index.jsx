@@ -179,7 +179,7 @@ const ListSubmission = () => {
                                         let status = 'Chưa nộp'
                                         if (submitTime) {
                                             diffTime = moment(endTime).diff(submitTime, 'seconds')
-                                            duration = diffTime >= 0 ? 'Nộp sớm ' : 'Nộp trễ ' + calcDurationTime(Math.abs(diffTime))
+                                            duration =(diffTime >= 0 ? 'Nộp sớm ' : 'Nộp trễ ') + calcDurationTime(Math.abs(diffTime))
                                             status = 'Đã nộp'
                                         }
                                         return (

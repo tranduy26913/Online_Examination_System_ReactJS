@@ -32,10 +32,9 @@ import { ContentWrap } from 'components/UI/Content';
 
 const SubmitAssignment = (props) => {
   const theme = useTheme()
-  const paramUrl = useParams()
-
+  const slug = useParams().slug
   const [isSubmitted, setIsSubmitted] = useState(false)
-  const [slug, setSlug] = useState(paramUrl.slug || '')
+
   const [assignmentId, setAssignmentId] = useState('')
   const [status, setStatus] = useState('')
   const [name, setName] = useState('')
@@ -101,9 +100,15 @@ const SubmitAssignment = (props) => {
     }
     apiSubmitAssignment.CreateSubmitAssignment(params)
       .then(res => {
+        const { submitAssignment } = res
         toast.success("Tạo bài tập thành công")
-        navigate(`/course/${courseId}/manage-assignment`)
-        setSlug(res.slug)
+        // navigate(`/course/${courseId}/manage-assignment`)
+        setSubmitAssignmentId(submitAssignment.id || submitAssignment._id)
+        setIsSubmitted(true)
+        setContentSubmission(submitAssignment.content)
+        setSubmitTime(submitAssignment.submitTime)
+        setPoints(submitAssignment.points)
+        setDuration(moment(endTime).diff(submitAssignment.submitTime, 'seconds') || 0)
 
       })
       .finally(() => setLoading(false))
@@ -118,7 +123,14 @@ const SubmitAssignment = (props) => {
     apiSubmitAssignment.UpdateSubmitAssignment(params)
       .then(res => {
         toast.success("Cập nhật bài tập thành công")
-        navigate(`/course/${courseId}/manage-assignment`)
+        // navigate(`/course/${courseId}/manage-assignment`)
+        const submitAssignment = res.updateSubmitAssignment
+        setSubmitAssignmentId(submitAssignment.id || submitAssignment._id)
+        setIsSubmitted(true)
+        setContentSubmission(submitAssignment.content)
+        setSubmitTime(submitAssignment.submitTime)
+        setPoints(submitAssignment.points)
+        setDuration(moment(endTime).diff(submitAssignment.submitTime, 'seconds') || 0)
       })
       .finally(() => setLoading(false))
   }
@@ -130,7 +142,13 @@ const SubmitAssignment = (props) => {
     apiSubmitAssignment.DeleteSubmitAssignment(params)
       .then(res => {
         toast.success("Xoá bài nộp thành công")
-        navigate(`/course/${courseId}/manage-assignment`)
+        //navigate(`/course/${courseId}/manage-assignment`)
+        setSubmitAssignmentId('')
+        setIsSubmitted(false)
+        setContentSubmission('')
+        setSubmitTime('')
+        setPoints(null)
+        setDuration(moment(endTime).diff(new Date(), 'seconds') || 0)
       })
       .catch(err => {
         toast.success("Xoá bài nộp không thành công")
@@ -220,9 +238,9 @@ const SubmitAssignment = (props) => {
             </AccordionSummary>
             <AccordionDetails>
               <Paper elevation={6}>
-              <ContentWrap>
-                <Typography dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(content) }} />
-              </ContentWrap>
+                <ContentWrap>
+                  <Typography dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(content) }} />
+                </ContentWrap>
               </Paper>
             </AccordionDetails>
           </Accordion>
