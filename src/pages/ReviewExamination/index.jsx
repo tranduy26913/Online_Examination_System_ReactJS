@@ -15,6 +15,18 @@ import { useParams } from 'react-router-dom'
 import Question from './Question'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
+const style = {
+  flexDirection: { xs: 'column', md: 'row' },
+  gap: '12px',
+  '&>div:nth-of-type(1)': {
+    'order': { xs: 2, md: 1 }
+  },
+  '&>div:nth-of-type(2)': {
+    'order': { xs: 1, md: 2 },
+    width: '100%'
+  }
+}
+
 function ReviewExamination() {
   const theme = useTheme()
   const { takeExamId } = useParams()
@@ -22,6 +34,10 @@ function ReviewExamination() {
   const [name, setName] = useState('')
   const [startTime, setStartTime] = useState(new Date())
   const [submitTime, setSubmitTime] = useState(new Date())
+  const [viewPoint, setViewPoint] = useState('no')
+  const [viewAnswer, setViewAnswer] = useState('no')
+  const [points, setPoints] = useState('no')
+  const [maxPoints, setMaxPoints] = useState('no')
   const [questions, setQuestions] = useState([])
   const [indexQuestion, setIndexQuestion] = useState([])
   const user = useSelector(state => state.user.info)
@@ -42,8 +58,6 @@ function ReviewExamination() {
 
   useEffect(() => {
     const getQuestions = () => {
-
-
       if (!takeExamId)
         return
 
@@ -52,22 +66,17 @@ function ReviewExamination() {
           setupQuestion(res?.questions || [])
           setStartTime(res.startTime)
           setSubmitTime(res.submitTime)
+          setViewPoint(res.viewPoint)
+          setViewAnswer(res.viewAnswer)
+          setPoints(res.points)
+          setMaxPoints(res.maxPoints)
+          setName(res.name)
         })
     }
     getQuestions()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [takeExamId])
-  const style = {
-    flexDirection: { xs: 'column', md: 'row' },
-    gap: '12px',
-    '&>div:nth-of-type(1)': {
-      'order': { xs: 2, md: 1 }
-    },
-    '&>div:nth-of-type(2)': {
-      'order': { xs: 1, md: 2 },
-      width: '100%'
-    }
-  }
+  
   return (
     <Page title={name}>
 
@@ -86,13 +95,15 @@ function ReviewExamination() {
 
             <Stack width='100%' flex={{ xs: 1, md: 3, lg: 4 }} spacing={3}><Paper elevation={12}>
               <Stack p={2}>
-                <Typography>Thời gian bắt đầu: {moment(startTime).format("DD-MM-YYYY HH:mm")}</Typography>
-                <Typography>Thời gian nộp bài: {moment(submitTime).format("DD-MM-YYYY HH:mm")}</Typography>
+                <Typography><strong>Thời gian bắt đầu: </strong> {moment(startTime).format("DD-MM-YYYY HH:mm")}</Typography>
+                <Typography><strong>Thời gian nộp bài: </strong>{moment(submitTime).format("DD-MM-YYYY HH:mm")}</Typography>
+                <Typography><strong>Điểm tối đa: </strong>{maxPoints}</Typography>
+                <Typography><strong>Điểm đạt được: </strong>{points === undefined ?'Chưa có điểm':points}</Typography>
               </Stack>
             </Paper>
               {
                 questions.map((item, index) =>
-                  <Question key={item.id || item._id}
+                  <Question key={item._id}
                     question={item} index={index} />)
               }
             </Stack>
@@ -103,7 +114,7 @@ function ReviewExamination() {
 
               <Paper elevation={24} >
 
-                <Stack spacing={1} p={1.5}>
+                <Stack spacing={1}>
                   <Accordion
                     sx={{
                       boxShadow: 'none'
@@ -116,12 +127,12 @@ function ReviewExamination() {
                       <Typography fontSize='16px' fontWeight={600}>Danh sách câu hỏi</Typography>
                     </AccordionSummary>
                     <AccordionDetails sx={{
-                      padding: 0
+                      padding: 1.5
                     }}>
                       <Grid container spacing={0.5}>
                         {
                           indexQuestion.map((item, index) =>
-                            <Grid key={index}  xs={1.5} sm={1} md={3} lg={2}item >
+                            <Grid key={index} xs={1.5} sm={1} md={3} lg={2} item>
                               <ButtonQuestion className={`${item.isDone ? 'done' : ''} ${item.isFlag ? 'flag' : ''}`}
                                 onClick={() => document.getElementById(`question-${index}`)
                                   .scrollIntoView({ block: 'center', behavior: "smooth" })}

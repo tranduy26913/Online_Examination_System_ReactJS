@@ -37,6 +37,9 @@ const StackQuestionContent = styled(Stack)(({ theme }) => ({
     },
     '&.fail': {
         borderLeft: `8px solid ${theme.palette.error.main}`,
+    },
+    '&.noview': {
+        borderLeft: `8px solid ${theme.palette.warning.main}`,
     }
 }))
 
@@ -51,42 +54,17 @@ const TypographyQuestion = styled(Typography)(({ theme }) => ({
 
 
 const Question = (props) => {
-    const { question } = props
-    const calcPoint = () => {
-        let points = 0
-        let noAnswerCorrect = question.answers.filter(e => e.isCorrect).length //số đáp án đúng
-        let choose = question.choose
-        if (!choose) {
-            if (noAnswerCorrect === 0)
-                points += question.maxPoints
-        }
-        else {
-            if (noAnswerCorrect === 0) {
-                if (choose?.length === 0)
-                    points += question.maxPoints
-            }
-            else {
-
-                let pointEachAnswer = question.maxPoints / noAnswerCorrect
-                question.answers.forEach(answer => {
-                    if (answer.isCorrect) {//
-                        if (choose.includes(answer.id.toString()))
-                        points += pointEachAnswer
-                    }
-                    else {
-                        if (choose.includes(answer.id.toString()))
-                        points -= pointEachAnswer
-                    }
-
-                })
-            }
-        }
-        return points < 0 ? 0 : points
-    }
-    const points = calcPoint()
+    const { question, viewPoint, viewAnswer } = props
+    const point = question?.point
+    const statusQuestion = (()=>{
+        if(point === undefined)
+            return 'noview'
+        if(point === 0) return 'fail'
+        return 'done'
+    })()
     return (
         <StackQuestionContent id={`question-${props.index}`} spacing={1} pr={2}
-         className={points === 0 ? 'fail' : points === question.maxPoints ? 'done' : ''} >
+            className={statusQuestion} >
             <TypographyQuestion>Câu hỏi {props.index + 1}</TypographyQuestion>
 
             <Stack flex={1} pb={2}>
@@ -103,13 +81,14 @@ const Question = (props) => {
                                     <Stack key={item.id} direction='row'>
                                         <FormControlLabelCustom
                                             value={item.id} control={<Radio size='small' sx={{ height: '34px' }} />} label={item.content} />
-                                        {item.isCorrect ? <CheckCircleOutlineIcon
+                                        {item.isCorrect !== undefined && (item.isCorrect ? <CheckCircleOutlineIcon
                                             sx={{ fontSize: '22px', margin: '6px 0px 0px 10px' }}
                                             color={'success'} />
                                             :
                                             question.choose?.[0] === item.id && <HighlightOffIcon
                                                 sx={{ fontSize: '22px', margin: '6px 0px 0px 10px' }}
-                                                color={'error'} />}
+                                                color={'error'} />
+                                            )}
                                     </Stack>
                                 )
                             }
@@ -118,7 +97,7 @@ const Question = (props) => {
                         <FormGroup>
                             {
                                 question.answers.map(item =>
-                                    <Stack key={item.id} direction='row'>
+                                    <Stack key={item.id || item._id} direction='row'>
                                         <FormControlLabelCustom
                                             value={item.id}
                                             control={
@@ -145,7 +124,14 @@ const Question = (props) => {
             </Stack>
             <ButtonGroup variant="outlined">
                 {/* <Button variant='outlined'>Chưa trả lời</Button> */}
-                <Button variant='outlined'>Điểm: {points}/{question.maxPoints}</Button>
+                {statusQuestion === 'noview' ?
+                <>
+                <Button variant='contained'>Điểm tối đa:{question.maxPoints}</Button>
+                <Button variant='contained'>Chưa có điểm</Button>
+                </>
+                :
+                <Button variant='contained'>Điểm: {question.point}/{question.maxPoints}</Button>
+                }
             </ButtonGroup>
         </StackQuestionContent>
     )

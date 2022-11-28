@@ -41,6 +41,7 @@ export default function TableHeadCustom({
           <TableCell
             key={headCell.id}
             align={headCell.align}
+            sx={{fontWeight:600}}
             sortDirection={orderBy === headCell.id ? order : false}
           >
             <TableSortLabel

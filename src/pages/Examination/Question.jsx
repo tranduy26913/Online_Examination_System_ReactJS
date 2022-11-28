@@ -18,6 +18,7 @@ import { useState,memo } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { changeAnswer } from 'slices/answerSheetSlice';
 import DOMPurify from 'dompurify'
+import apiTakeExam from 'apis/apiTakeExam';
 
 const FormControlLabelCustom = styled(FormControlLabel)({
   margin: 0,
@@ -57,9 +58,11 @@ const getAnswers = (arr, id) => {//lấy đáp án của câu hỏi
 }
 const Question = (props) => {
   const { question } = props
-  const answerSheet = useSelector(state => state.answerSheet.result)
+  const indexQuestion = question?.index
+  const answerSheet = useSelector(state => state.answerSheet?.result)
   const dispatch = useDispatch()
   const [value, setValue] = useState(getAnswers(answerSheet, question.id));
+  const takeExamId = useSelector(state => state.answerSheet?.takeExamId)
   //const [flag,setFlag] = useState(false)
 
   const handleChangeStateFlag = () => {
@@ -76,6 +79,7 @@ const Question = (props) => {
     }))
     setValue(newValue)
     props.changeStateDoneIndex(props.index, true)
+    handleCreateLog()
   };
 
   const handleChangeMulti = (event) => {//đổi lựa chọn cho câu hỏi nhiều lựa chọn
@@ -90,7 +94,15 @@ const Question = (props) => {
     }))
     setValue(newValue)
     props.changeStateDoneIndex(props.index, true)
+    handleCreateLog()
   };
+
+  const handleCreateLog = ()=>{
+    apiTakeExam.createLog({
+      action:`Thay đổi đáp án cho câu hỏi số ${indexQuestion}`,
+      takeExamId
+    })
+  }
   return (
     <StackQuestionContent id={`question-${props.index}`} spacing={1} pr={2} className={props.stateDone ? 'done' : ''} >
       <TypographyQuestion>Câu hỏi {props.index + 1}</TypographyQuestion>

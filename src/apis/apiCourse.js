@@ -1,17 +1,17 @@
-import { axiosClient,axiosClientWithToken } from "./axiosClient";
+import { axiosClientWithToken } from "./axiosClient";
 
  const apiCourse = {
 
-    getCourses: async (params) => {
-        const res = await axiosClient.get('/courses', {params})
+    getCourseToEnroll: async (params) => {
+        const res = await axiosClientWithToken.get('/course/info-to-enroll', {params})
         return res.data;
     },
-    getCourseBySlug: async (slug) => {
-        const res = await axiosClient.get('/courses', {params:{slug}})
+    EnrollIntoCourse: async (params) => {
+        const res = await axiosClientWithToken.post('/course/enroll-in-course',params)
         return res.data;
     },
     getCourseByCourseID: async (params) => {
-        const res = await axiosClient.get('/course/by-courseid', {params})
+        const res = await axiosClientWithToken.get('/course/by-courseid', {params})
         return res.data;
     },
     getListCourseByTeacher: async (params) => {
@@ -59,6 +59,10 @@ import { axiosClient,axiosClientWithToken } from "./axiosClient";
         const res = await axiosClientWithToken.post('/course/update-file', params,{headers: {
             'Content-Type': 'multipart/form-data'
           }})
+        return res.data;
+    },
+    exitCourse: async (params) => {
+        const res = await axiosClientWithToken.put('/course/exit-course', params)
         return res.data;
     },
 }

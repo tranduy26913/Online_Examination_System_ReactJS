@@ -35,6 +35,7 @@ import UpgradeAccount from './UpgradeAccount';
 import LoadingButton from "components/LoadingButton";
 import ToolAvatar from "./ToolAvatar";
 import UpgradeRole from "./UpgradeRole";
+import Page from "components/Page";
 
 const Profile = () => {
     const user = useSelector(state => state.user.info);
@@ -50,7 +51,7 @@ const Profile = () => {
             school: user?.school || ""
         }
     });
-   
+
 
     const [birthday, setBirthday] = useState(moment(user?.birthday))
     const [gender, setGender] = useState(user ? user.gender : "")
@@ -62,7 +63,7 @@ const Profile = () => {
 
 
     const onChangeGender = (event) => {
-        setGender(event.target.value); 
+        setGender(event.target.value);
     }
     const onSaveChange = (data) => {
         const { fullname, address, phone, school } = data
@@ -91,193 +92,196 @@ const Profile = () => {
                 dispatch(setUserInfo(newUser))
             })
     }
-   
+
     return (
-        <Stack className="customer-info" spacing={3}>
-            <Stack direction={{md:'column',lg:'row'}} gap={2} >
-                <Paper elevation={12} sx={{ flex: {md:1,lg:2} }}>
-                    <Stack p={2} height='100%' spacing={2} >
+        <Page title="Thông tin cá nhân">
 
-                        <Typography>Thông tin cá nhân</Typography>
-                        <Stack direction="row" spacing={4} justifyContent='center'>
-                            <ToolAvatar/>
+            <Stack className="customer-info" spacing={3}>
+                <Stack direction={{ md: 'column', lg: 'row' }} gap={2} >
+                    <Paper elevation={12} sx={{ flex: { md: 1, lg: 2 } }}>
+                        <Stack p={2} height='100%' spacing={2} >
+
+                            <Typography>Thông tin cá nhân</Typography>
+                            <Stack direction="row" spacing={4} justifyContent='center'>
+                                <ToolAvatar />
 
 
-                        </Stack>
-                        <Grid container spacing={2} width='100%'>
-                            <Grid md={6} xs={12}>
-                                <Controller
-                                    name={'fullname'}
-                                    control={control}
-                                    render={({ field, fieldState: { error } }) => (
-                                        <TextField
-                                            {...field}
-                                            fullWidth
-                                            label="Họ và tên"
-                                            size='small'
-                                            error={error !== undefined}
-                                            helperText={error ? error.message : ''}
-                                        />)}
-                                />
-                            </Grid>
-                            <Grid md={6} xs={12}>
-                                <LocalizationProvider dateAdapter={AdapterMoment}>
-                                    <DesktopDatePicker
-                                        inputFormat="DD/MM/YYYY"
-                                        label="Ngày sinh"
-                                        value={birthday}
-                                        onChange={handleBirthday}
-                                        renderInput={(params) =>
-                                            <TextField {...params} size='small' fullWidth />
-                                        }
+                            </Stack>
+                            <Grid container spacing={2} width='100%'>
+                                <Grid md={6} xs={12}>
+                                    <Controller
+                                        name={'fullname'}
+                                        control={control}
+                                        render={({ field, fieldState: { error } }) => (
+                                            <TextField
+                                                {...field}
+                                                fullWidth
+                                                label="Họ và tên"
+                                                size='small'
+                                                error={error !== undefined}
+                                                helperText={error ? error.message : ''}
+                                            />)}
                                     />
-                                </LocalizationProvider>
-                            </Grid>
-                            <Grid md={6} xs={12}>
-                                <Controller
-                                    name={'phone'}
-                                    control={control}
-                                    render={({ field, fieldState: { error } }) => (
-                                        <TextField
-                                            {...field}
-                                            fullWidth
-                                            size='small'
-                                            label="Số điện thoại"
-                                            error={error !== undefined}
-                                            helperText={error ? error.message : ''}
-                                        //InputLabelProps={{ shrink: true }}
-                                        />)}
-                                />
-                            </Grid>
-                            <Grid md={6} xs={12}>
-                                <Controller
-                                    name={'address'}
-                                    control={control}
-                                    render={({ field, fieldState: { error } }) => (
-                                        <TextField
-                                            {...field}
-                                            fullWidth
-                                            size='small'
-                                            label="Địa chỉ"
-                                        />)}
-                                />
-                            </Grid>
-                            <Grid xs={12}>
-                                <Controller
-                                    name={'school'}
-                                    control={control}
-                                    render={({ field, fieldState: { error } }) => (
-                                        <TextField
-                                            {...field}
-                                            fullWidth
-                                            size='small'
-                                            label="Trường học"
-                                        />)}
-                                />
-                            </Grid>
-                            <Grid xs={12}>
-                                <FormControl sx={{ width: '100%' }}>
-                                    <label>Giới tính</label>
-                                    <RadioGroup
-                                        row
-                                        name="row-radio-buttons-group"
-                                        value={gender}
-                                        onChange={onChangeGender}
-                                    >
-                                        <FormControlLabel value="Male" control={<Radio />} label="Nam" />
-                                        <FormControlLabel value="Female" control={<Radio />} label="Nữ" />
+                                </Grid>
+                                <Grid md={6} xs={12}>
+                                    <LocalizationProvider dateAdapter={AdapterMoment}>
+                                        <DesktopDatePicker
+                                            inputFormat="DD/MM/YYYY"
+                                            label="Ngày sinh"
+                                            value={birthday}
+                                            onChange={handleBirthday}
+                                            renderInput={(params) =>
+                                                <TextField {...params} size='small' fullWidth />
+                                            }
+                                        />
+                                    </LocalizationProvider>
+                                </Grid>
+                                <Grid md={6} xs={12}>
+                                    <Controller
+                                        name={'phone'}
+                                        control={control}
+                                        render={({ field, fieldState: { error } }) => (
+                                            <TextField
+                                                {...field}
+                                                fullWidth
+                                                size='small'
+                                                label="Số điện thoại"
+                                                error={error !== undefined}
+                                                helperText={error ? error.message : ''}
+                                            //InputLabelProps={{ shrink: true }}
+                                            />)}
+                                    />
+                                </Grid>
+                                <Grid md={6} xs={12}>
+                                    <Controller
+                                        name={'address'}
+                                        control={control}
+                                        render={({ field, fieldState: { error } }) => (
+                                            <TextField
+                                                {...field}
+                                                fullWidth
+                                                size='small'
+                                                label="Địa chỉ"
+                                            />)}
+                                    />
+                                </Grid>
+                                <Grid xs={12}>
+                                    <Controller
+                                        name={'school'}
+                                        control={control}
+                                        render={({ field, fieldState: { error } }) => (
+                                            <TextField
+                                                {...field}
+                                                fullWidth
+                                                size='small'
+                                                label="Trường học"
+                                            />)}
+                                    />
+                                </Grid>
+                                <Grid xs={12}>
+                                    <FormControl sx={{ width: '100%' }}>
+                                        <label>Giới tính</label>
+                                        <RadioGroup
+                                            row
+                                            name="row-radio-buttons-group"
+                                            value={gender}
+                                            onChange={onChangeGender}
+                                        >
+                                            <FormControlLabel value="Male" control={<Radio />} label="Nam" />
+                                            <FormControlLabel value="Female" control={<Radio />} label="Nữ" />
 
-                                    </RadioGroup>
-                                </FormControl>
+                                        </RadioGroup>
+                                    </FormControl>
+                                </Grid>
+
                             </Grid>
 
-                        </Grid>
-
-                        <LoadingButton loading={updating} variant="contained" sx={{ width: 200, alignSelf: "center" }}
-                            onClick={handleSubmit(onSaveChange)}
-                        >
-                            Lưu thay đổi
-                        </LoadingButton>
-                    </Stack>
-                </Paper>
-
-                <Paper elevation={12} sx={{ flex: 1 }}>
-                    <Stack spacing={4} p={2}>
-                        <Typography>Thông tin tài khoản</Typography>
-
-                        <Stack
-                            direction="row"
-                            alignItems="center"
-                            justifyContent="space-between"
-                        >
-                            <Stack direction="row" spacing={1}>
-                                <DiamondIcon color="primary" />
-                                <ListItemText
-                                    sx={{ '& span': { fontSize: "13px" } }}
-                                    primary="Loại tài khoản" secondary={user?.premium ? "PREMIUM" : "FREE"} />
-                            </Stack>
-                            {
-                                !user?.premium &&
-                                <UpgradeAccount />
-                            }
+                            <LoadingButton loading={updating} variant="contained" sx={{ width: 200, alignSelf: "center" }}
+                                onClick={handleSubmit(onSaveChange)}
+                            >
+                                Lưu thay đổi
+                            </LoadingButton>
                         </Stack>
-                        <Stack
-                            direction="row"
-                            alignItems="center"
-                            justifyContent="space-between"
-                        >
-                            <Stack direction="row" spacing={1}>
-                                <DiamondIcon color="primary" />
-                                <ListItemText
-                                    sx={{ '& span': { fontSize: "13px" } }}
-                                    primary="Quyền hạn" secondary={user?.role === 'TEACHER' ? "Giáo viên" : "Học sinh"} />
-                            </Stack>
-                            {
-                                user?.role === 'STUDENT'&&
-                                <UpgradeRole />
-                            }
-                        </Stack>
+                    </Paper>
 
-                        <Stack
-                            direction="row"
-                            spacing={15}
-                            alignItems="center"
-                            justifyContent="space-between"
-                        >
-                            <Stack direction="row" spacing={1}>
-                                <EmailIcon color="primary" />
-                                <ListItemText
-                                    sx={{ '& span': { fontSize: "13px" } }}
-                                    primary="Địa chỉ email"
-                                    secondary={user?.email}
-                                />
-                            </Stack>
-                        </Stack>
+                    <Paper elevation={12} sx={{ flex: 1 }}>
+                        <Stack spacing={4} p={2}>
+                            <Typography>Thông tin tài khoản</Typography>
 
-                        <Typography>Bảo mật</Typography>
-                        <Stack
-                            direction="row"
-                            alignItems="center"
-                            justifyContent="space-between"
-                        >
-                            <Stack direction="row" spacing={1}>
-                                <LockIcon color="primary" />
-                                <ListItemText primary="Đổi mật khẩu" />
+                            <Stack
+                                direction="row"
+                                alignItems="center"
+                                justifyContent="space-between"
+                            >
+                                <Stack direction="row" spacing={1}>
+                                    <DiamondIcon color="primary" />
+                                    <ListItemText
+                                        sx={{ '& span': { fontSize: "13px" } }}
+                                        primary="Loại tài khoản" secondary={user?.premium ? "PREMIUM" : "FREE"} />
+                                </Stack>
+                                {
+                                    !user?.premium &&
+                                    <UpgradeAccount />
+                                }
                             </Stack>
-                            <Link to={{
-                                pathname: "/my/profile/change-password",
-                                param1: "ee"
-                            }}>
-                                <Button size="small" variant="outlined">
-                                    Đổi mật khẩu
-                                </Button>
-                            </Link>
+                            <Stack
+                                direction="row"
+                                alignItems="center"
+                                justifyContent="space-between"
+                            >
+                                <Stack direction="row" spacing={1}>
+                                    <DiamondIcon color="primary" />
+                                    <ListItemText
+                                        sx={{ '& span': { fontSize: "13px" } }}
+                                        primary="Quyền hạn" secondary={user?.role === 'TEACHER' ? "Giáo viên" : "Học sinh"} />
+                                </Stack>
+                                {
+                                    user?.role === 'STUDENT' &&
+                                    <UpgradeRole />
+                                }
+                            </Stack>
+
+                            <Stack
+                                direction="row"
+                                spacing={15}
+                                alignItems="center"
+                                justifyContent="space-between"
+                            >
+                                <Stack direction="row" spacing={1}>
+                                    <EmailIcon color="primary" />
+                                    <ListItemText
+                                        sx={{ '& span': { fontSize: "13px" } }}
+                                        primary="Địa chỉ email"
+                                        secondary={user?.email}
+                                    />
+                                </Stack>
+                            </Stack>
+
+                            <Typography>Bảo mật</Typography>
+                            <Stack
+                                direction="row"
+                                alignItems="center"
+                                justifyContent="space-between"
+                            >
+                                <Stack direction="row" spacing={1}>
+                                    <LockIcon color="primary" />
+                                    <ListItemText primary="Đổi mật khẩu" />
+                                </Stack>
+                                <Link to={{
+                                    pathname: "/my/profile/change-password",
+                                    param1: "ee"
+                                }}>
+                                    <Button size="small" variant="outlined">
+                                        Đổi mật khẩu
+                                    </Button>
+                                </Link>
+                            </Stack>
                         </Stack>
-                    </Stack>
-                </Paper>
+                    </Paper>
+                </Stack>
+
             </Stack>
-
-        </Stack>
+        </Page>
     );
 }
 

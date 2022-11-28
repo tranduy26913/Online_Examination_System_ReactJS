@@ -1,4 +1,4 @@
-import { useRef, useState, useContext } from 'react';
+import { useState, useContext } from 'react';
 // material
 import {
   IconButton,
@@ -28,7 +28,8 @@ const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 UserMoreMenu.propTypes = {
-  studentId: PropTypes.string.isRequired,
+  id: PropTypes.string.isRequired,
+  assignmentSlug: PropTypes.number.isRequired,
   reloadList: PropTypes.func.isRequired
 }
 export default function UserMoreMenu({ id,assignmentSlug, reloadList }) {
@@ -85,7 +86,7 @@ export default function UserMoreMenu({ id,assignmentSlug, reloadList }) {
         onClose={handleClose}
         aria-describedby="alert-dialog-slide-description"
       >
-        <DialogTitle>{"Xoá học viên khỏi khoá học?"}</DialogTitle>
+        <DialogTitle>{"Xoá bài tập khỏi khoá học?"}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-slide-description">
            Bạn có chắn chắn xoá bài tập này khỏi khoá học không?

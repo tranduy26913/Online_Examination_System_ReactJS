@@ -1,7 +1,7 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useState } from "react";
 
 import { Link } from "react-router-dom";
-
+import WebhookIcon from '@mui/icons-material/Webhook';
 import {
   List,
   ListItem,
@@ -136,7 +136,8 @@ const Sidebar = (props) => {
                   style={{ height: '46px', width: '46px' }}
                   src={'https://assets1.lottiefiles.com/private_files/lf30_juqdjgia.json'}
                 /> */}
-                <ListItemText color='primary' primary={props.heading} sx={{ fontSize: '16px', textTransform: 'uppercase', color: 'primary !important' }} />
+                <WebhookIcon color='primary'/>
+                <ListItemText color='primary' primary={props.heading} sx={{ marginLeft:'6px',fontSize: '16px', textTransform: 'uppercase', color: 'primary !important' }} />
               </ListItem>
               <IconButton onClick={handleDrawerClose}>
                 {/* <Player

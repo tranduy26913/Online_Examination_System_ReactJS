@@ -7,10 +7,10 @@ import { SIDEBAR_COURSE_TEACHER, SIDEBAR_COURSE_STUDENT } from "constraints/Stud
 import {
   Button,
   Stack,
-  Box,
   Typography,
   Breadcrumbs,
-  Paper
+  Paper,
+
 } from "@mui/material";
 
 import SendIcon from '@mui/icons-material/Send';
@@ -26,6 +26,8 @@ import { useCallback } from "react";
 import './ListTest.scss'
 import CourseContext from "./CourseContext";
 import { useSelector } from "react-redux";
+import ExitCourse from "./ExitCourse";
+import ShareTray from "components/ShareTray";
 //import { CSSTransition } from 'react-transition-group';
 
 const checkSelectedTab = (item, pathname) => {
@@ -46,8 +48,6 @@ const LayoutCourse = () => {
   const navigate = useNavigate()
 
   const { courseId } = useParams()
-
-  //const paramUrl = useSearchParams()[0]
 
   const handleChangeTab = useCallback(id => setSelectedTabId(id), [])
 
@@ -95,7 +95,7 @@ const LayoutCourse = () => {
     return (
       <Breadcrumbs
         separator={<NavigateNextIcon fontSize="small" />}
-        sx={{ fontSize: "14px",color:'#000' }}
+        sx={{ fontSize: "14px" }}
       //
       >
         <Link key="1" to="/">
@@ -109,9 +109,9 @@ const LayoutCourse = () => {
           </Typography>
         </Link>
         <Link key="3" to={`/course/${courseId}/${tab?.link}`}>
-        <Typography key="2">
-          {tab?.text || ""}
-        </Typography>
+          <Typography key="2">
+            {tab?.text || ""}
+          </Typography>
         </Link>
       </Breadcrumbs>)
   }
@@ -127,41 +127,47 @@ const LayoutCourse = () => {
       handleChangeTab={handleChangeTab}
       heading={'Khoá học'}
       Breadcrumbs={DashboardBreadcrumbs}>
-      
-      <Paper elevation={24}>
+      <CourseContext.Provider value={{ id: course?.id || "", courseId: course?.courseId || "" }}>
+        <Paper elevation={12}>
 
-        <Stack direction={{xs:'column',sm:'row'}} className='listtest__course'>
-          <Stack flex={1} p='0 10px' width={{xs:'60%'}} m={'auto'} sx={{borderRadius:'10px'}}>
-            <img alt='' src={course.image} />
-          </Stack>
-          <Stack  px={2} flex={{xs:1,sm:2,lg:3}} spacing={1}>
-            <Typography
-              fontSize={'18px'}
-              color='primary'
-              >Khoá học: {course?.name}</Typography>
-            <Typography >{course?.description}</Typography>
-            <Typography >Số lượng bài kiểm tra: {course?.exams?.length}</Typography>
-            <Stack flex={1} direction={{xs:'column',sm:'row'}}
-            
-             spacing={2} justifyContent='flex-start' alignItems='center' >
-              {
-                role === 'teacher' &&
-              <Link to={`/my/list-course/edit-course/${courseId}`}>
-                <Button
-                  variant='outlined'
-                  endIcon={<EditIcon />}
-                >Chỉnh sửa</Button>
-              </Link>
-              }
-              <Button
-                variant='outlined'
-                endIcon={<SendIcon />}
-              >Chia sẻ</Button>
+          <Stack direction={{ xs: 'column', sm: 'row' }} className='listtest__course'>
+            <Stack flex={1} p='0 10px' width={{ xs: '60%' }} m={'auto'} sx={{ borderRadius: '10px' }}>
+              <img alt='' src={course.image} />
+            </Stack>
+            <Stack px={2} flex={{ xs: 1, sm: 2, lg: 3 }} direction='row' alignItems='flex-start'>
+              <Stack flex={1} spacing={1}>
+                <Typography
+                  fontSize={'18px'}
+                  color='primary'
+                >Khoá học: {course?.name}</Typography>
+                <Typography >{course?.description}</Typography>
+                <Typography >Số lượng bài kiểm tra: {course?.exams?.length}</Typography>
+                <Stack flex={1} direction={{ xs: 'column', sm: 'row' }}
+
+                  spacing={2} justifyContent='flex-start' alignItems='center' >
+                  {
+                    role === 'teacher' &&
+                    <Link to={`/my/list-course/edit-course/${courseId}`}>
+                      <Button
+                        variant='outlined'
+                        endIcon={<EditIcon />}
+                      >Chỉnh sửa</Button>
+                    </Link>
+                  }
+                  <ShareTray url={`https://oes.vercep.app/enroll/${courseId}`}
+                    title="Tham gia khoá học"
+                    quote={"Tham gia khoá học"}
+                    variant='outlined'
+                    endIcon={<SendIcon />}
+                    text='Chia sẻ' />
+                  {/* <FacebookShareCount  /> */}
+                </Stack>
+              </Stack>
+              <ExitCourse />
             </Stack>
           </Stack>
-        </Stack>
-      </Paper>
-      <CourseContext.Provider value={{ id: course?.id || "", courseId: course?.courseId || "" }}>
+        </Paper>
+
         <Outlet />
       </CourseContext.Provider>
 

@@ -22,6 +22,7 @@ const Examination = lazy(() => import("pages/Examination"));
 const ListStudent = lazy(() => import("pages/Course/ListStudent"));
 const CreateCourse = lazy(() => import("pages/Course/CreateCourse"));
 const Active = lazy(() => import("pages/Active"));
+const EnrollCourse = lazy(() => import("pages/EnrollCourse"));
 const QuestionBank = lazy(() => import("pages/Dashboard/QuestionBank"));
 const QuestionBankDetail = lazy(() => import("pages/Dashboard/QuestionBankDetail"));
 const ResultPayment = lazy(() => import("pages/ResultPayment"));
@@ -244,7 +245,8 @@ function ConfigRoute() {
         <Route path="review-exam/:takeExamId" element={<ReviewExamination />} />
         <Route path="reset-password/:token" element={<ResetPassword />} />
         <Route path="/*" element={<Page404 />} />
-
+        {role === 'student' &&
+         <Route path="enroll/:courseId" element={<EnrollCourse />} />}
 
       </Routes>
     </Suspense>

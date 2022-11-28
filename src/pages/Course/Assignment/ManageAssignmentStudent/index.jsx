@@ -1,4 +1,4 @@
-import { useEffect,useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
     Paper,
     Stack,
@@ -8,11 +8,11 @@ import Page from 'components/Page';
 import { useContext } from 'react';
 import CourseContext from 'pages/Course/LayoutCourse/CourseContext';
 import AssignmentItem from './AssignmentItem';
-import moment from 'moment';
 import apiAssignment from 'apis/apiAssignment';
+import EmptyList from 'components/UI/EmptyList';
 const ListAssignmentStudent = () => {
     const [listAssignment, setListAssignment] = useState([])
-    const { courseId} = useContext(CourseContext)
+    const { courseId } = useContext(CourseContext)
 
     useEffect(() => {
         const getListAssignment = () => {
@@ -32,17 +32,18 @@ const ListAssignmentStudent = () => {
         <Page title='Danh sách bài tập'>
             <Stack>
 
-            <Paper elevation={12}>
-                <Grid container p={2} spacing={2}>
-                    {
-                        listAssignment.map(item =>
-                            <Grid item xs={12} sm={6} md={4} lg={3}>
-                            <AssignmentItem key={item.id} data={item} />
-                            </Grid>
-                        )
-                    }
-                </Grid>
-            </Paper>
+                <Paper elevation={12}>
+                    <Grid container p={2} spacing={2}>
+                        {listAssignment.length === 0 && <EmptyList />}
+                        {
+                            listAssignment.map(item =>
+                                <Grid item xs={12} sm={6} md={4} lg={3}>
+                                    <AssignmentItem key={item.id} data={item} />
+                                </Grid>
+                            )
+                        }
+                    </Grid>
+                </Paper>
             </Stack>
         </Page>
     )

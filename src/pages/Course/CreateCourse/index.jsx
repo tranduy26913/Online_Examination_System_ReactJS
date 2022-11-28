@@ -92,13 +92,14 @@ function CreateCourse(props) {
         reValidateMode: "onChange",
         defaultValues: {
             name: "",
-            description: ""
+            description: "",
+            pin:""
         }
     });
 
 
     const handleCreate = (data) => {
-        const { name, description } = data
+        const { name, description ,pin, status} = data
         let random = ''
         for (let i = 0; i < 7; i++) {
             random += alphabet[Math.floor(Math.random() * alphabet.length)]
@@ -138,7 +139,7 @@ function CreateCourse(props) {
     }
 
     const handleUpdate = (data) => {
-        const { name, description } = data
+        const { name, description,pin } = data
         let random = ''
         for (let i = 0; i < 7; i++) {
             random += alphabet[Math.floor(Math.random() * alphabet.length)]
@@ -161,6 +162,7 @@ function CreateCourse(props) {
             courseId,
             name,
             description,
+            pin,
             file: fileImage,
             startTime: startTime.toDate(),
             endTime: endTime.toDate(),
@@ -183,6 +185,7 @@ function CreateCourse(props) {
                 .then(res => {
                     setValue('name', res.name)
                     setValue('description', res.description)
+                    setValue('pin',res.pin)
                     setImage(res.image)
                     setStartTime(moment(res.startTime))
                     setEndTime(moment(res.endTime))
@@ -197,7 +200,7 @@ function CreateCourse(props) {
             <Stack direction='row' spacing={2}>
                 <Box flex={2}>
                     <Paper elevation={24} sx={{ height: '100%' }}>
-                        <Stack py={8} alignItems='center' justifyContent={'center'} gap='16px'>
+                        <Stack py={8} px={2} alignItems='center' justifyContent={'center'} gap='16px'>
                             <Avatar
                                 variant="rounded"
                                 alt="Remy Sharp"
@@ -220,83 +223,110 @@ function CreateCourse(props) {
                                 Thông tin khoá học
                             </Typography>
                             <Divider />
-                            
-                                <Stack spacing={2.5}>
-                                    <Controller
-                                        name={"name"}
-                                        control={control}
-                                        render={({ field, fieldState: { error } }) => (
-                                            <TextField
-                                                {...field}
-                                                color='success'
-                                                size='small'
-                                                type='text'
-                                                label="Tên khoá học"
-                                                error={error !== undefined}
-                                                helperText={error ? error.message : ''}
-                                                //sx={{ backgroundColor: "#fff" }}
-                                                variant="outlined" />
-                                        )}
-                                    />
 
-                                    <Controller
-                                        name={"description"}
-                                        control={control}
-                                        render={({ field, fieldState: { error } }) => (
-                                            <TextField
-                                                {...field}
-                                                color='success'
-                                                size='small'
-                                                type='text'
-                                                label="Mô tả khoá học"
-                                                error={error !== undefined}
-                                                helperText={error ? error.message : ''}
-                                                //sx={{ backgroundColor: "#fff" }}
-                                                multiline
-                                                rows={5}
-                                                variant="outlined" />
-                                        )}
+                            <Stack spacing={2.5}>
+                                <Controller
+                                    name={"name"}
+                                    control={control}
+                                    render={({ field, fieldState: { error } }) => (
+                                        <TextField
+                                            {...field}
+                                            color='success'
+                                            size='small'
+                                            type='text'
+                                            label="Tên khoá học"
+                                            error={error !== undefined}
+                                            helperText={error ? error.message : ''}
+                                            //sx={{ backgroundColor: "#fff" }}
+                                            variant="outlined" />
+                                    )}
+                                />
+
+                                <Controller
+                                    name={"description"}
+                                    control={control}
+                                    render={({ field, fieldState: { error } }) => (
+                                        <TextField
+                                            {...field}
+                                            color='success'
+                                            size='small'
+                                            type='text'
+                                            label="Mô tả khoá học"
+                                            error={error !== undefined}
+                                            helperText={error ? error.message : ''}
+                                            //sx={{ backgroundColor: "#fff" }}
+                                            multiline
+                                            rows={5}
+                                            variant="outlined" />
+                                    )}
+                                />
+                                <Controller
+                                    name={"pin"}
+                                    control={control}
+                                    render={({ field, fieldState: { error } }) => (
+                                        <TextField
+                                            {...field}
+                                            color='success'
+                                            size='small'
+                                            type='text'
+                                            label="Mật khẩu tham gia"
+                                            error={error !== undefined}
+                                            helperText={error ? error.message : ''}
+                                            variant="outlined" />
+                                    )}
+                                />
+                                
+                                <LocalizationProvider dateAdapter={AdapterMoment}>
+                                    <DesktopDatePicker
+                                        inputFormat="DD/MM/YYYY"
+                                        label="Ngày bắt đầu"
+                                        value={startTime}
+                                        onChange={handleStartTime}
+                                        renderInput={(params) => <TextField {...params}
+                                            error={params.error || error.isError}
+                                            helperText={params.error && "Ngày không hợp lệ"}
+                                            size='small' fullWidth />
+                                        }
                                     />
-                                    <LocalizationProvider dateAdapter={AdapterMoment}>
-                                        <DesktopDatePicker
-                                            inputFormat="DD/MM/YYYY"
-                                            label="Ngày bắt đầu"
-                                            value={startTime}
-                                            onChange={handleStartTime}
-                                            renderInput={(params) => <TextField {...params}
+                                </LocalizationProvider>
+                                <LocalizationProvider dateAdapter={AdapterMoment}>
+                                    <DesktopDatePicker
+                                        inputFormat="DD/MM/YYYY"
+                                        label="Ngày kết thúc"
+                                        value={endTime}
+                                        onChange={handleEndTime}
+                                        renderInput={(params) =>
+                                            <TextField
+                                                {...params}
                                                 error={params.error || error.isError}
-                                                helperText={params.error && "Ngày không hợp lệ"}
+                                                helperText={params.error ? "Ngày không hợp lệ" :
+                                                    error.isError && error.msg}
                                                 size='small' fullWidth />
-                                            }
-                                        />
-                                    </LocalizationProvider>
-                                    <LocalizationProvider dateAdapter={AdapterMoment}>
-                                        <DesktopDatePicker
-                                            inputFormat="DD/MM/YYYY"
-                                            label="Ngày kết thúc"
-                                            value={endTime}
-                                            onChange={handleEndTime}
-                                            renderInput={(params) =>
-                                                <TextField
-                                                    {...params}
-                                                    error={params.error || error.isError}
-                                                    helperText={params.error ? "Ngày không hợp lệ" :
-                                                        error.isError && error.msg}
-                                                    size='small' fullWidth />
-                                            }
-                                        />
-                                    </LocalizationProvider>
-                                    <Stack alignItems='center'>
+                                        }
+                                    />
+                                </LocalizationProvider>
 
-                                        <LoadingButton
-                                            onClick={isEdit?handleSubmit(handleUpdate):handleSubmit(handleCreate)}
-                                            loading={loading}
-                                            variant="contained"
-                                        >
-                                            {isEdit?'Cập nhật':'Tạo khoá học'}
-                                        </LoadingButton>
-                                    </Stack>
+                                {/* <Controller
+                                    name={"status"}
+                                    control={control}
+                                    render={({ field, fieldState: { error } }) => (
+                                        <FormControlLabel label="Công khai"
+                                        labelPlacement="start"
+                                        sx={{alignSelf:'flex-start'}}
+                                            control={<Switch {...field}/>} />
+                                    )}
+                                /> */}
+                                <Stack alignItems='center'>
+
+                                    <LoadingButton
+                                        onClick={isEdit ? handleSubmit(handleUpdate) : handleSubmit(handleCreate)}
+                                        loading={loading}
+                                        variant="contained"
+                                    >
+                                        {isEdit ? 'Cập nhật' : 'Tạo khoá học'}
+                                    </LoadingButton>
                                 </Stack>
+                            </Stack>
                         </Stack>
                     </Paper>
                 </Box>

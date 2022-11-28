@@ -8,5 +8,10 @@ export const schema = Yup.object().shape({
     .string()
     .required('Vui lòng nhập vào trường này')
     .min(10,"Mô tả khoá học ít nhất 10 kí tự"),
+  pin: Yup
+    .string()
+    .min(5,"Mật khẩu tham gia khoá học có ít nhất 5 kí tự"),
+  status: Yup
+    .boolean()
     
 })

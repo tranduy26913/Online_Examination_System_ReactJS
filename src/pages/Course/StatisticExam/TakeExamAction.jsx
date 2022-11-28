@@ -19,6 +19,8 @@ import {
     useTheme
 } from '@mui/material'
 import InfoIcon from '@mui/icons-material/Info';
+import PreviewIcon from '@mui/icons-material/Preview';
+import { Link } from 'react-router-dom';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -51,6 +53,14 @@ function TakeExamAction({ takeExamId }) {
                 <IconButton onClick={handleClickOpen}>
                     <InfoIcon color='primary' width={20} height={20} />
                 </IconButton>
+
+            </Tooltip>
+            <Tooltip title='Chi tiết'>
+                <Link to={`/review-exam/${takeExamId}`}>
+                    <IconButton onClick={handleClickOpen}>
+                        <PreviewIcon color='primary' width={20} height={20} />
+                    </IconButton>
+                </Link>
 
             </Tooltip>
 

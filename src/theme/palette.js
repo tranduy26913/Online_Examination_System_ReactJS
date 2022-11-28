@@ -59,7 +59,7 @@ const INFO_DARK = {
 /** SUCCESS */
 const SUCCESS = {
   light: green["A200"],
-  main: green["A400"],
+  main: green["A700"],
   dark: green["A700"],
   contrastText: "#fff",
 };

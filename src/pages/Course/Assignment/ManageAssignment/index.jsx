@@ -21,6 +21,7 @@ import Page from 'components/Page';
 import LoadingRoller from 'components/LoadingPage/LoadingRoller';
 import apiAssignment from 'apis/apiAssignment';
 import { Link } from 'react-router-dom';
+import { applySortFilter, getComparator } from 'components/TableCustom/FunctionHelper';
 
 // ----------------------------------------------------------------------
 
@@ -30,39 +31,10 @@ const TABLE_HEAD = [
     { id: 'startTime', label: 'Thời gian bắt đầu', align: 'center' },
     { id: 'endTime', label: 'Thời gian kết thúc', align: 'center' },
     { id: 'status', label: 'Trạng thái', align: 'center' },
-    { id: 'action', label: 'Thao tác', align: 'right' },
+    { id: 'action', label: 'Thao tác', align: 'center' },
 ];
 
 // ----------------------------------------------------------------------
-
-function descendingComparator(a, b, orderBy) {
-    if (b[orderBy] < a[orderBy]) {
-        return -1;
-    }
-    if (b[orderBy] > a[orderBy]) {
-        return 1;
-    }
-    return 0;
-}
-
-function getComparator(order, orderBy) {
-    return order === 'desc'
-        ? (a, b) => descendingComparator(a, b, orderBy)
-        : (a, b) => -descendingComparator(a, b, orderBy);
-}
-
-function applySortFilter(array, comparator, query) {
-    const stabilizedThis = array.map((el, index) => [el, index]);
-    stabilizedThis.sort((a, b) => {
-        const order = comparator(a[0], b[0]);
-        if (order !== 0) return order;
-        return a[1] - b[1];
-    });
-    if (query) {
-        return array.filter((_user) => _user.fullname.toLowerCase().indexOf(query.toLowerCase()) !== -1);
-    }
-    return stabilizedThis.map((el) => el[0]);
-}
 
 const ManageAssignment = () => {
     const [page, setPage] = useState(0);
@@ -95,7 +67,7 @@ const ManageAssignment = () => {
 
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - assignments.length) : 0;
 
-    const filteredUsers = applySortFilter(assignments, getComparator(order, orderBy), filterName);
+    const filteredUsers = applySortFilter(assignments, getComparator(order, orderBy), filterName,'name');
 
     const isUserNotFound = filteredUsers.length === 0;
 

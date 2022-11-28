@@ -1,7 +1,6 @@
 import { Accordion, AccordionDetails, AccordionSummary, Button, Paper, Stack, Typography } from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import React, { useCallback, useContext, useState } from 'react'
-import UploadIcon from '@mui/icons-material/Upload'
 import DownloadIcon from '@mui/icons-material/Download';
 import * as XLSX from "xlsx";
 import { useDispatch, useSelector } from 'react-redux';
@@ -11,7 +10,7 @@ import {
 } from '../MUI'
 import CreateQuestion from './CreateQuestion';
 import DetailQuestion from './DetailQuestion';
-import { addQuestion, addQuestionInFile, clearQuestionInFile } from 'slices/userSlice';
+import { addQuestionInFile, clearQuestionInFile } from 'slices/userSlice';
 import ExamContext from '../../ExamContext';
 import { toast } from 'react-toastify';
 import { getMessageError } from 'utils';
@@ -19,26 +18,46 @@ import apiQuestion from 'apis/apiQuestion';
 import PizZip from 'pizzip';
 import Docxtemplater from 'docxtemplater';
 import LoadingButton from 'components/LoadingButton';
+import * as FileSaver from 'file-saver';
+import templateWord from 'assets/file/word.docx'
+import templateExcel from 'assets/file/excel.xlsx'
+import AnimationIcon from 'components/UI/AnimationIcon';
 const alpha = Array.from(Array(10)).map((e, i) => i + 97);
 const alphabet = alpha.map((x) => String.fromCharCode(x));
 
 function QuestionInFile() {
-    const { examId,reloadExam } = useContext(ExamContext)
+    const { examId, reloadExam } = useContext(ExamContext)
     const QUESTIONS = useSelector(state => state.user.questionsInFile)
     const [idQuestion, setIdQuestion] = useState('')
     const [expanded, setExpanded] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const dispatch = useDispatch()
+    const user = useSelector(state => state.user?.info)
 
     const handleChangeQuestion = (panel) => (event, isExpanded) => {
         setExpanded(isExpanded ? panel : false);
     };
     const handleSelectQuestionEdit = useCallback((value) => setIdQuestion(value), [])
-    const handleChooseImage = (e) => {
+    const handleChooseFile = (e) => {
         if (e.target.files.length !== 0) {
-            readExcel(e.target.files[0])
+            const file = e.target.files[0]
+            const name = e.target.files[0].name;
+            const lastDot = name.lastIndexOf('.');
+
+            const ext = name.substring(lastDot + 1);
+            if (ext === 'docx' || ext === 'doc')
+                readWord(file)
+            else if (ext === 'xlsx')
+                readExcel(file)
+            else {
+                toast.warning("Vui lòng chọn đúng định dạng .docx, .doc hoặc .xlsx")
+            }
+            e.target.value = null
         }
     }
+    const lockUpload = () => {
+        toast.info("Vui lòng nâng cấp lên tài khoản PREMIUM để dùng tính năng này")
+      }
     const readExcel = (file) => {
         const promise = new Promise((resolve, reject) => {
             const fileReader = new FileReader();
@@ -101,63 +120,67 @@ function QuestionInFile() {
             })
         });
     };
-    const readWord = (e) => {
+    const readWord = (file) => {
 
-       /// console.log('showfile', e)
-        e.preventDefault();
         const reader = new FileReader();
         reader.onload = async (e) => {
             const content = e.target.result;
-            var doc = new Docxtemplater(new PizZip(content), { delimiters: { start: '12op1j2po1j2poj1po', end: 'op21j4po21jp4oj1op24j' } });
+            var doc = new Docxtemplater(new PizZip(content), { paragraphLoop: true, linebreaks: true, delimiters: { start: '12op1j2po1j2poj1po', end: 'op21j4po21jp4oj1op24j' } });
             var text = doc.getFullText();
 
-            let regex = new RegExp('Câu \\d*\:{1}')
+            let regex = new RegExp('Câu \\d*:{1}')
             let raws = text.split(regex)
+
             raws.shift() //xoá phần tử đầu của mảng
             dispatch(clearQuestionInFile())
-            raws.forEach((raw,index)=>{
-                
-                let content = ''
-                let answers = []
-                let arrWithContent = raw.split('_Điểm tối đa:')
-                content =  `<p>${arrWithContent[0].trim()}</p>`
+            raws.forEach((raw, index) => {
+                try {
 
-                arrWithContent = arrWithContent[1].split('_Đáp án:')
-                let maxPoints =  Number(arrWithContent[0]) || 1
+                    let content = ''
+                    let answers = []
+                    let arrWithContent = raw.split('_Điểm tối đa:')
+                    content = `<p>${arrWithContent[0].trim()}</p>`
 
-                let arrAnswerRaw = arrWithContent[1].split('A. ')
-                let corrects = arrAnswerRaw[0].toUpperCase()
+                    arrWithContent = arrWithContent[1].split('_Đáp án:')
+                    let maxPoints = Number(arrWithContent[0]) || 1
 
-                for(let i=1;i<alphabet.length;i++){
-                    if(!arrAnswerRaw[1])
-                        break
-                    arrAnswerRaw = arrAnswerRaw[1].split(`${alphabet[i].toUpperCase()}. `)
-                    if(arrAnswerRaw[0]!== ''){
-                        answers.push({
-                            id: i,
-                            content: arrAnswerRaw[0].trim(),
-                            isCorrect: corrects.includes(alphabet[i-1].toUpperCase()),
-                        })
+                    let arrAnswerRaw = arrWithContent[1].split('A:')
+                    let corrects = arrAnswerRaw[0].toUpperCase()
+
+                    for (let i = 1; i < alphabet.length; i++) {
+                        if (!arrAnswerRaw[1])
+                            break
+                        arrAnswerRaw = arrAnswerRaw[1].split(`${alphabet[i].toUpperCase()}:`)
+                        if (arrAnswerRaw[0] !== '') {
+                            answers.push({
+                                id: i,
+                                content: arrAnswerRaw[0].trim(),
+                                isCorrect: corrects.includes(alphabet[i - 1].toUpperCase()),
+                            })
+                        }
                     }
+                    const listCorrect = corrects.split(',')
+                    // console.log({
+                    //     id: index,
+                    //     content,
+                    //     type: (listCorrect.length > 1 && listCorrect[1]) ? 'multi' : 'single',
+                    //     maxPoints,
+                    //     answers
+                    // })
+                    dispatch(addQuestionInFile({
+                        id: index,
+                        content,
+                        type: (listCorrect.length > 1 && listCorrect[1]) ? 'multi' : 'single',
+                        maxPoints,
+                        answers
+                    }))
                 }
-                const listCorrect =corrects.split(',')
-                console.log({
-                    id: index,
-                    content,
-                    type: (listCorrect.length >1 && listCorrect[1])?'multi':'single',
-                    maxPoints,
-                    answers
-                })
-                dispatch(addQuestionInFile({
-                    id: index,
-                    content,
-                    type: (listCorrect.length >1 && listCorrect[1])?'multi':'single',
-                    maxPoints,
-                    answers
-                }))
+                catch {
+
+                }
             })
         };
-        reader.readAsBinaryString(e.target.files[0]);
+        reader.readAsBinaryString(file)
 
     };
 
@@ -168,54 +191,48 @@ function QuestionInFile() {
             questions: QUESTIONS
         })
             .then(res => {
-                                toast.success('Thêm câu hỏi thành công')
+                toast.success('Thêm câu hỏi thành công')
                 dispatch(clearQuestionInFile())
                 reloadExam()
             })
             .catch(err => {
                 toast.warning(getMessageError(err))
             })
-            .finally(()=>{
+            .finally(() => {
                 setIsLoading(false)
             })
+    }
+    const handleDownfile = (file, filename) => {
+        FileSaver.saveAs(file, 'template.docx');
     }
     return (
         <Paper>
             <Stack direction='row' spacing={2} p={2}>
                 <Button variant='contained' component="label" width='160px' color='success'
+                    onClick={() => handleDownfile(templateExcel, 'excel.xlsx')}
                     endIcon={<DownloadIcon />}
                 >
                     Tải mẫu Excel
-                    <input hidden type="file" onInput={handleChooseImage}
-                    //onChange={handleChooseImage} 
-                    />
                 </Button>
                 <Button variant='contained' component="label" width='160px' color='success'
                     endIcon={<DownloadIcon />}
+                    onClick={() => handleDownfile(templateWord, 'template.docx')}
                 >
                     Tải mẫu Word
-                    <input hidden type="file" onInput={handleChooseImage}
-                    //onChange={handleChooseImage} 
-                    />
                 </Button>
                 <Button variant='contained' component="label" width='160px'
-                    endIcon={<UploadIcon />}
+                    endIcon={<AnimationIcon src="https://assets7.lottiefiles.com/packages/lf20_rZQs81.json"
+                        style={{ height: '30px', width: '30px' }} />}
+                        onClick={(!user?.premium) ? lockUpload : null}
                 >
-                    Chọn File Excel
-                    <input hidden type="file" onInput={handleChooseImage}
-                    //onChange={handleChooseImage} 
-                    />
+                    Tải lên File
+                    {user?.premium &&
+                        <input hidden type="file" onInput={handleChooseFile} />
+                    }
                 </Button>
-                <Button variant='contained' component="label" width='160px'
-                    endIcon={<UploadIcon />}
-                >
-                    Chọn File word
-                    <input hidden type="file" onInput={readWord}
-                    //onChange={handleChooseImage} 
-                    />
-                </Button>
-                {QUESTIONS.length !== 0 && 
-                <LoadingButton loading={isLoading} variant='contained' onClick={handleCreateQuestionWithFile}>Thêm câu hỏi</LoadingButton>}
+
+                {QUESTIONS.length !== 0 &&
+                    <LoadingButton loading={isLoading} variant='contained' onClick={handleCreateQuestionWithFile}>Thêm câu hỏi</LoadingButton>}
             </Stack>
             <Stack spacing={1.5} p={2}>
                 {

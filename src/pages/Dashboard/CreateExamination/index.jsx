@@ -23,7 +23,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import apiExamination from 'apis/apiExamination';
 import { toast } from 'react-toastify';
 import { useNavigate, useParams } from 'react-router-dom';
-import { addQuestion, clearQuestion, replaceListQuestion } from 'slices/userSlice';
+import { clearQuestion, replaceListQuestion } from 'slices/userSlice';
 import CourseContext from 'pages/Course/LayoutCourse/CourseContext';
 import ExamContext from './ExamContext';
 import LayoutListQuesion from './Component/LayoutListQuesion';
@@ -150,6 +150,7 @@ const CreateExamination = (props) => {
       viewAnswer,
       pin:pinExam
     }
+    setLoading(true)
     apiExamination.createExam(params)
       .then(res => {
         toast.success("Tạo đề thi thành công")
@@ -157,6 +158,10 @@ const CreateExamination = (props) => {
         setSlug(res.slug)
         setIsEdit(true)
       })
+      .catch(err=>{
+        toast.warning("Tạo đề thi không thành công")
+      })
+      .finally(()=>setLoading(false))
   }
 
   const handleUpdate = (data) => {

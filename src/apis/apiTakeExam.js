@@ -27,6 +27,14 @@ const apiTakeExam = {
         const res = await axiosClientWithToken.get('/takeexam/get-result-takeexam',{params})
         return res.data;
     },
+    createLog: async (params) => {
+        const res = await axiosClientWithToken.post('/takeexam/create-log',params)
+        return res.data;
+    },
+    getLogs: async (params) => {
+        const res = await axiosClientWithToken.get('/takeexam/get-logs',{params})
+        return res.data;
+    },
 
 
 }

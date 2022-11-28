@@ -32,7 +32,7 @@ const TABLE_HEAD = [
     { id: 'numberofQuestions', label: 'Số lượng câu hỏi', align: 'center' },
     { id: 'maxTimes', label: 'Thời lượng', align: 'center' },
     { id: 'status', label: 'Trạng thái', align: 'center' },
-    { id: 'action', label: 'Thao tác', align: 'right' },
+    { id: 'action', label: 'Thao tác', align: 'center' },
 ];
 
 // ----------------------------------------------------------------------

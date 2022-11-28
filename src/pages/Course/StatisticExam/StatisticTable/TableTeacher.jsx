@@ -26,7 +26,7 @@ const TABLE_HEAD = [
     { id: 'duration', label: 'Thời lượng', align: 'center' },
     { id: 'status', label: 'Trạng thái', align: 'center' },
     { id: 'result', label: 'Kết quả', align: 'center' },
-    { id: 'action', label: 'Thao tác', align: 'right' },
+    { id: 'action', label: 'Thao tác', align: 'center' },
 ];
 
 // ----------------------------------------------------------------------

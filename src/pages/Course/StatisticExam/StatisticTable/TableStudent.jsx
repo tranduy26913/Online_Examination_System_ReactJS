@@ -1,7 +1,6 @@
-import {  useState } from 'react'
+import { useState } from 'react'
 import {
     Stack,
-    Button,
     Table,
     TableRow,
     TableBody,
@@ -12,13 +11,9 @@ import {
 } from "@mui/material"
 import Scrollbar from 'components/Scrollbar';
 import { TableToolbar, TableHeadCustom } from 'components/TableCustom';
-import { useParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 import TakeExamAction from '../TakeExamAction';
 import moment from 'moment';
 import EmptyList from 'components/UI/EmptyList';
-import FileSaver from 'file-saver';
-import * as XLSX from 'xlsx';
 import ButtonExport from 'components/ButtonExport';
 
 // ----------------------------------------------------------------------
@@ -28,7 +23,8 @@ const TABLE_HEAD = [
     { id: 'na', label: 'Thời gian thi', align: 'center' },
     { id: 'isVerified', label: 'Thời lượng', align: 'center' },
     { id: 'status', label: 'Trạng thái', align: 'center' },
-    { id: 'action', label: 'Thao tác', align: 'right' },
+    { id: 'result', label: 'Kết quả', align: 'center' },
+    { id: 'action', label: 'Thao tác', align: 'center' },
 ];
 
 // ----------------------------------------------------------------------
@@ -90,7 +86,7 @@ const TableStudent = ({ exams }) => {
 
     const isUserNotFound = filteredUsers.length === 0;
 
-    
+
     const handleData = () => {
         return filteredUsers.map(item => {
             let { name, points, maxPoints, startTime, submitTime, status } = item
@@ -104,14 +100,14 @@ const TableStudent = ({ exams }) => {
                 'Trạng thái': status === 'submitted' ? 'Đã nộp' : 'Chưa nộp'
             }
         })
-     }
- 
-     const ButtonExportFile = () => {
-         return (
-             <ButtonExport variant='outlined' dataExport={handleData()}>
-             </ButtonExport>
-         )
-     }
+    }
+
+    const ButtonExportFile = () => {
+        return (
+            <ButtonExport variant='outlined' dataExport={handleData()}>
+            </ButtonExport>
+        )
+    }
 
     return (
 
@@ -131,7 +127,7 @@ const TableStudent = ({ exams }) => {
                         />
                         <TableBody>
                             {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                                const { id: takeExamId, slug: slugExam, name, submitTime, startTime, points, maxPoints, status } = row;
+                                const { id: takeExamId,  submitTime, startTime, points, maxPoints, status } = row;
                                 const duration = moment(submitTime).diff(startTime, 'minutes')
                                 return (
                                     <TableRow
@@ -147,10 +143,12 @@ const TableStudent = ({ exams }) => {
                                         <TableCell align="center">
                                             {status === 'not submitted' ? 'Chưa nộp bài' : 'Đã nộp'}
                                         </TableCell>
-                                        <Chip
-                                            color={points/maxPoints <=5 ?'error':'primary'}
-                                            label={points/maxPoints <=5 ? 'Chưa đạt' : 'Đạt'}
+                                        <TableCell align="center">
+                                            <Chip
+                                                color={points / maxPoints < 5 ? 'error' : 'primary'}
+                                                label={points / maxPoints < 5 ? 'Chưa đạt' : 'Đạt'}
                                             />
+                                        </TableCell>
                                         <TableCell align="right">
                                             <TakeExamAction takeExamId={takeExamId} />
                                         </TableCell>

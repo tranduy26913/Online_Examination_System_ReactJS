@@ -24,8 +24,6 @@ function LayoutListQuestion(props) {
 
     const handleChange = (event, newValue) => setValue(newValue)
 
-
-
     return (
         <>
             <Paper sx={{ marginBottom: '12px' }}>
@@ -39,20 +37,21 @@ function LayoutListQuestion(props) {
                         indicatorColor="primary"
                         textColor="primary"
                         variant="fullWidth"
+                        
                     >
-                        <Tab label="Nhập thủ công" {...a11yProps(0)} />
-                        <Tab label="Dùng ngân hàng câu hỏi" {...a11yProps(1)} />
-                        <Tab label="Dùng file câu hỏi" {...a11yProps(2)} />
+                        <Tab label="Nhập thủ công" {...a11yProps(0)}  sx={{fontWeight:600}}/>
+                        <Tab label="Dùng ngân hàng câu hỏi" {...a11yProps(1)} sx={{fontWeight:600}}/>
+                        <Tab label="Dùng file câu hỏi" {...a11yProps(2)} sx={{fontWeight:600}}/>
                     </Tabs>
                 </AppBar>
                 <TabPanel value={value} index={0} dir={theme.direction}>
-                    <ListQuestion/>
+                    <ListQuestion />
                 </TabPanel>
                 <TabPanel value={value} index={1} dir={theme.direction}>
-                    <QuestionInQuestionBank/>
+                    <QuestionInQuestionBank />
                 </TabPanel>
                 <TabPanel value={value} index={2} dir={theme.direction}>
-                  <QuestionInFile />
+                    <QuestionInFile />
                 </TabPanel>
             </Box>
 
@@ -65,6 +64,7 @@ function a11yProps(index) {
     return {
         id: `full-width-tab-${index}`,
         'aria-controls': `full-width-tabpanel-${index}`,
+       
     };
 }
 

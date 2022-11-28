@@ -22,7 +22,7 @@ import { ButtonQuestion, BoxTime } from './Examination.style'
 import apiTakeExam from 'apis/apiTakeExam';
 import { toast } from 'react-toastify';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import FaceRecognition from './FaceRecognition';
+//import FaceRecognition from './FaceRecognition';
 import { getMessageError } from 'utils';
 import LoadingRoller from 'components/LoadingPage/LoadingRoller';
 import checkPinImg from 'assets/img/check-pin.png'
@@ -38,7 +38,7 @@ const Examination = () => {
 
     const [questions, setQuestions] = useState([])
     const [indexQuestion, setIndexQuestion] = useState([])
-    const user = useSelector(state => state.user.info)
+    //const user = useSelector(state => state.user.info)
     const dispatch = useDispatch()
     const takeExamId = useSelector(state => state.answerSheet?.takeExamId)
     const answerSheet = useSelector(state => state.answerSheet?.result)
@@ -184,8 +184,13 @@ const Examination = () => {
                     toast.warning("Cảnh báo! Bạn đã chuyển Tab 3 lần. Chuyển Tab lần thứ 4 bài thi sẽ tự động được nộp.",
                         { autoClose: false })
                 }
+                
             } else {
                 setCountExit(i => i + 1)
+                if(countExit === 3){
+                    //handleSubmit()
+                }
+                handleCreateLog(`Thoát khỏi màn hình lần thứ ${countExit +1 }`)
             }
         }
         window.addEventListener("beforeunload", checkExitBrowser);
@@ -196,12 +201,11 @@ const Examination = () => {
         }
     }, [countExit])
 
-    const sendLog = (action) => {
-        const params = {
-            time: new Date(),
-            action
-        }
-    }
+    const handleCreateLog = (action)=>{
+        apiTakeExam.createLog({
+          action,takeExamId
+        })
+      }
 
     const style = {
 
