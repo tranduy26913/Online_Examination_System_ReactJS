@@ -17,7 +17,7 @@ import Question from './Question';
 import Page from 'components/Page';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { clearAnswerSheet, clearTakeExamId, setTakeExamId } from 'slices/answerSheetSlice';
+import { addAllQuestion, clearAnswerSheet, clearTakeExamId, setTakeExamId } from 'slices/answerSheetSlice';
 import { ButtonQuestion, BoxTime } from './Examination.style'
 import apiTakeExam from 'apis/apiTakeExam';
 import { toast } from 'react-toastify';
@@ -26,6 +26,19 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { getMessageError } from 'utils';
 import LoadingRoller from 'components/LoadingPage/LoadingRoller';
 import checkPinImg from 'assets/img/check-pin.png'
+import CountDown from './CountDown';
+import BoxIndex from './BoxIndex';
+
+
+const getAnswers = (arr, id) => {//lấy đáp án của câu hỏi 
+    const result = arr.find(item => item.question === id)
+    if (result) {
+        return result.answers
+    }
+    else
+        return []
+}
+
 const Examination = () => {
     const theme = useTheme()
     const { examId } = useParams()
@@ -42,32 +55,8 @@ const Examination = () => {
     const dispatch = useDispatch()
     const takeExamId = useSelector(state => state.answerSheet?.takeExamId)
     const answerSheet = useSelector(state => state.answerSheet?.result)
-    const [countDown, setCountDown] = useState({ hour: 0, minute: 0, second: 0 })
     const navigate = useNavigate()
 
-    useEffect(() => {
-        const countDown = () => {
-            if (!endTime) return
-            var x = setInterval(function () {
-                // Get today's date and time
-                var now = new Date().getTime();
-                // Find the distance between now and the count down date
-                var distance = endTime - now;
-                //console.log(distance)
-                // Time calculations for days, hours, minutes and seconds
-                setCountDown({
-                    hour: Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
-                    minute: Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)),
-                    second: Math.floor((distance % (1000 * 60)) / 1000)
-                })
-                if (distance < 0) {
-                    clearInterval(x);
-                    handleSubmit();
-                }
-            }, 1000);
-        }
-        countDown()
-    }, [endTime])
     useLayoutEffect(() => {
         const checkExam = () => {
             //dispatch(clearAnswerSheet())
@@ -90,28 +79,35 @@ const Examination = () => {
                     toast.warning(getMessageError(err), { autoClose: false })
                     navigate('/')
                 })
-                .finally(()=>{setLoadingExam(false)})
+                .finally(() => { setLoadingExam(false) })
         }
         checkExam()
     }, [])
 
     const setupQuestion = (questions) => {
         const newIndexQuestion = []
-        setQuestions([])
-        for (let question of questions) {
-            const isDone = checkDone(answerSheet, question.id)
-            setQuestions(pre => [...pre, question])
-            if (isDone)
-                newIndexQuestion.push({
-                    isFlag: false,
-                    isDone: true
-                })
-            else
-                newIndexQuestion.push({
-                    isFlag: false,
-                    isDone: false
-                })
-        }
+        setQuestions(questions)
+        questions = questions.map(item=>({
+            question:item.id,
+            answers:[],
+            isDone:false,
+            isFlag:false
+        }))
+        dispatch(addAllQuestion(questions))
+        // for (let question of questions) {
+        //     const isDone = checkDone(answerSheet, question.id)
+        //     setQuestions(pre => [...pre, question])
+        //     if (isDone)
+        //         newIndexQuestion.push({
+        //             isFlag: false,
+        //             isDone: true
+        //         })
+        //     else
+        //         newIndexQuestion.push({
+        //             isFlag: false,
+        //             isDone: false
+        //         })
+        // }
 
         setIndexQuestion(newIndexQuestion)
     }
@@ -131,38 +127,16 @@ const Examination = () => {
             .catch(err => {
                 const text = getMessageError(err)
                 toast.warning(text)
-                if(text==='Sai mật khẩu'){
+                if (text === 'Sai mật khẩu') {
                     navigate('/')
                 }
             })
     }
 
-
-    const changeStateDoneIndex = useCallback((index, state) => {
-        if (indexQuestion[index]?.isDone !== state) {
-            let newIndexQuestion = [...indexQuestion]
-            newIndexQuestion[index] = {
-                ...newIndexQuestion[index],
-                isDone: state
-            }
-            setIndexQuestion(newIndexQuestion)
-        }
-    }, [indexQuestion])
-    const changeStateFlagIndex = useCallback((index, state) => {
-        if (indexQuestion[index]?.isFlag !== state) {
-            let newIndexQuestion = [...indexQuestion]
-            newIndexQuestion[index] = {
-                ...newIndexQuestion[index],
-                isFlag: state
-            }
-            setIndexQuestion(newIndexQuestion)
-        }
-    }, [indexQuestion])
-
     const handleSubmit = () => {
         apiTakeExam.submitAnswerSheet({
             takeExamId,
-            answerSheet
+          answerSheet
         })
             .then(res => {
                 navigate('/result-exam/' + takeExamId)
@@ -184,13 +158,13 @@ const Examination = () => {
                     toast.warning("Cảnh báo! Bạn đã chuyển Tab 3 lần. Chuyển Tab lần thứ 4 bài thi sẽ tự động được nộp.",
                         { autoClose: false })
                 }
-                
+
             } else {
                 setCountExit(i => i + 1)
-                if(countExit === 3){
+                if (countExit === 3) {
                     //handleSubmit()
                 }
-                handleCreateLog(`Thoát khỏi màn hình lần thứ ${countExit +1 }`)
+                handleCreateLog(`Thoát khỏi màn hình lần thứ ${countExit + 1}`)
             }
         }
         window.addEventListener("beforeunload", checkExitBrowser);
@@ -201,16 +175,16 @@ const Examination = () => {
         }
     }, [countExit])
 
-    const handleCreateLog = (action)=>{
+    const handleCreateLog = (action) => {
         apiTakeExam.createLog({
-          action,takeExamId
+            action, takeExamId
         })
-      }
-
+    }
+console.log("DDDĐ")
     const style = {
 
         flexDirection: { xs: 'column', md: 'row' },
-        gap:'12px',
+        gap: '12px',
         '&>div:nth-of-type(1)': {
             'order': { xs: 2, md: 1 }
         },
@@ -222,110 +196,114 @@ const Examination = () => {
     return (
         <Page title={name}>
             {
-            loadingExam ? <LoadingRoller /> :
-            !takeExamId ?
-                <Stack width='100%' height='100vh' justifyContent='center' alignItems='center'>
-                    <Box width='100%' maxWidth='500px'>
+                loadingExam ? <LoadingRoller /> :
+                    !takeExamId ?
+                        <Stack width='100%' height='100vh' justifyContent='center' alignItems='center'>
+                            <Box width='100%' maxWidth='500px'>
 
-                        <Paper>
-                            <Stack p={2} spacing={2} alignItems='center'>
-                                <Typography fontSize='18px' color='primary' align='center'>Nhập mật khẩu đề thi</Typography>
-                                <Stack flex={1}>
-                                    <img style={{margin:'0 auto'}} width='80%' alt='check-pin' src={checkPinImg}/>
-                                    </Stack>
-                                <TextField
-                                    fullWidth
-                                    placeholder='Nhập mật khẩu'
-                                    value={pin}
-                                    onChange={e => setPin(e.target.value)}
-                                    variant='standard' />
-                                <Button variant='contained' onClick={handleTakeExam}>Vào đề thi</Button>
-                            </Stack>
-                        </Paper>
-                    </Box>
-                </Stack>
-                :
-
-                <Box className='container' py={2}>
-                    <Box>
-                        <Typography
-                            sx={{
-                                fontSize: '20px',
-                                color: theme.palette.primary.main,
-                                fontWeight: 600,
-                                mb: 2,
-                                textAlign: 'center'
-                            }}>{name}</Typography>
-                        <Stack sx={style} alignItems='flex-start'>
-
-                            <Stack width='100%' flex={{ xs: 1,md:3, lg: 4 }} spacing={3}>
-                                {
-                                    questions.map((item, index) =>
-                                        <Question key={item.id}
-                                            changeStateDoneIndex={changeStateDoneIndex}
-                                            changeStateFlagIndex={changeStateFlagIndex}
-                                            stateDone={indexQuestion[index]?.isDone}
-                                            stateFlag={indexQuestion[index]?.isFlag}
-                                            question={item} index={index} />)
-                                }
-                            </Stack>
-                            <Stack flex={1} spacing={2} sx={{
-                                position: 'sticky',
-                                top: '5rem',
-                            }}>
-
-                                <Paper elevation={24} >
-                                    <Stack spacing={1} p={1.5}>
-
-                                        <Accordion
-                                            sx={{
-                                                boxShadow: 'none'
-                                            }} defaultExpanded disableGutters TransitionProps={{ unmountOnExit: true }}>
-                                            <AccordionSummary
-                                                expandIcon={<ExpandMoreIcon />}
-                                                aria-controls="panel1a-content"
-                                                id="panel1a-header"
-                                            >
-                                                <Typography fontSize='16px' fontWeight={600}>Danh sách câu hỏi</Typography>
-                                            </AccordionSummary>
-                                            <AccordionDetails sx={{
-                                                padding: 0
-                                            }}>
-
-                                                <Grid container spacing={0.5}>
-                                                    {
-                                                        indexQuestion.map((item, index) =>
-                                                            <Grid key={index} xs={1.5} sm={1} md={3} lg={2}>
-                                                                <ButtonQuestion className={`${item.isDone ? 'done' : ''} ${item.isFlag ? 'flag' : ''}`}
-                                                                    onClick={() => document.getElementById(`question-${index}`)
-                                                                        .scrollIntoView({ block: 'center', behavior: "smooth" })}
-                                                                >{index + 1}</ButtonQuestion>
-                                                            </Grid>)
-                                                    }
-                                                </Grid>
-                                            </AccordionDetails>
-                                        </Accordion>
-
-
-                                        <Divider />
-                                        <Stack alignItems='center'>
-
-                                            <Button onClick={handleSubmit} variant='contained'>Nộp bài</Button>
+                                <Paper>
+                                    <Stack p={2} spacing={2} alignItems='center'>
+                                        <Typography fontSize='18px' color='primary' align='center'>Nhập mật khẩu đề thi</Typography>
+                                        <Stack flex={1}>
+                                            <img style={{ margin: '0 auto' }} width='80%' alt='check-pin' src={checkPinImg} />
                                         </Stack>
+                                        <TextField
+                                            fullWidth
+                                            placeholder='Nhập mật khẩu'
+                                            value={pin}
+                                            onChange={e => setPin(e.target.value)}
+                                            variant='standard' />
+                                        <Button variant='contained' onClick={handleTakeExam}>Vào đề thi</Button>
                                     </Stack>
                                 </Paper>
-                                {/* <Paper elevation={12} sx={{ overflow: 'hidden' }}>
+                            </Box>
+                        </Stack>
+                        :
+
+                        <Box className='container' py={2}>
+                            <Box>
+                                <Typography
+                                    sx={{
+                                        fontSize: '20px',
+                                        color: theme.palette.primary.main,
+                                        fontWeight: 600,
+                                        mb: 2,
+                                        textAlign: 'center'
+                                    }}>{name}</Typography>
+                                <Stack sx={style} alignItems='flex-start'>
+
+                                    <Stack width='100%' flex={{ xs: 1, md: 3, lg: 4 }} spacing={3}>
+                                        {
+                                            questions.map((item, index) => {
+                                               // const value = getAnswers(answerSheet, item.id)
+                                                return (
+                                                    <Question 
+                                                    key={item.id}
+                                                        question={item} index={index}  />
+                                                )
+                                            }
+                                            )
+                                        }
+                                    </Stack>
+                                    <Stack flex={1} spacing={2} sx={{
+                                        position: 'sticky',
+                                        top: '5rem',
+                                    }}>
+                                        <BoxIndex />
+
+                                        {/* <Paper elevation={24} >
+                                            <Stack spacing={1} p={1.5}>
+
+                                                <Accordion
+                                                    sx={{
+                                                        boxShadow: 'none'
+                                                    }} defaultExpanded disableGutters TransitionProps={{ unmountOnExit: true }}>
+                                                    <AccordionSummary
+                                                        expandIcon={<ExpandMoreIcon />}
+                                                        aria-controls="panel1a-content"
+                                                        id="panel1a-header"
+                                                    >
+                                                        <Typography fontSize='16px' fontWeight={600}>Danh sách câu hỏi</Typography>
+                                                    </AccordionSummary>
+                                                    <AccordionDetails sx={{
+                                                        padding: 0
+                                                    }}>
+
+                                                        <Grid container spacing={0.5}>
+                                                            {
+                                                                indexQuestion.map((item, index) =>
+                                                                    <Grid key={index} xs={1.5} sm={1} md={3} lg={2}>
+                                                                        <ButtonQuestion className={`${item.isDone ? 'done' : ''} ${item.isFlag ? 'flag' : ''}`}
+                                                                            onClick={() => document.getElementById(`question-${index}`)
+                                                                                .scrollIntoView({ block: 'center', behavior: "smooth" })}
+                                                                        >{index + 1}</ButtonQuestion>
+                                                                    </Grid>)
+                                                            }
+                                                        </Grid>
+                                                    </AccordionDetails>
+                                                </Accordion>
+
+
+                                                <Divider />
+                                                <Stack alignItems='center'>
+
+                                                    <Button onClick={handleSubmit} variant='contained'>Nộp bài</Button>
+                                                </Stack>
+                                            </Stack>
+                                        </Paper> */}
+                                        {/* <Paper elevation={12} sx={{ overflow: 'hidden' }}>
                                     <FaceRecognition />
                                 </Paper> */}
-                            </Stack>
-                        </Stack>
-                    </Box>
-                    <BoxTime>
-                        {(countDown.hour).toLocaleString('en-US', { minimumIntegerDigits: 2, useGrouping: false })}:
-                        {(countDown.minute).toLocaleString('en-US', { minimumIntegerDigits: 2, useGrouping: false })}:
-                        {(countDown.second).toLocaleString('en-US', { minimumIntegerDigits: 2, useGrouping: false })}
-                    </BoxTime>
-                </Box>
+                                    </Stack>
+                                </Stack>
+                            </Box>
+                            {/* <BoxTime>
+                                {(countDown.hour).toLocaleString('en-US', { minimumIntegerDigits: 2, useGrouping: false })}:
+                                {(countDown.minute).toLocaleString('en-US', { minimumIntegerDigits: 2, useGrouping: false })}:
+                                {(countDown.second).toLocaleString('en-US', { minimumIntegerDigits: 2, useGrouping: false })}
+                            </BoxTime> */}
+                            <CountDown endTime={endTime}/>
+                        </Box>
             }
         </Page>
     )

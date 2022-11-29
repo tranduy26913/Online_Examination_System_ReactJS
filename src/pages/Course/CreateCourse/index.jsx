@@ -231,7 +231,7 @@ function CreateCourse(props) {
                                     render={({ field, fieldState: { error } }) => (
                                         <TextField
                                             {...field}
-                                            color='success'
+                                            
                                             size='small'
                                             type='text'
                                             label="Tên khoá học"
@@ -248,7 +248,7 @@ function CreateCourse(props) {
                                     render={({ field, fieldState: { error } }) => (
                                         <TextField
                                             {...field}
-                                            color='success'
+                                            
                                             size='small'
                                             type='text'
                                             label="Mô tả khoá học"
@@ -266,7 +266,7 @@ function CreateCourse(props) {
                                     render={({ field, fieldState: { error } }) => (
                                         <TextField
                                             {...field}
-                                            color='success'
+                                            
                                             size='small'
                                             type='text'
                                             label="Mật khẩu tham gia"

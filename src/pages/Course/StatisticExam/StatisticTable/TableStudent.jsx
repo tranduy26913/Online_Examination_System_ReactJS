@@ -144,9 +144,9 @@ const TableStudent = ({ exams }) => {
                                             {status === 'not submitted' ? 'Chưa nộp bài' : 'Đã nộp'}
                                         </TableCell>
                                         <TableCell align="center">
-                                            <Chip
-                                                color={points / maxPoints < 5 ? 'error' : 'primary'}
-                                                label={points / maxPoints < 5 ? 'Chưa đạt' : 'Đạt'}
+                                            <Chip sx={{width:'80px'}} 
+                                                color={points / maxPoints < 0.5 ? 'error' : 'primary'}
+                                                label={points / maxPoints < 0.5 ? 'Chưa đạt' : 'Đạt'}
                                             />
                                         </TableCell>
                                         <TableCell align="right">

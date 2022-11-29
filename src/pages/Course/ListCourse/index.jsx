@@ -19,6 +19,7 @@ import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { ROLES } from 'constraints/Variables';
 import LoadingRoller from 'components/LoadingPage/LoadingRoller';
+import ShareTray from 'components/ShareTray';
 const ListCourse = () => {
     const role = useSelector(state => state.setting?.role)
     const [courses, setCourses] = useState([])
@@ -26,7 +27,7 @@ const ListCourse = () => {
     const [totalPage, setTotalPage] = useState(5)
     const [loadingData, setLoadingData] = useState(false)
     const limit = 10
-console.log('COurse')
+    console.log('COurse')
     useEffect(() => {
         const getData = () => {
             const params = {
@@ -95,8 +96,12 @@ console.log('COurse')
                                                     endIcon={<AssignmentIcon />}
                                                 >Chi tiết</Button>
                                             </Link>
-                                            <Button variant="outlined" size="small"
-                                                endIcon={<SendIcon />}>Chia sẻ</Button>
+                                            <ShareTray quote={item.name} title={item.name}
+                                                url={`https://oes.vercel.app/enroll-course/${item.courseId}`}
+                                                text='Chia sẻ' variant="outlined" size="small"
+                                                endIcon={<SendIcon />} />
+
+
                                         </Stack>
                                     </Card>
                                 </Grid>)

@@ -19,10 +19,15 @@ import DOMPurify from 'dompurify'
 import { memo } from 'react';
 
 const FormControlLabelCustom = styled(FormControlLabel)({
-    margin: 0,
+    margin: '8px 0 0 0',
     '& .MuiRadio-root': {
         padding: '4px'
-    }
+    },
+    alignItems:'flex-start',
+    '& .MuiTypography-root':{
+        paddingTop:'6px',
+        marginLeft:'8px'
+      }
 })
 
 const StackQuestionContent = styled(Stack)(({ theme }) => ({
@@ -78,9 +83,9 @@ const Question = (props) => {
                         >
                             {
                                 question.answers.map(item =>
-                                    <Stack key={item.id} direction='row'>
+                                    <Stack key={item._id} direction='row'>
                                         <FormControlLabelCustom
-                                            value={item.id} control={<Radio size='small' sx={{ height: '34px' }} />} label={item.content} />
+                                            value={item._id} control={<Radio size='small' sx={{ height: '34px' }} />} label={item.content} />
                                         {item.isCorrect !== undefined && (item.isCorrect ? <CheckCircleOutlineIcon
                                             sx={{ fontSize: '22px', margin: '6px 0px 0px 10px' }}
                                             color={'success'} />

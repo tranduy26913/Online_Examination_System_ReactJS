@@ -36,8 +36,8 @@ function ReviewExamination() {
   const [submitTime, setSubmitTime] = useState(new Date())
   const [viewPoint, setViewPoint] = useState('no')
   const [viewAnswer, setViewAnswer] = useState('no')
-  const [points, setPoints] = useState('no')
-  const [maxPoints, setMaxPoints] = useState('no')
+  const [points, setPoints] = useState(0)
+  const [maxPoints, setMaxPoints] = useState(0)
   const [questions, setQuestions] = useState([])
   const [indexQuestion, setIndexQuestion] = useState([])
   const user = useSelector(state => state.user.info)
@@ -47,8 +47,9 @@ function ReviewExamination() {
     setQuestions([])
     for (let question of questions) {
       setQuestions(pre => [...pre, question])
+
       newIndexQuestion.push({
-        isDone: true
+        isDone: false
       })
     }
 
@@ -76,7 +77,7 @@ function ReviewExamination() {
     getQuestions()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [takeExamId])
-  
+
   return (
     <Page title={name}>
 
@@ -95,10 +96,13 @@ function ReviewExamination() {
 
             <Stack width='100%' flex={{ xs: 1, md: 3, lg: 4 }} spacing={3}><Paper elevation={12}>
               <Stack p={2}>
-                <Typography><strong>Thời gian bắt đầu: </strong> {moment(startTime).format("DD-MM-YYYY HH:mm")}</Typography>
-                <Typography><strong>Thời gian nộp bài: </strong>{moment(submitTime).format("DD-MM-YYYY HH:mm")}</Typography>
-                <Typography><strong>Điểm tối đa: </strong>{maxPoints}</Typography>
-                <Typography><strong>Điểm đạt được: </strong>{points === undefined ?'Chưa có điểm':points}</Typography>
+                <Box>
+                  <Typography><strong>Thời gian bắt đầu: </strong>{moment(startTime).format("DD-MM-YYYY HH:mm")}</Typography>
+                  <Typography><strong>Thời gian nộp bài: </strong>{moment(submitTime).format("DD-MM-YYYY HH:mm")}</Typography>
+                  <Typography><strong>Điểm tối đa: </strong>{maxPoints}</Typography>
+                  <Typography><strong>Điểm đạt được: </strong>{points === undefined ? 'Chưa có điểm' : points}</Typography>
+                </Box>
+
               </Stack>
             </Paper>
               {
@@ -129,10 +133,10 @@ function ReviewExamination() {
                     <AccordionDetails sx={{
                       padding: 1.5
                     }}>
-                      <Grid container spacing={0.5}>
+                      <Grid container spacing={0.5} maxHeight="232px" sx={{ overflowY: 'scroll' }}>
                         {
                           indexQuestion.map((item, index) =>
-                            <Grid key={index} xs={1.5} sm={1} md={3} lg={2} item>
+                            <Grid key={index} xs={1.5} sm={1} md={3} lg={2.25} xl={2} item>
                               <ButtonQuestion className={`${item.isDone ? 'done' : ''} ${item.isFlag ? 'flag' : ''}`}
                                 onClick={() => document.getElementById(`question-${index}`)
                                   .scrollIntoView({ block: 'center', behavior: "smooth" })}

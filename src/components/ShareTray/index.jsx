@@ -1,4 +1,4 @@
-import { Button, Dialog, DialogContent, DialogTitle, Slide, Stack } from '@mui/material'
+import { Button, Dialog, DialogContent, DialogTitle, Divider, Slide, Stack } from '@mui/material'
 import React, { forwardRef, useState } from 'react'
 import {
     FacebookIcon,
@@ -33,7 +33,8 @@ function ShareTray({ url, title,quote , text, ...others }) {
                 onClose={handleClose}
                 aria-describedby="alert-dialog-slide-description"
             >
-                <DialogTitle>{"Chia sẻ"}</DialogTitle>
+                <DialogTitle align='center' color='primary'>{"Chia sẻ"}</DialogTitle>
+                {/* <Divider/> */}
                 <DialogContent>
                     <Stack direction='row' spacing={1} flexWrap='wrap'>
                         <FacebookShareButton

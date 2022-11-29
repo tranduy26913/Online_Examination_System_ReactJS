@@ -276,13 +276,13 @@ const SubmitAssignment = (props) => {
             {
               editable && <LoadingButton variant='contained' loading={loading}
                 onClick={handleUpdate} >
-                Sửa bài làm
+                Sửa bài nộp
               </LoadingButton>
             }
 
             {creatable && <LoadingButton variant='contained' loading={loading}
               onClick={handleCreate}>
-              Nộp bài làm
+              Nộp bài
             </LoadingButton>}
 
             {deletable &&

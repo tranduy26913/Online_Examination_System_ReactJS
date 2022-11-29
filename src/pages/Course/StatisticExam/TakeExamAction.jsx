@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import {
     Button,
     Dialog,
@@ -21,6 +21,8 @@ import {
 import InfoIcon from '@mui/icons-material/Info';
 import PreviewIcon from '@mui/icons-material/Preview';
 import { Link } from 'react-router-dom';
+import apiTakeExam from 'apis/apiTakeExam';
+import moment from 'moment';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -28,6 +30,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 function TakeExamAction({ takeExamId }) {
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
+    const [logs, setLogs] = useState([])
     const [open, setOpen] = React.useState(false);
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
@@ -47,6 +50,17 @@ function TakeExamAction({ takeExamId }) {
         setRowsPerPage(+event.target.value);
         setPage(0);
     };
+
+    useEffect(() => {
+        const GetLogs = () => {
+            apiTakeExam.getLogs({ takeExamId })
+                .then(res => {
+                    console.log(res)
+                    setLogs(res.logs)
+                })
+        }
+        GetLogs()
+    }, [takeExamId])
     return (
         <>
             <Tooltip title='Chi tiết'>
@@ -64,7 +78,7 @@ function TakeExamAction({ takeExamId }) {
 
             </Tooltip>
 
-            <Dialog
+            {open && <Dialog
                 open={open}
                 fullScreen={fullScreen}
                 fullWidth={true}
@@ -74,7 +88,7 @@ function TakeExamAction({ takeExamId }) {
                 onClose={handleClose}
                 aria-describedby="alert-dialog-slide-description"
             >
-                <DialogTitle>{"Use Google's location service?"}</DialogTitle>
+                <DialogTitle>Hoạt động trong lúc làm bài thi</DialogTitle>
                 <DialogContent sx={{ overflow: 'hidden', height: 480 }}>
                     <TableContainer sx={{ maxHeight: 350, width: '100%' }}>
                         <Table stickyHeader aria-label="sticky table">
@@ -92,21 +106,22 @@ function TakeExamAction({ takeExamId }) {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {rows
+                                {logs
                                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                    .map((row) => {
+                                    .map((log,index) => {
+                                        const { action, time, _id } = log
                                         return (
-                                            <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
-                                                {columns.map((column) => {
-                                                    const value = row[column.id];
-                                                    return (
-                                                        <TableCell key={column.id} align={column.align}>
-                                                            {column.format && typeof value === 'number'
-                                                                ? column.format(value)
-                                                                : value}
-                                                        </TableCell>
-                                                    );
-                                                })}
+
+                                            <TableRow hover role="checkbox" tabIndex={-1} key={_id}>
+                                                <TableCell align='left'>
+                                                   {index}
+                                                </TableCell>
+                                                <TableCell align='left'>
+                                                   {action}
+                                                </TableCell>
+                                                <TableCell align='left'>
+                                                   {moment(time).format('DD/MM/YYYY hh:mm A')}
+                                                </TableCell>
                                             </TableRow>
                                         );
                                     })}
@@ -124,23 +139,20 @@ function TakeExamAction({ takeExamId }) {
                         onRowsPerPageChange={handleChangeRowsPerPage}
                     />
                 </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleClose}>Disagree</Button>
-                    <Button onClick={handleClose}>Agree</Button>
-                </DialogActions>
-            </Dialog>
+                
+            </Dialog>}
         </>
     )
 }
 
 const columns = [
-    { id: 'name', label: 'Name', minWidth: 170 },
-    { id: 'code', label: 'ISO\u00a0Code', minWidth: 100 },
+    { id: 'index', label: 'STT', minWidth: 100 },
+    { id: 'action', label: 'Hành động', minWidth: 200 },
     {
-        id: 'population',
-        label: 'Population',
+        id: 'time',
+        label: 'Thời gian',
         minWidth: 170,
-        align: 'right',
+        align: 'left',
         format: (value) => value.toLocaleString('en-US'),
     },
 ];
