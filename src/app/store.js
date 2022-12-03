@@ -16,14 +16,14 @@ import {
 } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
 //import storageSession  from 'redux-persist/lib/storage/session'
-//import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
+import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
 
 const persistConfig = {
   key: 'root',
   version: 1,
   storage,
   blacklist: ['user'],
-  //stateReconciler: autoMergeLevel2
+  stateReconciler: autoMergeLevel2
 }
 
 // const userPersistConfig = {

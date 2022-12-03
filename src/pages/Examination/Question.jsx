@@ -91,7 +91,7 @@ const Question = (props) => {
       answers: newValue
     }))
     dispatch(changeStateDone({ questionId: question.id, value: true }))
-    //handleCreateLog()
+    handleCreateLog()
   }, [])
 
   const handleChangeMulti = useCallback((event) => {//đổi lựa chọn cho câu hỏi nhiều lựa chọn

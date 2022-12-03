@@ -94,21 +94,6 @@ const Examination = () => {
             isFlag:false
         }))
         dispatch(addAllQuestion(questions))
-        // for (let question of questions) {
-        //     const isDone = checkDone(answerSheet, question.id)
-        //     setQuestions(pre => [...pre, question])
-        //     if (isDone)
-        //         newIndexQuestion.push({
-        //             isFlag: false,
-        //             isDone: true
-        //         })
-        //     else
-        //         newIndexQuestion.push({
-        //             isFlag: false,
-        //             isDone: false
-        //         })
-        // }
-
         setIndexQuestion(newIndexQuestion)
     }
 
@@ -146,13 +131,16 @@ const Examination = () => {
     }
 
     useEffect(() => {
+        if(!takeExamId){
+          return      
+        }
         const checkExitBrowser = (e) => {
             var confirmationMessage = "Bạn có chắc chắn muốn thoát khỏi bài kiểm tra";
             (e || window.event).returnValue = confirmationMessage; //Gecko + IE
             return confirmationMessage;                            //Webkit, Safari, Chrome
         }
         const changeVisibility = () => {
-
+            
             if (document.visibilityState === 'visible') {
                 if (countExit === 3) {
                     toast.warning("Cảnh báo! Bạn đã chuyển Tab 3 lần. Chuyển Tab lần thứ 4 bài thi sẽ tự động được nộp.",
@@ -167,6 +155,7 @@ const Examination = () => {
                 handleCreateLog(`Thoát khỏi màn hình lần thứ ${countExit + 1}`)
             }
         }
+       
         window.addEventListener("beforeunload", checkExitBrowser);
         document.addEventListener('visibilitychange', changeVisibility)
         return () => {
@@ -180,7 +169,6 @@ const Examination = () => {
             action, takeExamId
         })
     }
-console.log("DDDĐ")
     const style = {
 
         flexDirection: { xs: 'column', md: 'row' },
