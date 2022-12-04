@@ -36,6 +36,9 @@ export const axiosClientWithToken = axios.create({
 });
 
 var myInterceptor = null;
+export const clearInterceptor = ()=>{
+    axiosClientWithToken.interceptors.request.eject(myInterceptor)
+}
 export const axiosInstance = (accessToken,refreshToken, dispatch, stateSuccess,stateFail) => {
     axiosClientWithToken.interceptors.request.eject(myInterceptor)
     myInterceptor = axiosClientWithToken.interceptors.request.use(

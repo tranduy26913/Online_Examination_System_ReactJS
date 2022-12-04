@@ -50,7 +50,7 @@ const Examination = () => {
     const [loadingExam, setLoadingExam] = useState(true)
 
     const [questions, setQuestions] = useState([])
-    const [indexQuestion, setIndexQuestion] = useState([])
+    //const [indexQuestion, setIndexQuestion] = useState([])
     //const user = useSelector(state => state.user.info)
     const dispatch = useDispatch()
     const takeExamId = useSelector(state => state.answerSheet?.takeExamId)
@@ -85,7 +85,6 @@ const Examination = () => {
     }, [])
 
     const setupQuestion = (questions) => {
-        const newIndexQuestion = []
         setQuestions(questions)
         questions = questions.map(item=>({
             question:item.id,
@@ -94,7 +93,6 @@ const Examination = () => {
             isFlag:false
         }))
         dispatch(addAllQuestion(questions))
-        setIndexQuestion(newIndexQuestion)
     }
 
     const handleTakeExam = () => {
@@ -112,7 +110,7 @@ const Examination = () => {
             .catch(err => {
                 const text = getMessageError(err)
                 toast.warning(text)
-                if (text === 'Sai mật khẩu') {
+                if (text !== 'Sai mật khẩu') {
                     navigate('/')
                 }
             })

@@ -23,6 +23,7 @@ import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { logoutSuccess } from 'slices/authSlice';
 import { changeRole, toggleTheme } from 'slices/settingSlice';
+import { clearInterceptor } from 'apis/axiosClient';
 
 
 const MaterialUISwitch = styled(Switch)(({ theme }) => ({
@@ -129,6 +130,7 @@ function Header() {
   const handleLogout = () => {
     dispatch(logoutSuccess())
     setAnchorElUser(null);
+    clearInterceptor()
   }
 
 

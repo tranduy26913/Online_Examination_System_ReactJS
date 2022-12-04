@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect,useLayoutEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { logoutSuccess } from 'slices/authSlice'
@@ -20,7 +20,7 @@ function CheckAuthentication(props) {
     const navigate = useNavigate()
     const location = useLocation()
     const dispatch = useDispatch()
-    useEffect(() => {
+    useLayoutEffect(() => {
         const check = () => {
             const isPrivate = privatePath.findIndex(e => location.pathname.includes(e)) >= 0 ? true : false
             if(isPrivate){
@@ -56,24 +56,23 @@ function CheckAuthentication(props) {
                 }
             }
             else {
-                setLoading(false)
+                
                 dispatch(clearUserInfo())
                 if (isPrivate) {
                     //toast.warning("Bạn không có quyền truy cập. Vui lòng đăng nhập lại")
                     navigate('/')
                 }
+                setLoading(false)
             }
         }
         check()
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [refreshToken])
+    }, [refreshToken,location.pathname])
     return (
         <>
         {
-            loading?<>
+            loading?
             <LoadingPage content='Đang tải dữ liệu...' />
-            {/* <Typography>Đang lấy thông tin người dùng. Vui lòng đợi</Typography> */}
-            </>
             :props.children
         }
         </>

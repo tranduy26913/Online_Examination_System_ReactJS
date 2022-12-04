@@ -11,6 +11,13 @@
     //animation: showtop 1s ease-in-out 1 forwards;
 }
 
+.active.showtotop {
+    // opacity: 1;
+    opacity: 1;
+    transform: none;
+    //animation: showtop 1s ease-in-out 1 forwards;
+}
+
 @keyframes showtop {
     0% {
         opacity: 0;

@@ -32,9 +32,9 @@ function Home() {
       <Page title='Bello Quiz - Hệ thống giáo dục trực tuyến'>
         <Box className='container' pb={5}>
           <Hero className='home-item'/>
-          <Section className='home-item'/>
+          <Section/>
           <AboutUs className='home-item'/>
-          <Testimonial className='home-item'/>
+          {/* <Testimonial className='home-item'/> */}
           <ContactUs className='home-item'/>
         </Box>
       </Page>
