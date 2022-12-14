@@ -42,7 +42,7 @@ export default function UserMoreMenu({ id,assignmentSlug, reloadList }) {
       id
     })
       .then(res => {
-        toast.success('Xoá học viên thành công')
+        toast.success('Xoá bài tập thành công')
         reloadList()
       })
       .catch(err => {

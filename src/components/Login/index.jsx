@@ -84,6 +84,9 @@ const Login = () => {
                     if (res.role === 'TEACHER') {
                         dispatch(changeRole('teacher'))
                     }
+                    else{
+                        dispatch(changeRole('student'))
+                    }
                     toast.success("Đăng nhập thành công")
                     navigate("/my/profile")
                 }

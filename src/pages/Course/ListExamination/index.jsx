@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import {
     Box,
     Stack,
@@ -103,20 +103,21 @@ const ListExaminationTeacher = () => {
 
     //Effect
     useEffect(() => {
-        const loadListExam = () => {//lấy danh sách bài kiểm tra
-            const params = {
-                courseId
-            }
-            setLoadingData(true)
-            apiCourse.getListExamOfCourse(params)
-                .then(res => {
-                    setExams(res?.reverse() || [])
-                })
-                .finally(()=>setLoadingData(false))
-        }
         loadListExam()
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [courseId])
+
+    const loadListExam = useCallback(() => {//lấy danh sách bài kiểm tra
+        const params = {
+            courseId
+        }
+        setLoadingData(true)
+        apiCourse.getListExamOfCourse(params)
+            .then(res => {
+                setExams(res?.reverse() || [])
+            })
+            .finally(()=>setLoadingData(false))
+    },[courseId])
 
     const ButtonCreateExam = () => {
         return (
@@ -170,7 +171,7 @@ const ListExaminationTeacher = () => {
                                                     </TableCell>
 
                                                     <TableCell align="right" sx={{width:'10%'}}>
-                                                        <TableMoreMenu slug={slugExam}/>
+                                                        <TableMoreMenu slug={slugExam} reloadList={loadListExam}/>
                                                     </TableCell>
                                                 </TableRow>
                                             );

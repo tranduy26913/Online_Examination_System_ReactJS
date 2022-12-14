@@ -28,6 +28,9 @@ const QuestionBankDetail = lazy(() => import("pages/Dashboard/QuestionBankDetail
 const ResultPayment = lazy(() => import("pages/ResultPayment"));
 const ResetPassword = lazy(() => import("pages/ResetPassword"));
 const StatisticExam = lazy(() => import("pages/Course/StatisticExam"));
+const StatisticCourse = lazy(() => import("pages/Course/Statistic"));
+const StatisticStudent = lazy(() => import("pages/Dashboard/StatisticStudent"));
+const StatisticTeacher = lazy(() => import("pages/Dashboard/StatisticTeacher"));
 const ResultExamination = lazy(() => import("pages/ResultExamination"));
 const ReviewExamination = lazy(() => import("pages/ReviewExamination"));
 const ManageFile = lazy(() => import("pages/Course/ManageFile"));
@@ -74,7 +77,7 @@ const TEACHER = [
   },
   {
     path: 'statistic',
-    component: MaintenancePage
+    component: StatisticTeacher
   },
   {
     path: 'statistic-exam',
@@ -105,7 +108,7 @@ const STUDENT = [
   },
   {
     path: 'statistic',
-    component: MaintenancePage
+    component: StatisticStudent
   },
   {
     path: 'profile/change-password',
@@ -152,7 +155,7 @@ const COURSE_TEACHER = [
   },
   {
     path: 'statistic',
-    component: MaintenancePage
+    component: StatisticCourse
   },
   {
     path: 'statistic-exam/:slug',

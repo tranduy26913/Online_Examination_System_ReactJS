@@ -149,7 +149,7 @@ export const SIDEBAR_COURSE_TEACHER = [
         text: 'Thống kê',
         link: 'statistic',
         list: ['statistic'],
-        regex:'^\/course\/.*(\\d)\/statistic-exam\/?'
+        regex:'^\/course\/.*(\\d)\/statistic(-exam|)\/?'
     }
     
 

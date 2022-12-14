@@ -53,15 +53,14 @@ function TakeExamAction({ takeExamId }) {
 
     useEffect(() => {
         const GetLogs = () => {
-            if(!open)
-                return
             apiTakeExam.getLogs({ takeExamId })
                 .then(res => {
+                    console.log(res)
                     setLogs(res.logs)
                 })
         }
         GetLogs()
-    }, [takeExamId,open])
+    }, [takeExamId])
     return (
         <>
             <Tooltip title='Chi tiết'>

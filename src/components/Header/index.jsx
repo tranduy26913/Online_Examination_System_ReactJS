@@ -24,6 +24,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { logoutSuccess } from 'slices/authSlice';
 import { changeRole, toggleTheme } from 'slices/settingSlice';
 import { clearInterceptor } from 'apis/axiosClient';
+import { toast } from 'react-toastify';
 
 
 const MaterialUISwitch = styled(Switch)(({ theme }) => ({
@@ -124,6 +125,10 @@ function Header() {
 
   const handleChangeRole = (role) => {
     if (role === 'teacher' || role === 'student') {
+      if(role==='teacher' && user.role === 'STUDENT'){
+        toast.warning("Phân quyền hiện tại của bạn là HỌC VIÊN. Vui lòng nâng cấp lên quyền GIÁO VIÊN!")
+        return
+      }
       dispatch(changeRole(role))
     }
   }

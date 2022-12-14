@@ -63,7 +63,7 @@ function ExitCourse() {
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={handleClose}>Huỷ</Button>
-                        <Button onClick={handleExitCourse}>Xoá</Button>
+                        <Button onClick={handleExitCourse}>Rời khoá học</Button>
                     </DialogActions>
                 </Dialog>
             </Box>

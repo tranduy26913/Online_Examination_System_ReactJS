@@ -1,7 +1,7 @@
 // @mui
 import PropTypes from 'prop-types';
 import { alpha, styled } from '@mui/material/styles';
-import { Card, lighten, SvgIcon, Typography } from '@mui/material';
+import {Paper, Card, darken, lighten, Typography } from '@mui/material';
 // utils
 import { fShortenNumber } from 'utils/formatNumber';
 // components
@@ -25,41 +25,41 @@ AppWidgetSummary.propTypes = {
   color: PropTypes.string,
   icon: PropTypes.string,
   title: PropTypes.string.isRequired,
-  total: PropTypes.number.isRequired,
+  //total: PropTypes.number.isRequired,
   sx: PropTypes.object,
 };
 
-export default function AppWidgetSummary({ title, total, icon, text,color = 'primary', sx, ...other }) {
+export default function AppWidgetSummary({ title, total, Icon, text, color = 'primary', sx, ...other }) {
   return (
-    <Card
-      sx={{
-        py: 5,
-        boxShadow: 0,
-        textAlign: 'center',
-        color: (theme) => theme.palette[color].dark,
-        bgcolor: (theme) => lighten(theme.palette[color].light,0.6),
-        ...sx,
-      }}
-      {...other}
-    >
-      <IconWrapperStyle
+    <Paper elevation={6}>
+
+      <Card
         sx={{
-          color: (theme) => theme.palette[color].dark,
-          backgroundImage: (theme) =>
-            `linear-gradient(135deg, ${alpha(theme.palette[color].dark, 0.06)} 0%, ${alpha(
-              theme.palette[color].dark,
-              0.44
-            )} 100%)`,
+          py: 5,
+          boxShadow: 0,
+          textAlign: 'center',
+          color: (theme) => darken(theme.palette[color].main, 0.4),
+          bgcolor: (theme) => lighten(theme.palette[color].main, 0.4),
+          ...sx,
         }}
+        {...other}
       >
-        <SvgIcon component={icon} width={24} height={24} />
-      </IconWrapperStyle>
+        <IconWrapperStyle
+          sx={{
+            color: (theme) => theme.palette[color].dark,
+            backgroundImage: (theme) =>
+              `linear-gradient(135deg, ${alpha(theme.palette[color].dark, 0)} 0%, ${darken(theme.palette[color].dark, 0.25)} 100%)`,
+          }}
+        >
+          {Icon && <Icon sx={{ color: '#fff', fontSize: '3rem' }} />}
+        </IconWrapperStyle>
 
-      <Typography variant="h4">{text ? text : fShortenNumber(total)}</Typography>
+        <Typography variant="h4">{text ? text : fShortenNumber(total)}</Typography>
 
-      <Typography variant="h6">
-        {title}
-      </Typography>
-    </Card>
+        <Typography variant="h6">
+          {title}
+        </Typography>
+      </Card>
+    </Paper>
   );
 }

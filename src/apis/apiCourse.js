@@ -62,7 +62,7 @@ import { axiosClientWithToken } from "./axiosClient";
         return res.data;
     },
     exitCourse: async (params) => {
-        const res = await axiosClientWithToken.put('/course/exit-course', params)
+        const res = await axiosClientWithToken.post('/course/exit-course', params)
         return res.data;
     },
 }

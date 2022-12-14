@@ -19,6 +19,7 @@ import { toast } from 'react-toastify';
 import { Link } from 'react-router-dom';
 import EmptyList from 'components/UI/EmptyList';
 import { useSelector } from 'react-redux';
+import Page from 'components/Page';
 
 
 const QuestionBank = () => {
@@ -46,6 +47,8 @@ const QuestionBank = () => {
             })
     }
     return (
+        <Page title='Ngân hàng câu hỏi'>
+
         <Paper>
             <Stack spacing={1} p={2}>
                 <Stack direction='row' justifyContent='flex-end' mb={1}>
@@ -55,20 +58,20 @@ const QuestionBank = () => {
                 <Grid container spacing={2}>
                     {questionBanks.length === 0 && <EmptyList />}
                     {questionBanks.map(item =>
-                        <Grid key={item.id}xs={12} sm={6} md={4} lg={3}>
+                        <Grid key={item.id}xs={12} sm={6} md={4} lg={3} sx={{display:'flex'}}>
                             <Card sx={{ maxWidth: 345 }}>
                                 <CardContent>
                                     <Typography gutterBottom variant="h5" component="div">
                                         {item.name}
                                     </Typography>
-                                    <Typography variant="body2" color="text.secondary">
+                                    <Typography variant="body2" color="text.secondary" minHeight={48} className='text-overflow-2-lines '>
                                         {item.description}
                                     </Typography>
                                 </CardContent>
                                 <Divider />
                                 <Stack 
                                 direction='row' flexWrap='wrap'
-                                justifyContent='space-evenly' gap={0.5} py={0.5}>
+                                justifyContent='space-evenly' gap={0.5} py={0.75}>
                                     <Link to={`/my/question-bank/${item.slug}`}>
                                         <Button variant='outlined' sx={{ width: '100px' }} size="small"
                                         endIcon={<AssignmentIcon/>}>Chi tiết</Button>
@@ -88,6 +91,7 @@ const QuestionBank = () => {
                 </Grid>
             </Stack>
         </Paper>
+        </Page>
 
     )
 }

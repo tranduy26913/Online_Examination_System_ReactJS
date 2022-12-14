@@ -3,6 +3,10 @@ import Page from 'components/Page'
 import {
   Paper,
   Stack,
+  Tab,
+  Box,
+  Tabs,
+  Typography,
 } from '@mui/material'
 import Grid from '@mui/material/Unstable_Grid2';
 import AppWidgetSummary from 'components/AppWidgetSummary';
@@ -13,22 +17,30 @@ import { useSelector } from 'react-redux';
 import apiStatistic from 'apis/apiStatistic';
 import { useParams } from 'react-router-dom';
 import moment from 'moment';
+import TableTeacherGroup from './StatisticTable/TableTeacherGroup';
+import { PropTypes } from 'prop-types';
 
 function StatisticExam(props) {
   const role = useSelector(state => state.setting.role)
- 
+
   const [exams, setExams] = useState([])
   const { slug } = useParams()//lấy slug exam
+  const [tabIndex, setTabIndex] = React.useState(0);
+
+  const handleChangeTabIndex = (event, newTabIndex) => {
+    setTabIndex(newTabIndex);
+  };
+
   useEffect(() => {
     const getStatistic = () => {
       const params = { examSlug: slug }
       let response = apiStatistic.getStatisticExamByStudent(params)
-      if(role === 'teacher')
-      response = apiStatistic.getStatisticExamByTeacher(params)
-     
+      if (role === 'teacher')
+        response = apiStatistic.getStatisticExamByTeacher(params)
+
       response.then(res => {
-          setExams(res)
-        })
+        setExams(res)
+      })
     }
     getStatistic()
   }, [role, slug])
@@ -59,20 +71,20 @@ function StatisticExam(props) {
       <Stack spacing={2}>
         <Grid container spacing={2}>
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="Số lượt làm bài" total={exams.length} icon={'ant-design:android-filled'} />
+            <AppWidgetSummary title="Số lượt làm bài" total={exams.length} />
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="Kết quả trung bình" text={`${avgPoints}${maxPoints ? `/${maxPoints}` : ''}`} total={`${avgPoints}${maxPoints ? `/${maxPoints}` : ''}`} color="info" icon={'ant-design:apple-filled'} />
+            <AppWidgetSummary title="Kết quả trung bình" text={`${avgPoints}${maxPoints ? `/${maxPoints}` : ''}`} total={`${avgPoints}${maxPoints ? `/${maxPoints}` : ''}`} color="info" />
           </Grid>
 
 
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="Thời lượng trung bình" total={avgDuration} color="warning" icon={'ant-design:windows-filled'} />
+            <AppWidgetSummary title="Thời lượng trung bình" total={avgDuration} color="warning" />
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="Tổng kết" text={`Đạt ${summary}%`} total={234} color="error" icon={'ant-design:bug-filled'} />
+            <AppWidgetSummary title="Tổng kết" text={`Đạt ${summary}%`} total={234} color="error" />
           </Grid>
         </Grid>
 
@@ -104,14 +116,61 @@ function StatisticExam(props) {
         </Grid> */}
 
         <Paper>
-          {role === 'student' ? <TableStudent exams={exams} /> : <TableTeacher exams={exams} />}
+          {role === 'student' ? <TableStudent exams={exams} /> :
+            <>
+              <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                <Tabs value={tabIndex} onChange={handleChangeTabIndex} centered>
+                  <Tab label="Tất cả lượt thi" {...a11yProps(0)} />
+                  <Tab label="Nhóm điểm theo học viên" {...a11yProps(1)} />
+                </Tabs>
+              </Box>
+              <TabPanel value={tabIndex} index={0}>
+                <TableTeacher exams={exams} />
+              </TabPanel>
+              <TabPanel value={tabIndex} index={1}>
+                <TableTeacherGroup exams={exams} />
+              </TabPanel>
+
+            </>
+          }
         </Paper>
 
       </Stack>
     </Page>
   )
 }
+function TabPanel(props) {
+  const { children, value, index, ...other } = props;
 
-StatisticExam.propTypes = {}
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box >
+          {children}
+        </Box>
+      )}
+    </div>
+  );
+}
+
+TabPanel.propTypes = {
+  children: PropTypes.node,
+  index: PropTypes.number.isRequired,
+  value: PropTypes.number.isRequired,
+};
+
+function a11yProps(index) {
+  return {
+    id: `simple-tab-${index}`,
+    'aria-controls': `simple-tabpanel-${index}`,
+  };
+}
+
 
 export default StatisticExam

@@ -28,7 +28,7 @@ const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 TableMoreMenu.propTypes = {
-  studentId: PropTypes.string.isRequired,
+  slug: PropTypes.string.isRequired,
   reloadList: PropTypes.func.isRequired
 }
 export default function TableMoreMenu({ slug, reloadList }) {

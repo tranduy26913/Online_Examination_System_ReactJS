@@ -99,7 +99,7 @@ const ManageAssignment = () => {
         )
     }
     return (
-        <Page title='Danh sách học viên'>
+        <Page title='Danh sách bài tập'>
             <Box width={'100%'}>
                 <Paper elevation={24}>
 
