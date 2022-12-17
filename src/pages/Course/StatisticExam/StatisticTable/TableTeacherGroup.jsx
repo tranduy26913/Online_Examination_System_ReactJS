@@ -1,4 +1,4 @@
-import {  useState } from 'react'
+import { useState } from 'react'
 import {
     Stack,
     Table,
@@ -60,7 +60,38 @@ function applySortFilter(array, comparator, query) {
     return stabilizedThis.map((el) => el[0]);
 }
 
-const TableTeacherGroup = ({ exams }) => {
+function groupBy(list, keyGetter) {
+    const map = new Map();
+    list.forEach((item) => {
+        const key = keyGetter(item);
+        const collection = map.get(key);
+        if (!collection) {
+            map.set(key, [item]);
+        } else {
+            collection.push(item);
+        }
+    });
+    return map;
+}
+
+const TableTeacherGroup = ({ exams, typeofPoint }) => {
+    exams = groupBy(exams, exam => exam.name);
+    let groupExams = []
+    exams.forEach(item => {
+        let arrPoint = item.map(e => e.points)
+        console.log(item)
+        let points = 0
+        if (typeofPoint === 'max')
+            points = Math.max(arrPoint)
+        else if (typeofPoint === 'avg')
+            points = arrPoint.reduce((p, c) => p + c, 0) / arrPoint.length;
+        else
+            points = arrPoint[0]
+        groupExams.push({
+            ...item[0],
+            points
+        })
+    })
     const [page, setPage] = useState(0);
     const [order, setOrder] = useState('asc');
     const [orderBy, setOrderBy] = useState('name');
@@ -82,16 +113,16 @@ const TableTeacherGroup = ({ exams }) => {
 
     const handleFilterByName = (event) => setFilterName(event.target.value);
 
-    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - exams.length) : 0;
+    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - groupExams.length) : 0;
 
-    const filteredUsers = applySortFilter(exams, getComparator(order, orderBy), filterName);
+    const filteredUsers = applySortFilter(groupExams, getComparator(order, orderBy), filterName);
 
     const isUserNotFound = filteredUsers.length === 0;
 
 
 
     const handleData = () => {
-       return filteredUsers.map(item => {
+        return filteredUsers.map(item => {
             let { name, points, maxPoints, startTime, submitTime, status } = item
             const duration = moment(submitTime).diff(startTime, 'minutes')
             return {
@@ -124,14 +155,14 @@ const TableTeacherGroup = ({ exams }) => {
                             order={order}
                             orderBy={orderBy}
                             headLabel={TABLE_HEAD}
-                            rowCount={exams.length}
+                            rowCount={groupExams.length}
                             onRequestSort={handleRequestSort}
                         />
                         <TableBody>
                             {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
                                 const { _id: takeExamId, name, submitTime, startTime, points, maxPoints, status } = row;
                                 const duration = moment(submitTime).diff(startTime, 'minutes')
-                                
+
                                 return (
                                     <TableRow
                                         hover
@@ -147,9 +178,9 @@ const TableTeacherGroup = ({ exams }) => {
                                             {status === 'not submitted' ? 'Chưa nộp bài' : 'Đã nộp'}
                                         </TableCell>
                                         <TableCell align="center">
-                                            <Chip sx={{width:'80px'}} 
-                                            color={points/maxPoints <0.5 ?'error':'primary'}
-                                            label={points/maxPoints < 0.5 ? 'Chưa đạt' : 'Đạt'}
+                                            <Chip sx={{ width: '80px' }}
+                                                color={points / maxPoints < 0.5 ? 'error' : 'primary'}
+                                                label={points / maxPoints < 0.5 ? 'Chưa đạt' : 'Đạt'}
                                             />
                                         </TableCell>
 
@@ -182,7 +213,7 @@ const TableTeacherGroup = ({ exams }) => {
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"
-                count={exams.length}
+                count={groupExams.length}
                 labelRowsPerPage='Số dòng mỗi trang'
                 rowsPerPage={rowsPerPage}
                 page={page}

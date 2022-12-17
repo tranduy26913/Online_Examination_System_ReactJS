@@ -24,6 +24,7 @@ function StatisticExam(props) {
   const role = useSelector(state => state.setting.role)
 
   const [exams, setExams] = useState([])
+  const [typeofPoint, setTypeofPoint] = useState('')
   const { slug } = useParams()//lấy slug exam
   const [tabIndex, setTabIndex] = React.useState(0);
 
@@ -39,7 +40,8 @@ function StatisticExam(props) {
         response = apiStatistic.getStatisticExamByTeacher(params)
 
       response.then(res => {
-        setExams(res)
+        setExams(res?.takeExams)
+        setTypeofPoint(res.typeofPoint)
       })
     }
     getStatistic()
@@ -115,7 +117,7 @@ function StatisticExam(props) {
           </Grid>
         </Grid> */}
 
-        <Paper>
+        <Paper elevation={12}>
           {role === 'student' ? <TableStudent exams={exams} /> :
             <>
               <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
@@ -128,7 +130,7 @@ function StatisticExam(props) {
                 <TableTeacher exams={exams} />
               </TabPanel>
               <TabPanel value={tabIndex} index={1}>
-                <TableTeacherGroup exams={exams} />
+                <TableTeacherGroup exams={exams} typeofPoint={typeofPoint}/>
               </TabPanel>
 
             </>

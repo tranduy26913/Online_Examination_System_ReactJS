@@ -7,11 +7,12 @@ import {
     TableCell,
     TableContainer,
     TablePagination,
-    Chip
+    Chip,
+    Box,
+    Typography
 } from "@mui/material"
 import Scrollbar from 'components/Scrollbar';
 import { TableToolbar, TableHeadCustom } from 'components/TableCustom';
-import TakeExamAction from '../TakeExamAction';
 import moment from 'moment';
 import EmptyList from 'components/UI/EmptyList';
 import ButtonExport from 'components/ButtonExport';
@@ -24,7 +25,6 @@ const TABLE_HEAD = [
     { id: 'isVerified', label: 'Thời lượng', align: 'center' },
     { id: 'status', label: 'Trạng thái', align: 'center' },
     { id: 'result', label: 'Kết quả', align: 'center' },
-    { id: 'action', label: 'Thao tác', align: 'center' },
 ];
 
 // ----------------------------------------------------------------------
@@ -58,7 +58,7 @@ function applySortFilter(array, comparator, query) {
     return stabilizedThis.map((el) => el[0]);
 }
 
-const TableStudent = ({ exams }) => {
+const TableStudent = ({ exams, typeofPoint }) => {
     const [page, setPage] = useState(0);
     const [order, setOrder] = useState('asc');
     const [orderBy, setOrderBy] = useState('name');
@@ -110,82 +110,83 @@ const TableStudent = ({ exams }) => {
     }
 
     return (
+        <>
+            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                <Typography></Typography>
+            </Box>
+            <Stack>
+                <TableToolbar filterName={filterName} onFilterName={handleFilterByName}
+                    ButtonCustom={ButtonExportFile} />
 
-        <Stack>
-            <TableToolbar filterName={filterName} onFilterName={handleFilterByName}
-                ButtonCustom={ButtonExportFile} />
+                <Scrollbar>
+                    <TableContainer sx={{ minWidth: 800, padding: '0 12px' }}>
+                        <Table>
+                            <TableHeadCustom
+                                order={order}
+                                orderBy={orderBy}
+                                headLabel={TABLE_HEAD}
+                                rowCount={exams.length}
+                                onRequestSort={handleRequestSort}
+                            />
+                            <TableBody>
+                                {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                                    const { id: takeExamId, submitTime, startTime, points, maxPoints, status } = row;
+                                    const duration = moment(submitTime).diff(startTime, 'minutes')
+                                    return (
+                                        <TableRow
+                                            hover
+                                            key={takeExamId}
+                                            tabIndex={-1}
+                                        >
 
-            <Scrollbar>
-                <TableContainer sx={{ minWidth: 800, padding: '0 12px' }}>
-                    <Table>
-                        <TableHeadCustom
-                            order={order}
-                            orderBy={orderBy}
-                            headLabel={TABLE_HEAD}
-                            rowCount={exams.length}
-                            onRequestSort={handleRequestSort}
-                        />
-                        <TableBody>
-                            {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                                const { id: takeExamId,  submitTime, startTime, points, maxPoints, status } = row;
-                                const duration = moment(submitTime).diff(startTime, 'minutes')
-                                return (
-                                    <TableRow
-                                        hover
-                                        key={takeExamId}
-                                        tabIndex={-1}
-                                    >
+                                            {/* <TableCell align="left">{name}</TableCell> */}
+                                            <TableCell align="left">{Math.round(((points + Number.EPSILON) * 100)) / 100}/{maxPoints}</TableCell>
+                                            <TableCell align="center">{moment(startTime).format('DD/MM/YYYY HH:mm')}</TableCell>
+                                            <TableCell align="center">{duration} phút</TableCell>
+                                            <TableCell align="center">
+                                                {status === 'not submitted' ? 'Chưa nộp bài' : 'Đã nộp'}
+                                            </TableCell>
+                                            <TableCell align="center">
+                                                <Chip sx={{ width: '80px' }}
+                                                    color={points / maxPoints < 0.5 ? 'error' : 'primary'}
+                                                    label={points / maxPoints < 0.5 ? 'Chưa đạt' : 'Đạt'}
+                                                />
+                                            </TableCell>
+                                        </TableRow>
+                                    );
+                                })}
+                                {emptyRows > 0 && (
+                                    <TableRow style={{ height: 53 * emptyRows }}>
+                                        <TableCell colSpan={6} />
+                                    </TableRow>
+                                )}
+                            </TableBody>
 
-                                        {/* <TableCell align="left">{name}</TableCell> */}
-                                        <TableCell align="left">{Math.round(((points + Number.EPSILON) * 100)) / 100}/{maxPoints}</TableCell>
-                                        <TableCell align="center">{moment(startTime).format('DD/MM/YYYY HH:mm')}</TableCell>
-                                        <TableCell align="center">{duration} phút</TableCell>
-                                        <TableCell align="center">
-                                            {status === 'not submitted' ? 'Chưa nộp bài' : 'Đã nộp'}
-                                        </TableCell>
-                                        <TableCell align="center">
-                                            <Chip sx={{width:'80px'}} 
-                                                color={points / maxPoints < 0.5 ? 'error' : 'primary'}
-                                                label={points / maxPoints < 0.5 ? 'Chưa đạt' : 'Đạt'}
-                                            />
-                                        </TableCell>
-                                        <TableCell align="right">
-                                            <TakeExamAction takeExamId={takeExamId} />
+                            {isUserNotFound && (
+                                <TableBody>
+                                    <TableRow>
+                                        <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
+                                            <EmptyList />
                                         </TableCell>
                                     </TableRow>
-                                );
-                            })}
-                            {emptyRows > 0 && (
-                                <TableRow style={{ height: 53 * emptyRows }}>
-                                    <TableCell colSpan={6} />
-                                </TableRow>
+                                </TableBody>
                             )}
-                        </TableBody>
+                        </Table>
+                    </TableContainer>
+                </Scrollbar>
 
-                        {isUserNotFound && (
-                            <TableBody>
-                                <TableRow>
-                                    <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
-                                        <EmptyList />
-                                    </TableCell>
-                                </TableRow>
-                            </TableBody>
-                        )}
-                    </Table>
-                </TableContainer>
-            </Scrollbar>
-
-            <TablePagination
-                rowsPerPageOptions={[5, 10, 25]}
-                component="div"
-                count={exams.length}
-                labelRowsPerPage='Số dòng mỗi trang'
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-            />
-        </Stack>
+                <TablePagination
+                    rowsPerPageOptions={[5, 10, 25]}
+                    component="div"
+                    count={exams.length}
+                    labelRowsPerPage='Số dòng mỗi trang'
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    onPageChange={handleChangePage}
+                    onRowsPerPageChange={handleChangeRowsPerPage}
+                />
+            </Stack>
+        </>
     )
 }
 
