@@ -108,8 +108,13 @@ const LayoutCourse = () => {
             Danh sách khoá học
           </Typography>
         </Link>
-        <Link key="3" to={`/course/${courseId}/${tab?.link}`}>
-          <Typography key="2">
+        <Link key="3" to={`/course/${courseId}`}>
+          <Typography>
+            {course?.name}
+          </Typography>
+        </Link>
+        <Link key="4" to={`/course/${courseId}/${tab?.link}`}>
+          <Typography>
             {tab?.text || ""}
           </Typography>
         </Link>

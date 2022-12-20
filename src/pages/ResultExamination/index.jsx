@@ -7,12 +7,16 @@ import apiTakeExam from 'apis/apiTakeExam'
 function ResultExamination() {
     const { takeExamId } = useParams()
     const [result, setResult] = useState({})
+    const [courseId, setCourseId] = useState(0)
+    const [viewAnswer, setViewAnswer] = useState(0)
 
     useEffect(() => {
         const getResult = () => {
             apiTakeExam.getResultExam({ takeExamId })
                 .then(res => {
                     setResult(res)
+                    setCourseId(res.courseId)
+                    setViewAnswer(res.viewAnswer)
                 })
         }
         getResult()
@@ -32,11 +36,13 @@ function ResultExamination() {
                             <>{result?.points}/{result?.maxPoints}</>}</strong></Typography>
                         <Typography>Lần thi: <strong>{result?.lanThi}</strong></Typography>
                         <Stack direction='row' justifyContent='center' spacing={2}>
+                           {
+                            viewAnswer!=='no'&&
                             <Link to={`/review-exam/${takeExamId}`}>
-
                                 <Button variant='contained'>Xem lại bài làm</Button>
                             </Link>
-                            <Link to='/course'>
+                           }
+                           <Link to={`/course/${courseId}/statistic-exam/`}>
                                 <Button variant='contained'>Xem thống kê</Button>
                             </Link>
                         </Stack>
