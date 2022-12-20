@@ -25,6 +25,7 @@ function StatisticExam(props) {
 
   const [exams, setExams] = useState([])
   const [typeofPoint, setTypeofPoint] = useState('')
+  const [maxPoints, setMaxPoints] = useState(0)
   const { slug } = useParams()//lấy slug exam
   const [tabIndex, setTabIndex] = React.useState(0);
 
@@ -42,6 +43,7 @@ function StatisticExam(props) {
       response.then(res => {
         setExams(res?.takeExams)
         setTypeofPoint(res.typeofPoint)
+        setMaxPoints(res.maxPoints)
       })
     }
     getStatistic()
@@ -49,7 +51,7 @@ function StatisticExam(props) {
 
   const count = exams.length
   const avgPoints = (count && exams.reduce((total, cur) => total + cur.points, 0) / count).toFixed(2) || 0
-  const maxPoints = (count && exams[0].maxPoints) || null
+
   const avgDuration = (() => {
     let duration = 0
     exams.forEach(e => {
@@ -61,11 +63,11 @@ function StatisticExam(props) {
   const summary = (() => {
     let pass = 0
     exams.forEach(e => {
-      if (e.points / e.maxPoints >= 5)
+      if (e.points / maxPoints >= 0.5)
         pass++
 
     })
-    return (count && pass / count) || 0
+    return (count && pass*100 / count).toFixed(2) || 0
   })()
 
   return (
@@ -90,35 +92,8 @@ function StatisticExam(props) {
           </Grid>
         </Grid>
 
-
-        {/* <Grid container spacing={2}>
-          <Grid item xs={6}>
-            <Paper>
-              <PieChartPoint
-                chartData={[
-                  { label: '0-2', value: 4344 },
-                  { label: '2-4', value: 5435 },
-                  { label: '4-6', value: 1443 },
-                  { label: '6-8', value: 4443 },
-                  { label: '8-10', value: 4443 },
-                ]}
-              /></Paper>
-          </Grid>
-          <Grid item xs={6}>
-            <Paper>
-              <PieChartPoint
-                chartData={[
-                  { label: 'America', value: 4344 },
-                  { label: 'Asia', value: 5435 },
-                  { label: 'Europe', value: 1443 },
-                  { label: 'Africa', value: 4443 },
-                ]}
-              /></Paper>
-          </Grid>
-        </Grid> */}
-
         <Paper elevation={12}>
-          {role === 'student' ? <TableStudent exams={exams} /> :
+          {role === 'student' ? <TableStudent exams={exams} maxPoints={maxPoints} typeofPoint={typeofPoint}/> :
             <>
               <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <Tabs value={tabIndex} onChange={handleChangeTabIndex} centered>
@@ -127,7 +102,7 @@ function StatisticExam(props) {
                 </Tabs>
               </Box>
               <TabPanel value={tabIndex} index={0}>
-                <TableTeacher exams={exams} />
+                <TableTeacher exams={exams} maxPoints={maxPoints}/>
               </TabPanel>
               <TabPanel value={tabIndex} index={1}>
                 <TableTeacherGroup exams={exams} typeofPoint={typeofPoint}/>

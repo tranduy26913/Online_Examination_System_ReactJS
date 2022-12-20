@@ -15,12 +15,11 @@ import {
   StackLabel,
 } from './Component/MUI'
 import { CKEditor } from '@ckeditor/ckeditor5-react';
-import { useContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
 import apiAssignment from 'apis/apiAssignment';
 import { toast } from 'react-toastify';
-import { useNavigate, useParams } from 'react-router-dom';
-import CourseContext from 'pages/Course/LayoutCourse/CourseContext';
+import { useParams } from 'react-router-dom';
 import LoadingButton from 'components/LoadingButton';
 import { getMessageError } from 'utils';
 import DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
@@ -52,8 +51,6 @@ const SubmitAssignment = (props) => {
   const [loadingDelete, setLoadingDelete] = useState(false)//loading button
   const accessToken = useSelector(state => state.auth.accessToken)
 
-  const { courseId, id: courseobjId } = useContext(CourseContext)
-  const navigate = useNavigate()
 
   useEffect(() => {
     const getQuestions = () => {
@@ -162,10 +159,11 @@ const SubmitAssignment = (props) => {
     let text = ''
     if (isSubmitted) {
       text = duration > 0 ? 'Bài tập đã nộp sớm ' : 'Bài tập đã nộp trễ '
-      text = text + textDuration
+      text += textDuration
     }
     else {
-      text = 'Còn lại ' + textDuration
+      text = duration > 0 ? 'Còn lại ' : 'Quá hạn '
+      text += textDuration
     }
     return text
   })()
@@ -239,61 +237,64 @@ const SubmitAssignment = (props) => {
             <AccordionDetails>
               <Paper elevation={6}>
                 <ContentWrap>
-                  <Typography dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(content) }} />
+                  <Box dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(content) }} />
                 </ContentWrap>
               </Paper>
             </AccordionDetails>
           </Accordion>
         </Stack>
       </Paper>
-      <Paper elevation={6}>
-        <Stack p={2}>
-          <Stack spacing={1.5} mb={2}>
-            <Typography fontSize='20px' fontWeight={600} my={2} align='center'>Nhập nội dung bài làm</Typography>
-            <CKEditor
-              editor={DecoupledEditor}
-              data={contentSubmission}
-              disabled={!allowReSubmit}
-              onReady={editor => {
-                editor.ui
-                  .getEditableElement()
-                  .parentElement.insertBefore(
-                    editor.ui.view.toolbar.element,
-                    editor.ui.getEditableElement()
-                  );
-                editor.plugins.get("FileRepository").createUploadAdapter = (loader) => {
-                  return new MyUploadAdapter(loader, accessToken);
-                };
-              }}
+      {
+        (creatable || editable) && <Paper elevation={6}>
+          <Stack p={2}>
 
-              onChange={(event, editor) => {
-                setContentSubmission(editor.getData());
-              }}
+            <Stack spacing={1.5} mb={2}>
+              <Typography fontSize='20px' fontWeight={600} my={2} align='center'>Nhập nội dung bài làm</Typography>
+              <CKEditor
+                editor={DecoupledEditor}
+                data={contentSubmission}
+                disabled={!allowReSubmit}
+                onReady={editor => {
+                  editor.ui
+                    .getEditableElement()
+                    .parentElement.insertBefore(
+                      editor.ui.view.toolbar.element,
+                      editor.ui.getEditableElement()
+                    );
+                  editor.plugins.get("FileRepository").createUploadAdapter = (loader) => {
+                    return new MyUploadAdapter(loader, accessToken);
+                  };
+                }}
 
-            />
+                onChange={(event, editor) => {
+                  setContentSubmission(editor.getData());
+                }}
+              />
+            </Stack>
+
+            <Stack direction='row' justifyContent='center' spacing={2}>
+              {
+                editable && <LoadingButton variant='contained' loading={loading}
+                  onClick={handleUpdate} >
+                  Sửa bài nộp
+                </LoadingButton>
+              }
+
+              {creatable && <LoadingButton variant='contained' loading={loading}
+                onClick={handleCreate}>
+                Nộp bài
+              </LoadingButton>}
+
+              {deletable &&
+                <LoadingButton color='error' variant='contained' loading={loadingDelete}
+                  onClick={handleDelete}>Loại bỏ bài nộp</LoadingButton>
+
+              }
+            </Stack>
           </Stack>
-          <Stack direction='row' justifyContent='center' spacing={2}>
-            {
-              editable && <LoadingButton variant='contained' loading={loading}
-                onClick={handleUpdate} >
-                Sửa bài nộp
-              </LoadingButton>
-            }
 
-            {creatable && <LoadingButton variant='contained' loading={loading}
-              onClick={handleCreate}>
-              Nộp bài
-            </LoadingButton>}
-
-            {deletable &&
-              <LoadingButton color='error' variant='contained' loading={loadingDelete}
-                onClick={handleDelete}>Loại bỏ bài nộp</LoadingButton>
-
-            }
-          </Stack>
-        </Stack>
-
-      </Paper>
+        </Paper>
+      }
 
     </Stack >
   )

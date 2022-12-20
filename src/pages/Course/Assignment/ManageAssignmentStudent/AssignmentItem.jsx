@@ -7,6 +7,7 @@ import {
     alpha
 } from "@mui/material"
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
+import DoneIcon from '@mui/icons-material/Done';
 import moment from 'moment'
 import { Link } from 'react-router-dom'
 import { styled, useTheme } from '@mui/material/styles';
@@ -31,12 +32,20 @@ const AssignmentItem = (props) => {
                     </Typography>
                 </Stack>
                 <Divider sx={{ backgroundColor: theme.palette.primary.light }} />
-                <Box py={1}>
-                    <Typography fontSize="14px"> <strong>Mở: </strong>
-                        {data?.startTime && moment(data.startTime).format('DD-MM-YYYY HH:mm A')}</Typography>
-                    <Typography fontSize="14px"><strong>Đóng: </strong>
-                        {data?.endTime && moment(data.endTime).format('DD-MM-YYYY HH:mm A')}</Typography>
-                </Box>
+                <Stack py={1} spacing={0.25}>
+                    <Typography lineHeight={'26px'} fontSize="14px"> <strong>Mở: </strong>
+                        {data?.startTime && moment(data.startTime).format('DD-MM-YYYY HH:mm A')}
+                        </Typography>
+                    <Typography lineHeight={'26px'} fontSize="14px"><strong>Đóng: </strong>
+                        {data?.endTime && moment(data.endTime).format('DD-MM-YYYY HH:mm A')}
+                        </Typography>
+                    <Typography lineHeight={'26px'}fontSize="14px"><strong>Trạng thái: </strong>
+                        {data?.isSubmit? 
+                        <>
+                           Đã nộp <DoneIcon color='success' sx={{marginBottom:'-6px'}}/> 
+                        </>
+                        :'Chưa nộp'}</Typography>
+                </Stack>
 
             </StackContainer >
         </Link>

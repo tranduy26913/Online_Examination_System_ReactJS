@@ -22,6 +22,7 @@ export function fToNow(date) {
 }
 
 export function calcDurationTime(diff) {
+  diff = Math.abs(diff)
   let duration = moment.duration(diff, 'seconds')
   let years = duration.years()
   let months = duration.months()

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useLayoutEffect, useState } from 'react'
 import {
     Paper,
     Stack,
@@ -10,18 +10,20 @@ import CourseContext from 'pages/Course/LayoutCourse/CourseContext';
 import AssignmentItem from './AssignmentItem';
 import apiAssignment from 'apis/apiAssignment';
 import EmptyList from 'components/UI/EmptyList';
+import LoadingRoller from 'components/LoadingPage/LoadingRoller';
 const ListAssignmentStudent = () => {
     const [listAssignment, setListAssignment] = useState([])
+    const [loadingData, setLoadingData] = useState(false)
     const { courseId } = useContext(CourseContext)
-
-    useEffect(() => {
+    useLayoutEffect(() => {
         const getListAssignment = () => {
             if (!courseId) return
-
+            setLoadingData(true)
             apiAssignment.getAssignmentsByCourseOfStudent({ courseId })
                 .then(res => {
                     setListAssignment(res)
                 })
+                .finally(() => setLoadingData(false))
         }
 
         getListAssignment()
@@ -34,10 +36,11 @@ const ListAssignmentStudent = () => {
 
                 <Paper elevation={12}>
                     <Grid container p={2} spacing={2}>
-                        {listAssignment.length === 0 && <EmptyList />}
+                        {loadingData ? <LoadingRoller /> :
+                            listAssignment.length === 0 && <EmptyList />}
                         {
                             listAssignment.map(item =>
-                                <Grid item xs={12} sm={6} md={4} lg={3}>
+                                <Grid key={item._id} item xs={12} sm={6} md={4} lg={3}>
                                     <AssignmentItem key={item.id} data={item} />
                                 </Grid>
                             )
