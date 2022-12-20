@@ -25,6 +25,8 @@ import { database } from 'config/firebaseConfig';
 import AddStudent from './component/AddStudent';
 import Page from 'components/Page';
 import LoadingRoller from 'components/LoadingPage/LoadingRoller';
+import { applySortFilter, getComparator } from 'components/TableCustom/FunctionHelper';
+import { useLayoutEffect } from 'react';
 
 // ----------------------------------------------------------------------
 
@@ -39,34 +41,6 @@ const TABLE_HEAD = [
 
 // ----------------------------------------------------------------------
 
-function descendingComparator(a, b, orderBy) {
-    if (b[orderBy] < a[orderBy]) {
-        return -1;
-    }
-    if (b[orderBy] > a[orderBy]) {
-        return 1;
-    }
-    return 0;
-}
-
-function getComparator(order, orderBy) {
-    return order === 'desc'
-        ? (a, b) => descendingComparator(a, b, orderBy)
-        : (a, b) => -descendingComparator(a, b, orderBy);
-}
-
-function applySortFilter(array, comparator, query) {
-    const stabilizedThis = array.map((el, index) => [el, index]);
-    stabilizedThis.sort((a, b) => {
-        const order = comparator(a[0], b[0]);
-        if (order !== 0) return order;
-        return a[1] - b[1];
-    });
-    if (query) {
-        return array.filter((_user) => _user.fullname.toLowerCase().indexOf(query.toLowerCase()) !== -1);
-    }
-    return stabilizedThis.map((el) => el[0]);
-}
 
 const ListStudent = () => {
     const [page, setPage] = useState(0);
@@ -100,7 +74,7 @@ const ListStudent = () => {
 
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - students.length) : 0;
 
-    const filteredUsers = applySortFilter(students, getComparator(order, orderBy), filterName);
+    const filteredUsers = applySortFilter(students, getComparator(order, orderBy), filterName, 'fullname');
 
     const isUserNotFound = filteredUsers.length === 0;
 
@@ -141,7 +115,7 @@ const ListStudent = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [students])
     //Effect
-    useEffect(() => {
+    useLayoutEffect(() => {
 
         if (!courseId) return
         loadListStudent()

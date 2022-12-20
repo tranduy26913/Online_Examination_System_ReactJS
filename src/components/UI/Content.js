@@ -7,5 +7,8 @@ export const ContentWrap= styled(Stack)(({ theme }) => ({
     padding:theme.spacing(2),
     '& img':{
         maxWidth: '100%'
+    },
+    '& ul':{
+        padding:theme.spacing(2)
     }
 }))

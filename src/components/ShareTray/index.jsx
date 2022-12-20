@@ -23,7 +23,7 @@ function ShareTray({ url, title,quote , text, ...others }) {
     return (
         <>
             <Button onClick={handleOpen}
-                {...others}
+                {...others} sx={{justifyContent:'flex-start'}}
             >{text}</Button>
 
             <Dialog
@@ -38,35 +38,35 @@ function ShareTray({ url, title,quote , text, ...others }) {
                 <DialogContent>
                     <Stack direction='row' spacing={1} flexWrap='wrap'>
                         <FacebookShareButton
-                            url={'https://oes.vercel.app/course/6/manage-assignment'}
+                            url={url}
                             quote={quote}>
                             <FacebookIcon
                                 size={48}
                                 round />
                         </FacebookShareButton>
                         <TwitterShareButton
-                            url={'https://oes.vercel.app/course/6/manage-assignment'}
+                            url={url}
                             title={title}>
                             <TwitterIcon
                                 size={48}
                                 round />
                         </TwitterShareButton>
                         <LinkedinShareButton
-                            url={'https://oes.vercel.app/course/6/manage-assignment'}
+                            url={url}
                             title={title}>
                             <LinkedinIcon
                                 size={48}
                                 round />
                         </LinkedinShareButton>
                         <TelegramShareButton
-                            url={'https://oes.vercel.app/course/6/manage-assignment'}
+                            url={url}
                             title={title}>
                             <TelegramIcon
                                 size={48}
                                 round />
                         </TelegramShareButton>
                         <RedditShareButton
-                            url={'https://oes.vercel.app/course/6/manage-assignment'}
+                            url={url}
                             title={title}>
                             <RedditIcon
                                 size={48}
