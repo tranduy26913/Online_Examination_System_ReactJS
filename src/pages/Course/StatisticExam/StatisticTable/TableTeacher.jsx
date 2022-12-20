@@ -16,6 +16,7 @@ import TakeExamAction from '../TakeExamAction';
 import moment from 'moment';
 import EmptyList from 'components/UI/EmptyList';
 import ButtonExport from 'components/ButtonExport';
+import { applySortFilter, getComparator } from 'components/TableCustom/FunctionHelper';
 
 // ----------------------------------------------------------------------
 
@@ -31,36 +32,7 @@ const TABLE_HEAD = [
 
 // ----------------------------------------------------------------------
 
-function descendingComparator(a, b, orderBy) {
-    if (b[orderBy] < a[orderBy]) {
-        return -1;
-    }
-    if (b[orderBy] > a[orderBy]) {
-        return 1;
-    }
-    return 0;
-}
-
-function getComparator(order, orderBy) {
-    return order === 'desc'
-        ? (a, b) => descendingComparator(a, b, orderBy)
-        : (a, b) => -descendingComparator(a, b, orderBy);
-}
-
-function applySortFilter(array, comparator, query) {
-    const stabilizedThis = array.map((el, index) => [el, index]);
-    stabilizedThis.sort((a, b) => {
-        const order = comparator(a[0], b[0]);
-        if (order !== 0) return order;
-        return a[1] - b[1];
-    });
-    if (query) {
-        return array.filter((_user) => _user.name.toLowerCase().indexOf(query.toLowerCase()) !== -1);
-    }
-    return stabilizedThis.map((el) => el[0]);
-}
-
-const TableTeacher = ({ exams }) => {
+const TableTeacher = ({ exams,maxPoints }) => {
     const [page, setPage] = useState(0);
     const [order, setOrder] = useState('asc');
     const [orderBy, setOrderBy] = useState('name');
@@ -84,15 +56,13 @@ const TableTeacher = ({ exams }) => {
 
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - exams.length) : 0;
 
-    const filteredUsers = applySortFilter(exams, getComparator(order, orderBy), filterName);
+    const filteredUsers = applySortFilter(exams, getComparator(order, orderBy), filterName, 'name');
 
     const isUserNotFound = filteredUsers.length === 0;
 
-
-
     const handleData = () => {
        return filteredUsers.map(item => {
-            let { name, points, maxPoints, startTime, submitTime, status } = item
+            let { name, points, startTime, submitTime, status } = item
             const duration = moment(submitTime).diff(startTime, 'minutes')
             return {
                 'Họ và tên': name,
@@ -129,7 +99,7 @@ const TableTeacher = ({ exams }) => {
                         />
                         <TableBody>
                             {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
-                                const { _id: takeExamId, name, submitTime, startTime, points, maxPoints, status } = row;
+                                const { _id: takeExamId, name, submitTime, startTime, points, status } = row;
                                 const duration = moment(submitTime).diff(startTime, 'minutes')
                                 
                                 return (

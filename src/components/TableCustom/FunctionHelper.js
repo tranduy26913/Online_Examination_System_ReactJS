@@ -23,7 +23,9 @@ export function applySortFilter(array, comparator, query, field) {
         return a[1] - b[1];
     });
     if (query) {
-        return array.filter((_user) => _user[field]?.toLowerCase().indexOf(query.toLowerCase()) !== -1);
+        return array.filter((_user) => {
+            return String(_user[field])?.toLowerCase()?.indexOf(query.toLowerCase()) !== -1
+        });
     }
     return stabilizedThis.map((el) => el[0]);
 }
