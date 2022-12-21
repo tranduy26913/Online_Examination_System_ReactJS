@@ -30,6 +30,9 @@ export function calcDurationTime(diff) {
   let hours = duration.hours()
   let minutes = duration.minutes()
   let seconds = duration.seconds()
-  return `${years? years + ' năm ':''}${months?months + ' tháng ':''}${days?days + ' ngày ':''}`
-  +  `${hours? hours + ' giờ ':''}${minutes?minutes + ' phút ':''}${seconds + ' giây '}`
+  if (years > 0 || months > 0 || days > 0)
+    return `${years ? years + ' năm ' : ''}${months ? months + ' tháng ' : ''}${days ? days + ' ngày ' : ''}`
+      + `${hours ? hours + ' giờ ' : ''}`
+  return `${years ? years + ' năm ' : ''}${months ? months + ' tháng ' : ''}${days ? days + ' ngày ' : ''}`
+    + `${hours ? hours + ' giờ ' : ''}${minutes ? minutes + ' phút ' : ''}${seconds + ' giây '}`
 }

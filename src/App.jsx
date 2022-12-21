@@ -29,7 +29,7 @@ function App() {
         LTS: 'HH:mm:ss',
         L: 'DD/MM/YYYY',
         LL: 'D MMMM YYYY',
-        LLL: 'D MMMM YYYY HH:mm',
+        LLL: 'dddd D MMMM YYYY HH:mm A',
         //LLLL : 'dddd D MMMM YYYY HH:mm',
         LLLL: 'dddd D MMMM YYYY HH:mm:ss'
       },
@@ -37,7 +37,13 @@ function App() {
         ss: '%d giây',
         mm: "%dm",
         hh: "%dh",
-      }
+      },
+      meridiem: function (hour, minute, isLowercase) {
+        if (hour >= 12)
+            return isLowercase ? 'pm' : 'PM';
+        else
+            return isLowercase ? 'am' : 'AM';
+    }
     })
   } catch (err) {
 

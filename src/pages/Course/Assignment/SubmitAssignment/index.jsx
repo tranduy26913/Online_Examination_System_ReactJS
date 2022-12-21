@@ -192,16 +192,16 @@ const SubmitAssignment = (props) => {
   })()
   return (
     <Stack spacing={1.5}>
-      <Paper elevation={6} sx={{ padding: '12px' }}>
+      <Paper elevation={6} sx={{ padding: '16px' }}>
         <Typography align='center' fontSize='20px' fontWeight={600} sx={{ color: theme.palette.primary.main }} >
           {name}
         </Typography>
 
         <Divider />
 
-        <Stack spacing={1.5} my={1.5}>
-          <Typography><strong>Thời gian mở: </strong> {moment(startTime).format('LLLL')}</Typography>
-          <Typography><strong>Thời gian đóng: </strong> {moment(endTime).format('LLLL')}</Typography>
+        <Stack spacing={2} my={1.5}>
+          <Typography><strong>Thời gian mở: </strong> {moment(startTime).format('LLL')}</Typography>
+          <Typography><strong>Thời gian đóng: </strong> {moment(endTime).format('LLL')}</Typography>
           <Typography fontWeight={600} fontSize='18px'>Trạng thái bài nộp</Typography>
 
           <StackLabel>
@@ -220,7 +220,7 @@ const SubmitAssignment = (props) => {
           </StackLabel>
           <StackLabel>
             <Box>Chỉnh sửa lần cuối</Box>
-            <Box>{isSubmitted ? moment(submitTime).format('DD-MM-YYYY HH:mm:ss A') : 'Chưa nộp'}</Box>
+            <Box>{isSubmitted ? moment(submitTime).format('LLL') : 'Chưa nộp'}</Box>
           </StackLabel>
 
           <Accordion
@@ -228,13 +228,14 @@ const SubmitAssignment = (props) => {
               boxShadow: 'none',
             }} defaultExpanded disableGutters TransitionProps={{ unmountOnExit: true }}>
             <AccordionSummary
+              sx={{justifyContent:'center'}}
               expandIcon={<ExpandMoreIcon />}
               aria-controls="panel1a-content"
               id="panel1a-header"
-            ><Typography fontWeight={600}>Nội dung bài tập</Typography>
+            ><Typography fontWeight={600} flex={1} fontSize='20px' textAlign='center'>Nội dung bài tập</Typography>
 
             </AccordionSummary>
-            <AccordionDetails>
+            <AccordionDetails sx={{padding:0}}>
               <Paper elevation={6}>
                 <ContentWrap>
                   <Box dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(content) }} />
