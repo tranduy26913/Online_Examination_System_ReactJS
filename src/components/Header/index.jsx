@@ -19,7 +19,7 @@ import {
 
 import MenuIcon from '@mui/icons-material/Menu';
 import AdbIcon from '@mui/icons-material/Adb';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { logoutSuccess } from 'slices/authSlice';
 import { changeRole, toggleTheme } from 'slices/settingSlice';
@@ -112,6 +112,7 @@ function Header() {
   const user = useSelector(state => state.user.info)
   const isLight = useSelector(state => state.setting.isLight)
   const dispatch = useDispatch()
+  const navigate = useNavigate()
 
   const handleOpenNavMenu = (event) => setAnchorElNav(event.currentTarget);
   const handleOpenUserMenu = (event) => setAnchorElUser(event.currentTarget);
@@ -130,6 +131,7 @@ function Header() {
         return
       }
       dispatch(changeRole(role))
+      navigate('/my/profile')
     }
   }
   const handleLogout = () => {
