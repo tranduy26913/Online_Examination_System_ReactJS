@@ -4,6 +4,8 @@ import {
     AccordionDetails,
     Accordion,
     Typography,
+    Box,
+    Paper,
 } from '@mui/material'
 import CreateQuestion from 'components/Question/CreateQuestion'
 import DetailQuestion from 'components/Question/DetailQuestion'
@@ -18,20 +20,62 @@ import { useSelector } from 'react-redux';
 import { memo } from 'react';
 import ExamContext from '../ExamContext';
 
+const styleStack = {
+    
+    overflowY: 'scroll',
+    height: '100%',
+    padding:'0 8px'
+}
 function ListQuestion() {
-    const {examId,status} = useContext(ExamContext)
+    const { examId, status } = useContext(ExamContext)
     const QUESTIONS = useSelector(state => state.user.questions)
     const [idQuestion, setIdQuestion] = useState('')
-    const [expanded, setExpanded] = useState(false);
+    //const [expanded, setExpanded] = useState(false);
+    const [questionSelect, setQuestionSelect] = useState(null)
 
-    const handleChangeQuestion = (panel) => (event, isExpanded) => {
-        setExpanded(isExpanded ? panel : false);
-    };
-    const handleSelectQuestionEdit = useCallback((value) => setIdQuestion(value), [])
+    // const handleChangeQuestion = (panel) => (event, isExpanded) => {
+    //     setExpanded(isExpanded ? panel : false);
+    // };
+    const handleSelectQuestionEdit = useCallback((value) => {
+        setIdQuestion(value)
+        let question = QUESTIONS.find(item => item.id === value)
+        console.log(question)
+        if (question)
+            setQuestionSelect(question)
+        else
+            setQuestionSelect(null)
+    }, [QUESTIONS])
 
     return (
         <>
-            <Stack spacing={1.5}>
+            <Paper elevation={12}>
+                <Stack p={2} direction={'row'} height={'90vh'} spacing={2}>
+                    <Stack flex={1} spacing={1} sx={styleStack}>
+                        {
+                            QUESTIONS.map((item, index) =>
+                                <PaperQuestion
+                                    onClick={()=>handleSelectQuestionEdit(item.id)}
+                                    key={item.id}
+                                    className={`${item.id===idQuestion?'selected':''}`}
+                                    elevation={4} >
+                                    <Typography>Câu hỏi {index + 1}</Typography>
+                                </PaperQuestion>
+                            )
+                        }
+                    </Stack>
+
+                    <Box flex={4} overflow='scroll'>
+                        <CreateQuestion
+                            isEdit={idQuestion && true}
+                            id={idQuestion}
+                            examId={examId}
+                            handleSelectQuestion={handleSelectQuestionEdit}
+                            question={questionSelect} />
+                    </Box>
+
+                </Stack>
+            </Paper>
+            {/* <Stack spacing={1.5}>
                 {
                     QUESTIONS.map((item, index) =>
                         item &&
@@ -55,11 +99,11 @@ function ListQuestion() {
                 }
                 {
                     status === 'private' &&
-                <PaperQuestion elevation={12} >
-                    <CreateQuestion isEdit={false} id='' examId={examId} />
-                </PaperQuestion>
+                    <PaperQuestion elevation={12} >
+                        <CreateQuestion isEdit={false} id='' examId={examId} />
+                    </PaperQuestion>
                 }
-            </Stack>
+            </Stack> */}
         </>
     )
 }

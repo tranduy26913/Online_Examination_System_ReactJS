@@ -4,7 +4,8 @@ import {
     Switch,
     Stack,
     Paper,
-    Box
+    Box,
+    alpha
 } from '@mui/material';
 import PropTypes from 'prop-types';
 
@@ -154,7 +155,11 @@ export const Stack2Column = styled(Stack)(({ theme }) => ({
 }))
 
 export const PaperQuestion = styled(Paper)(({ theme }) => ({
-    borderTop: `6px solid ${theme.palette.primary.light}`
+    borderTop: `6px solid ${theme.palette.primary.light}`,
+    padding:theme.spacing(1),
+    '&.selected':{
+        backgroundColor:alpha(theme.palette.primary.main,0.4),
+    }
 }))
 
 export const AccordionSummaryStyle = {

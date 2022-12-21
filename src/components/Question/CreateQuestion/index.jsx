@@ -70,6 +70,7 @@ const BoxDelete = ({ onClick }) => {
   )
 }
 
+
 const CreateQuestion = (props) => {
   const { isEdit, examId, questionBankId, question, id } = props
   const [content, setContent] = useState(question ? question.content : '')
@@ -80,7 +81,7 @@ const CreateQuestion = (props) => {
   const dispatch = useDispatch()
   const refreshToken = useSelector(state => state.auth.refreshToken)
   const {reloadExam} = useContext(ExamContext) || {}
-
+  //const QUESTIONS = useSelector(state => state.user.questions)
   useEffect(() => {
     if (question) {
       console.log(question)
@@ -89,6 +90,9 @@ const CreateQuestion = (props) => {
       setTypeAnswer(question.type)
       let newAnswers = question.answers?.map(item => ({ ...item })) || []
       setAnswers(newAnswers)
+    }
+    else{
+      handleClearData()
     }
   }, [question])
 
@@ -224,7 +228,6 @@ const CreateQuestion = (props) => {
         toast.warning('Tạo câu hỏi mới thất bại')
       })
       .finally(() => setLoading(false))
-
   }
 
   const handleEditQuestion = () => {
@@ -258,10 +261,13 @@ const CreateQuestion = (props) => {
     setMaxPoints(1)
     setTypeAnswer('single')
   }
+  const handleCancel = ()=>{
+    props.handleSelectQuestion("")
+  }
   return (
 
     <Stack spacing={1.5} mb={2} p={2}>
-      <Typography fontWeight={600} mb={1}>Nhập nội dung câu hỏi</Typography>
+      <Typography fontWeight={600} textAlign='center' mb={1}>Nhập nội dung câu hỏi</Typography>
       <CKEditor
         editor={DecoupledEditor}
         data={content}
@@ -316,7 +322,11 @@ const CreateQuestion = (props) => {
       <Stack direction='row' justifyContent='center' >
         <Button onClick={handleAddAnswer} variant='outlined'>Thêm đáp án</Button></Stack>
       <Stack direction={'row'} spacing={1.5} justifyContent='flex-end'>
-        {/* <Button variant='contained' color='error'>Huỷ</Button> */}
+        <Button 
+        variant='contained' 
+        color='error'
+        onClick={handleCancel}
+        >Huỷ</Button>
         <Button onClick={handleClearData} variant='contained' color='warning'>Làm mới</Button>
         <LoadingButton loading={loading} variant='contained'
           onClick={isEdit ? handleEditQuestion : handleCreateQuestion}>{isEdit ? 'Sửa' : 'Tạo'} câu hỏi</LoadingButton>
