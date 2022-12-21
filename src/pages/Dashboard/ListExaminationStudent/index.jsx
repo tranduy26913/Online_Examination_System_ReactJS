@@ -12,12 +12,12 @@ import LoadingRoller from 'components/LoadingPage/LoadingRoller';
 const ListExaminationStudent = () => {
     const [listExam, setListExam] = useState([])
     const { courseId } = useContext(CourseContext)
-    const [loadingData, setLoadingData] = useState(false)
+    const [loadingData, setLoadingData] = useState(true)
     useLayoutEffect(() => {
         const getListExam = () => {
             if (!courseId) return
             setLoadingData(true)
-            apiCourse.getListExamOfCourse({ courseId })
+            apiCourse.getListExamOfCourseByStudent({ courseId })
                 .then(res => {
                     setListExam(res)
                 })

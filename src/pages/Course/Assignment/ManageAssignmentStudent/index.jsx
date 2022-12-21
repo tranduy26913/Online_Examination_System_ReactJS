@@ -13,7 +13,7 @@ import EmptyList from 'components/UI/EmptyList';
 import LoadingRoller from 'components/LoadingPage/LoadingRoller';
 const ListAssignmentStudent = () => {
     const [listAssignment, setListAssignment] = useState([])
-    const [loadingData, setLoadingData] = useState(false)
+    const [loadingData, setLoadingData] = useState(true)
     const { courseId } = useContext(CourseContext)
     useLayoutEffect(() => {
         const getListAssignment = () => {

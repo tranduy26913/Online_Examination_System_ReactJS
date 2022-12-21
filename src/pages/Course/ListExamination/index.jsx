@@ -45,7 +45,7 @@ const ListExaminationTeacher = () => {
     const [filterName, setFilterName] = useState('');
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [exams, setExams] = useState([])
-    const [loadingData, setLoadingData] = useState(false)
+    const [loadingData, setLoadingData] = useState(true)
     const { courseId } = useContext(CourseContext)
 
     const handleRequestSort = (event, property) => {

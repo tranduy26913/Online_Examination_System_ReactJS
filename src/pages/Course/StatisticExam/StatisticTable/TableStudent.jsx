@@ -111,8 +111,6 @@ const TableStudent = ({ exams, typeofPoint,maxPoints }) => {
                                             key={takeExamId}
                                             tabIndex={-1}
                                         >
-
-                                            {/* <TableCell align="left">{name}</TableCell> */}
                                             <TableCell align="left">{Math.round(((points + Number.EPSILON) * 100)) / 100}/{maxPoints}</TableCell>
                                             <TableCell align="center">{moment(startTime).format('DD/MM/YYYY HH:mm')}</TableCell>
                                             <TableCell align="center">{duration} phút</TableCell>

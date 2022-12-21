@@ -1,4 +1,4 @@
-import {  useState } from 'react'
+import { useState } from 'react'
 import {
     Stack,
     Table,
@@ -7,7 +7,9 @@ import {
     TableCell,
     TableContainer,
     TablePagination,
-    Chip
+    Chip,
+    Avatar,
+    Typography
 } from "@mui/material"
 import Scrollbar from 'components/Scrollbar';
 
@@ -32,7 +34,7 @@ const TABLE_HEAD = [
 
 // ----------------------------------------------------------------------
 
-const TableTeacher = ({ exams,maxPoints }) => {
+const TableTeacher = ({ exams, maxPoints }) => {
     const [page, setPage] = useState(0);
     const [order, setOrder] = useState('asc');
     const [orderBy, setOrderBy] = useState('name');
@@ -61,7 +63,7 @@ const TableTeacher = ({ exams,maxPoints }) => {
     const isUserNotFound = filteredUsers.length === 0;
 
     const handleData = () => {
-       return filteredUsers.map(item => {
+        return filteredUsers.map(item => {
             let { name, points, startTime, submitTime, status } = item
             const duration = moment(submitTime).diff(startTime, 'minutes')
             return {
@@ -99,9 +101,9 @@ const TableTeacher = ({ exams,maxPoints }) => {
                         />
                         <TableBody>
                             {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
-                                const { _id: takeExamId, name, submitTime, startTime, points, status } = row;
+                                const { _id: takeExamId, userAvatar, name, submitTime, startTime, points, status } = row;
                                 const duration = moment(submitTime).diff(startTime, 'minutes')
-                                
+
                                 return (
                                     <TableRow
                                         hover
@@ -109,7 +111,14 @@ const TableTeacher = ({ exams,maxPoints }) => {
                                         tabIndex={-1}
                                     >
 
-                                        <TableCell align="left">{name}</TableCell>
+                                        <TableCell width='20%' align="left">
+                                            <Stack direction='row' alignItems='center' spacing={1}>
+                                                <Avatar alt={name} src={userAvatar} />
+                                                <Typography>
+                                                    {name}
+                                                </Typography>
+                                            </Stack>
+                                        </TableCell>
                                         <TableCell align="center">{Math.round(((points + Number.EPSILON) * 100)) / 100}/{maxPoints}</TableCell>
                                         <TableCell align="center">{moment(startTime).format('DD/MM/YYYY HH:mm')}</TableCell>
                                         <TableCell align="center">{duration} phút</TableCell>
@@ -117,9 +126,9 @@ const TableTeacher = ({ exams,maxPoints }) => {
                                             {status === 'not submitted' ? 'Chưa nộp bài' : 'Đã nộp'}
                                         </TableCell>
                                         <TableCell align="center">
-                                            <Chip sx={{width:'80px'}} 
-                                            color={points/maxPoints <0.5 ?'error':'primary'}
-                                            label={points/maxPoints < 0.5 ? 'Chưa đạt' : 'Đạt'}
+                                            <Chip sx={{ width: '80px' }}
+                                                color={points / maxPoints < 0.5 ? 'error' : 'primary'}
+                                                label={points / maxPoints < 0.5 ? 'Chưa đạt' : 'Đạt'}
                                             />
                                         </TableCell>
 

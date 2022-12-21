@@ -58,10 +58,16 @@ const TestItem = (props) => {
                             <Typography fontSize="14px">{data?.maxTimes || 0} phút</Typography>
                         </Stack>
                     </Grid>
-                    <Grid xs={12} md={6} lg={3}>
+                    {/* <Grid xs={12} md={6} lg={3}>
                         <Stack alignItems='center' spacing={1}>
                             <Typography fontSize="15px" fontWeight="600">Số câu hỏi:</Typography>
                             <Typography fontSize="14px">{data?.numberofQuestions || 0}</Typography>
+                        </Stack>
+                    </Grid> */}
+                    <Grid xs={12} md={6} lg={3}>
+                        <Stack alignItems='center' spacing={1}>
+                            <Typography fontSize="15px" fontWeight="600">Đã làm:</Typography>
+                            <Typography fontSize="14px">{data?.count || 0} lần</Typography>
                         </Stack>
                     </Grid>
 

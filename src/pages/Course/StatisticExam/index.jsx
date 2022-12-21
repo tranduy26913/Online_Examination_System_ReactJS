@@ -82,7 +82,6 @@ function StatisticExam(props) {
             <AppWidgetSummary title="Kết quả trung bình" text={`${avgPoints}${maxPoints ? `/${maxPoints}` : ''}`} total={`${avgPoints}${maxPoints ? `/${maxPoints}` : ''}`} color="info" />
           </Grid>
 
-
           <Grid item xs={12} sm={6} md={3}>
             <AppWidgetSummary title="Thời lượng trung bình" total={avgDuration} color="warning" />
           </Grid>

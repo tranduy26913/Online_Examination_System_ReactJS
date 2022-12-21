@@ -34,6 +34,10 @@ import { axiosClientWithToken } from "./axiosClient";
         const res = await axiosClientWithToken.get('/course/get-exams',{params})
         return res.data;
     },
+    getListExamOfCourseByStudent: async (params) => {
+        const res = await axiosClientWithToken.get('/course/by-student',{params})
+        return res.data;
+    },
     addStudentIntoCourse: async (params) => {
         const res = await axiosClientWithToken.post('/course/add-student',params)
         return res.data;

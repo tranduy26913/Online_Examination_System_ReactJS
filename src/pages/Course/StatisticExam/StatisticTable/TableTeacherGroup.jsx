@@ -7,7 +7,9 @@ import {
     TableCell,
     TableContainer,
     TablePagination,
-    Chip
+    Chip,
+    Typography,
+    Avatar
 } from "@mui/material"
 import Scrollbar from 'components/Scrollbar';
 
@@ -31,8 +33,6 @@ const TABLE_HEAD = [
 ];
 
 // ----------------------------------------------------------------------
-
-
 
 function groupBy(list, keyGetter) {
     const map = new Map();
@@ -89,11 +89,9 @@ const TableTeacherGroup = ({ exams, typeofPoint }) => {
 
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - groupExams.length) : 0;
 
-    const filteredUsers = applySortFilter(groupExams, getComparator(order, orderBy), filterName,'name');
+    const filteredUsers = applySortFilter(groupExams, getComparator(order, orderBy), filterName, 'name');
 
     const isUserNotFound = filteredUsers.length === 0;
-
-
 
     const handleData = () => {
         return filteredUsers.map(item => {
@@ -134,7 +132,7 @@ const TableTeacherGroup = ({ exams, typeofPoint }) => {
                         />
                         <TableBody>
                             {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
-                                const { _id: takeExamId, name, submitTime, startTime, points, maxPoints, status } = row;
+                                const { _id: takeExamId, userAvatar,name, submitTime, startTime, points, maxPoints, status } = row;
                                 const duration = moment(submitTime).diff(startTime, 'minutes')
 
                                 return (
@@ -143,8 +141,14 @@ const TableTeacherGroup = ({ exams, typeofPoint }) => {
                                         key={takeExamId}
                                         tabIndex={-1}
                                     >
-
-                                        <TableCell align="left">{name}</TableCell>
+                                        <TableCell width='20%' align="left">
+                                            <Stack direction='row' alignItems='center' spacing={1}>
+                                                <Avatar alt={name} src={userAvatar} />
+                                                <Typography>
+                                                    {name}
+                                                </Typography>
+                                            </Stack>
+                                        </TableCell>
                                         <TableCell align="center">{Math.round(((points + Number.EPSILON) * 100)) / 100}/{maxPoints}</TableCell>
                                         <TableCell align="center">{moment(startTime).format('DD/MM/YYYY HH:mm')}</TableCell>
                                         <TableCell align="center">{duration} phút</TableCell>
