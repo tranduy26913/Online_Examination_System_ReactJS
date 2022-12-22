@@ -1,22 +1,26 @@
-import { Dialog, DialogContent, DialogContentText, DialogTitle, Slide } from '@mui/material'
+import { Button, Dialog, DialogContent, DialogContentText, DialogTitle, Slide,DialogActions } from '@mui/material'
 import { forwardRef, useState } from 'react'
 
 const Transition = forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
-function ConfirmDialog({ handleFunction, title, description, children }) {
-    const [dialog, setDialog] = useState(false)
-    const handleOpen = () => setDialog(true)
-    const handleClose = () => setDialog(false)
-    const handleOnclick = ()=>{
-        if(handleFunction){
-            handleFunction()
+function ConfirmButton({ handleFunc, title, description, children, ...buttonProps }) {
+    const [open, setOpen] = useState(false)
+    const handleOpen = () => setOpen(true)
+    const handleClose = () => setOpen(false)
+    const handleOnclick = () => {
+        if (handleFunc) {
+            handleFunc()
         }
+        handleClose()
     }
     return (
         <>
-            <Dialog
-                open={dialog}
+            <Button {...buttonProps} onClick={handleOpen}>
+                {children}
+            </Button>
+            {open && <Dialog
+                open={open}
                 TransitionComponent={Transition}
                 keepMounted
                 onClose={handleClose}
@@ -24,16 +28,16 @@ function ConfirmDialog({ handleFunction, title, description, children }) {
                 <DialogTitle>{title}</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                       {description}
+                        {description}
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose}>Huỷ</Button>
-                    <Button onClick={handleOnclick}>Xác nhận</Button>
+                    <Button onClick={handleOnclick}>Xoá</Button>
                 </DialogActions>
-            </Dialog>
+            </Dialog>}
         </>
     )
 }
 
-export default ConfirmDialog
+export default ConfirmButton
