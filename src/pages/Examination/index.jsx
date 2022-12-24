@@ -50,7 +50,7 @@ const Examination = () => {
     const [loadingExam, setLoadingExam] = useState(true)
 
     const [questions, setQuestions] = useState([])
-    //const [indexQuestion, setIndexQuestion] = useState([])
+    const [isTracking, setIsTracking] = useState(false)
     //const user = useSelector(state => state.user.info)
     const dispatch = useDispatch()
     const takeExamId = useSelector(state => state.answerSheet?.takeExamId)
@@ -71,6 +71,7 @@ const Examination = () => {
                         dispatch(setTakeExamId(resExam.takeExamId))
                         setupQuestion(resExam.exam.questions)
                         setEndTime(new Date(resExam.exam.endTime))
+                        setIsTracking(resExam.exam.tracking)
                         setName(resExam.exam.name)
                     }
                 })
@@ -86,11 +87,11 @@ const Examination = () => {
 
     const setupQuestion = (questions) => {
         setQuestions(questions)
-        questions = questions.map(item=>({
-            question:item.id,
-            answers:[],
-            isDone:false,
-            isFlag:false
+        questions = questions.map(item => ({
+            question: item.id,
+            answers: [],
+            isDone: false,
+            isFlag: false
         }))
         dispatch(addAllQuestion(questions))
     }
@@ -106,6 +107,7 @@ const Examination = () => {
                 setupQuestion(res.exam.questions)
                 setEndTime(new Date(res.exam.endTime))
                 setName(res.exam.name)
+                setIsTracking(res.exam.tracking)
             })
             .catch(err => {
                 const text = getMessageError(err)
@@ -119,7 +121,7 @@ const Examination = () => {
     const handleSubmit = () => {
         apiTakeExam.submitAnswerSheet({
             takeExamId,
-          answerSheet
+            answerSheet
         })
             .then(res => {
                 navigate('/result-exam/' + takeExamId)
@@ -129,8 +131,8 @@ const Examination = () => {
     }
 
     useEffect(() => {
-        if(!takeExamId){
-          return      
+        if (!takeExamId) {
+            return
         }
         const checkExitBrowser = (e) => {
             var confirmationMessage = "Bạn có chắc chắn muốn thoát khỏi bài kiểm tra";
@@ -138,29 +140,33 @@ const Examination = () => {
             return confirmationMessage;                            //Webkit, Safari, Chrome
         }
         const changeVisibility = () => {
-            
+
             if (document.visibilityState === 'visible') {
-                if (countExit === 3) {
-                    toast.warning("Cảnh báo! Bạn đã chuyển Tab 3 lần. Chuyển Tab lần thứ 4 bài thi sẽ tự động được nộp.",
+                handleCreateLog(`Thoát khỏi màn hình lần thứ ${countExit + 1}`)
+                if (countExit === 5) {
+                    handleSubmit()
+                    toast.warning(`Bài thi đã tự động nộp do bạn đã chuyển Tab 5 lần!`,
                         { autoClose: false })
                 }
-
-            } else {
-                setCountExit(i => i + 1)
-                if (countExit === 3) {
-                    //handleSubmit()
+                else {
+                    if (countExit > 0)
+                        toast.warning(`Cảnh báo! Bạn đã chuyển Tab ${countExit} lần. Chuyển Tab lần thứ 5 bài thi sẽ tự động được nộp!!!`,
+                            { autoClose: false })
+                    setCountExit(i => i + 1)
                 }
-                handleCreateLog(`Thoát khỏi màn hình lần thứ ${countExit + 1}`)
+
             }
         }
-       
+
         window.addEventListener("beforeunload", checkExitBrowser);
-        document.addEventListener('visibilitychange', changeVisibility)
+        if (isTracking)
+            document.addEventListener('visibilitychange', changeVisibility)
         return () => {
             window.removeEventListener('beforeunload', checkExitBrowser)
-            document.removeEventListener('visibilitychange', changeVisibility)
+            if (isTracking)
+                document.removeEventListener('visibilitychange', changeVisibility)
         }
-    }, [countExit])
+    }, [countExit, takeExamId, isTracking])
 
     const handleCreateLog = (action) => {
         apiTakeExam.createLog({
@@ -221,11 +227,11 @@ const Examination = () => {
                                     <Stack width='100%' flex={{ xs: 1, md: 3, lg: 4 }} spacing={3}>
                                         {
                                             questions.map((item, index) => {
-                                               // const value = getAnswers(answerSheet, item.id)
+                                                // const value = getAnswers(answerSheet, item.id)
                                                 return (
-                                                    <Question 
-                                                    key={item.id}
-                                                        question={item} index={index}  />
+                                                    <Question
+                                                        key={item.id}
+                                                        question={item} index={index} />
                                                 )
                                             }
                                             )
@@ -288,7 +294,7 @@ const Examination = () => {
                                 {(countDown.minute).toLocaleString('en-US', { minimumIntegerDigits: 2, useGrouping: false })}:
                                 {(countDown.second).toLocaleString('en-US', { minimumIntegerDigits: 2, useGrouping: false })}
                             </BoxTime> */}
-                            <CountDown endTime={endTime}/>
+                            <CountDown endTime={endTime} />
                         </Box>
             }
         </Page>

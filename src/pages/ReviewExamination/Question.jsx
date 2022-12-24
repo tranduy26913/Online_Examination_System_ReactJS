@@ -19,15 +19,16 @@ import DOMPurify from 'dompurify'
 import { memo } from 'react';
 
 const FormControlLabelCustom = styled(FormControlLabel)({
-    margin: '8px 0 0 0',
+    margin:0,
     '& .MuiRadio-root': {
         padding: '4px'
     },
-    alignItems:'flex-start',
-    '& .MuiTypography-root':{
-        paddingTop:'6px',
-        marginLeft:'8px'
-      }
+    alignItems: 'flex-start',
+    '& .MuiTypography-root': {
+        paddingTop: '3px',
+        marginLeft: '6px',
+        lineHeight: '22px'
+    }
 })
 
 const StackQuestionContent = styled(Stack)(({ theme }) => ({
@@ -61,10 +62,10 @@ const TypographyQuestion = styled(Typography)(({ theme }) => ({
 const Question = (props) => {
     const { question, viewPoint, viewAnswer } = props
     const point = question?.point
-    const statusQuestion = (()=>{
-        if(point === undefined)
+    const statusQuestion = (() => {
+        if (point === undefined)
             return 'noview'
-        if(point === 0) return 'fail'
+        if (point === 0) return 'fail'
         return 'done'
     })()
     return (
@@ -83,17 +84,17 @@ const Question = (props) => {
                         >
                             {
                                 question.answers.map(item =>
-                                    <Stack key={item._id} direction='row'>
+                                    <Stack key={item._id} direction='row' spacing={1} mt={1}>
                                         <FormControlLabelCustom
-                                            value={item._id} control={<Radio size='small' sx={{ height: '34px' }} />} label={item.content} />
+                                            value={item._id} control={<Radio size='small' />} label={item.content} />
                                         {item.isCorrect !== undefined && (item.isCorrect ? <CheckCircleOutlineIcon
-                                            sx={{ fontSize: '22px', margin: '6px 0px 0px 10px' }}
+                                            sx={{ fontSize: '22px', height: '28px' }}
                                             color={'success'} />
                                             :
                                             question.choose?.[0] === item.id && <HighlightOffIcon
-                                                sx={{ fontSize: '22px', margin: '6px 0px 0px 10px' }}
+                                                sx={{ fontSize: '22px', height: '28px' }}
                                                 color={'error'} />
-                                            )}
+                                        )}
                                     </Stack>
                                 )
                             }
@@ -102,23 +103,24 @@ const Question = (props) => {
                         <FormGroup>
                             {
                                 question.answers.map(item =>
-                                    <Stack key={item.id || item._id} direction='row'>
+                                    <Stack key={item.id || item._id} direction='row' spacing={1} mt={1}>
                                         <FormControlLabelCustom
-                                            value={item.id}
+                                            value={item.id || item._id}
                                             control={
                                                 <Checkbox
-                                                    checked={question.choose?.includes(item.id)}
+                                                    checked={question.choose?.includes(item._id)}
+                                                    sx={{ height: '28px', width: '28px' }}
                                                     size='small'
                                                 />
                                             } label={item.content} />
                                         {
                                             item.isCorrect ?
                                                 <CheckCircleOutlineIcon
-                                                    sx={{ fontSize: '22px', margin: '8px 0px 0px 10px' }}
+                                                    sx={{ fontSize: '22px', height: '28px' }}
                                                     color={'success'} />
                                                 :
                                                 question.choose?.includes(item.id) && <HighlightOffIcon
-                                                    sx={{ fontSize: '22px', margin: '8px 0px 0px 10px' }}
+                                                    sx={{ fontSize: '22px', height: '28px' }}
                                                     color={'error'} />
                                         }
                                     </Stack>
@@ -130,12 +132,12 @@ const Question = (props) => {
             <ButtonGroup variant="outlined">
                 {/* <Button variant='outlined'>Chưa trả lời</Button> */}
                 {statusQuestion === 'noview' ?
-                <>
-                <Button variant='contained'>Điểm tối đa:{question.maxPoints}</Button>
-                <Button variant='contained'>Chưa có điểm</Button>
-                </>
-                :
-                <Button variant='contained'>Điểm: {question.point}/{question.maxPoints}</Button>
+                    <>
+                        <Button variant='contained'>Điểm tối đa:{question.maxPoints}</Button>
+                        <Button variant='contained'>Chưa có điểm</Button>
+                    </>
+                    :
+                    <Button variant='contained'>Điểm: {question.point}/{question.maxPoints}</Button>
                 }
             </ButtonGroup>
         </StackQuestionContent>

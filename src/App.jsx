@@ -35,8 +35,8 @@ function App() {
       },
       relativeTime: {
         ss: '%d giây',
-        mm: "%dm",
-        hh: "%dh",
+        // mm: "%dm",
+        // hh: "%dh",
       },
       meridiem: function (hour, minute, isLowercase) {
         if (hour >= 12)

@@ -39,11 +39,11 @@ const BoxCheck = ({ isCheck, onClick }) => {
         width: '30px',
         border: `1px solid ${theme.palette.primary.main}`,
         borderRadius: '4px',
-        backgroundColor: isCheck ? theme.palette.primary.main :  theme.palette.background.paper
+        backgroundColor: isCheck ? theme.palette.primary.main : theme.palette.background.paper
       }}>
       <CheckIcon
         sx={{
-          color: isCheck ?  theme.palette.background.paper : theme.palette.primary.main,
+          color: isCheck ? theme.palette.background.paper : theme.palette.primary.main,
           fontSize: '18px'
         }} />
     </Stack>
@@ -80,7 +80,7 @@ const CreateQuestion = (props) => {
   const [typeAnswer, setTypeAnswer] = useState('single')//single:1 đáp án đúng, multi: nhiều đáp án đúng
   const dispatch = useDispatch()
   const refreshToken = useSelector(state => state.auth.refreshToken)
-  const {reloadExam} = useContext(ExamContext) || {}
+  const { reloadExam, status } = useContext(ExamContext) || {}
   //const QUESTIONS = useSelector(state => state.user.questions)
   useEffect(() => {
     if (question) {
@@ -91,7 +91,7 @@ const CreateQuestion = (props) => {
       let newAnswers = question.answers?.map(item => ({ ...item })) || []
       setAnswers(newAnswers)
     }
-    else{
+    else {
       handleClearData()
     }
   }, [question])
@@ -129,7 +129,7 @@ const CreateQuestion = (props) => {
   }, [answers])
 
   const handleChangeInputAnswer = (e, idAnswer) => {
-    const newAnswers = answers.map(e=>({...e}))
+    const newAnswers = answers.map(e => ({ ...e }))
     const answerIndex = answers.findIndex(item => item.id === idAnswer)
     if (answerIndex > -1) {
       newAnswers[answerIndex] = {
@@ -142,7 +142,7 @@ const CreateQuestion = (props) => {
   }
 
   const handleChooseCorrect = useCallback((idAnswer) => {
-    let newAnswers = answers.map(e=>({...e}))
+    let newAnswers = answers.map(e => ({ ...e }))
     const answerIndex = answers.findIndex(item => item.id === idAnswer)
     if (answerIndex > -1) {
       if (typeAnswer === 'single') {
@@ -158,7 +158,7 @@ const CreateQuestion = (props) => {
       else
         newAnswers[answerIndex].isCorrect = !newAnswers[answerIndex].isCorrect
     }
-    if(checkAnswers(newAnswers)) {
+    if (checkAnswers(newAnswers)) {
       setAnswers(newAnswers)
     }
     else {
@@ -171,16 +171,16 @@ const CreateQuestion = (props) => {
   const checkAnswers = (answers) => {
     return answers.some(e => e.isCorrect)
   }
-  const checkQuestion = ()=>{
-    if (!content){
+  const checkQuestion = () => {
+    if (!content) {
       toast.warning('Câu hỏi phải có nội dung')
       return false
     }
-    if (Number(maxPoints) <= 0){
+    if (Number(maxPoints) <= 0) {
       toast.warning('Điểm tối đa phải lớn hơn 0')
       return false
     }
-    if (Number.isNaN(Number(maxPoints))){
+    if (Number.isNaN(Number(maxPoints))) {
       toast.warning('Điểm tối đa không hợp lệ')
       return false
     }
@@ -188,7 +188,7 @@ const CreateQuestion = (props) => {
       toast.warning('Câu hỏi phải có ít nhất 1 đáp án')
       return false
     }
-    if(!checkAnswers(answers)) {
+    if (!checkAnswers(answers)) {
       toast.warning('Câu hỏi phải có ít nhất 1 đáp án đúng')
       return false
     }
@@ -196,9 +196,9 @@ const CreateQuestion = (props) => {
   }
 
   const handleCreateQuestion = async () => {
-    
+
     if (!checkQuestion()) return
-    
+
     const params = {
       content,
       maxPoints,
@@ -235,7 +235,7 @@ const CreateQuestion = (props) => {
 
     const params = {
       examId,
-      questionId:id,
+      questionId: id,
       content,
       maxPoints,
       type: typeAnswer,
@@ -246,12 +246,14 @@ const CreateQuestion = (props) => {
       .then((res) => {
         reloadExam()
         toast.success("Sửa câu hỏi thành công")
-        const {id,type,content,answers,maxPoints} = res.updatedQuestion
-        dispatch(updateQuestion({id,type,content,answers,maxPoints}))
+        const { id, type, content, answers, maxPoints } = res.updatedQuestion
+        dispatch(updateQuestion({ id, type, content, answers, maxPoints }))
       })
       .finally(() => {
         setLoading(false)
-        props.handleSelectQuestion("")
+        if (status === 'private') {
+          props.handleSelectQuestion("")
+        }
       })
   }
 
@@ -261,12 +263,12 @@ const CreateQuestion = (props) => {
     setMaxPoints(1)
     setTypeAnswer('single')
   }
-  const handleCancel = ()=>{
+  const handleCancel = () => {
     props.handleSelectQuestion("")
   }
   return (
 
-    <Stack spacing={1.5} mb={2} p={2}>
+    <Stack spacing={1.5} mb={2} px={2}>
       <Typography fontWeight={600} textAlign='center' mb={1}>Nhập nội dung câu hỏi</Typography>
       <CKEditor
         editor={DecoupledEditor}
@@ -322,14 +324,27 @@ const CreateQuestion = (props) => {
       <Stack direction='row' justifyContent='center' >
         <Button onClick={handleAddAnswer} variant='outlined'>Thêm đáp án</Button></Stack>
       <Stack direction={'row'} spacing={1.5} justifyContent='flex-end'>
-        <Button 
-        variant='contained' 
-        color='error'
-        onClick={handleCancel}
-        >Huỷ</Button>
+        {
+          isEdit && status === 'private' && <Button
+            variant='contained'
+            color='error'
+            onClick={handleCancel}
+          >Huỷ</Button>
+        }
         <Button onClick={handleClearData} variant='contained' color='warning'>Làm mới</Button>
-        <LoadingButton loading={loading} variant='contained'
-          onClick={isEdit ? handleEditQuestion : handleCreateQuestion}>{isEdit ? 'Sửa' : 'Tạo'} câu hỏi</LoadingButton>
+        {
+          isEdit ?
+            <LoadingButton
+              loading={loading}
+              variant='contained'
+              onClick={handleEditQuestion}>Sửa câu hỏi</LoadingButton>
+            :
+            status === 'private' && <LoadingButton
+              loading={loading}
+              variant='contained'
+              onClick={handleCreateQuestion}>Tạo câu hỏi</LoadingButton>
+        }
+       
       </Stack>
     </Stack>
 

@@ -96,6 +96,7 @@ const Question = (props) => {
 
   const handleChangeMulti = useCallback((event) => {//đổi lựa chọn cho câu hỏi nhiều lựa chọn
     let newValue = [...value]
+    console.log(event.target.value)
     if (newValue.includes(event.target.value))
       newValue = newValue.filter(item => item !== event.target.value)
     else
@@ -104,9 +105,10 @@ const Question = (props) => {
       question: question.id,
       answers: newValue
     }))
+    dispatch(changeStateDone({ questionId: question.id, value: true }))
     //setValue(newValue)
     handleCreateLog()
-  }, [])
+  }, [value])
 
   const handleCreateLog = useCallback(() => {
     apiTakeExam.createLog({
@@ -145,6 +147,10 @@ const Question = (props) => {
                     control={<Checkbox
                       checked={value.includes(item.id)}
                       size='small'
+                      sx={{
+                        width:'28px',
+                        height:'28px'
+                      }}
                       onChange={handleChangeMulti}
                     />} label={item.content} />)
               }
