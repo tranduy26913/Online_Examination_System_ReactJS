@@ -102,7 +102,17 @@ const TableTeacher = ({ exams, maxPoints }) => {
                         <TableBody>
                             {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
                                 const { _id: takeExamId, userAvatar, name, submitTime, startTime, points, status } = row;
-                                const duration = moment(submitTime).diff(startTime, 'minutes')
+                                let duration = moment(submitTime).diff(startTime, 'seconds')
+                                    let textDuration = '0 giây'
+                                    if(duration>0){
+                                        let hours = moment.duration(duration, "seconds").hours()
+                                        let minutes = moment.duration(duration, "seconds").minutes()
+                                        let seconds = moment.duration(duration, "seconds").seconds()
+                                        hours = hours?`${hours} giờ `:''
+                                        minutes = minutes?`${minutes} phút `:''
+                                        seconds = seconds?`${seconds} giây`:''
+                                        textDuration = hours + minutes + seconds
+                                    }
 
                                 return (
                                     <TableRow
@@ -121,7 +131,7 @@ const TableTeacher = ({ exams, maxPoints }) => {
                                         </TableCell>
                                         <TableCell align="center">{Math.round(((points + Number.EPSILON) * 100)) / 100}/{maxPoints}</TableCell>
                                         <TableCell align="center">{moment(startTime).format('DD/MM/YYYY HH:mm')}</TableCell>
-                                        <TableCell align="center">{duration} phút</TableCell>
+                                        <TableCell align="center">{textDuration}</TableCell>
                                         <TableCell align="center">
                                             {status === 'not submitted' ? 'Chưa nộp bài' : 'Đã nộp'}
                                         </TableCell>
