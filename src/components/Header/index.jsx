@@ -102,7 +102,7 @@ const settings = [
 const AppBarShadow = styled(AppBar)(({ theme }) => ({
   //boxShadow:`0 4px 10px 4px ${theme.palette.primary.main}`
   //backgroundColor:'#fff',
-  boxShadow: theme.palette.mode === 'dark' ? 'none' : '0 4px 10px 4px #aaa'
+  //boxShadow: theme.palette.mode === 'dark' ? 'none' : '0 4px 10px 4px #aaa'
 }))
 
 function Header() {

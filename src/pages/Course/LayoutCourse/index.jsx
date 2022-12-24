@@ -159,9 +159,9 @@ const LayoutCourse = () => {
                       >Chỉnh sửa</Button>
                     </Link>
                   }
-                  <ShareTray url={`https://oes.vercep.app/enroll/${courseId}`}
-                    title="Tham gia khoá học"
-                    quote={"Tham gia khoá học"}
+                  <ShareTray url={`https://oes.vercel.app/enroll/${courseId}`}
+                    title={"Tham gia khoá học"+`https://oes.vercel.app/enroll/${courseId}`}
+                    quote={"Tham gia khoá học "  }
                     variant='outlined'
                     endIcon={<SendIcon />}
                     text='Chia sẻ' />

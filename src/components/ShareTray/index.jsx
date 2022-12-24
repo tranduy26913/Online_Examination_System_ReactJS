@@ -39,6 +39,7 @@ function ShareTray({ url, title,quote , text, ...others }) {
                     <Stack direction='row' spacing={1} flexWrap='wrap'>
                         <FacebookShareButton
                             url={url}
+                            title={title}
                             quote={quote}>
                             <FacebookIcon
                                 size={48}
