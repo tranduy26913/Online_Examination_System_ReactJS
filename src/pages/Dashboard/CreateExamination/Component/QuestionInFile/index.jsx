@@ -1,16 +1,13 @@
-import { Accordion, AccordionDetails, AccordionSummary, Button, Paper, Stack, Typography } from '@mui/material'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import {  Box, Button, Paper, Stack, Typography, useMediaQuery, useTheme } from '@mui/material'
 import React, { useCallback, useContext, useState } from 'react'
 import DownloadIcon from '@mui/icons-material/Download';
 import * as XLSX from "xlsx";
 import { useDispatch, useSelector } from 'react-redux';
 import {
     PaperQuestion,
-    AccordionSummaryStyle,
 } from '../MUI'
 import CreateQuestion from './CreateQuestion';
-import DetailQuestion from './DetailQuestion';
-import { addQuestionInFile, clearQuestionInFile } from 'slices/userSlice';
+import { addQuestionInFile, clearQuestionInFile, deleteQuestionInFile } from 'slices/userSlice';
 import ExamContext from '../../ExamContext';
 import { toast } from 'react-toastify';
 import { getMessageError } from 'utils';
@@ -22,22 +19,39 @@ import * as FileSaver from 'file-saver';
 import templateWord from 'assets/file/word.docx'
 import templateExcel from 'assets/file/excel.xlsx'
 import AnimationIcon from 'components/UI/AnimationIcon';
+import ConfirmButton from 'components/ConfirmDialog';
 const alpha = Array.from(Array(10)).map((e, i) => i + 97);
 const alphabet = alpha.map((x) => String.fromCharCode(x));
+
+const styleStack = {
+    overflowY: 'auto',
+    height: '100%',
+    padding: '8px'
+}
 
 function QuestionInFile() {
     const { examId, reloadExam } = useContext(ExamContext)
     const QUESTIONS = useSelector(state => state.user.questionsInFile)
     const [idQuestion, setIdQuestion] = useState('')
-    const [expanded, setExpanded] = useState(false);
+    //const [expanded, setExpanded] = useState(false);
+    const [questionSelect, setQuestionSelect] = useState(null)
     const [isLoading, setIsLoading] = useState(false);
     const dispatch = useDispatch()
+    const theme = useTheme()
     const user = useSelector(state => state.user?.info)
-
-    const handleChangeQuestion = (panel) => (event, isExpanded) => {
-        setExpanded(isExpanded ? panel : false);
-    };
-    const handleSelectQuestionEdit = useCallback((value) => setIdQuestion(value), [])
+    const screenSM = useMediaQuery(theme.breakpoints.up('sm'));
+   
+    // const handleChangeQuestion = (panel) => (event, isExpanded) => {
+    //     setExpanded(isExpanded ? panel : false);
+    // };
+    const handleSelectQuestionEdit = useCallback((value) => {
+        setIdQuestion(value)
+        let question = QUESTIONS.find(item => item.id === value)
+        if (question)
+            setQuestionSelect(question)
+        else
+            setQuestionSelect(null)
+    }, [QUESTIONS])
     const handleChooseFile = (e) => {
         if (e.target.files.length !== 0) {
             const file = e.target.files[0]
@@ -57,7 +71,7 @@ function QuestionInFile() {
     }
     const lockUpload = () => {
         toast.info("Vui lòng nâng cấp lên tài khoản PREMIUM để dùng tính năng này")
-      }
+    }
     const readExcel = (file) => {
         const promise = new Promise((resolve, reject) => {
             const fileReader = new FileReader();
@@ -205,6 +219,16 @@ function QuestionInFile() {
     const handleDownfile = (file, filename) => {
         FileSaver.saveAs(file, 'template.docx');
     }
+
+    const handleDeleteQuestion = useCallback((id) => {
+        try {
+            dispatch(deleteQuestionInFile(id))
+            toast.success("Xoá thành công")
+        }
+        catch (err) {
+            toast.warning("Có lỗi xảy ra!")
+        }
+    }, [])
     return (
         <Paper>
             <Stack direction='row' spacing={2} p={2}>
@@ -223,7 +247,7 @@ function QuestionInFile() {
                 <Button variant='contained' component="label" width='160px'
                     endIcon={<AnimationIcon src="https://assets7.lottiefiles.com/packages/lf20_rZQs81.json"
                         style={{ height: '30px', width: '30px' }} />}
-                        onClick={(!user?.premium) ? lockUpload : null}
+                    onClick={(!user?.premium) ? lockUpload : null}
                 >
                     Tải lên File
                     {user?.premium &&
@@ -234,8 +258,59 @@ function QuestionInFile() {
                 {QUESTIONS.length !== 0 &&
                     <LoadingButton loading={isLoading} variant='contained' onClick={handleCreateQuestionWithFile}>Thêm câu hỏi</LoadingButton>}
             </Stack>
-            <Stack spacing={1.5} p={2}>
-                {
+            {
+                QUESTIONS.length !== 0 &&
+                <>
+
+                    <Typography color='primary' align='center' fontSize='20px'>Xem trước kết quả</Typography>
+                    <Stack p={2} direction={'row'} height={'calc(100vh - 120px)'} spacing={2}>
+                        <Stack flex={1} spacing={1} height='100%'>
+                        <Typography fontWeight={600} align='center'>Danh sách</Typography>
+                            <Stack spacing={1} sx={styleStack}>
+
+                                {
+                                    QUESTIONS.map((item, index) =>
+                                        <PaperQuestion
+                                            onClick={() => handleSelectQuestionEdit(item.id)}
+                                            key={item.id}
+                                            className={`${item.id === idQuestion ? 'selected' : ''}`}
+                                            elevation={4} >
+                                            <Stack
+                                                direction={'row'}
+                                                justifyContent='space-between'
+                                                alignItems='center'>
+                                               {screenSM && 'Câu hỏi '}{index + 1}
+
+                                                <ConfirmButton
+                                                    title={'Xoá câu hỏi'}
+                                                    description='Bạn có chắc chắn muốn xoá câu hỏi này khỏi đề thi'
+                                                    handleFunc={() => handleDeleteQuestion(item.id)}
+                                                    color='error'
+                                                    sx={{minWidth:'40px'}}>
+                                                    Xoá
+                                                </ConfirmButton>
+
+                                            </Stack>
+                                        </PaperQuestion>
+                                    )
+                                }
+                            </Stack>
+                        </Stack>
+
+                        <Box flex={{xs:2,md:3,lg:4}} sx={{overflowY:'auto'}}>
+                            <CreateQuestion
+                                isEdit={true}
+                                id={idQuestion}
+                                handleSelectQuestion={handleSelectQuestionEdit}
+                                question={questionSelect} />
+                        </Box>
+
+                    </Stack>
+                </>
+            }
+            {/* <Stack spacing={1.5} p={2}>
+
+                 {
                     QUESTIONS.map((item, index) =>
                         item &&
                         <PaperQuestion key={item.id} elevation={12} >
@@ -257,11 +332,10 @@ function QuestionInFile() {
                                 </AccordionDetails>
                             </Accordion>
                         </PaperQuestion>
-
                     )
-                }
+                } 
 
-            </Stack>
+            </Stack> */}
         </Paper>
     )
 }

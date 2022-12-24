@@ -83,11 +83,15 @@ const CreateQuestion = (props) => {
 
   useEffect(() => {
     if (question) {
+      console.log(question)
       setContent(question.content)
       setMaxPoints(question.maxPoints)
       setTypeAnswer(question.type)
       let newAnswers = question.answers?.map(item => ({ ...item })) || []
       setAnswers(newAnswers)
+    }
+    else {
+      handleClearData()
     }
   }, [question])
 
@@ -120,7 +124,7 @@ const CreateQuestion = (props) => {
   }, [answers])
 
   const handleChangeInputAnswer = (e, idAnswer) => {
-    const newAnswers = answers.map(e=>({...e}))
+    const newAnswers = answers.map(e => ({ ...e }))
     const answerIndex = answers.findIndex(item => item.id === idAnswer)
     if (answerIndex > -1) {
       newAnswers[answerIndex] = {
@@ -133,7 +137,7 @@ const CreateQuestion = (props) => {
   }
 
   const handleChooseCorrect = useCallback((idAnswer) => {
-    let newAnswers = answers.map(e=>({...e}))
+    let newAnswers = answers.map(e => ({ ...e }))
     const answerIndex = answers.findIndex(item => item.id === idAnswer)
     if (answerIndex > -1) {
       if (typeAnswer === 'single') {
@@ -161,16 +165,16 @@ const CreateQuestion = (props) => {
   const checkAnswers = (answers) => {
     return answers.some(e => e.isCorrect)
   }
-  const checkQuestion = ()=>{
-    if (!content){
+  const checkQuestion = () => {
+    if (!content) {
       toast.warning('Câu hỏi phải có nội dung')
       return false
     }
-    if (Number(maxPoints) <= 0){
+    if (Number(maxPoints) <= 0) {
       toast.warning('Điểm tối đa phải lớn hơn 0')
       return false
     }
-    if (Number.isNaN(Number(maxPoints))){
+    if (Number.isNaN(Number(maxPoints))) {
       toast.warning('Điểm tối đa không hợp lệ')
       return false
     }
@@ -178,7 +182,7 @@ const CreateQuestion = (props) => {
       toast.warning('Câu hỏi phải có ít nhất 1 đáp án')
       return false
     }
-    if(!checkAnswers(answers)) {
+    if (!checkAnswers(answers)) {
       toast.warning('Câu hỏi phải có ít nhất 1 đáp án đúng')
       return false
     }
@@ -196,8 +200,9 @@ const CreateQuestion = (props) => {
       answers
     }
     dispatch(updateQuestionInFile(params))
-    props.handleSelectQuestion('')
+    //props.handleSelectQuestion('')
   }
+
 
   const handleClearData = () => {
     setContent('')
@@ -207,8 +212,8 @@ const CreateQuestion = (props) => {
   }
   return (
 
-    <Stack spacing={1.5} mb={2} p={2}>
-      <Typography fontWeight={600} mb={1}>Nhập nội dung câu hỏi</Typography>
+    <Stack spacing={1.5} mb={2} px={2}>
+      <Typography fontWeight={600} align='center' mb={1}>Nhập nội dung câu hỏi</Typography>
       <CKEditor
         editor={DecoupledEditor}
         data={content}

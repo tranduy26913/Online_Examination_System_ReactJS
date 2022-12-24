@@ -4,13 +4,15 @@ import {
     Box,
     Button,
     Paper,
+    Divider,
 } from '@mui/material'
+import AddIcon from '@mui/icons-material/Add';
 import CreateQuestion from 'components/Question/CreateQuestion'
 import {
     PaperQuestion,
 
 } from './MUI'
-import { useCallback, useContext, useState } from 'react'
+import { useCallback, useContext, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { memo } from 'react';
 import ExamContext from '../ExamContext';
@@ -20,9 +22,9 @@ import { toast } from 'react-toastify';
 import { deleteQuestion } from 'slices/userSlice';
 
 const styleStack = {
-    overflowY: 'scroll',
+    overflowY: 'auto',
     height: '100%',
-    padding: '0 8px'
+    padding: '8px'
 }
 function ListQuestion() {
     const { examId, reloadExam, status } = useContext(ExamContext) || { status: 'public' }
@@ -52,25 +54,45 @@ function ListQuestion() {
     const handleSelectQuestionEdit = useCallback((value) => {
         setIdQuestion(value)
         let question = QUESTIONS.find(item => item.id === value)
-        console.log(question)
+
         if (question)
             setQuestionSelect(question)
         else
             setQuestionSelect(null)
     }, [QUESTIONS])
 
-
-
+    // useEffect(() => {
+    //     if (status !== 'private') {
+    //         if (idQuestion === '')
+    //             if (QUESTIONS.length !== 0)
+    //                 handleSelectQuestionEdit(QUESTIONS[0].id)
+    //             else {
+    //                 handleSelectQuestionEdit('')
+    //             }
+    //     }
+    // }, [QUESTIONS, status, handleSelectQuestionEdit, idQuestion])
     return (
         <>
             <Paper elevation={12}>
-                <Stack p={2} direction={'row'} height={'90vh'} spacing={2}>
-                    <Stack flex={1} height='100%'>
-                        <Button
-                        variant='text'
-                             onClick={() => handleSelectQuestionEdit('')}>
-                            Thêm câu hỏi mới
-                        </Button>
+                <Stack p={2} direction={'row'} height={'calc(100vh - 100px)'}
+                //spacing={2}
+                >
+                    <Stack
+                        flex={1}
+                        spacing={1}
+                        height='100%'>
+                        <Typography fontWeight={600} align='center'>Danh sách</Typography>
+
+                        {
+                            status === 'private' && <Button
+                                variant='contained'
+                                startIcon={<AddIcon />}
+                                mb={1}
+                                onClick={() => handleSelectQuestionEdit('')}>
+                                Thêm câu hỏi
+                            </Button>
+                        }
+                        <Divider />
                         <Stack spacing={1} sx={styleStack}>
 
                             {
@@ -100,8 +122,9 @@ function ListQuestion() {
                             }
                         </Stack>
                     </Stack>
-
-                    <Box flex={4} overflow='scroll'>
+                    {/* <Divider color='primary' orientation="vertical" flexItem /> */}
+                    <Box flex={{ xs: 2, md: 3, lg: 4 }}
+                        sx={{ overflowY: 'auto' }}>
                         <CreateQuestion
                             isEdit={idQuestion && true}
                             id={idQuestion}

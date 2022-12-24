@@ -83,8 +83,7 @@ const CreateExamination = (props) => {
             const exam = res
             dispatch(clearQuestion())
             setValue('name', exam.name)
-            setValue('startTime', exam.startTime.substring(0,16))
-            setValue('endTime', exam.endTime.substring(0,16))
+
             setValue('maxTimes', exam.maxTimes)
             setValue('pinExam', exam.pin)
             //setValue('numberofQuestions', exam.numberofQuestions)
@@ -101,7 +100,13 @@ const CreateExamination = (props) => {
             else
               setValue('attemptsAllowed', exam.attemptsAllowed)
             setId(exam.id || exam._id)
-            dispatch(replaceListQuestion(exam.questions.map(e=>e.question)))
+            console.log(moment(exam.startTime).format("YYYY-MM-DDTHH:mm"))
+            if (new Date(exam.startTime).toLocaleString() !== "Invalid Date")
+              setValue('startTime', moment(exam.startTime).format("YYYY-MM-DDTHH:mm"))
+
+            if (new Date(exam.endTime).toLocaleString() !== "Invalid Date")
+              setValue('endTime', moment(exam.endTime).format("YYYY-MM-DDTHH:mm"))
+            dispatch(replaceListQuestion(exam.questions.map(e => e.question)))
           }
           catch (err) {
           }
@@ -112,19 +117,19 @@ const CreateExamination = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [slug, user])
 
-  const reloadExam = useCallback(()=>{
+  const reloadExam = useCallback(() => {
     apiExamination.getExaminationBySlug(slug)
-    .then(res => {
-      try {
-        const exam = res
-        setNumberofQuestions(exam.numberofQuestions)
-        setMaxPoints(exam.maxPoints)
-        dispatch(replaceListQuestion(exam.questions.map(e=>e.question)))
-      }
-      catch (err) {
-      }
-    })
-  },[])
+      .then(res => {
+        try {
+          const exam = res
+          setNumberofQuestions(exam.numberofQuestions)
+          setMaxPoints(exam.maxPoints)
+          dispatch(replaceListQuestion(exam.questions.map(e => e.question)))
+        }
+        catch (err) {
+        }
+      })
+  }, [])
 
 
   const handleChangeViewAnswer = event => setViewAnswer(event.target.value)
@@ -140,15 +145,15 @@ const CreateExamination = (props) => {
       courseId: courseobjId,
       description: '',
       tracking,
-      startTime,
-      endTime,
+      startTime:new Date(startTime),
+      endTime:new Date(endTime),
       attemptsAllowed: isLimit ? attemptsAllowed : 0,
       maxTimes,
       shuffle,
       typeofPoint,
       viewPoint,
       viewAnswer,
-      pin:pinExam
+      pin: pinExam
     }
     setLoading(true)
     apiExamination.createExam(params)
@@ -158,10 +163,10 @@ const CreateExamination = (props) => {
         setSlug(res.slug)
         setIsEdit(true)
       })
-      .catch(err=>{
+      .catch(err => {
         toast.warning("Tạo đề thi không thành công")
       })
-      .finally(()=>setLoading(false))
+      .finally(() => setLoading(false))
   }
 
   const handleUpdate = (data) => {
@@ -173,15 +178,15 @@ const CreateExamination = (props) => {
       courseId: courseobjId,
       description: '',
       tracking,
-      startTime,
-      endTime,
+      startTime: new Date(startTime),
+      endTime: new Date(endTime),
       attemptsAllowed: isLimit ? attemptsAllowed : 0,
       maxTimes,
       shuffle,
       typeofPoint,
       viewPoint,
       viewAnswer,
-      pin:pinExam
+      pin: pinExam
     }
     setLoading(true)
     apiExamination.updateExam(params)
@@ -206,7 +211,7 @@ const CreateExamination = (props) => {
       .catch(err => {
         toast.warning(getMessageError(err))
       })
-      .finally(()=>setLoadingPublish(false))
+      .finally(() => setLoadingPublish(false))
   }
 
   return (
@@ -441,7 +446,7 @@ const CreateExamination = (props) => {
       </Paper>
       {
         isEdit &&
-        <ExamContext.Provider value={{ examId: id, status: status,reloadExam }}>
+        <ExamContext.Provider value={{ examId: id, status: status, reloadExam }}>
           <LayoutListQuesion />
         </ExamContext.Provider>
       }

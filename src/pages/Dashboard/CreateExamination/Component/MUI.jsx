@@ -156,7 +156,9 @@ export const Stack2Column = styled(Stack)(({ theme }) => ({
 
 export const PaperQuestion = styled(Paper)(({ theme }) => ({
     borderTop: `6px solid ${theme.palette.primary.light}`,
+    cursor:'pointer',
     padding:theme.spacing(1),
+    paddingRight:'0',
     '&.selected':{
         backgroundColor:alpha(theme.palette.primary.main,0.4),
     }
