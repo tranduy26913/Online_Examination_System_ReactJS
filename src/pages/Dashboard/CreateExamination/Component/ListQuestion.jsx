@@ -61,16 +61,6 @@ function ListQuestion() {
             setQuestionSelect(null)
     }, [QUESTIONS])
 
-    // useEffect(() => {
-    //     if (status !== 'private') {
-    //         if (idQuestion === '')
-    //             if (QUESTIONS.length !== 0)
-    //                 handleSelectQuestionEdit(QUESTIONS[0].id)
-    //             else {
-    //                 handleSelectQuestionEdit('')
-    //             }
-    //     }
-    // }, [QUESTIONS, status, handleSelectQuestionEdit, idQuestion])
     return (
         <>
             <Paper elevation={12}>

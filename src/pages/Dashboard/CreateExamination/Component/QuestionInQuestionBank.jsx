@@ -33,8 +33,10 @@ import ExamContext from '../ExamContext';
 import DOMPurify from 'dompurify';
 import apiExamination from 'apis/apiExamination';
 import { toast } from 'react-toastify';
-import { useDispatch } from 'react-redux';
+import { useDispatch,useSelector } from 'react-redux';
 import { addQuestion } from 'slices/userSlice';
+import LoadingButton from 'components/LoadingButton';
+
 const BoxAnswer = styled(Box)(({ theme }) => ({
     display: 'flex',
     alignItems: 'center',
@@ -53,7 +55,6 @@ const MenuProps = {
 };
 
 
-
 function QuestionInQuestionBank(props) {
     const { examId,reloadExam } = useContext(ExamContext)
     const [expanded, setExpanded] = useState(false);
@@ -64,20 +65,19 @@ function QuestionInQuestionBank(props) {
     const [questionsQB, setQuestionsQB] = useState([])
     const [isRandom, setIsRandom] = useState(true)//giới hạn số lần thi
     const [limit, setLimit] = useState(0)//Số lần được phép thi tối đa
-    const onChangeLimit = (event) => setLimit(Number(event.target.value |= 0))
+    const [isLoading, setIsLoading] = useState(false)
 
     const [questionBanks, setQuestionBanks] = useState([]);
-    const [selectedQB, setSelectedQB] = useState([]);
+    const [selectedQB, setSelectedQB] = useState('');
     const [selectedQuestion, setSelectedQuestion] = useState([])
+    const QUESTIONS = useSelector(state => state.user.questions)
+
     const dispatch = useDispatch()
+
+    const onChangeLimit = (event) => setLimit(Number(event.target.value |= 0))
+
     const handleChangeQB = (event) => {
-        const {
-            target: { value },
-        } = event;
-        setSelectedQB(
-            // On autofill we get a stringified value.
-            typeof value === 'string' ? value.split(',') : value,
-        );
+        setSelectedQB(event.target.value);
     };
 
     const handleChooseQuestion = (id) => {
@@ -92,21 +92,22 @@ function QuestionInQuestionBank(props) {
     }
 
     const handleCreate = () => {
+        setIsLoading(true)
         apiExamination.addQuestionWithQB({
             random: isRandom,
             examId,
-            questionBankSlug: selectedQB[0],
+            questionBankSlug: selectedQB,
             numberofNeedQuestions: limit,
             questionIds: selectedQuestion
         })
             .then(res => {
                 toast.success('Thêm thành công')
-                if (res.questions) {
-                    res.questions.forEach(item => {
-                        dispatch(addQuestion(item))
-                    })
-                }
+                reloadExam()
             })
+            .catch(err=>{
+                toast.warning('Thêm không thành công')
+            })
+            .finally(()=>setIsLoading(false))
     }
 
     useEffect(() => {
@@ -120,13 +121,16 @@ function QuestionInQuestionBank(props) {
     }, [])
     useEffect(() => {
         const loadQuestionsInQB = () => {
-            apiQuestionBank.getQuestionsByListQB({ arrSlug: selectedQB })
+            apiQuestionBank.getQuestionsByListQB({ arrSlug: [selectedQB] })
                 .then(res => {
-                    setQuestionsQB(res)
+                    if(Array.isArray(res)){
+                        res = res.filter(item=> !QUESTIONS.find(question => question.id === item.id))
+                        setQuestionsQB(res)
+                    }
                 })
         }
         loadQuestionsInQB()
-    }, [selectedQB])
+    }, [selectedQB,QUESTIONS])
     return (
         <>
             <Paper elevation={24}>
@@ -135,19 +139,19 @@ function QuestionInQuestionBank(props) {
                         <StackLabel>
                             <Box>Chọn ngân hàng câu hỏi</Box>
                             <Select
-                                multiple
+                                //multiple
                                 value={selectedQB}
                                 onChange={handleChangeQB}
                                 input={<BootstrapInput />}
-                                renderValue={(selected) => selected.map(item => {
-                                    let qb = questionBanks.find(e => e.slug === item)
-                                    return qb.name
-                                }).join(', ')}
+                                // renderValue={(selected) => selected.map(item => {
+                                //     let qb = questionBanks.find(e => e.slug === item)
+                                //     return qb.name
+                                // }).join(', ')}
                                 MenuProps={MenuProps}
                             >
                                 {questionBanks.map((item) => (
                                     <MenuItem key={item.slug} value={item.slug}>
-                                        <Checkbox checked={selectedQB.indexOf(item.slug) > -1} />
+                                        {/* <Checkbox checked={selectedQB.indexOf(item.slug) > -1} /> */}
                                         <ListItemText primary={item.name} />
                                     </MenuItem>
                                 ))}
@@ -208,7 +212,12 @@ function QuestionInQuestionBank(props) {
                         }
                     </Stack>
                     <Stack direction='row' justifyContent='center'>
-                        <Button onClick={handleCreate} variant='contained'>Thêm câu hỏi</Button>
+                        <LoadingButton 
+                        loading={isLoading}
+                         onClick={handleCreate}
+                          variant='contained'>
+                            Thêm câu hỏi
+                          </LoadingButton>
                     </Stack>
                 </Stack>
             </Paper>

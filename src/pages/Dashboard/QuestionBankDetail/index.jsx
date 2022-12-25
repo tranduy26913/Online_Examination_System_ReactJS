@@ -7,7 +7,6 @@ import {
     Typography,
     Stack
 } from '@mui/material'
-import CreateQuestion from 'components/Question/CreateQuestion'
 import DetailQuestion from 'components/Question/DetailQuestion'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
@@ -18,6 +17,7 @@ import { useEffect } from 'react';
 import apiQuestionBank from 'apis/apiQuestionBank';
 import { useDispatch, useSelector } from 'react-redux';
 import { addQuestion, clearQuestion } from 'slices/userSlice';
+import CreateQuestion from './CreateQuestion'
 
 const PaperQuestion = styled(Paper)(({ theme }) => ({
     borderTop: `6px solid ${theme.palette.primary.light}`
