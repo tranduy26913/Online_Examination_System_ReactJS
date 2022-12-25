@@ -21,9 +21,10 @@ import { addQuestion, updateQuestion } from 'slices/userSlice';
 import LoadingButton from 'components/LoadingButton';
 import { toast } from 'react-toastify';
 import apiQuestionBank from 'apis/apiQuestionBank';
-import { MyUploadAdapter } from './MyCustomUploadAdapterPlugin';
+// import { MyUploadAdapter } from './MyCustomUploadAdapterPlugin';
 import DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
 import ExamContext from 'pages/Dashboard/CreateExamination/ExamContext';
+import { MyUploadAdapter } from 'config/MyCustomUploadAdapterPlugin';
 
 const alpha = Array.from(Array(26)).map((e, i) => i + 65);
 const alphabet = alpha.map((x) => String.fromCharCode(x));

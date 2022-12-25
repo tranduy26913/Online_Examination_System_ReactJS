@@ -77,12 +77,14 @@ const ListCourse = () => {
                                             image={item.image}
                                             alt="image course"
                                         />
+                                        <Link to={`/course/${item.courseId}`}>
                                         <Typography color="primary" variant="h5" component="div"
                                             sx={{
-                                                textAlign: "center"
+                                                textAlign: "center",
                                             }}>
                                             {item.name}
                                         </Typography>
+                                        </Link>
                                         <Stack
                                             p='0.5rem'
                                             direction='row'

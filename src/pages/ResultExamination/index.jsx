@@ -70,7 +70,7 @@ function ResultExamination() {
                                                 <Button variant='contained'>Xem lại bài làm</Button>
                                             </Link>
                                         }
-                                        <Link to={`/course/${courseId}/statistic-exam/`}>
+                                        <Link to={`/course/${courseId}/statistic-exam/${result?.slug}`}>
                                             <Button variant='contained'>Xem thống kê</Button>
                                         </Link>
                                     </Stack>

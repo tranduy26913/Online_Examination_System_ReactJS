@@ -28,21 +28,21 @@ const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 TableMoreMenu.propTypes = {
-  slug: PropTypes.string.isRequired,
+  slug: PropTypes.number.isRequired,
   reloadList: PropTypes.func.isRequired
 }
-export default function TableMoreMenu({ slug, reloadList }) {
+export default function TableMoreMenu({ slug, reloadList,examId }) {
   const [dialog, setDialog] = useState(false)
   const { courseId,id } = useContext(CourseContext)//lấy id khoá học
 
   const handleDeleteStudent = () => {
     setDialog(false)
     apiCourse.deleteStudentInCourse({
-      slug,
+      examId,
       courseId: id
     })
       .then(res => {
-        toast.success('Xoá học viên thành công')
+        toast.success('Xoá đề thi thành công')
         reloadList()
       })
       .catch(err => {
@@ -84,10 +84,10 @@ export default function TableMoreMenu({ slug, reloadList }) {
         onClose={handleClose}
         aria-describedby="alert-dialog-slide-description"
       >
-        <DialogTitle>{"Xoá học viên khỏi khoá học?"}</DialogTitle>
+        <DialogTitle>{"Xoá đề thi khỏi khoá học?"}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-slide-description">
-            Tất cả thông tin của học viên trong khoá học sẽ bị xoá. Bạn có chắn chắn xoá học viên này khỏi khoá học không?
+            Tất cả thông tin về đề thi và các lượt thi của học viên sẽ bị xoá. Bạn có chắn chắn xoá đề thu này khỏi khoá học không?
           </DialogContentText>
         </DialogContent>
         <DialogActions>

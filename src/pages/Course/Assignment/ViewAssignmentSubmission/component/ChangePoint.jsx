@@ -37,7 +37,7 @@ function ChangePoint({ submitAssignmentId, maxPoints, reloadList }) {
         setOpen(false);
     }
     React.useEffect(() => {
-        apiSubmitAssignment.getSubmitAssignmentById({ id: submitAssignmentId })
+        apiSubmitAssignment.getSubmitAssignmentById({ id:submitAssignmentId })
             .then(res => {
                 const { submitAssignment } = res;
                 if (submitAssignment) {
@@ -49,8 +49,17 @@ function ChangePoint({ submitAssignmentId, maxPoints, reloadList }) {
     }, [submitAssignmentId])
 
     const handleChangePoints = () => {
-        if (points !== 0 && !points) {
+        
+        if (points.toString().trim() === '') {
             toast.warning("Vui lòng nhập điểm")
+            return
+        }
+        if(Number.isNaN(Number(points))){
+            toast.warning("Vui lòng nhập điểm là số hợp lệ")
+            return
+        }
+        if(points < 0 || points > maxPoints){
+            toast.warning(`Vui lòng nhập điểm là số dương và không quá ${maxPoints} điểm`)
             return
         }
         setLoading(true)

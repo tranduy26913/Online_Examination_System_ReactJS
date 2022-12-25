@@ -69,8 +69,8 @@ const CreateAssignment = (props) => {
         .then(res => {
           try {
             setValue('name', res.name)
-            setValue('startTime', res.startTime.substring(0, 16))
-            setValue('endTime', res.endTime.substring(0, 16))
+            setValue('startTime', moment(res.startTime).format("YYYY-MM-DDTHH:mm"))
+            setValue('endTime', moment(res.endTime).format("YYYY-MM-DDTHH:mm"))
             setValue('maxPoints', res.maxPoints)
             setStatus(res.status)
             setAllowReSubmit(res.allowReSubmit)
@@ -96,8 +96,8 @@ const CreateAssignment = (props) => {
       status: 'private',
       content,
       maxPoints,
-      startTime,
-      endTime,
+      startTime:new Date(startTime),
+      endTime:new Date(endTime),
       allowReSubmit,
       allowSubmitLate
     }
@@ -119,8 +119,8 @@ const CreateAssignment = (props) => {
       courseId: courseobjId,
       content,
       maxPoints,
-      startTime,
-      endTime,
+      startTime:new Date(startTime),
+      endTime:new Date(endTime),
       allowReSubmit,
       allowSubmitLate
     }

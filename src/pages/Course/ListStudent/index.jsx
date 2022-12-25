@@ -98,13 +98,18 @@ const ListStudent = () => {
                 if (_id) {
                     let userStatusDatabaseRef = ref(database, '/status/' + _id);//định nghĩa ref status của 1 user trên firebase
                     onValue(userStatusDatabaseRef, (snapshot) => {
-                        let newStatus = [...status]
+
                         let index = students.findIndex(item => item._id === _id)
-                        if (snapshot.val())
-                            newStatus[index] = snapshot.val().state === 'online'
-                        else
-                            newStatus[index] = false
-                        setStatus(newStatus)
+                        
+                        setStatus(preState => {
+                            let newStatus = [...preState]
+                            if (snapshot.val())
+                                newStatus[index] = snapshot.val().state === 'online'
+                            else
+                                newStatus[index] = false
+                                console.log(newStatus)
+                            return newStatus
+                        })
                     })
                 }
             })
@@ -194,7 +199,7 @@ const ListStudent = () => {
                                     <TableBody>
                                         <TableRow>
                                             <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
-                                                {loadingData ? <LoadingRoller/>:<EmptyList />}
+                                                {loadingData ? <LoadingRoller /> : <EmptyList />}
                                             </TableCell>
                                         </TableRow>
                                     </TableBody>

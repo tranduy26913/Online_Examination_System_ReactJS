@@ -18,9 +18,9 @@ import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateQuestionInFile } from 'slices/userSlice';
 import LoadingButton from 'components/LoadingButton';
-import { MyUploadAdapter } from './MyCustomUploadAdapterPlugin';
 import DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
 import { toast } from 'react-toastify';
+import { MyUploadAdapter } from 'config/MyCustomUploadAdapterPlugin';
 
 const alpha = Array.from(Array(10)).map((e, i) => i + 65);
 const alphabet = alpha.map((x) => String.fromCharCode(x));

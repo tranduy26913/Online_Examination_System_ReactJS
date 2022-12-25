@@ -46,6 +46,10 @@ import { axiosClientWithToken } from "./axiosClient";
         const res = await axiosClientWithToken.delete('/course/delete-student',{params})
         return res.data;
     },
+    deleteExamInCourse: async (params) => {
+        const res = await axiosClientWithToken.delete('/course/delete-exan',{params})
+        return res.data;
+    },
     
     createCourse: async (params) => {
         const res = await axiosClientWithToken.post('/course', params,{headers: {

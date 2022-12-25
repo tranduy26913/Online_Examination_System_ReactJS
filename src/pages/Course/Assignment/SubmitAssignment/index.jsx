@@ -98,8 +98,12 @@ const SubmitAssignment = (props) => {
     apiSubmitAssignment.CreateSubmitAssignment(params)
       .then(res => {
         const { submitAssignment } = res
-        toast.success("Tạo bài tập thành công")
-        // navigate(`/course/${courseId}/manage-assignment`)
+
+        if (res.message === 'Không nằm trong thời gian nộp bài!')
+          toast.warning('Không nằm trong thời gian nộp bài!')
+        else
+          toast.success("Cập nhật bài tập thành công")
+
         setSubmitAssignmentId(submitAssignment.id || submitAssignment._id)
         setIsSubmitted(true)
         setContentSubmission(submitAssignment.content)
@@ -119,8 +123,11 @@ const SubmitAssignment = (props) => {
     setLoading(true)
     apiSubmitAssignment.UpdateSubmitAssignment(params)
       .then(res => {
-        toast.success("Cập nhật bài tập thành công")
-        // navigate(`/course/${courseId}/manage-assignment`)
+        if (res.message === 'Không nằm trong thời gian nộp bài!')
+          toast.warning('Không nằm trong thời gian nộp bài!')
+        else
+          toast.success("Cập nhật bài tập thành công")
+
         const submitAssignment = res.updateSubmitAssignment
         setSubmitAssignmentId(submitAssignment.id || submitAssignment._id)
         setIsSubmitted(true)
@@ -228,14 +235,14 @@ const SubmitAssignment = (props) => {
               boxShadow: 'none',
             }} defaultExpanded disableGutters TransitionProps={{ unmountOnExit: true }}>
             <AccordionSummary
-              sx={{justifyContent:'center'}}
+              sx={{ justifyContent: 'center' }}
               expandIcon={<ExpandMoreIcon />}
               aria-controls="panel1a-content"
               id="panel1a-header"
             ><Typography fontWeight={600} flex={1} fontSize='20px' textAlign='center'>Nội dung bài tập</Typography>
 
             </AccordionSummary>
-            <AccordionDetails sx={{padding:0}}>
+            <AccordionDetails sx={{ padding: 0 }}>
               <Paper elevation={6}>
                 <ContentWrap>
                   <Box dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(content) }} />

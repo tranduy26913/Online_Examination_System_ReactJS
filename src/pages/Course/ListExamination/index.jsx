@@ -121,12 +121,12 @@ const ListExaminationTeacher = () => {
                                     />
                                     <TableBody>
                                         {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                                            const { id: idExam, slug: slugExam, name, count, status, numberofQuestions, maxTimes } = row;
-                                            if(!idExam) return <></>
+                                            const { id: examId, slug: slugExam, name, count, status, numberofQuestions, maxTimes } = row;
+                                            if(!examId) return <></>
                                             return (
                                                 <TableRow
                                                     hover
-                                                    key={idExam}
+                                                    key={examId}
                                                     tabIndex={-1}
                                                 >
 
@@ -143,7 +143,7 @@ const ListExaminationTeacher = () => {
                                                     </TableCell>
 
                                                     <TableCell align="right" sx={{width:'10%'}}>
-                                                        <TableMoreMenu slug={slugExam} reloadList={loadListExam}/>
+                                                        <TableMoreMenu examId={examId} slug={slugExam} reloadList={loadListExam}/>
                                                     </TableCell>
                                                 </TableRow>
                                             );
