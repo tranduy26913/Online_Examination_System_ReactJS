@@ -211,7 +211,7 @@ const CreateQuestion = (props) => {
     
     setLoading(true)
     response.then((res) => {
-      let newQuestion = res.question
+      let newQuestion = res.newQuestion
       if(newQuestion){
         dispatch(addQuestion(newQuestion))
       }

@@ -7,7 +7,7 @@ import {
     Typography,
     Stack
 } from '@mui/material'
-import DetailQuestion from 'components/Question/DetailQuestion'
+import DetailQuestion from './DetailQuestion'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 import React, { useCallback, useState } from 'react'
@@ -82,7 +82,7 @@ const QuestionBankDetail = () => {
                                     {idQuestion === item.id ?
                                         <CreateQuestion isEdit={true} id={idQuestion}
                                             question={item} /> :
-                                        <DetailQuestion question={item} id={item.id} handleEdit={handleSelectQuestionEdit} />}
+                                        <DetailQuestion questionBankId={questionBank.id || questionBank._id} question={item} id={item.id} handleEdit={handleSelectQuestionEdit} />}
                                 </AccordionDetails>
                             </Accordion>
                         </PaperQuestion>

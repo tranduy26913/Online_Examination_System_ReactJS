@@ -47,7 +47,7 @@ import { axiosClientWithToken } from "./axiosClient";
         return res.data;
     },
     deleteExamInCourse: async (params) => {
-        const res = await axiosClientWithToken.delete('/course/delete-exan',{params})
+        const res = await axiosClientWithToken.delete('/course/delete-exam',{data:params})
         return res.data;
     },
     

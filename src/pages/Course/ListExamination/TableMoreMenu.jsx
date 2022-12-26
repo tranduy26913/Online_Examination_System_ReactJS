@@ -37,7 +37,7 @@ export default function TableMoreMenu({ slug, reloadList,examId }) {
 
   const handleDeleteStudent = () => {
     setDialog(false)
-    apiCourse.deleteStudentInCourse({
+    apiCourse.deleteExamInCourse({
       examId,
       courseId: id
     })

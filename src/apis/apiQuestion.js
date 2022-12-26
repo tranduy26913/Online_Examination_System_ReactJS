@@ -17,6 +17,10 @@ const apiQuestion = {
         const res = await axiosClientWithToken.delete('question', {data:params})
         return res.data;
     },
+    deleteQuestionInQuestionBank: async (params) =>{
+        const res = await axiosClientWithToken.delete('question/question-bank', {data:params})
+        return res.data;
+    },
    
    
 }
