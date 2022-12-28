@@ -255,7 +255,10 @@ function Header() {
                     <IconButton sx={{ p: 0 }}>
                       <Avatar alt="Remy Sharp" src={user.avatar} />
                     </IconButton>
+                    <Stack>
+                    <Typography>{role==='teacher' ? 'Giáo viên':'Học viên'}</Typography>
                     <Typography className='text-overflow-1-lines'>{user.fullname}</Typography>
+                    </Stack>
                   </Stack>
                 </Tooltip>
                 <Menu

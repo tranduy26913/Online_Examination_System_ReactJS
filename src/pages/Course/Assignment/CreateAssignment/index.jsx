@@ -96,15 +96,15 @@ const CreateAssignment = (props) => {
       status: 'private',
       content,
       maxPoints,
-      startTime:new Date(startTime),
-      endTime:new Date(endTime),
+      startTime: new Date(startTime),
+      endTime: new Date(endTime),
       allowReSubmit,
       allowSubmitLate
     }
     apiAssignment.createAssignment(params)
       .then(res => {
         toast.success("Tạo bài tập thành công")
-        navigate(`/course/${courseId}/manage-assignment`)
+        navigate(`/course/${courseId}/assignment/${res.slug}`)
         setSlug(res.slug)
         setIsEdit(true)
       })
@@ -119,8 +119,8 @@ const CreateAssignment = (props) => {
       courseId: courseobjId,
       content,
       maxPoints,
-      startTime:new Date(startTime),
-      endTime:new Date(endTime),
+      startTime: new Date(startTime),
+      endTime: new Date(endTime),
       allowReSubmit,
       allowSubmitLate
     }
@@ -143,6 +143,11 @@ const CreateAssignment = (props) => {
       request = apiAssignment.CloseAssignment(params)
     request.then(res => {
       toast.success(res.message)
+      if (status === 'public')
+        setStatus('close')
+      else
+        setStatus('public')
+
     })
       .catch(err => {
         toast.warning(getMessageError(err))

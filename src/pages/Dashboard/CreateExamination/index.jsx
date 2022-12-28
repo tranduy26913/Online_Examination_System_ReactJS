@@ -145,8 +145,8 @@ const CreateExamination = (props) => {
       courseId: courseobjId,
       description: '',
       tracking,
-      startTime:new Date(startTime),
-      endTime:new Date(endTime),
+      startTime: new Date(startTime),
+      endTime: new Date(endTime),
       attemptsAllowed: isLimit ? attemptsAllowed : 0,
       maxTimes,
       shuffle,
@@ -207,6 +207,10 @@ const CreateExamination = (props) => {
       request = apiExamination.CloseExam(params)
     request.then(res => {
       toast.success(res.message)
+      if (status === 'public')
+        setStatus('close')
+      else
+        setStatus('public')
     })
       .catch(err => {
         toast.warning(getMessageError(err))
@@ -440,7 +444,10 @@ const CreateExamination = (props) => {
         <Stack direction='row' justifyContent='center' spacing={2}>
           <LoadingButton variant='contained' loading={loading}
             onClick={isEdit ? handleSubmit(handleUpdate) : handleSubmit(handleCreate)}>Lưu cấu hình</LoadingButton>
-          {status && status !== 'close' && <LoadingButton variant='contained' loading={loadingPublish}
+          {status && status !== 'close' && <LoadingButton 
+          variant='contained' 
+          loading={loadingPublish}
+          color={status === 'private' ? 'primary' : 'warning'}
             onClick={handleChangeStatus}>{status === 'private' ? 'Xuất bản' : 'Đóng bài thi'}</LoadingButton>}
         </Stack>
       </Paper>

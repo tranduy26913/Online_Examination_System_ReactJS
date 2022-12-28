@@ -39,6 +39,7 @@ function groupBy(list, keyGetter) {
     list.forEach((item) => {
         const key = keyGetter(item);
         const collection = map.get(key);
+        
         if (!collection) {
             map.set(key, [item]);
         } else {
@@ -53,14 +54,16 @@ const TableTeacherGroup = ({ exams, typeofPoint }) => {
     let groupExams = []
     exams.forEach(item => {
         let arrPoint = item.map(e => e.points)
-        console.log(item)
+        
         let points = 0
         if (typeofPoint === 'max')
-            points = Math.max(arrPoint)
+            points = Math.max(...arrPoint)
         else if (typeofPoint === 'avg')
             points = arrPoint.reduce((p, c) => p + c, 0) / arrPoint.length;
         else
             points = arrPoint[0]
+
+        console.log(arrPoint)
         groupExams.push({
             ...item[0],
             points

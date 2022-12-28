@@ -31,7 +31,7 @@ const TABLE_HEAD = [
 // ----------------------------------------------------------------------
 
 
-const TableStudent = ({ exams, typeofPoint,maxPoints }) => {
+const TableStudent = ({ exams, typeofPoint,maxPoints,viewPoint }) => {
     const [page, setPage] = useState(0);
     const [order, setOrder] = useState('asc');
     const [orderBy, setOrderBy] = useState('name');
