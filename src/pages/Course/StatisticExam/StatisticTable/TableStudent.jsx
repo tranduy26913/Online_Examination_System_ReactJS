@@ -26,12 +26,13 @@ const TABLE_HEAD = [
     { id: 'isVerified', label: 'Thời lượng', align: 'center' },
     { id: 'status', label: 'Trạng thái', align: 'center' },
     { id: 'result', label: 'Kết quả', align: 'center' },
+    { id: 'action', label: 'Thao tác', align: 'center' },
 ];
 
 // ----------------------------------------------------------------------
 
 
-const TableStudent = ({ exams, typeofPoint,maxPoints,viewPoint }) => {
+const TableStudent = ({ exams, typeofPoint, maxPoints, viewPoint }) => {
     const [page, setPage] = useState(0);
     const [order, setOrder] = useState('asc');
     const [orderBy, setOrderBy] = useState('name');
@@ -106,13 +107,13 @@ const TableStudent = ({ exams, typeofPoint,maxPoints,viewPoint }) => {
                                     const { _id: takeExamId, submitTime, startTime, points, status } = row;
                                     let duration = moment(submitTime).diff(startTime, 'seconds')
                                     let textDuration = '0 giây'
-                                    if(duration>0){
+                                    if (duration > 0) {
                                         let hours = moment.duration(duration, "seconds").hours()
                                         let minutes = moment.duration(duration, "seconds").minutes()
                                         let seconds = moment.duration(duration, "seconds").seconds()
-                                        hours = hours?`${hours} giờ `:''
-                                        minutes = minutes?`${minutes} phút `:''
-                                        seconds = seconds?`${seconds} giây`:''
+                                        hours = hours ? `${hours} giờ ` : ''
+                                        minutes = minutes ? `${minutes} phút ` : ''
+                                        seconds = seconds ? `${seconds} giây` : ''
                                         textDuration = hours + minutes + seconds
                                     }
                                     return (
@@ -134,6 +135,9 @@ const TableStudent = ({ exams, typeofPoint,maxPoints,viewPoint }) => {
                                                     color={points / maxPoints < 0.5 ? 'error' : 'primary'}
                                                     label={points / maxPoints < 0.5 ? 'Chưa đạt' : 'Đạt'}
                                                 />
+                                            </TableCell>
+                                            <TableCell align="center">
+                                                <TakeExamAction takeExamId={takeExamId} />
                                             </TableCell>
                                         </TableRow>
                                     );
