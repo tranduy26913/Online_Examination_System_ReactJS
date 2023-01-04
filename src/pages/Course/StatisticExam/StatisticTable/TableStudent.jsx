@@ -17,6 +17,7 @@ import moment from 'moment';
 import EmptyList from 'components/UI/EmptyList';
 import ButtonExport from 'components/ButtonExport';
 import { applySortFilter, getComparator } from 'components/TableCustom/FunctionHelper';
+import TakeExamAction from '../TakeExamAction';
 
 // ----------------------------------------------------------------------
 
@@ -66,7 +67,7 @@ const TableStudent = ({ exams, typeofPoint, maxPoints, viewPoint }) => {
             let { name, points, maxPoints, startTime, submitTime, status } = item
             const duration = moment(submitTime).diff(startTime, 'minutes')
             return {
-                'Họ và tên': name,
+                ///'Họ và tên': name,
                 'Thời gian thi': moment(startTime).format('DD-MM-YYYY HH:mm'),
                 'Thời gian nộp': moment(submitTime).format('DD-MM-YYYY HH:mm'),
                 'Thời lượng làm bài': `${duration} phút`,

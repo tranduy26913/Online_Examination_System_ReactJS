@@ -14,6 +14,7 @@ import { useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import Question from './Question'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import LoadingRoller from 'components/LoadingPage/LoadingRoller'
 
 const style = {
   flexDirection: { xs: 'column', md: 'row' },
@@ -40,6 +41,7 @@ function ReviewExamination() {
   const [maxPoints, setMaxPoints] = useState(0)
   const [questions, setQuestions] = useState([])
   const [indexQuestion, setIndexQuestion] = useState([])
+  const [isLoading, setIsLoading] = useState(false)
   const user = useSelector(state => state.user.info)
 
   const setupQuestion = (questions) => {
@@ -61,7 +63,7 @@ function ReviewExamination() {
     const getQuestions = () => {
       if (!takeExamId)
         return
-
+        setIsLoading(true)
       apiTakeExam.getReviewExam({ takeExamId })
         .then(res => {
           setupQuestion(res?.questions || [])
@@ -73,6 +75,7 @@ function ReviewExamination() {
           setMaxPoints(res.maxPoints)
           setName(res.name)
         })
+        .finally(()=>setIsLoading(false))
     }
     getQuestions()
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -80,7 +83,11 @@ function ReviewExamination() {
 
   return (
     <Page title={name}>
-
+      {isLoading ? <Stack height={'100vh'} width='100%' alignItems='center' justifyContent='center'>
+        <LoadingRoller />
+        </Stack>
+      :
+      
       <Box className='container' py={2}>
         <Box>
           <Typography
@@ -155,7 +162,7 @@ function ReviewExamination() {
         </Box>
 
       </Box>
-
+}
     </Page>
   )
 }

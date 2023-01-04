@@ -64,13 +64,13 @@ function TakeExamAction({ takeExamId }) {
     }, [takeExamId,open])
     return (
         <>
-            <Tooltip title='Chi tiết'>
+            <Tooltip title='Nhật ký làm bài'>
                 <IconButton onClick={handleClickOpen}>
                     <InfoIcon color='primary' width={20} height={20} />
                 </IconButton>
 
             </Tooltip>
-            <Tooltip title='Chi tiết'>
+            <Tooltip title='Xem lại bài thi'>
                 <Link to={`/review-exam/${takeExamId}`}>
                     <IconButton onClick={handleClickOpen}>
                         <PreviewIcon color='primary' width={20} height={20} />
