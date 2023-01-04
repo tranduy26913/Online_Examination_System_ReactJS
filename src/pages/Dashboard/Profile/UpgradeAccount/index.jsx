@@ -25,10 +25,10 @@ const UpgradeAccount = (props) => {
         setMethod(e.target.value)
     }
     const handlePayment = () => {
-        if(method==='Momo'){
-            toast.warning("Chức năng thanh toán với Momo tạm thòi đóng vì bảo trì. Vui lòng chọn hình thức thanh toán khác")
-            return
-        }
+        // if(method==='Momo'){
+        //     toast.warning("Chức năng thanh toán với Momo tạm thòi đóng vì bảo trì. Vui lòng chọn hình thức thanh toán khác")
+        //     return
+        // }
         const params = {
             amount:50000,
             bankCode:null,
