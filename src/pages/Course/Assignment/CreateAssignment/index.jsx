@@ -266,8 +266,12 @@ const CreateAssignment = (props) => {
             <CKEditor
               editor={DecoupledEditor}
               data={content}
+              config = {{
+                mediaEmbed:{
+                  previewsInData :true,
+                }
+              }}
               onReady={editor => {
-
                 editor.ui
                   .getEditableElement()
                   .parentElement.insertBefore(

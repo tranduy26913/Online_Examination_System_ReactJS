@@ -4,6 +4,7 @@ import ListAltIcon from '@mui/icons-material/ListAlt';
 // import CreditCardIcon from '@mui/icons-material/CreditCard';
 // import RateReviewIcon from '@mui/icons-material/RateReview';
 import FavoriteIcon from '@mui/icons-material/Favorite';
+import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 import TipsAndUpdatesIcon from '@mui/icons-material/TipsAndUpdates';
 import SchoolIcon from '@mui/icons-material/School';
@@ -77,6 +78,7 @@ export const DASHBOARD_STUDENT = [
         list: ['list-course'],
         regex:'^\/my\/list-course\/?'
     },
+    
    
     // {
     //     id: 5,
@@ -137,6 +139,14 @@ export const SIDEBAR_COURSE_TEACHER = [
     },
     {
         id: 4,
+        icon: AutoStoriesIcon,
+        text: 'Bài giảng',
+        link: 'lesson',
+        list: ['lesson'],
+        regex:'^\/course\/.*(\\\d)\/lesson\/?'
+    },
+    {
+        id: 5,
         icon: ListAltIcon,
         text: 'N.hàng câu hỏi',
         link: 'question-bank',
@@ -144,7 +154,7 @@ export const SIDEBAR_COURSE_TEACHER = [
         regex:'^\/course\/.*(\\d)\/question-bank\/?'
     },
     {
-        id: 5,
+        id: 6,
         icon: FavoriteIcon,
         text: 'Thống kê',
         link: 'statistic',
@@ -181,6 +191,14 @@ export const SIDEBAR_COURSE_STUDENT = [
         link: 'manage-student',
         list: ['manage-student'],
         regex:'^\/course\/.*(\\d)\/manage-student\/?'
+    },
+    {
+        id: 4,
+        icon: AutoStoriesIcon,
+        text: 'Bài giảng',
+        link: 'lesson',
+        list: ['lesson'],
+        regex:'^\/course\/.*(\\\d)\/lesson\/?'
     },
     {
         id: 6,

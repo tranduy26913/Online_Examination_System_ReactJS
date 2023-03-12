@@ -34,6 +34,8 @@ const StatisticTeacher = lazy(() => import("pages/Dashboard/StatisticTeacher"));
 const ResultExamination = lazy(() => import("pages/ResultExamination"));
 const ReviewExamination = lazy(() => import("pages/ReviewExamination"));
 const ManageFile = lazy(() => import("pages/Course/ManageFile"));
+const Lesson = lazy(() => import("pages/Course/Lesson"));
+const CalendarSchedule = lazy(() => import("pages/Course/CalendarSchedule"));
 const CreateAssignment = lazy(() => import("pages/Course/Assignment/CreateAssignment"));
 const SubmitAssignment = lazy(() => import("pages/Course/Assignment/SubmitAssignment"));
 const ManageAssignment = lazy(() => import("pages/Course/Assignment/ManageAssignment"));
@@ -150,6 +152,14 @@ const COURSE_TEACHER = [
     component: ManageFile
   },
   {
+    path: 'lesson',
+    component: Lesson
+  },
+  {
+    path: 'calendar',
+    component: CalendarSchedule
+  },
+  {
     path: 'question-bank',
     component: QuestionBank
   },
@@ -181,12 +191,16 @@ const COURSE_STUDENT = [
     component: SubmitAssignment
   },
   {
+    path: 'lesson',
+    component: Lesson
+  },
+  {
     path: 'manage-student',
     component: ListStudent
   },
   {
     path: 'statistic',
-    component: MaintenancePage
+    component: StatisticCourse
   },
   {
     path: 'statistic-exam/:slug',

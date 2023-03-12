@@ -245,7 +245,7 @@ const SubmitAssignment = (props) => {
             <AccordionDetails sx={{ padding: 0 }}>
               <Paper elevation={6}>
                 <ContentWrap>
-                  <Box dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(content) }} />
+                  <Box dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(content,{ ADD_TAGS: ["iframe"], ADD_ATTR: ['allow', 'allowfullscreen', 'frameborder', 'scrolling'] }) }} />
                 </ContentWrap>
               </Paper>
             </AccordionDetails>
