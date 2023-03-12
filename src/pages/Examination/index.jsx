@@ -28,6 +28,7 @@ import LoadingRoller from 'components/LoadingPage/LoadingRoller';
 import checkPinImg from 'assets/img/check-pin.png'
 import CountDown from './CountDown';
 import BoxIndex from './BoxIndex';
+import FaceRecognition from './FaceRecognition';
 
 
 const getAnswers = (arr, id) => {//lấy đáp án của câu hỏi 
@@ -283,9 +284,9 @@ const Examination = () => {
                                                 </Stack>
                                             </Stack>
                                         </Paper> */}
-                                        {/* <Paper elevation={12} sx={{ overflow: 'hidden' }}>
-                                    <FaceRecognition />
-                                </Paper> */}
+                                        <Paper elevation={12} sx={{ overflow: 'hidden' }}>
+                                            <FaceRecognition />
+                                        </Paper>
                                     </Stack>
                                 </Stack>
                             </Box>
