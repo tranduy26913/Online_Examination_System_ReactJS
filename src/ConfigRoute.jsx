@@ -206,6 +206,10 @@ const COURSE_STUDENT = [
     path: 'statistic-exam/:slug',
     component: StatisticExam
   },
+  {
+    path: 'calendar',
+    component: CalendarSchedule
+  },
 ]
 function ConfigRoute() {
   const role = useSelector(state => state.setting.role) || 'student'

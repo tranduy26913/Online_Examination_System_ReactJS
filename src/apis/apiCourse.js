@@ -10,8 +10,8 @@ import { axiosClientWithToken } from "./axiosClient";
         const res = await axiosClientWithToken.post('/course/enroll-in-course',params)
         return res.data;
     },
-    getCourseByCourseID: async (params) => {
-        const res = await axiosClientWithToken.get('/course/by-courseid', {params})
+    getCourseByCourseID: async (params,role) => {
+        const res = await axiosClientWithToken.get(`/course/by-courseid-${role}`, {params})
         return res.data;
     },
     getListCourseByTeacher: async (params) => {

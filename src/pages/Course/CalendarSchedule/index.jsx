@@ -1,6 +1,7 @@
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Paper, Stack, Typography } from '@mui/material'
+import apiLessons from 'apis/apiLessons';
 import moment from 'moment';
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 
@@ -8,6 +9,7 @@ function CalendarSchedule() {
     const [open, setOpen] = React.useState(true);
     const [scroll, setScroll] = React.useState('body');
     const [activities, setActivities] = useState([])
+    const [mark, setMark] = useState([])
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -19,34 +21,22 @@ function CalendarSchedule() {
         console.log('d')
     };
 
+    useEffect(() => {
+        const getMark = () => {
+            apiLessons.getCalendar()
+                .then(res => {
+                    if (Array.isArray(res))
+                        setMark(res)
+                })
+        }
+        getMark()
+    }, [])
 
-
-    const mark = [
-        {
-            id: 1,
-            date: '06-03-2023',
-            activities: [{
-                title: "Bài kiểm tra 1",
-                url: ''
-            }]
-        },
-        {
-            id: 2,
-            date: '08-03-2023',
-            activities: [{
-                title: "Bài kiểm tra 2",
-                url: ''
-            },
-            {
-                title: "Bài kiểm tra 3",
-                url: ''
-            }]
-        },
-    ]
+    
 
     const handleClickDay = (value) => {
 
-        const content = mark.find(x => x.date === moment(value).format("DD-MM-YYYY"))
+        const content = mark.find(x => x.date === moment(value).format("YYYY-MM-DD"))
         if (content) {
             setActivities(content.activities)
             handleClickOpen('body')
@@ -61,7 +51,7 @@ function CalendarSchedule() {
                     //onChange={this.onChange}
                     //value={this.state.date}
                     tileClassName={({ date, view }) => {
-                        if (mark.find(x => x.date === moment(date).format("DD-MM-YYYY"))) {
+                        if (mark.find(x => x.date === moment(date).format("YYYY-MM-DD"))) {
                             return 'highlight'
                         }
                     }}
@@ -71,9 +61,9 @@ function CalendarSchedule() {
                     tileDisabled={({ date }) => date.getDay() === 0}
 
                     /*maxDate={new Date(2020, 1, 0)}</div>*/
-                    minDate={
-                        new Date()
-                    }
+                    // minDate={
+                    //     new Date()
+                    // }
                 >
                 </Calendar>
 
@@ -90,7 +80,7 @@ function CalendarSchedule() {
                     <Stack>
                         {activities
                             .map(
-                                (item) => <Typography key={item.title}>{item.title}</Typography>
+                                (item) => <Typography key={item.name}>{item.name}</Typography>
                             )}
                     </Stack>
                 </DialogContent>

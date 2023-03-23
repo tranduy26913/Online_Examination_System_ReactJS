@@ -2,10 +2,15 @@ import { axiosClientWithToken } from "./axiosClient";
 
 const apiLessons = {
 
-    getListLesson: async (params) => {
-        const res = await axiosClientWithToken.get('/lesson/lesson-by-course-of-teacher', { params })
+    getListLesson: async (params,role) => {
+        const res = await axiosClientWithToken.get(`/lesson/lesson-by-course-of-${role}`, { params })
         return res.data;
     },
+    getCalendar: async (params) => {
+        const res = await axiosClientWithToken.get(`/lesson/calendar`, { params })
+        return res.data;
+    },
+    
     deleteLesson: async (params) => {
         const res = await axiosClientWithToken.delete('/lesson/', { params })
         return res.data;
@@ -24,6 +29,14 @@ const apiLessons = {
                 'Content-Type': 'multipart/form-data'
             }
         })
+        return res.data;
+    },
+    seenLesson: async (params) => {
+        const res = await axiosClientWithToken.post('/lesson/seen-lesson',params)
+        return res.data;
+    },
+    unseenLesson: async (params) => {
+        const res = await axiosClientWithToken.delete('/lesson/unseen-lesson',{params})
         return res.data;
     },
 
