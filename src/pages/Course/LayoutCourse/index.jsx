@@ -10,6 +10,7 @@ import {
   Typography,
   Breadcrumbs,
   Paper,
+  Box,
 
 } from "@mui/material";
 
@@ -28,6 +29,7 @@ import CourseContext from "./CourseContext";
 import { useSelector } from "react-redux";
 import ExitCourse from "./ExitCourse";
 import ShareTray from "components/ShareTray";
+import LinearProgressWithLabel from "components/LinearProgressWithLabel";
 //import { CSSTransition } from 'react-transition-group';
 
 const checkSelectedTab = (item, pathname) => {
@@ -58,7 +60,7 @@ const LayoutCourse = () => {
         navigate('/my/list-course')
         toast.warning("Khoá học không xác định")
       }
-      apiCourse.getCourseByCourseID({ courseId })
+      apiCourse.getCourseByCourseID({ courseId },role)
         .then(res => {
           setCourse(res)
         })
@@ -127,12 +129,19 @@ const LayoutCourse = () => {
       "Bello Quiz";
   }, [selectedTabId]);
 
+  const UpdateProcessing = ()=>{
+    apiCourse.getCourseByCourseID({ courseId },role)
+        .then(res => {
+          setCourse(res)
+        })
+  }
+
   return (
     <Sidebar sidebarTab={sidebarCourse} selectedTabId={selectedTabId}
       handleChangeTab={handleChangeTab}
       heading={'Khoá học'}
       Breadcrumbs={DashboardBreadcrumbs}>
-      <CourseContext.Provider value={{ id: course?.id || "", courseId: course?.courseId || "" }}>
+      <CourseContext.Provider value={{ id: course?.id || "", courseId: courseId || "" ,UpdateProcessing:UpdateProcessing}}>
         <Paper elevation={12}>
 
           <Stack direction={{ xs: 'column', sm: 'row' }} className='listtest__course'>
@@ -160,13 +169,16 @@ const LayoutCourse = () => {
                     </Link>
                   }
                   <ShareTray url={`https://oes.vercel.app/enroll/${courseId}`}
-                    title={"Tham gia khoá học"+`https://oes.vercel.app/enroll/${courseId}`}
-                    quote={"Tham gia khoá học "  }
+                    title={"Tham gia khoá học" + `https://oes.vercel.app/enroll/${courseId}`}
+                    quote={"Tham gia khoá học "}
                     variant='outlined'
                     endIcon={<SendIcon />}
                     text='Chia sẻ' />
                   {/* <FacebookShareCount  /> */}
                 </Stack>
+                <Box>
+                 {role === 'student' &&<LinearProgressWithLabel value={Math.floor(course?.avg*100 || 0)}/>} 
+                </Box>
               </Stack>
               <ExitCourse />
             </Stack>

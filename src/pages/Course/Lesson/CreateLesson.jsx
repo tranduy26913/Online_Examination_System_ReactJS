@@ -14,13 +14,15 @@ import { getMessageError } from 'utils';
 import DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
 import { MyUploadAdapter } from 'config/MyCustomUploadAdapterPlugin';
 import { Stack2Column, StackLabel } from 'pages/Dashboard/CreateExamination/Component/MUI';
+import UploadIcon from '@mui/icons-material/Upload';
 import apiLessons from 'apis/apiLessons';
 import { schema } from './schema';
 import { yupResolver } from '@hookform/resolvers/yup';
-function CreateLesson({getData}) {
+import apiUpload from 'apis/apiUpload';
+function CreateLesson({ getData }) {
     const [content, setContent] = useState('')
     const [isAdd, setIsAdd] = useState(false)
-    
+    const [file, setFile] = useState('')
     const [isPublic, setIsPublic] = useState(true)
     const accessToken = useSelector(state => state.auth.accessToken)
     const [loading, setLoading] = useState(false)
@@ -44,29 +46,40 @@ function CreateLesson({getData}) {
 
     const hideEditor = () => setIsAdd(false)
 
-    
+
     const createLesson = (data) => {
-        const {name, startTime, endTime }= data
+        const { name, startTime, endTime } = data
         const params = {
-            courseId:courseObjId,
+            courseId: courseObjId,
             name,
             content,
+            file,
             startTime,
             endTime,
             status: isPublic ? 'public' : 'private'
         }
         setLoading(true)
         apiLessons.createLesson(params)
-        .then(res=>{
-            toast.success("Thêm thành công")
-            setIsAdd(false)
-            getData()
-        })
-        .catch(err=>{
-            toast.warning("Thêm không thành công")
-        })
-        .finally(()=>setLoading(false))
+            .then(res => {
+                toast.success("Thêm thành công")
+                setIsAdd(false)
+                getData()
+            })
+            .catch(err => {
+                toast.warning("Thêm không thành công")
+            })
+            .finally(() => setLoading(false))
     }
+
+    const handleChooseFile = (e) => {
+        if (e.target.files.lenght !== 0) {
+            apiUpload.updateFile({ upload: e.target.files[0] })
+                .then(res => {
+                    setFile(res.url)
+                })
+        }
+    }
+
     return (
         <Box spacing={2}>
             {isAdd ?
@@ -167,12 +180,21 @@ function CreateLesson({getData}) {
                         />
                     </Box>
 
-                    <Stack direction='row' justifyContent='flex-end'>
+                    <Box>
+                        <Button variant='contained' component="label" width='160px'
+                            endIcon={<UploadIcon />}
+                        >
+                            Tải ảnh lên
+                            <input hidden accept="image/*" type="file" onChange={handleChooseFile} />
+                        </Button>
+                    </Box>
+
+                    <Stack direction='row' justifyContent='flex-end' spacing={2}>
                         <LoadingButton variant='contained'
-                         loading={loading} 
-                         onClick={handleSubmit(createLesson)}>Thêm</LoadingButton>
+                            loading={loading}
+                            onClick={handleSubmit(createLesson)}>Thêm</LoadingButton>
                         <Button variant='contained'
-                        onClick={hideEditor}>Huỷ</Button>
+                            onClick={hideEditor}>Huỷ</Button>
                     </Stack>
                 </Stack>
                 :

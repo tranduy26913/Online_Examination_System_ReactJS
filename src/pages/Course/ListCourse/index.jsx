@@ -7,7 +7,7 @@ import {
     Stack,
     Typography,
     Paper,
-    Divider
+    Divider,
 } from "@mui/material"
 import Grid from '@mui/material/Unstable_Grid2';
 import AssignmentIcon from '@mui/icons-material/Assignment';
@@ -20,6 +20,8 @@ import { useSelector } from 'react-redux';
 import { ROLES } from 'constraints/Variables';
 import LoadingRoller from 'components/LoadingPage/LoadingRoller';
 import ShareTray from 'components/ShareTray';
+import LinearProgressWithLabel from 'components/LinearProgressWithLabel';
+
 const ListCourse = () => {
     const role = useSelector(state => state.setting?.role)
     const [courses, setCourses] = useState([])
@@ -74,16 +76,19 @@ const ListCourse = () => {
                                             component="img"
                                             height="170"
                                             width="180"
-                                            image={item.image}
+                                            image={item.image || 'https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg'}
+                                            onError={e => {
+                                                e.target.src = 'https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg'
+                                            }}
                                             alt="image course"
                                         />
                                         <Link to={`/course/${item.courseId}`}>
-                                        <Typography color="primary" variant="h5" component="div"
-                                            sx={{
-                                                textAlign: "center",
-                                            }}>
-                                            {item.name}
-                                        </Typography>
+                                            <Typography color="primary" variant="h5" component="div"
+                                                sx={{
+                                                    textAlign: "center",
+                                                }}>
+                                                {item.name}
+                                            </Typography>
                                         </Link>
                                         <Stack
                                             p='0.5rem'
@@ -105,6 +110,13 @@ const ListCourse = () => {
 
 
                                         </Stack>
+                                        {
+                                            role === 'student' &&
+                                            <Box px={1}>
+                                                <LinearProgressWithLabel value={Math.floor(item.avg*100)} />
+                                            </Box>
+                                        }
+
                                     </Card>
                                 </Grid>)
                         }

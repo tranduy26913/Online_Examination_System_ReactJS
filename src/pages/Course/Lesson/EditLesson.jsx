@@ -1,5 +1,6 @@
 import { Box, Button, Chip, Divider, FormControl, FormControlLabel, FormGroup, FormHelperText, IconButton, Paper, Stack, Switch, Typography } from '@mui/material'
 import { useTheme } from '@mui/system';
+import UploadIcon from '@mui/icons-material/Upload';
 import moment from 'moment'
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import { useContext, useEffect, useState } from 'react'
@@ -16,20 +17,25 @@ import { MyUploadAdapter } from 'config/MyCustomUploadAdapterPlugin';
 import { Stack2Column, StackLabel } from 'pages/Dashboard/CreateExamination/Component/MUI';
 import DOMPurify from 'dompurify';
 import EditIcon from '@mui/icons-material/Edit';
+import AttachFileIcon from '@mui/icons-material/AttachFile';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { schema } from './schema';
 import apiLessons from 'apis/apiLessons';
 import ConfirmButton from 'components/ConfirmDialog';
+import apiUpload from 'apis/apiUpload';
+import CheckIcon from '@mui/icons-material/Check';
 function EditLesson(props) {
     const [content, setContent] = useState('')
     const [lessonId, setLessonId] = useState('')
     const [isEdit, setIsEdit] = useState(false)
+    const [seen, setSeen] = useState(false)
     const [loading, setLoading] = useState(false)
+    const [file, setFile] = useState('')
     const [isPublic, setIsPublic] = useState(true)
     const accessToken = useSelector(state => state.auth.accessToken)
-
-    const { courseId, id: courseObjId } = useContext(CourseContext)
+    const role = useSelector(state => state.setting.role) || 'student'
+    const { courseId, id: courseObjId ,UpdateProcessing} = useContext(CourseContext)
 
     const { handleSubmit, setValue, control } = useForm({
         mode: "onChange",
@@ -46,6 +52,8 @@ function EditLesson(props) {
         setContent(props.content)
         setIsPublic(props.isPublic)
         setLessonId(props.lessonId)
+        setSeen(props.seen)
+        setFile(props.file)
     }, [props.content, props.title])
     const onClickEdit = () => {
         setIsEdit(true)
@@ -79,7 +87,7 @@ function EditLesson(props) {
 
     const deleteLesson = () => {
         const params = {
-            id:lessonId,
+            id: lessonId,
         }
         const id = toast.loading("Đang xoá...")
         apiLessons.deleteLesson(params)
@@ -92,6 +100,30 @@ function EditLesson(props) {
                 toast.update(id, { render: 'Xoá không thành công', isLoading: false, type: 'warning', autoClose: 1200 })
             })
             .finally(() => setLoading(false))
+    }
+
+    const handleChooseFile = (e) => {
+        if (e.target.files.lenght !== 0) {
+            apiUpload.updateFile({ upload: e.target.files[0] })
+                .then(res => {
+                    setFile(res.url)
+                })
+        }
+    }
+
+    const handleSeenLesson = () => {
+        apiLessons.seenLesson({ lessonId })
+            .then(res => {
+                setSeen(true)
+                UpdateProcessing()
+            })
+    }
+    const handleUnseenLesson = () => {
+        apiLessons.unseenLesson({ lessonId })
+            .then(res => {
+                setSeen(false)
+                UpdateProcessing()
+            })
     }
     return (
         <Box spacing={2}>
@@ -193,6 +225,15 @@ function EditLesson(props) {
                         />
                     </Box>
 
+                    <Box>
+                        <Button variant='contained' component="label" width='160px'
+                            endIcon={<UploadIcon />}
+                        >
+                            Tải ảnh lên
+                            <input hidden accept="image/*" type="file" onChange={handleChooseFile} />
+                        </Button>
+                    </Box>
+
                     <Stack direction='row' justifyContent='flex-end'>
                         <LoadingButton
                             variant='contained'
@@ -212,21 +253,40 @@ function EditLesson(props) {
                             {!isPublic && <Chip label="Đang ẩn" color="primary" size='small' />}
 
                         </Stack>
-                        <Stack direction='row'>
-                            <IconButton onClick={onClickEdit} size="small" color='warning'>
-                                <EditIcon fontSize="small" />
-                            </IconButton>
-                            <ConfirmButton handleFunc={deleteLesson}
-                                title='Xoá nội dung bài giảng'
-                                description={'Bạn có chắc chắn muốn xoá nội dung bài giảng này không'}>
-                                {/* <IconButton aria-label="delete" size="small" color='error'> */}
-                                    <DeleteIcon fontSize="small" color='error' />
-                                {/* </IconButton> */}
-                            </ConfirmButton>
+                        {
+                            role === 'student' ?
+                                seen ?
+                                    <Button variant='outlined' startIcon={<CheckIcon />}
+                                        onClick={handleUnseenLesson}
+                                    >Đã đọc</Button>
+                                    :
+                                    <Button variant='outlined' startIcon={<CheckIcon />}
+                                        onClick={handleSeenLesson}
+                                    >Đánh dấu đã đọc</Button>
+                                :
+                                <Stack direction='row'>
+                                    <IconButton onClick={onClickEdit} size="small" color='warning'>
+                                        <EditIcon fontSize="small" />
+                                    </IconButton>
+                                    <ConfirmButton handleFunc={deleteLesson}
+                                        title='Xoá nội dung bài giảng'
+                                        description={'Bạn có chắc chắn muốn xoá nội dung bài giảng này không'}>
+                                        {/* <IconButton aria-label="delete" size="small" color='error'> */}
+                                        <DeleteIcon fontSize="small" color='error' />
+                                        {/* </IconButton> */}
+                                    </ConfirmButton>
 
-                        </Stack>
+                                </Stack>
+                        }
+
                     </Stack>
-                    <Box pl={2} dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(content) }} />
+                    <Box mt={1} pl={2}>
+                        <Box dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(content) }} />
+                        {file &&
+                            <a href={file} target="_blank" rel="noopener noreferrer">
+                                <AttachFileIcon sx={{ 'transform': 'translateY(6px)' }} />
+                                {file.split('/').pop()}</a>}
+                    </Box>
 
                     <Divider />
                 </Stack>
