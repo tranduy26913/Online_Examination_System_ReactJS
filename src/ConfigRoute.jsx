@@ -116,6 +116,10 @@ const STUDENT = [
     path: 'profile/change-password',
     component: ChangePassword
   },
+  {
+    path: 'calendar',
+    component: CalendarSchedule
+  },
 ]
 
 const COURSE_TEACHER = [
@@ -206,10 +210,7 @@ const COURSE_STUDENT = [
     path: 'statistic-exam/:slug',
     component: StatisticExam
   },
-  {
-    path: 'calendar',
-    component: CalendarSchedule
-  },
+  
 ]
 function ConfigRoute() {
   const role = useSelector(state => state.setting.role) || 'student'

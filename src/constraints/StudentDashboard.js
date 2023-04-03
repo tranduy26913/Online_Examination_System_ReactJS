@@ -8,6 +8,7 @@ import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 import TipsAndUpdatesIcon from '@mui/icons-material/TipsAndUpdates';
 import SchoolIcon from '@mui/icons-material/School';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 /* eslint-disable */
 export const DASHBOARD_TEACHER = [
     {
@@ -96,6 +97,14 @@ export const DASHBOARD_STUDENT = [
     //     list: ['notify'],
     //     regex:'^\/my\/notify\/?$'
     // },
+    {
+        id: 6,
+        icon: CalendarMonthIcon,
+        text: 'Lịch biểu',
+        link: 'calendar',
+        list: ['calendar'],
+        regex:'^\/my\/calendar\/?'
+    },
     {
         id: 7,
         icon: FavoriteIcon,

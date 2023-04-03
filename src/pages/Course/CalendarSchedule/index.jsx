@@ -1,12 +1,14 @@
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Paper, Stack, Typography } from '@mui/material'
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, Paper, Stack, Typography } from '@mui/material'
 import apiLessons from 'apis/apiLessons';
 import moment from 'moment';
+import FaceRecognition from 'pages/Examination/FaceRecognition';
+import AssignmentIcon from '@mui/icons-material/Assignment';
 import React, { useEffect, useRef, useState } from 'react'
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 
 function CalendarSchedule() {
-    const [open, setOpen] = React.useState(true);
+    const [open, setOpen] = React.useState(false);
     const [scroll, setScroll] = React.useState('body');
     const [activities, setActivities] = useState([])
     const [mark, setMark] = useState([])
@@ -32,7 +34,7 @@ function CalendarSchedule() {
         getMark()
     }, [])
 
-    
+
 
     const handleClickDay = (value) => {
 
@@ -60,12 +62,13 @@ function CalendarSchedule() {
 
                     tileDisabled={({ date }) => date.getDay() === 0}
 
-                    /*maxDate={new Date(2020, 1, 0)}</div>*/
-                    // minDate={
-                    //     new Date()
-                    // }
+                /*maxDate={new Date(2020, 1, 0)}</div>*/
+                // minDate={
+                //     new Date()ff
+                // }
                 >
                 </Calendar>
+
 
             </Paper>
             <Dialog
@@ -80,7 +83,27 @@ function CalendarSchedule() {
                     <Stack>
                         {activities
                             .map(
-                                (item) => <Typography key={item.name}>{item.name}</Typography>
+                                (item) =>
+                                    <>
+                                        <Box mb={1}>
+                                            <Typography fontWeight={500}  key={item.name}>
+                                                <AssignmentIcon color='primary'sx={{ marginRight:'8px',transform: 'translateY(6px)' }} />
+                                                {item.nameCourse}: {item.name}
+                                            </Typography>
+                                            <Stack ml={4}>
+                                                <Typography>Sự kiện: {item.type === 'exam' ? 'Bài kiểm tra' : 'Bài tập'}</Typography>
+
+                                                <Typography>
+                                                    Ngày bắt đầu:{moment(item.startTime).format('DD/MM/YYYY hh:mm')}
+                                                </Typography>
+                                                <Typography>
+                                                    Ngày kết thúc:{moment(item.endTime).format('DD/MM/YYYY hh:mm')}
+                                                </Typography>
+                                            </Stack>
+
+                                        </Box>
+                                        <Divider />
+                                    </>
                             )}
                     </Stack>
                 </DialogContent>
