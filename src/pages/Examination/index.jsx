@@ -91,6 +91,7 @@ const Examination = () => {
         questions = questions.map(item => ({
             question: item.id,
             answers: [],
+            type:item.type,
             isDone: false,
             isFlag: false
         }))
@@ -284,9 +285,12 @@ const Examination = () => {
                                                 </Stack>
                                             </Stack>
                                         </Paper> */}
+                                        {
+                                            isTracking && 
                                         <Paper elevation={12} sx={{ overflow: 'hidden' }}>
                                             <FaceRecognition />
                                         </Paper>
+                                        }
                                     </Stack>
                                 </Stack>
                             </Box>

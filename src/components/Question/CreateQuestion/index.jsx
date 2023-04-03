@@ -7,7 +7,10 @@ import {
   RadioGroup,
   Radio,
   FormLabel,
-  FormControl
+  FormControl,
+  MenuItem,
+  InputLabel,
+  Select
 } from '@mui/material'
 import React, { useContext, useEffect, useState } from 'react'
 import { CKEditor } from '@ckeditor/ckeditor5-react';
@@ -78,17 +81,17 @@ const CreateQuestion = (props) => {
   const [answers, setAnswers] = useState(question ? question.answers : [])
   const [maxPoints, setMaxPoints] = useState(1)
   const [loading, setLoading] = useState(false)
-  const [typeAnswer, setTypeAnswer] = useState('single')//single:1 đáp án đúng, multi: nhiều đáp án đúng
+  const [typeQuestion, setTypeQuestion] = useState('single')//single:1 đáp án đúng, multi: nhiều đáp án đúng
   const dispatch = useDispatch()
   const refreshToken = useSelector(state => state.auth.refreshToken)
   const { reloadExam, status } = useContext(ExamContext) || {}
   //const QUESTIONS = useSelector(state => state.user.questions)
   useEffect(() => {
     if (question) {
-      console.log(question)
+
       setContent(question.content)
       setMaxPoints(question.maxPoints)
-      setTypeAnswer(question.type)
+      setTypeQuestion(question.type)
       let newAnswers = question.answers?.map(item => ({ ...item })) || []
       setAnswers(newAnswers)
     }
@@ -97,12 +100,43 @@ const CreateQuestion = (props) => {
     }
   }, [question])
 
+  useEffect(() => {
+    if (question) {
+      console.log(question)
+      setContent(question.content)
+      setMaxPoints(question.maxPoints)
+      // setTypeQuestion(question.type)
+      let newAnswers = question.answers?.map(item => ({ ...item })) || []
+      setAnswers(newAnswers)
+    }
+    else {
+      handleClearData()
+    }
+  }, [typeQuestion])
+
   const handleChangeMaxPoints = (e) => {
     setMaxPoints(e.target.value)
   }
 
-  const handleChangeTypeAnswer = (e) => {
-    setTypeAnswer(e.target.value)
+  const handleChangeTypeAnswer = (event, idAnswer) => {
+
+    let newAnswers = [...answers]
+    // let chooseAnswer = newAnswers.find(item => item.id === idAnswer)
+    // chooseAnswer= {
+    //   ...chooseAnswer,
+    //   type: event.target.value
+    // }
+    let chooseAnswerIndex = newAnswers.findIndex(item => item.id === idAnswer)
+    newAnswers[chooseAnswerIndex] = {
+      ...newAnswers[chooseAnswerIndex],
+      type: event.target.value
+    }
+    //console.log(chooseAnswerIndex)
+    setAnswers(newAnswers)
+  };
+
+  const handleChangeTypeQuestion = (e) => {
+    setTypeQuestion(e.target.value)
     if (e.target.value === 'single') {
       let newAnswers = [...answers]
       newAnswers = newAnswers.map(item => {
@@ -119,6 +153,7 @@ const CreateQuestion = (props) => {
       id: String(len),
       content: '',
       isCorrect: false,
+      type: 'equal'
     }
     setAnswers(pre => [...pre, newAnswer])
   }
@@ -146,7 +181,7 @@ const CreateQuestion = (props) => {
     let newAnswers = answers.map(e => ({ ...e }))
     const answerIndex = answers.findIndex(item => item.id === idAnswer)
     if (answerIndex > -1) {
-      if (typeAnswer === 'single') {
+      if (typeQuestion === 'single') {
         newAnswers = newAnswers.map(item => {
           const newAnswer = item
           if (newAnswer.id === idAnswer)
@@ -167,7 +202,7 @@ const CreateQuestion = (props) => {
       return
     }
 
-  }, [answers, typeAnswer])
+  }, [answers, typeQuestion])
 
   const checkAnswers = (answers) => {
     return answers.some(e => e.isCorrect)
@@ -189,10 +224,11 @@ const CreateQuestion = (props) => {
       toast.warning('Câu hỏi phải có ít nhất 1 đáp án')
       return false
     }
-    if (!checkAnswers(answers)) {
-      toast.warning('Câu hỏi phải có ít nhất 1 đáp án đúng')
-      return false
-    }
+    if (typeQuestion !== 'fillin')
+      if (!checkAnswers(answers)) {
+        toast.warning('Câu hỏi phải có ít nhất 1 đáp án đúng')
+        return false
+      }
     return true
   }
 
@@ -203,7 +239,7 @@ const CreateQuestion = (props) => {
     const params = {
       content,
       maxPoints,
-      type: typeAnswer,
+      type: typeQuestion,
       image: "",
       answers,
       examId
@@ -239,7 +275,7 @@ const CreateQuestion = (props) => {
       questionId: id,
       content,
       maxPoints,
-      type: typeAnswer,
+      type: typeQuestion,
       answers
     }
     setLoading(true)
@@ -262,7 +298,7 @@ const CreateQuestion = (props) => {
     setContent('')
     setAnswers([])
     setMaxPoints(1)
-    setTypeAnswer('single')
+    // setTypeQuestion('single')
   }
   const handleCancel = () => {
     props.handleSelectQuestion("")
@@ -271,6 +307,21 @@ const CreateQuestion = (props) => {
 
     <Stack spacing={1.5} mb={2} px={2}>
       <Typography fontWeight={600} textAlign='center' mb={1}>Nhập nội dung câu hỏi</Typography>
+
+      <FormControl>
+        <FormLabel>Số đáp án đúng</FormLabel>
+        <RadioGroup
+          row
+          name="controlled-radio-buttons-group"
+          value={typeQuestion}
+          onChange={handleChangeTypeQuestion}
+        >
+          <FormControlLabel value="single" control={<Radio />} label="Một đáp án đúng" />
+          <FormControlLabel value="multi" control={<Radio />} label="Nhiều đáp án đúng" />
+          <FormControlLabel value="fillin" control={<Radio />} label="Điền từ" />
+        </RadioGroup>
+      </FormControl>
+
       <CKEditor
         editor={DecoupledEditor}
         data={content}
@@ -297,7 +348,7 @@ const CreateQuestion = (props) => {
         variant='standard'
         onChange={handleChangeMaxPoints}
       />
-      <FormControl>
+      {/* <FormControl>
         <FormLabel>Số đáp án đúng</FormLabel>
         <RadioGroup
           row
@@ -308,7 +359,7 @@ const CreateQuestion = (props) => {
           <FormControlLabel value="single" control={<Radio />} label="Một đáp án đúng" />
           <FormControlLabel value="multi" control={<Radio />} label="Nhiều đáp án đúng" />
         </RadioGroup>
-      </FormControl>
+      </FormControl> */}
       {
 
         answers.map((item, index) =>
@@ -317,7 +368,22 @@ const CreateQuestion = (props) => {
             <TextField variant='standard' size='small' fullWidth
               label={`Đáp án ${alphabet[index]}`} value={item.content}
               onChange={e => handleChangeInputAnswer(e, item.id)} />
-            <BoxCheck isCheck={item.isCorrect} onClick={() => handleChooseCorrect(item.id)} />
+            {typeQuestion !== 'fillin' ?
+              <BoxCheck isCheck={item.isCorrect} onClick={() => handleChooseCorrect(item.id)} /> :
+              <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+                <InputLabel id="demo-simple-select-standard-label">Độ chính xác</InputLabel>
+                <Select
+                  labelId="demo-simple-select-standard-label"
+                  id="demo-simple-select-standard"
+                  value={item.type}
+                  onChange={(e) => handleChangeTypeAnswer(e, item.id)}
+                  label="Độ chính xác"
+                >
+                  <MenuItem value='equal'>Trùng khớp</MenuItem>
+                  <MenuItem value='include'>Chứa đựng</MenuItem>
+                </Select>
+              </FormControl>
+            }
             <BoxDelete onClick={() => handleDeleteAnswer(item.id)} />
           </Stack>)
       }
@@ -345,11 +411,13 @@ const CreateQuestion = (props) => {
               variant='contained'
               onClick={handleCreateQuestion}>Tạo câu hỏi</LoadingButton>
         }
-       
+
       </Stack>
     </Stack>
 
   )
 }
+
+
 
 export default CreateQuestion

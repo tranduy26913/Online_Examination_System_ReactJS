@@ -30,6 +30,7 @@ import { useSelector } from "react-redux";
 import ExitCourse from "./ExitCourse";
 import ShareTray from "components/ShareTray";
 import LinearProgressWithLabel from "components/LinearProgressWithLabel";
+import { getMessageError } from "utils";
 //import { CSSTransition } from 'react-transition-group';
 
 const checkSelectedTab = (item, pathname) => {
@@ -65,8 +66,15 @@ const LayoutCourse = () => {
           setCourse(res)
         })
         .catch(err => {
-          navigate('/my/list-course')
-          toast.warning("Khoá học không xác định")
+          console.log(getMessageError(err))
+          if(getMessageError(err)==='Học viên Không thuộc khoá học!'){
+            toast.warning("Học viên Không thuộc khoá học!")
+            navigate(`/enroll/${courseId}`)
+          }
+          else{
+            navigate('/my/list-course')
+            toast.warning("Khoá học không xác định")
+          }
         })
     }
     loadCourse()

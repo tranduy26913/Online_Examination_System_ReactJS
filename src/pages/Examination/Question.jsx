@@ -11,6 +11,8 @@ import {
   Checkbox,
   lighten,
   alpha,
+  TextField,
+  Box,
 } from '@mui/material'
 import { darken } from "@mui/material";
 import FlagIcon from '@mui/icons-material/Flag';
@@ -25,13 +27,13 @@ const FormControlLabelCustom = styled(FormControlLabel)({
   '& .MuiRadio-root': {
     padding: '4px'
   },
-  alignItems:'flex-start',
-  '& .MuiTypography-root':{
-    paddingTop:'3px',
-    marginLeft:'6px',
-    lineHeight:'22px'
+  alignItems: 'flex-start',
+  '& .MuiTypography-root': {
+    paddingTop: '3px',
+    marginLeft: '6px',
+    lineHeight: '22px'
   }
-  
+
 })
 
 const StackQuestionContent = styled(Stack)(({ theme }) => ({
@@ -55,11 +57,11 @@ const TypographyQuestion = styled(Typography)(({ theme }) => ({
   borderBottom: `1px dotted ${theme.palette.primary.main}`
 }))
 
-const SelectorFn = (state,questionId)=>{
+const SelectorFn = (state, questionId) => {
   let questionInSheet = {}
-  if(state.answerSheet){
+  if (state.answerSheet) {
     const arr = state.answerSheet.result
-    if(Array.isArray(arr)){
+    if (Array.isArray(arr)) {
       questionInSheet = arr.find(item => item.question === questionId)
     }
   }
@@ -68,9 +70,10 @@ const SelectorFn = (state,questionId)=>{
 const Question = (props) => {
   const { question } = props
   const indexQuestion = question?.index
-  const questionInSheet = useSelector(state=>SelectorFn(state,question.id))
+  const questionInSheet = useSelector(state => SelectorFn(state, question.id))
   const dispatch = useDispatch()
   const [value, setValue] = useState([]);
+  const [input, setInput] = useState('');
   const [isFlag, setIsFlag] = useState(false);
   const [isDone, setIsDone] = useState(false);
   const takeExamId = useSelector(state => state.answerSheet?.takeExamId)
@@ -80,14 +83,33 @@ const Question = (props) => {
     setValue(questionInSheet.answers)
     setIsFlag(questionInSheet.isFlag)
     setIsDone(questionInSheet.isDone)
+    setInput(questionInSheet.answers[0])
   }, [questionInSheet])
+
   const handleChangeStateFlag = useCallback(() => {
     dispatch(changeStateFlag({ questionId: question.id }))
   }, [])
+
+  const handleChangeFillin = useCallback((event) => {
+    setValue([event.target.value])
+    // handleCreateLog()
+  }, [])
+  const handleFocusOutFillin = useCallback((value) => {
+    console.log(value)
+    dispatch(changeAnswer({
+      question: question.id,
+      type:'fillin',
+      answers: value
+    }))
+    dispatch(changeStateDone({ questionId: question.id, value: true }))
+    // handleCreateLog()
+  }, [])
+
   const handleChangeSingle = useCallback((event) => {//đổi lựa chọn cho câu hỏi một lựa chọn
     const newValue = [event.target.value]
     dispatch(changeAnswer({
       question: question.id,
+      type:'single',
       answers: newValue
     }))
     dispatch(changeStateDone({ questionId: question.id, value: true }))
@@ -103,6 +125,7 @@ const Question = (props) => {
       newValue.push(event.target.value)
     dispatch(changeAnswer({
       question: question.id,
+      type:'multi',
       answers: newValue
     }))
     dispatch(changeStateDone({ questionId: question.id, value: true }))
@@ -123,38 +146,58 @@ const Question = (props) => {
       <Stack flex={1} pb={2}>
         <Typography mb={0.25} dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(question.content) }}></Typography>
         {
-          question.type === 'single' ?
+          question.type === 'fillin' ?
+          <Stack width={'100%'} mt={1}>
 
-            <RadioGroup
-              name="controlled-radio-buttons-group"
-              value={value[0] || ''}
-              onChange={handleChangeSingle}
-            >{
-                console.log('re-render question' + question.index)
-              }
-              {
-                question.answers.map(item =>
-                  <FormControlLabelCustom key={item.id}
-                    value={item.id} control={<Radio size='small' />} label={item.content} />)
-              }
+            <TextField
+              id="outlined-multiline-static"
+              label="Nhập câu trả lời"
+              multiline
+              value={value[0]}
+              rows={4}
+              onChange ={handleChangeFillin}
+              onBlur = {()=>handleFocusOutFillin(value)}
+              // sx={{
+              //   '& label':{
+              //     transform:'translate(14px, 16px) scale(1)'
+              //   }
+              // }}
+            />
+            </Stack>
+            :
+            question.type === 'single' ?
 
-            </RadioGroup> :
-            <FormGroup>
-              {
-                question.answers.map(item =>
-                  <FormControlLabelCustom key={item.id}
-                    value={item.id}
-                    control={<Checkbox
-                      checked={value.includes(item.id)}
-                      size='small'
-                      sx={{
-                        width:'28px',
-                        height:'28px'
-                      }}
-                      onChange={handleChangeMulti}
-                    />} label={item.content} />)
-              }
-            </FormGroup>
+              <RadioGroup
+                name="controlled-radio-buttons-group"
+                value={value[0] || ''}
+                onChange={handleChangeSingle}
+              >{
+                  console.log('re-render question' + question.index)
+                }
+                {
+                  question.answers.map(item =>
+                    <FormControlLabelCustom key={item.id}
+                      value={item.id} control={<Radio size='small' />} label={item.content} />)
+                }
+
+              </RadioGroup> :
+
+              <FormGroup>
+                {
+                  question.answers.map(item =>
+                    <FormControlLabelCustom key={item.id}
+                      value={item.id}
+                      control={<Checkbox
+                        checked={value.includes(item.id)}
+                        size='small'
+                        sx={{
+                          width: '28px',
+                          height: '28px'
+                        }}
+                        onChange={handleChangeMulti}
+                      />} label={item.content} />)
+                }
+              </FormGroup>
         }
       </Stack>
       <Stack>

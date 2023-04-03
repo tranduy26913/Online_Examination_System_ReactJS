@@ -27,6 +27,7 @@ export const answerSheetSlice = createSlice({
                         return {
                             ...question,
                             answers: questionInSheet.answers,
+                            type:questionInSheet.type || question.type,
                             isFlag: questionInSheet.isFlag,
                             isDone: questionInSheet.isDone
                         }
