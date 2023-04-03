@@ -18,13 +18,13 @@ import {
 } from '@mui/material';
 
 import MenuIcon from '@mui/icons-material/Menu';
-import AdbIcon from '@mui/icons-material/Adb';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { logoutSuccess } from 'slices/authSlice';
 import { changeRole, toggleTheme } from 'slices/settingSlice';
 import { clearInterceptor } from 'apis/axiosClient';
 import { toast } from 'react-toastify';
+import Logo from 'assets/img/logo.ico'
 
 
 const MaterialUISwitch = styled(Switch)(({ theme }) => ({
@@ -143,7 +143,10 @@ function Header() {
 
   return (
 
-    <AppBarShadow position="sticky" color='primary'>
+    <AppBarShadow position="sticky" 
+    color='primary'
+    // sx={{backgroundColor:'#e8eaf6'}}
+    >
       <Container maxWidth="xl" >
         <Toolbar disableGutters
           sx={{
@@ -152,23 +155,7 @@ function Header() {
             //justifyContent: isDashboard ? 'flex-end' : 'unset',
             alignItems: 'center'
           }}>
-          {/* <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
-          <Typography
-            variant="h6"
-            noWrap
-            component="a"
-            href="/"
-            sx={{
-              mr: 2,
-              display: { xs: 'none', md: 'flex' },
-              fontFamily: 'monospace',
-              fontWeight: 700,
-              color: 'inherit',
-              textDecoration: 'none',
-            }}
-          >
-            Bello Quiz
-          </Typography> */}
+          
 
           <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
             <IconButton
@@ -208,9 +195,14 @@ function Header() {
           </Box>
           <Link to='/'>
 
-          <Stack direction='row' sx={{ display: { xs: 'none', sm: 'flex' } }}>
+          <Stack height='100%' direction='row' sx={{ display: { xs: 'none', sm: 'flex' } }} alignItems='center'>
          
-            <AdbIcon sx={{ mr: 1 }} />
+            {/* <AdbIcon sx={{ mr: 1 }} /> */}
+            <img src={Logo} height='32px' style={{
+              '-webkit-filter': 'brightness(0) invert(1)',
+              'filter': 'brightness(0) invert(1)',
+              marginRight:'8px'
+              }}/>
             <Typography
               variant="h5"
               noWrap
@@ -220,7 +212,7 @@ function Header() {
                 flexGrow: 1,
                 fontFamily: 'monospace',
                 fontWeight: 700,
-                letterSpacing: '.3rem',
+                letterSpacing: '.05rem',
                 color: 'inherit',
                 textDecoration: 'none',
               }}
@@ -232,12 +224,12 @@ function Header() {
           <Box height='100%' alignItems='center' sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {pages.map((page) => (
               <Link key={page.path} to={page.path}>
-                <Button
+                <Typography
                   onClick={handleCloseNavMenu}
-                  sx={{ my: 2, color: '#fff', fontWeight: 600, display: 'block' }}
+                  color='inherit' fontWeight={600} mr={2}
                 >
                   {page.display}
-                </Button>
+                </Typography>
               </Link>
             ))}
           </Box>
