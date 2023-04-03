@@ -35,11 +35,11 @@ function Lesson() {
           <Stack spacing={3}>
             {
               lessons.map(item =>
-                <EditLesson key={item._id}
+                <EditLesson key={item.id}
                   content={item.content}
                   name={item.name}
-                  isPublic={item.isPublic}
-                  lessonId={item._id}
+                  status={item.status}
+                  lessonId={item.id}
                   file={item.file}
                   seen={item.seen}
                   getData={getData} />

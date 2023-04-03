@@ -32,7 +32,7 @@ function EditLesson(props) {
     const [seen, setSeen] = useState(false)
     const [loading, setLoading] = useState(false)
     const [file, setFile] = useState('')
-    const [isPublic, setIsPublic] = useState(true)
+    const [status, setStatus] = useState(true)
     const accessToken = useSelector(state => state.auth.accessToken)
     const role = useSelector(state => state.setting.role) || 'student'
     const { courseId, id: courseObjId ,UpdateProcessing} = useContext(CourseContext)
@@ -50,7 +50,7 @@ function EditLesson(props) {
 
     useEffect(() => {
         setContent(props.content)
-        setIsPublic(props.isPublic)
+        setStatus(props.status)
         setLessonId(props.lessonId)
         setSeen(props.seen)
         setFile(props.file)
@@ -70,7 +70,7 @@ function EditLesson(props) {
             content,
             startTime,
             endTime,
-            status: isPublic ? 'public' : 'private'
+            status
         }
         setLoading(true)
         apiLessons.updateLesson(params)
@@ -152,8 +152,8 @@ function EditLesson(props) {
                             <Box>Hiện nội dung</Box>
                             <FormGroup row>
                                 <FormControlLabel
-                                    control={<Switch checked={isPublic}
-                                        onChange={() => setIsPublic(!isPublic)} />} />
+                                    control={<Switch checked={status === 'public' }
+                                        onChange={() => setStatus(status === 'public' ? 'private' : 'public')} />} />
                             </FormGroup>
                         </StackLabel>
                     </Stack2Column>
@@ -249,8 +249,8 @@ function EditLesson(props) {
                         justifyContent='space-between'>
                         <Stack direction='row' alignItems='center' spacing={2}>
                             <Typography fontWeight={600} fontSize={'20px'}>{props.name}
-                            </Typography>
-                            {!isPublic && <Chip label="Đang ẩn" color="primary" size='small' />}
+                            </Typography>   
+                            {status === 'private' && <Chip label="Đang ẩn" color="primary" size='small' />}
 
                         </Stack>
                         {
