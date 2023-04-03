@@ -1,5 +1,5 @@
 import { useTheme } from '@mui/material';
-import React,{ useEffect } from 'react';
+import React, { useEffect } from 'react';
 
 function BackgroundAnimation() {
     const theme = useTheme()
@@ -10,15 +10,18 @@ function BackgroundAnimation() {
         particleAmount: 40,
         defaultRadius: 2,
         variantRadius: 1,
-        defaultSpeed: 0.35,
-        variantSpeed: 0.45,
+        defaultSpeed: 0.55,
+        variantSpeed: 1.85,
         linkRadius: 120
     };
+
+    
 
     useEffect(() => {
 
         var rgb = options.lineColor.match(/\d+/g);
         let w, h, id, canvas, ctx, particles;
+        var fps = 15, fpsInterval = 1000 / fps, startTime = Date.now(), now, then= Date.now(), elapsed;
         function init() {
             canvas = document.getElementById("canvas");
             ctx = canvas.getContext("2d");
@@ -39,11 +42,25 @@ function BackgroundAnimation() {
             }
         }
 
-        
+
         function animationLoop() {
-            ctx.clearRect(0, 0, w, h);
-            drawScene();
+
             id = requestAnimationFrame(animationLoop);
+            now = Date.now();
+            elapsed = now - then;
+
+            // if enough time has elapsed, draw the next frame
+
+            if (elapsed > fpsInterval) {
+
+                // Get ready for next frame by setting then=now, but also adjust for your
+                // specified fpsInterval not being a multiple of RAF's interval (16.7ms)
+                then = now - (elapsed % fpsInterval);
+                ctx.clearRect(0, 0, w, h);
+                drawScene();
+                // Put your drawing code here
+
+            }
         }
 
         function drawScene() {
