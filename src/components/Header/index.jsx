@@ -199,7 +199,7 @@ function Header() {
          
             {/* <AdbIcon sx={{ mr: 1 }} /> */}
             <img src={Logo} height='32px' style={{
-              '-webkit-filter': 'brightness(0) invert(1)',
+              'WebkitFilter': 'brightness(0) invert(1)',
               'filter': 'brightness(0) invert(1)',
               marginRight:'8px'
               }}/>

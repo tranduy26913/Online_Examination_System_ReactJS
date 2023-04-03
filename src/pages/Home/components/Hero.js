@@ -1,10 +1,11 @@
 import { Player } from '@lottiefiles/react-lottie-player';
 import { Grid, Typography, Button, Stack, Box } from '@mui/material';
+import HeroGif from 'assets/img/hero.gif'
 
 const Hero = () => {
 
   return (
-    <Stack width='100%' mb={3} justifyContent='center' alignItems='center'>
+    <Stack width='100%' minHeight='540px' mb={3} justifyContent='center' alignItems='center'>
       <Grid container spacing={6} p='50px' alignItems='center'>
         <Grid item xs={12} md={7}>
           <Typography variant="h3" fontWeight={700} pb='15px'>
@@ -26,14 +27,16 @@ const Hero = () => {
           </Button>
         </Grid>
         <Grid item xs={12} md={5}>
-          <Box style={{ borderRadius: '12px' }}  >
-            <Player
+          <Box maxWidth='500px' width='100%' >
+            <img src={HeroGif} width='100%'/>
+          
+            {/* <Player
               autoplay
               loop
               src="https://assets9.lottiefiles.com/packages/lf20_aljpo8bg.json"
               style={{ width: '100%' }}
             >
-            </Player>
+            </Player> */}
           </Box>
           {/* <img src={myteam2} alt="My Team" width='100%' style={{ borderRadius: '12px' }} /> */}
         </Grid>

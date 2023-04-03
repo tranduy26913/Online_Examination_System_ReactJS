@@ -48,6 +48,7 @@ const LayoutCourse = () => {
   const [sidebarCourse, setSidebarCourse] = useState((role && role === 'teacher' && SIDEBAR_COURSE_TEACHER) || SIDEBAR_COURSE_STUDENT)
   const tabId = sidebarCourse.find(item => checkSelectedTab(item, location.pathname))
   const [selectedTabId, setSelectedTabId] = React.useState(tabId?.id || 1);
+  const refreshToken = useSelector(state => state.auth.refreshToken)
   const navigate = useNavigate()
 
   const { courseId } = useParams()
@@ -60,6 +61,11 @@ const LayoutCourse = () => {
       {
         navigate('/my/list-course')
         toast.warning("Khoá học không xác định")
+        return
+      }
+      if (!refreshToken)//Nếu không có id course
+      {
+        return
       }
       apiCourse.getCourseByCourseID({ courseId },role)
         .then(res => {

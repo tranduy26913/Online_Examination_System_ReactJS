@@ -210,13 +210,13 @@ const COURSE_STUDENT = [
     path: 'statistic-exam/:slug',
     component: StatisticExam
   },
-  
+
 ]
 function ConfigRoute() {
   const role = useSelector(state => state.setting.role) || 'student'
-  const [dashboardComponents, setDashboardComponents] = useState(role === 'student' ?STUDENT : TEACHER)
-  const [courseComponents, setCourseComponents] = useState(role === 'student' ?COURSE_STUDENT:COURSE_TEACHER)
-  const [sidebarTab,setSidebarTab] = useState(role === 'student' ?DASHBOARD_STUDENT:DASHBOARD_TEACHER)
+  const [dashboardComponents, setDashboardComponents] = useState(role === 'student' ? STUDENT : TEACHER)
+  const [courseComponents, setCourseComponents] = useState(role === 'student' ? COURSE_STUDENT : COURSE_TEACHER)
+  const [sidebarTab, setSidebarTab] = useState(role === 'student' ? DASHBOARD_STUDENT : DASHBOARD_TEACHER)
   useEffect(() => {
     if (role === 'teacher') {
       setDashboardComponents(TEACHER)
@@ -237,6 +237,14 @@ function ConfigRoute() {
         <Route path="/" element={<Home />} />
         {/* Routing customer account */}
 
+        <Route path="login" element={<Login />} />
+        <Route path="register" element={<Register />} />
+        <Route path="aboutus" element={<MaintenancePage />} />
+        <Route path="reset-password/:token" element={<ResetPassword />} />
+        <Route path="active/:token" element={<Active />} />
+        <Route path="/*" element={<Page404 />} />
+
+
         <Route path="my" element={<Dashboard sidebarTab={sidebarTab} />} >
           {
             dashboardComponents.map(item =>
@@ -244,31 +252,26 @@ function ConfigRoute() {
           }
           <Route path="list-course/edit-course/:courseId" element={<CreateCourse isEdit={true} />} ></Route>
         </Route>
-
-        <Route path="login" element={<Login />} />
-        <Route path="course/:courseId" element={<LayoutCourse />} >
+        <Route path="course/:courseId" element={
+          <LayoutCourse />} >
           {
             courseComponents.map(item => {
               if (item.path === 'index')
-                return <Route key={item.path} index element={makeLoading(<item.component/>)} />
+                return <Route key={item.path} index element={makeLoading(<item.component />)} />
               else
                 return <Route key={item.path} path={item.path} element={makeLoading(<item.component />)} />
-          })
-        }
+            })
+          }
           <Route path='detail-exam/:examSlug' element={makeLoading(<CreateExamination isEdit={true} />)} />
           <Route path='assignment/:slug' element={makeLoading(<CreateAssignment isEdit={true} />)} />
         </Route>
-        <Route path="register" element={<Register />} />
         <Route path="exam/:examId" element={<Examination />} />
-        <Route path="aboutus" element={<MaintenancePage />} />
         <Route path="result-exam/:takeExamId" element={<ResultExamination />} />
         <Route path="result-payment" element={<ResultPayment />} />
-        <Route path="active/:token" element={<Active />} />
         <Route path="review-exam/:takeExamId" element={<ReviewExamination />} />
-        <Route path="reset-password/:token" element={<ResetPassword />} />
-        <Route path="/*" element={<Page404 />} />
         {role === 'student' &&
-         <Route path="enroll/:courseId" element={<EnrollCourse />} />}
+          <Route path="enroll/:courseId" element={<EnrollCourse />} />}
+
 
       </Routes>
     </Suspense>

@@ -1,6 +1,6 @@
-import { useEffect,useLayoutEffect } from 'react'
+import { useEffect, useLayoutEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useNavigate, useLocation } from 'react-router-dom'
+import { useNavigate, useLocation, Navigate } from 'react-router-dom'
 import { logoutSuccess } from 'slices/authSlice'
 import { toast } from 'react-toastify'
 import jwt_decode from 'jwt-decode'
@@ -10,7 +10,9 @@ import { useState } from 'react'
 import LoadingPage from 'components/LoadingPage'
 
 const privatePath = [
-    '/my/', '/admin/', '/payment','/course/','/exam/','/result-exam/','/review-exam'
+    '/my/', '/admin/', '/payment',
+    '/course/',
+    '/exam/', '/result-exam/', '/review-exam'
 ]
 
 function CheckAuthentication(props) {
@@ -23,7 +25,7 @@ function CheckAuthentication(props) {
     useLayoutEffect(() => {
         const check = () => {
             const isPrivate = privatePath.findIndex(e => location.pathname.includes(e)) >= 0 ? true : false
-            if(isPrivate){
+            if (isPrivate) {
                 setLoading(true)
             }
             if (refreshToken) {
@@ -40,26 +42,20 @@ function CheckAuthentication(props) {
                     apiProfile.getUserInfo()
                         .then(res => {
                             dispatch(setUserInfo(res))
-                            
                         })
                         // .catch(err=>{
                         //     navigate('/')
                         // })
-                        .finally(()=>setLoading(false))
-                    // dispatch(logoutSuccess())
-                    // 
-                    // if (isPrivate)
-                    //     navigate('/')
+                        .finally(() => setLoading(false))
                 }
-                else{
+                else {
                     setLoading(false)
                 }
             }
             else {
-                
                 dispatch(clearUserInfo())
                 if (isPrivate) {
-                    //toast.warning("Bạn không có quyền truy cập. Vui lòng đăng nhập lại")
+                    toast.warning("Vui lòng đăng nhập để thực hiện thao tác này")
                     navigate('/')
                 }
                 setLoading(false)
@@ -67,14 +63,15 @@ function CheckAuthentication(props) {
         }
         check()
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [refreshToken,location.pathname])
+    }, [refreshToken, location.pathname])
+
     return (
         <>
-        {
-            loading?
-            <LoadingPage content='Đang tải dữ liệu...' />
-            :props.children
-        }
+            {
+                loading ?
+                    <LoadingPage content='Đang tải dữ liệu...' />
+                    : props.children
+            }
         </>
     )
 }

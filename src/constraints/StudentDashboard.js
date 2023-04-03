@@ -14,7 +14,7 @@ export const DASHBOARD_TEACHER = [
     {
         id: 1,
         icon: PersonIcon,
-        text: 'Tài khoản',
+        text: 'Tài khoản cá nhân',
         link: 'profile',
         list: ['profile'],
         regex:'^\/my\/profile\/?'
@@ -22,7 +22,7 @@ export const DASHBOARD_TEACHER = [
     {
         id: 2,
         icon: SchoolIcon,
-        text: 'Khoá học',
+        text: 'Danh sách khoá học',
         link: 'list-course',
         list: ['list-course','create-course'],
 
@@ -66,7 +66,7 @@ export const DASHBOARD_STUDENT = [
     {
         id: 1,
         icon: PersonIcon,
-        text: 'Tài khoản',
+        text: 'Tài khoản cá nhân',
         link: 'profile',
         list: ['profile'],
         regex:'^\/my\/profile\/?'
@@ -74,7 +74,7 @@ export const DASHBOARD_STUDENT = [
     {
         id: 2,
         icon: SchoolIcon,
-        text: 'Khoá học',
+        text: 'Danh sách khoá học',
         link: 'list-course',
         list: ['list-course'],
         regex:'^\/my\/list-course\/?'
