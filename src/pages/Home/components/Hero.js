@@ -4,7 +4,7 @@ import { Grid, Typography, Button, Stack, Box } from '@mui/material';
 const Hero = () => {
 
   return (
-    <Stack width='100%' minHeight='600px' justifyContent='center' alignItems='center'>
+    <Stack width='100%' mb={3} justifyContent='center' alignItems='center'>
       <Grid container spacing={6} p='50px' alignItems='center'>
         <Grid item xs={12} md={7}>
           <Typography variant="h3" fontWeight={700} pb='15px'>

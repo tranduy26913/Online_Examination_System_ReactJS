@@ -18,6 +18,37 @@
     //animation: showtop 1s ease-in-out 1 forwards;
 }
 
+.nextButton {
+    position: absolute;
+    right: 0px;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba($color: #0d4e99, $alpha: .15);
+    &:hover {
+        background-color: rgba($color: #0d4e99, $alpha: .25);
+    }
+    & .MuiSvgIcon-root {
+        font-size: 2rem !important;
+        transform: translateX(4px);
+    }
+}
+
+.prevButton {
+    position: absolute;
+    left: 0px;
+    top: 50%;
+    z-index: 10;
+    transform: translateY(-50%);
+    background-color: rgba($color: #0d4e99, $alpha: .15);
+    &:hover {
+        background-color: rgba($color: #0d4e99, $alpha: .25);
+    }
+    & .MuiSvgIcon-root {
+        font-size: 2rem !important;
+        transform: translateX(3px);
+    }
+}
+
 @keyframes showtop {
     0% {
         opacity: 0;

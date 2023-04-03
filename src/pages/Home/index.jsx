@@ -11,6 +11,7 @@ import AboutUs from './components/AboutUs'
 import Testimonial from './components/Testimonial'
 import ContactUs from './components/ContactUs'
 import { useEffect } from 'react'
+import CoursesInHome from './components/Courses'
 function Home() {
   useEffect(()=>{
     const items = document.querySelectorAll('.home-item')
@@ -32,6 +33,7 @@ function Home() {
       <Page title='Bello Quiz - Hệ thống giáo dục trực tuyến'>
         <Box className='container' pb={5}>
           <Hero className='home-item'/>
+          <CoursesInHome />
           <Section/>
           <AboutUs className='home-item'/>
           {/* <Testimonial className='home-item'/> */}
