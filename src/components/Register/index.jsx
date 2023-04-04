@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
     Button,
     Stack,
@@ -29,6 +29,7 @@ import Page from 'components/Page';
 import LoadingButton from 'components/LoadingButton';
 import LoginFacebook from 'components/Login/LoginFacebook';
 import LoginGoogle from 'components/Login/LoginGoogle';
+import { useSelector } from 'react-redux';
 
 
 
@@ -70,6 +71,7 @@ const Register = () => {
     const [type, setType] = useState('STUDENT');
     const [isShowPassword,setIsShowPassword] = useState(false)
     const [isShowCfPassword,setIsShowCfPassword] = useState(false)
+    const user = useSelector(state => state.user?.info)
 
     const { handleSubmit, control } = useForm({
         mode: "onChange",
@@ -105,6 +107,12 @@ const Register = () => {
     const handleChangeType = (event) => {
         setType(event.target.value);
     };
+
+    useEffect(() => {
+        if (user) {
+            navigate('/my/profile')
+        }
+    }, [user])
 
     return (
         <Page title='Đăng ký'>

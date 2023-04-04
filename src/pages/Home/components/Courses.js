@@ -1,4 +1,4 @@
-import { Typography, Button, Stack, Box, Card, CardMedia, Paper, IconButton, useMediaQuery, useTheme } from '@mui/material';
+import { Typography, Button, Stack, Box, Card, CardMedia, Paper, IconButton, useMediaQuery, useTheme, Skeleton } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import AssignmentIcon from '@mui/icons-material/Assignment'
@@ -78,57 +78,73 @@ const CoursesInHome = () => {
             sx={{ width: '100%' }}
           >
 
-            {courses.map((course, index) =>
-              <Box sx={{
-                flex: 1,
-                padding: '0 4px',
-                minWidth: {
-                  xs: '100%', sm: '50%', md: '33.33%', lg: '25%'
-                }
-              }} aria-valuenow={index} key={course._id}>
+            {
+              courses.length === 0 ?
+                [1, 2, 3, 4].map((item, index) =>
+                  <Box sx={{
+                    flex: 1,
+                    padding: '0 4px',
+                    minWidth: {
+                      xs: '100%', sm: '50%', md: '33.33%', lg: '25%'
+                    }
+                  }} aria-valuenow={index} key={index}>
 
-                <Card className='hover-element' sx={{ border: "1px solid #00e67660", height: '100%' }}>
-                  <CardMedia
-                    component="img"
-                    height="170"
-                    width="180"
-                    image={course.image || 'https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg'}
-                    onError={e => {
-                      e.target.src = 'https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg'
-                    }}
-                    alt="image course"
-                  />
-                  <Link to={`/course/${course.courseId}`}>
-                    <Typography color="primary" variant="h5" component="div" className='text-overflow-1-lines'
-                      sx={{
-                        textAlign: "center",
-                      }}>
-                      {course.name}
-                    </Typography>
-                  </Link>
-                  <Stack
-                    p='0.5rem'
-                    direction='row'
-                    justifyContent="center"
-                    sx={{ flexWrap: 'wrap' }}
-                    gap={1.5}>
-                    {/* <Link to={`/course/${course.courseId}`}> */}
-                    <Button
-                      onClick={() => onClickDetail(course.courseId)}
-                      variant="outlined"
-                      size="small"
-                      endIcon={<AssignmentIcon />}
-                    >Chi tiết</Button>
-                    {/* </Link> */}
-                    <ShareTray quote={course.name} title={course.name}
-                      url={`https://oes.vercel.app/enroll-course/${course.courseId}`}
-                      text='Chia sẻ' variant="outlined" size="small"
-                      endIcon={<SendIcon />} />
-                  </Stack>
-                </Card>
-              </Box>
+                    <Skeleton variant="rounded" width='100%' animation="wave" height={170} />
+                    <Skeleton variant="rounded" width='100%' animation="wave" height={26} />
+                    <Skeleton variant="rounded" width='100%' animation="wave" height={44} />
+                  </Box>)
+                :
+                courses.map((course, index) =>
+                  <Box sx={{
+                    flex: 1,
+                    padding: '0 4px',
+                    minWidth: {
+                      xs: '100%', sm: '50%', md: '33.33%', lg: '25%'
+                    }
+                  }} aria-valuenow={index} key={course._id}>
 
-            )}
+                    <Card className='hover-element' sx={{ border: "1px solid #00e67660", height: '100%' }}>
+                      <CardMedia
+                        component="img"
+                        height="170"
+                        width="180"
+                        image={course.image || 'https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg'}
+                        onError={e => {
+                          e.target.src = 'https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg'
+                        }}
+                        alt="image course"
+                      />
+                      <Link to={`/course/${course.courseId}`}>
+                        <Typography color="primary" variant="h5" component="div" className='text-overflow-1-lines'
+                          sx={{
+                            textAlign: "center",
+                          }}>
+                          {course.name}
+                        </Typography>
+                      </Link>
+                      <Stack
+                        p='0.5rem'
+                        direction='row'
+                        justifyContent="center"
+                        sx={{ flexWrap: 'wrap' }}
+                        gap={1.5}>
+                        {/* <Link to={`/course/${course.courseId}`}> */}
+                        <Button
+                          onClick={() => onClickDetail(course.courseId)}
+                          variant="outlined"
+                          size="small"
+                          endIcon={<AssignmentIcon />}
+                        >Chi tiết</Button>
+                        {/* </Link> */}
+                        <ShareTray quote={course.name} title={course.name}
+                          url={`https://oes.vercel.app/enroll-course/${course.courseId}`}
+                          text='Chia sẻ' variant="outlined" size="small"
+                          endIcon={<SendIcon />} />
+                      </Stack>
+                    </Card>
+                  </Box>
+
+                )}
 
           </Stack>
 

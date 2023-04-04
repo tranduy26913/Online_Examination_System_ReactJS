@@ -8,6 +8,7 @@ import Dashboard from "pages/Dashboard"
 
 import { DASHBOARD_STUDENT, DASHBOARD_TEACHER } from "constraints/StudentDashboard";
 import { useSelector } from 'react-redux';
+import SearchCourse from 'pages/SearchCourse';
 const Home = lazy(() => import("./pages/Home"));
 //const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Login = lazy(() => import("./components/Login"));
@@ -242,8 +243,8 @@ function ConfigRoute() {
         <Route path="aboutus" element={<MaintenancePage />} />
         <Route path="reset-password/:token" element={<ResetPassword />} />
         <Route path="active/:token" element={<Active />} />
+        <Route path="search-course" element={<SearchCourse />} />
         <Route path="/*" element={<Page404 />} />
-
 
         <Route path="my" element={<Dashboard sidebarTab={sidebarTab} />} >
           {

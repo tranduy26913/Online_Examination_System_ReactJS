@@ -27,6 +27,7 @@ import Page from 'components/Page';
 import LoadingRoller from 'components/LoadingPage/LoadingRoller';
 import { applySortFilter, getComparator } from 'components/TableCustom/FunctionHelper';
 import { useLayoutEffect } from 'react';
+import { useSelector } from 'react-redux';
 
 // ----------------------------------------------------------------------
 
@@ -52,6 +53,7 @@ const ListStudent = () => {
     const [status, setStatus] = useState([])
     const [loadingData, setLoadingData] = useState(false)
     const { courseId } = useContext(CourseContext)
+    const role = useSelector(state => state.setting.role)
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
@@ -138,7 +140,7 @@ const ListStudent = () => {
                 <Paper elevation={24}>
 
                     <TableToolbar filterName={filterName} onFilterName={handleFilterByName}
-                        ButtonCustom={ButtonCustom} />
+                        ButtonCustom={role==='teacher'?ButtonCustom:null} />
                     <Box px={2}>
 
                         <TableContainer>

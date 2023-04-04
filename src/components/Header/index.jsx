@@ -80,8 +80,8 @@ const pages = [
     display: 'Trang chủ'
   },
   {
-    path: '/my/list-course',
-    display: 'Khoá học'
+    path: '/search-course',
+    display: 'Tìm khoá học'
   },
   {
     path: '/aboutus',

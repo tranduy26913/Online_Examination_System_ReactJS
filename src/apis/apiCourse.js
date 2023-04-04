@@ -14,6 +14,10 @@ import { axiosClientWithToken } from "./axiosClient";
         const res = await axiosClientWithToken.get(`/course/course-public`, {params})
         return res.data;
     },
+    getSearchCourse: async (params) => {
+        const res = await axiosClientWithToken.get(`/course/s`, {params})
+        return res.data;
+    },
     getCourseByCourseID: async (params,role) => {
         const res = await axiosClientWithToken.get(`/course/by-courseid-${role}`, {params})
         return res.data;
