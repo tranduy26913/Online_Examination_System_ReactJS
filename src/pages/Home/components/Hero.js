@@ -1,6 +1,7 @@
 import { Player } from '@lottiefiles/react-lottie-player';
 import { Grid, Typography, Button, Stack, Box } from '@mui/material';
 import HeroGif from 'assets/img/hero.gif'
+import { Link } from 'react-router-dom';
 
 const Hero = () => {
 
@@ -12,31 +13,33 @@ const Hero = () => {
             Nền tảng tạo đề thi và bài tập trực tuyến
           </Typography>
           <Typography variant="h6" pb='30px'>
-            Tạo đề thi trắc nghiệm nhanh chóng với nhiều dạng câu hỏi,giao bài tập dễ dàng. 
+            Tạo đề thi trắc nghiệm nhanh chóng với nhiều dạng câu hỏi,giao bài tập dễ dàng.
             Giám sát thí sinh hiệu quả, thống kê trực quan.
           </Typography>
           <Typography variant="h6" pb='30px'>
-           
+
           </Typography>
-          <Button
-            variant="contained"
-            color="primary"
-            sx={{ width: '200px', fontSize: '16px' }}
-          >
-            THAM GIA NGAY
-          </Button>
+          <Link to={'/register'}>
+            <Button
+              variant="contained"
+              color="primary"
+              sx={{ width: '200px', fontSize: '16px' }}
+            >
+              THAM GIA NGAY
+            </Button>
+          </Link>
         </Grid>
         <Grid item xs={12} md={5}>
           <Box maxWidth='500px' width='100%' >
-            <img src={HeroGif} width='100%'/>
-          
-            {/* <Player
+            {/* <img src={HeroGif} width='100%' /> */}
+
+            <Player
               autoplay
               loop
               src="https://assets9.lottiefiles.com/packages/lf20_aljpo8bg.json"
               style={{ width: '100%' }}
             >
-            </Player> */}
+            </Player>
           </Box>
           {/* <img src={myteam2} alt="My Team" width='100%' style={{ borderRadius: '12px' }} /> */}
         </Grid>

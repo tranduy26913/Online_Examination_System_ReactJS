@@ -1,12 +1,14 @@
 import { Typography, Button, Stack, Box, Card, CardMedia, Paper, IconButton, useMediaQuery, useTheme } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import AssignmentIcon from '@mui/icons-material/Assignment'
 import SendIcon from '@mui/icons-material/Send'
 import ShareTray from 'components/ShareTray';
 import apiCourse from 'apis/apiCourse';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import { useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
 const CoursesInHome = () => {
   const [courses, setCourses] = useState([])
   const theme = useTheme();
@@ -15,7 +17,8 @@ const CoursesInHome = () => {
   const lgScreen = useMediaQuery(theme.breakpoints.down('lg'));
   const sizeCarousel = smScreen ? 1 : mdScreen ? 2 : lgScreen ? 3 : 4
   const slidersRef = useRef(null)
-
+  const refreshToken = useSelector(state => state.auth?.refreshToken)
+  const navigate = useNavigate()
   useEffect(() => {
     apiCourse.getCoursesPublic()
       .then(res => {
@@ -23,7 +26,7 @@ const CoursesInHome = () => {
           setCourses(res)
         }
       })
-  
+
   }, [])
 
   const handlePrev = () => {
@@ -56,15 +59,21 @@ const CoursesInHome = () => {
       sliderElement.style.transition = 'none';
       sliderElement.style.transform = 'translate(0)';
     }, 500)
+  }
 
+  const onClickDetail = (courseId) => {
+    if (refreshToken)
+      navigate(`/course/${courseId}`)
+    else
+      toast.info('Vui lòng đăng nhập để truy cập vào khoá học')
   }
 
   return (
     <Stack width='100%' mb={8} justifyContent='center' alignItems='center' spacing={2}>
       <Typography align='center' color='primary' fontSize='28px'>Khám phá các khoá học trong Bello Quiz</Typography>
-      <Paper sx={{ margin: '0 16px', width: '100%', padding:'24px',position:'relative'  }} elevation={6}>
+      <Paper sx={{ margin: '0 16px', width: '100%', padding: '24px', position: 'relative' }} elevation={6}>
         <Stack justifyContent='center' alignItems='center' spacing={2}
-          sx={{ overflow: 'hidden'}}>
+          sx={{ overflow: 'hidden' }}>
           <Stack ref={slidersRef} direction='row'
             sx={{ width: '100%' }}
           >
@@ -72,7 +81,7 @@ const CoursesInHome = () => {
             {courses.map((course, index) =>
               <Box sx={{
                 flex: 1,
-                padding:'0 4px',
+                padding: '0 4px',
                 minWidth: {
                   xs: '100%', sm: '50%', md: '33.33%', lg: '25%'
                 }
@@ -103,13 +112,14 @@ const CoursesInHome = () => {
                     justifyContent="center"
                     sx={{ flexWrap: 'wrap' }}
                     gap={1.5}>
-                    <Link to={`/course/${course.courseId}`}>
-                      <Button
-                        variant="outlined"
-                        size="small"
-                        endIcon={<AssignmentIcon />}
-                      >Chi tiết</Button>
-                    </Link>
+                    {/* <Link to={`/course/${course.courseId}`}> */}
+                    <Button
+                      onClick={() => onClickDetail(course.courseId)}
+                      variant="outlined"
+                      size="small"
+                      endIcon={<AssignmentIcon />}
+                    >Chi tiết</Button>
+                    {/* </Link> */}
                     <ShareTray quote={course.name} title={course.name}
                       url={`https://oes.vercel.app/enroll-course/${course.courseId}`}
                       text='Chia sẻ' variant="outlined" size="small"
@@ -123,12 +133,12 @@ const CoursesInHome = () => {
           </Stack>
 
         </Stack>
-          <IconButton onClick={handlePrev} color="primary" className='prevButton'>
-            <ArrowBackIosIcon />
-          </IconButton>
-          <IconButton onClick={handleNext} color="primary" className='nextButton'>
-            <ArrowForwardIosIcon />
-          </IconButton>
+        <IconButton onClick={handlePrev} color="primary" className='prevButton'>
+          <ArrowBackIosIcon />
+        </IconButton>
+        <IconButton onClick={handleNext} color="primary" className='nextButton'>
+          <ArrowForwardIosIcon />
+        </IconButton>
       </Paper>
     </Stack>
   );
