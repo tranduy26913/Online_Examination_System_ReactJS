@@ -54,7 +54,7 @@ function ChatGPT() {
         <Stack width='100%'>
             <Paper elevation={12}
                 sx={{ margin: '10px 24px' }}>
-                <Stack minHeight="80vh" maxHeight={'calc(100vh - 84px)'} width={'80%'} m='0 auto' p={2}>
+                <Stack minHeight="calc(100vh - 78px)" maxHeight={'calc(100vh - 78px)'} width={'80%'} m='0 auto' p={2}>
                     <Typography color='primary' fontWeight={600} fontSize='26px' textAlign='center'>CHAT GPT</Typography>
                     <Divider />
                     <Stack direction='column-reverse' flex={1} pr={2} mb={1} sx={{
