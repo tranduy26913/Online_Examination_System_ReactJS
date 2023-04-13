@@ -16,16 +16,16 @@ function ChatGPT() {
     const [input, setInput] = useState('')
     const [isLoading, setIsLoading] = useState(false)
     //const [openai, setOpenai] = useState()
-    const chats = useSelector(state=>state.chatgpt?.chats) || []
+    const chats = useSelector(state => state.chatgpt?.chats) || []
     const dispatch = useDispatch()
     const theme = useTheme()
 
     const configuration = new Configuration({
         apiKey: process.env.REACT_APP_OPENAI_API_KEY,
     });
-    useEffect(()=>{
+    useEffect(() => {
 
-    },[])
+    }, [])
     const openai = new OpenAIApi(configuration);
 
     const handleSendChat = () => {
@@ -54,7 +54,13 @@ function ChatGPT() {
         <Stack width='100%'>
             <Paper elevation={12}
                 sx={{ margin: '10px 24px' }}>
-                <Stack minHeight="calc(100vh - 78px)" maxHeight={'calc(100vh - 78px)'} width={'80%'} m='0 auto' p={2}>
+                <Stack minHeight="calc(100vh - 78px)" maxHeight={'calc(100vh - 78px)'}
+                    width={{
+                        xs: '100%',
+                        md: '90%',
+                        lg: '80%'
+                    }}
+                    m='0 auto' p={2}>
                     <Typography color='primary' fontWeight={600} fontSize='26px' textAlign='center'>CHAT GPT</Typography>
                     <Divider />
                     <Stack direction='column-reverse' flex={1} pr={2} mb={1} sx={{
@@ -71,7 +77,7 @@ function ChatGPT() {
                             {
                                 chat.sender === 'gpt' ? <Box px={1.5} py={0.25} ml={0.25}>
                                     {/* <SettingsIcon /> */}
-                                    <img src={ChatGPT_Logo} width={'24px'}/>
+                                    <img src={ChatGPT_Logo} width={'24px'} />
                                 </Box> :
                                     <Box px={1.5} py={0.25} ml={0.25}>
                                         <PersonIcon />
@@ -79,8 +85,8 @@ function ChatGPT() {
                             }
                             <Box p='4px 12px' sx={{
                                 borderRadius: '6px',
-                                backgroundColor: chat.sender === 'own' ? `${theme.palette.primary.main}a0` 
-                                : `${theme.palette.primary.main}18`
+                                backgroundColor: chat.sender === 'own' ? `${theme.palette.primary.main}a0`
+                                    : `${theme.palette.primary.main}18`
                             }} >
                                 <Typography>{chat.content}</Typography>
                             </Box>
@@ -103,7 +109,7 @@ function ChatGPT() {
                         }}
                     >
                         {/* <IconButton sx={{ p: '10px' }} > */}
-                            <TerminalIcon color="primary"  sx={{margin:'0 10px'}}/>
+                        <TerminalIcon color="primary" sx={{ margin: '0 10px' }} />
                         {/* </IconButton> */}
                         <Divider sx={{ height: 28 }} orientation="vertical" />
                         <InputBase
@@ -146,17 +152,17 @@ const LoadingMessage = (props) => {
     const [dot, setDot] = useState('.')
     useEffect(() => {
         const id = setInterval(
-            setDot(prev=>{
-                if(prev.length === 3)
+            setDot(prev => {
+                if (prev.length === 3)
                     return ''
-                return prev+'.'
+                return prev + '.'
             }),
             500
         )
-        return ()=>{
+        return () => {
             clearInterval(id)
         }
-     }, [])
+    }, [])
     return (<Stack
         sx={{ position: 'relative' }}
         width='100%' minWidth='500px' height='100%' minHeight='100px' justifyContent='center' alignItems='center'>
