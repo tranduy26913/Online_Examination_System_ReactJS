@@ -28,6 +28,7 @@ const QuestionBank = lazy(() => import("pages/Dashboard/QuestionBank"));
 const QuestionBankDetail = lazy(() => import("pages/Dashboard/QuestionBankDetail"));
 const ResultPayment = lazy(() => import("pages/ResultPayment"));
 const ResetPassword = lazy(() => import("pages/ResetPassword"));
+const ChatGPT = lazy(() => import("pages/ChatGPT"));
 const StatisticExam = lazy(() => import("pages/Course/StatisticExam"));
 const StatisticCourse = lazy(() => import("pages/Course/Statistic"));
 const StatisticStudent = lazy(() => import("pages/Dashboard/StatisticStudent"));
@@ -244,6 +245,7 @@ function ConfigRoute() {
         <Route path="reset-password/:token" element={<ResetPassword />} />
         <Route path="active/:token" element={<Active />} />
         <Route path="search-course" element={<SearchCourse />} />
+        <Route path="chatgpt" element={<ChatGPT />} />
         <Route path="/*" element={<Page404 />} />
 
         <Route path="my" element={<Dashboard sidebarTab={sidebarTab} />} >

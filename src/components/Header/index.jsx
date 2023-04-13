@@ -84,6 +84,10 @@ const pages = [
     display: 'Tìm khoá học'
   },
   {
+    path: '/chatgpt',
+    display: 'ChatGPT'
+  },
+  {
     path: '/aboutus',
     display: 'Về chúng tôi'
   }

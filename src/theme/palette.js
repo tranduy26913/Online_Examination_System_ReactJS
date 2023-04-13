@@ -20,6 +20,7 @@ const PRIMARY = {
   main: cyan["600"],
   light: '#85CDFD',
   dark: lightBlue["800"],
+  main: lightBlue["500"],
   //main:'#00B7C2',
   contrastText: "#fff",
 };

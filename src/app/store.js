@@ -4,6 +4,7 @@ import settingReducer from '../slices/settingSlice'
 import userReducer from '../slices/userSlice'
 import breadcrumbReducer from 'slices/breadcrumbSlice'
 import answerSheetReducer from 'slices/answerSheetSlice'
+import chatgptReducer from 'slices/chatgptSlice';
 import {
   persistStore,
   persistReducer,
@@ -17,6 +18,7 @@ import {
 import storage from 'redux-persist/lib/storage'
 //import storageSession  from 'redux-persist/lib/storage/session'
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
+
 
 const persistConfig = {
   key: 'root',
@@ -38,6 +40,7 @@ const rootReducer = combineReducers({
    breadcrumb:breadcrumbReducer,
    answerSheet:answerSheetReducer,
    user:userReducer,
+   chatgpt:chatgptReducer
    //user: persistReducer(userPersistConfig, userReducer),
    })
 const persistedReducer = persistReducer(persistConfig, rootReducer)

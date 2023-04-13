@@ -18,8 +18,6 @@ function LoadingRoller(props) {
         <Stack
         sx={{position:'relative'}}
          width='100%' minWidth='500px' height='100%' minHeight='200px' justifyContent='center' alignItems='center'>
-           
-
                 <div className="loader-wrapper">
                     <div className="loader">
                         <Roller className="roller"></Roller>
@@ -37,7 +35,7 @@ function LoadingRoller(props) {
                     </div>
 
                 </div>
-                    <Typography align='center'>Đang tải dữ liệu...</Typography>
+                    <Typography align='center'>{props.content || 'Đang tải dữ liệu...'}</Typography>
         
         </Stack>
     )
