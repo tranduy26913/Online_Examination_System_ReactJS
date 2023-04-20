@@ -21,7 +21,6 @@ import apiAssignment from 'apis/apiAssignment';
 import { toast } from 'react-toastify';
 import { useParams } from 'react-router-dom';
 import LoadingButton from 'components/LoadingButton';
-import { getMessageError } from 'utils';
 import DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
 import { MyUploadAdapter } from 'config/MyCustomUploadAdapterPlugin';
 import DOMPurify from 'dompurify';

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useLayoutEffect, useState } from 'react'
+import { useEffect, useLayoutEffect, useState } from 'react'
 import {
     Box,
     Button,
@@ -6,22 +6,15 @@ import {
     Typography,
     Paper,
     TextField,
-    Divider,
-    Accordion,
-    AccordionSummary,
-    AccordionDetails
 } from "@mui/material"
-import Grid from '@mui/material/Unstable_Grid2';
+import Page from 'components/Page';
 import { useTheme } from '@mui/material/styles';
 import Question from './Question';
-import Page from 'components/Page';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { addAllQuestion, clearAnswerSheet, clearTakeExamId, setTakeExamId } from 'slices/answerSheetSlice';
-import { ButtonQuestion, BoxTime } from './Examination.style'
 import apiTakeExam from 'apis/apiTakeExam';
 import { toast } from 'react-toastify';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 //import FaceRecognition from './FaceRecognition';
 import { getMessageError } from 'utils';
 import LoadingRoller from 'components/LoadingPage/LoadingRoller';
@@ -29,16 +22,6 @@ import checkPinImg from 'assets/img/check-pin.png'
 import CountDown from './CountDown';
 import BoxIndex from './BoxIndex';
 import FaceRecognition from './FaceRecognition';
-
-
-const getAnswers = (arr, id) => {//lấy đáp án của câu hỏi 
-    const result = arr.find(item => item.question === id)
-    if (result) {
-        return result.answers
-    }
-    else
-        return []
-}
 
 const Examination = () => {
     const theme = useTheme()
@@ -84,6 +67,7 @@ const Examination = () => {
                 .finally(() => { setLoadingExam(false) })
         }
         checkExam()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     const setupQuestion = (questions) => {
@@ -168,6 +152,7 @@ const Examination = () => {
             if (isTracking)
                 document.removeEventListener('visibilitychange', changeVisibility)
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [countExit, takeExamId, isTracking])
 
     const handleCreateLog = (action) => {
@@ -245,46 +230,6 @@ const Examination = () => {
                                     }}>
                                         <BoxIndex />
 
-                                        {/* <Paper elevation={24} >
-                                            <Stack spacing={1} p={1.5}>
-
-                                                <Accordion
-                                                    sx={{
-                                                        boxShadow: 'none'
-                                                    }} defaultExpanded disableGutters TransitionProps={{ unmountOnExit: true }}>
-                                                    <AccordionSummary
-                                                        expandIcon={<ExpandMoreIcon />}
-                                                        aria-controls="panel1a-content"
-                                                        id="panel1a-header"
-                                                    >
-                                                        <Typography fontSize='16px' fontWeight={600}>Danh sách câu hỏi</Typography>
-                                                    </AccordionSummary>
-                                                    <AccordionDetails sx={{
-                                                        padding: 0
-                                                    }}>
-
-                                                        <Grid container spacing={0.5}>
-                                                            {
-                                                                indexQuestion.map((item, index) =>
-                                                                    <Grid key={index} xs={1.5} sm={1} md={3} lg={2}>
-                                                                        <ButtonQuestion className={`${item.isDone ? 'done' : ''} ${item.isFlag ? 'flag' : ''}`}
-                                                                            onClick={() => document.getElementById(`question-${index}`)
-                                                                                .scrollIntoView({ block: 'center', behavior: "smooth" })}
-                                                                        >{index + 1}</ButtonQuestion>
-                                                                    </Grid>)
-                                                            }
-                                                        </Grid>
-                                                    </AccordionDetails>
-                                                </Accordion>
-
-
-                                                <Divider />
-                                                <Stack alignItems='center'>
-
-                                                    <Button onClick={handleSubmit} variant='contained'>Nộp bài</Button>
-                                                </Stack>
-                                            </Stack>
-                                        </Paper> */}
                                         {
                                             isTracking && 
                                         <Paper elevation={12} sx={{ overflow: 'hidden' }}>
@@ -294,11 +239,6 @@ const Examination = () => {
                                     </Stack>
                                 </Stack>
                             </Box>
-                            {/* <BoxTime>
-                                {(countDown.hour).toLocaleString('en-US', { minimumIntegerDigits: 2, useGrouping: false })}:
-                                {(countDown.minute).toLocaleString('en-US', { minimumIntegerDigits: 2, useGrouping: false })}:
-                                {(countDown.second).toLocaleString('en-US', { minimumIntegerDigits: 2, useGrouping: false })}
-                            </BoxTime> */}
                             <CountDown endTime={endTime} />
                         </Box>
             }
@@ -306,8 +246,5 @@ const Examination = () => {
     )
 }
 
-const checkDone = (arr, id) => {
-    return Boolean(arr.find(item => item.question === id))
-}
 
 export default Examination

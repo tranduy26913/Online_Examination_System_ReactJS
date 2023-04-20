@@ -1,6 +1,6 @@
-import { useEffect, useLayoutEffect } from 'react'
+import { useLayoutEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useNavigate, useLocation, Navigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { logoutSuccess } from 'slices/authSlice'
 import { toast } from 'react-toastify'
 import jwt_decode from 'jwt-decode'

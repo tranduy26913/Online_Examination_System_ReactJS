@@ -12,7 +12,6 @@ import {
     FormControlLabel,
     Select,
     Checkbox,
-    Button,
     FormGroup,
     Switch,
     ListItemText
@@ -33,8 +32,7 @@ import ExamContext from '../ExamContext';
 import DOMPurify from 'dompurify';
 import apiExamination from 'apis/apiExamination';
 import { toast } from 'react-toastify';
-import { useDispatch,useSelector } from 'react-redux';
-import { addQuestion } from 'slices/userSlice';
+import { useSelector } from 'react-redux';
 import LoadingButton from 'components/LoadingButton';
 
 const BoxAnswer = styled(Box)(({ theme }) => ({
@@ -71,8 +69,6 @@ function QuestionInQuestionBank(props) {
     const [selectedQB, setSelectedQB] = useState('');
     const [selectedQuestion, setSelectedQuestion] = useState([])
     const QUESTIONS = useSelector(state => state.user.questions)
-
-    const dispatch = useDispatch()
 
     const onChangeLimit = (event) => setLimit(Number(event.target.value |= 0))
 

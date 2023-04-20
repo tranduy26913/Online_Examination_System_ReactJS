@@ -24,7 +24,8 @@
     // body select {
     //     cursor: url('../assets/img/cursor.png') 0 1, auto !important;
     // }
-    html {
+    html,
+    section {
          ::-webkit-scrollbar {
             width: 6px;
             background-color: #fff

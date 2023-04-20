@@ -64,7 +64,7 @@ const TableStudent = ({ exams, typeofPoint, maxPoints, viewPoint }) => {
 
     const handleData = () => {
         return filteredUsers.map(item => {
-            let { name, points, maxPoints, startTime, submitTime, status } = item
+            let { points, maxPoints, startTime, submitTime, status } = item
             const duration = moment(submitTime).diff(startTime, 'minutes')
             return {
                 ///'Họ và tên': name,

@@ -9,7 +9,7 @@ import {
   FormLabel,
   FormControl
 } from '@mui/material'
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import CheckIcon from '@mui/icons-material/Check';
 import { useTheme } from '@mui/system';
@@ -23,7 +23,6 @@ import { toast } from 'react-toastify';
 import apiQuestionBank from 'apis/apiQuestionBank';
 // import { MyUploadAdapter } from './MyCustomUploadAdapterPlugin';
 import DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
-import ExamContext from 'pages/Dashboard/CreateExamination/ExamContext';
 import { MyUploadAdapter } from 'config/MyCustomUploadAdapterPlugin';
 
 const alpha = Array.from(Array(26)).map((e, i) => i + 65);
@@ -253,9 +252,9 @@ const CreateQuestion = (props) => {
     setMaxPoints(1)
     setTypeAnswer('single')
   }
-  const handleCancel = () => {
-    props.handleSelectQuestion("")
-  }
+  // const handleCancel = () => {
+  //   props.handleSelectQuestion("")
+  // }
   return (
 
     <Stack spacing={1.5} mb={2} px={2}>

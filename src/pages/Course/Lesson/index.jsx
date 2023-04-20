@@ -1,4 +1,4 @@
-import { Box, Button, Divider, IconButton, Paper, Stack, Typography } from '@mui/material'
+import { Box, Paper, Stack, Typography } from '@mui/material'
 import apiLessons from 'apis/apiLessons';
 
 import { useCallback, useContext, useEffect, useState } from 'react'
@@ -10,8 +10,7 @@ import EditLesson from './EditLesson';
 function Lesson() {
   const [lessons, setLessons] = useState([])
   const role = useSelector(state => state.setting.role) || 'student'
-  const { courseId, id: courseObjId } = useContext(CourseContext)
-  console.log(courseId)
+  const { courseId,  } = useContext(CourseContext)
   
   const getData = useCallback(() => {
     if (courseId)

@@ -112,7 +112,8 @@ const CreateQuestion = (props) => {
     else {
       handleClearData()
     }
-  }, [typeQuestion])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [typeQuestion, question])
 
   const handleChangeMaxPoints = (e) => {
     setMaxPoints(e.target.value)

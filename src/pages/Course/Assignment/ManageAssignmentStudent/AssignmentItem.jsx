@@ -3,7 +3,6 @@ import {
     Stack,
     Typography,
     Divider,
-    Box,
     alpha
 } from "@mui/material"
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';

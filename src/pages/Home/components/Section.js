@@ -1,13 +1,10 @@
 import React from 'react';
-import { Grid, Typography, Stack, Paper, Box, styled } from '@mui/material';
-import EngineeringOutlinedIcon from '@mui/icons-material/EngineeringOutlined';
-import AllInclusiveIcon from '@mui/icons-material/AllInclusive';
-import PaidOutlinedIcon from '@mui/icons-material/PaidOutlined';
+import { Typography, Stack, Paper, Box, styled } from '@mui/material';
 import img1 from 'assets/img/img1.jpg'
 import img2 from 'assets/img/img2.jpg'
 import img3 from 'assets/img/img3.jpg'
-import img4 from 'assets/img/img4.jpg'
-import img5 from 'assets/img/img5.jpg'
+// import img4 from 'assets/img/img4.jpg'
+// import img5 from 'assets/img/img5.jpg'
 
 const BoxContent = styled(Box)(({ theme }) => ({
   borderLeft: `4px solid ${theme.palette.primary.main}`,

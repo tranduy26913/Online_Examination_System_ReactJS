@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import Page from 'components/Page'
 import {
-  Paper,
   Stack,
 } from '@mui/material'
 import Grid from '@mui/material/Unstable_Grid2';
@@ -33,6 +32,7 @@ function StatisticExam(props) {
 
     }
     getData()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (

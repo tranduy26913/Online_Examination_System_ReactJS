@@ -43,6 +43,7 @@ const SubmitAssignment = lazy(() => import("pages/Course/Assignment/SubmitAssign
 const ManageAssignment = lazy(() => import("pages/Course/Assignment/ManageAssignment"));
 const ManageAssignmentStudent = lazy(() => import("pages/Course/Assignment/ManageAssignmentStudent"));
 const ViewAssignmentSubmission = lazy(() => import("pages/Course/Assignment/ViewAssignmentSubmission"));
+const Payment = lazy(() => import("pages/Payment"));
 
 const makeLoading = (component) => <Suspense fallback={<LoadingPage />}>{component}</Suspense>
 
@@ -269,6 +270,7 @@ function ConfigRoute() {
           <Route path='assignment/:slug' element={makeLoading(<CreateAssignment isEdit={true} />)} />
         </Route>
         <Route path="exam/:examId" element={<Examination />} />
+        <Route path="desposit" element={<Payment />} />
         <Route path="result-exam/:takeExamId" element={<ResultExamination />} />
         <Route path="result-payment" element={<ResultPayment />} />
         <Route path="review-exam/:takeExamId" element={<ReviewExamination />} />

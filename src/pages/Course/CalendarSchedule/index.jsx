@@ -1,15 +1,15 @@
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, Paper, Stack, Typography } from '@mui/material'
+import { Box, Dialog, DialogActions, DialogContent, DialogTitle, Divider, Paper, Stack, Typography } from '@mui/material'
 import apiLessons from 'apis/apiLessons';
 import moment from 'moment';
-import FaceRecognition from 'pages/Examination/FaceRecognition';
 import AssignmentIcon from '@mui/icons-material/Assignment';
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect,  useState } from 'react'
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 
 function CalendarSchedule() {
     const [open, setOpen] = React.useState(false);
-    const [scroll, setScroll] = React.useState('body');
+    //const [scroll, setScroll] = React.useState('body');
+    const scroll = 'body'
     const [activities, setActivities] = useState([])
     const [mark, setMark] = useState([])
 
@@ -20,7 +20,6 @@ function CalendarSchedule() {
 
     const handleClose = () => {
         setOpen(false);
-        console.log('d')
     };
 
     useEffect(() => {

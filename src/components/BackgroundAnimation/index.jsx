@@ -1,10 +1,10 @@
 import { useTheme } from '@mui/material';
-import React, { useEffect } from 'react';
+import React, { useEffect,useMemo } from 'react';
 
 function BackgroundAnimation() {
     const theme = useTheme()
 
-    var options = {
+    var options = useMemo(()=>({
         particleColor: theme.palette.mode === 'dark' ? "rgba(200,200,200,0.7)" : "rgba(110,110,110,0.5)",
         lineColor: theme.palette.mode === 'dark' ? "rgba(0,181,255,0.54)" : "rgba(0,181,255,0.37)",
         particleAmount: 40,
@@ -13,7 +13,7 @@ function BackgroundAnimation() {
         defaultSpeed: 0.55,
         variantSpeed: 1.85,
         linkRadius: 120
-    };
+    }),[theme.palette.mode])
 
     
 
@@ -21,7 +21,7 @@ function BackgroundAnimation() {
 
         var rgb = options.lineColor.match(/\d+/g);
         let w, h, id, canvas, ctx, particles;
-        var fps = 15, fpsInterval = 1000 / fps, startTime = Date.now(), now, then= Date.now(), elapsed;
+        var fps = 15, fpsInterval = 1000 / fps, now, then= Date.now(), elapsed;
         function init() {
             canvas = document.getElementById("canvas");
             ctx = canvas.getContext("2d");

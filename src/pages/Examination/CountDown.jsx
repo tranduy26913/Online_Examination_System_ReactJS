@@ -43,6 +43,7 @@ function CountDown({endTime}) {
             }
         }, 1000);
         return () => clearInterval(x);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [endTime])
     return (
         <BoxTime>

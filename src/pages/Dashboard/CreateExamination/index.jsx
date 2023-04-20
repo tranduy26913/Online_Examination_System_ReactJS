@@ -129,6 +129,7 @@ const CreateExamination = (props) => {
         catch (err) {
         }
       })
+      // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
 
@@ -137,7 +138,7 @@ const CreateExamination = (props) => {
   const handleChangeTypeofPoint = event => setTypeofPoint(event.target.value)
 
   const handleCreate = (data) => {
-    const { name, startTime, endTime, maxTimes, attemptsAllowed, pinExam, numberofQuestion } = data
+    const { name, startTime, endTime, maxTimes, attemptsAllowed, pinExam } = data
 
     const params = {
       name,

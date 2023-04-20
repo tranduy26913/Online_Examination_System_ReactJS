@@ -72,7 +72,7 @@ const CreateQuestion = (props) => {
   const [content, setContent] = useState(question ? question.content : '')
   const [answers, setAnswers] = useState(question ? question.answers : [])
   const [maxPoints, setMaxPoints] = useState(1)
-  const [loading, setLoading] = useState(false)
+ // const [loading, setLoading] = useState(false)
   const [typeAnswer, setTypeAnswer] = useState('single')//single:1 đáp án đúng, multi: nhiều đáp án đúng
   const dispatch = useDispatch()
   const refreshToken = useSelector(state => state.auth.refreshToken)
@@ -83,7 +83,7 @@ const CreateQuestion = (props) => {
 
   useEffect(() => {
     if (question) {
-      console.log(question)
+      
       setContent(question.content)
       setMaxPoints(question.maxPoints)
       setTypeAnswer(question.type)
@@ -270,7 +270,7 @@ const CreateQuestion = (props) => {
       <Stack direction={'row'} spacing={1.5} justifyContent='flex-end'>
         {/* <Button variant='contained' color='error'>Huỷ</Button> */}
         <Button onClick={handleClearData} variant='contained' color='warning'>Làm mới</Button>
-        <LoadingButton loading={loading} variant='contained'
+        <LoadingButton variant='contained'
           onClick={handleEditQuestion}> Lưu câu hỏi</LoadingButton>
       </Stack>
     </Stack>

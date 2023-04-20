@@ -1,7 +1,6 @@
 import {
     styled,
     InputBase,
-    Switch,
     Stack,
     Paper,
     Box

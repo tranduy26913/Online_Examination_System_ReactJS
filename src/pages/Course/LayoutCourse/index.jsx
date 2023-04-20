@@ -141,7 +141,7 @@ const LayoutCourse = () => {
     document.title =
       sidebarCourse.find(item => item.id === selectedTabId)?.text ||
       "Bello Quiz";
-  }, [selectedTabId]);
+  }, [selectedTabId,sidebarCourse]);
 
   const UpdateProcessing = ()=>{
     apiCourse.getCourseByCourseID({ courseId },role)
@@ -183,7 +183,7 @@ const LayoutCourse = () => {
                     </Link>
                   }
                   <ShareTray url={`https://oes.vercel.app/enroll/${courseId}`}
-                    title={"Tham gia khoá học" + `https://oes.vercel.app/enroll/${courseId}`}
+                    title={`Tham gia khoá học https://oes.vercel.app/enroll/${courseId}`}
                     quote={"Tham gia khoá học "}
                     variant='outlined'
                     endIcon={<SendIcon />}

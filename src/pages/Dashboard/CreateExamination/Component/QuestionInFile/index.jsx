@@ -228,7 +228,9 @@ function QuestionInFile() {
         catch (err) {
             toast.warning("Có lỗi xảy ra!")
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
+
     return (
         <Paper>
             <Stack direction='row' spacing={2} p={2}>

@@ -33,7 +33,7 @@ export const schema = Yup.object().shape({
       'endTime2',
       "Thời gian kết thúc phải lớn hơn thời gian làm bài",
       function (value) {
-        const { startTime, maxTimes } = this.parent
+        const { startTime } = this.parent
         return moment(startTime, "YYYY-MM-DDTHH:mm").isValid() === false ?
           schema : moment(value).diff(moment(startTime, "YYYY-MM-DDTHH:mm"), "minutes") >= 1
       },

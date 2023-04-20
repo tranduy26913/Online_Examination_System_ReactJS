@@ -1,4 +1,4 @@
-import { Button, Dialog, DialogContent, DialogTitle, Divider, Slide, Stack } from '@mui/material'
+import { Button, Dialog, DialogContent, DialogTitle,  Slide, Stack } from '@mui/material'
 import React, { forwardRef, useState } from 'react'
 import {
     FacebookIcon,

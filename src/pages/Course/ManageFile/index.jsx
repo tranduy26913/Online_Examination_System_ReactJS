@@ -77,7 +77,7 @@ const ListExaminationTeacher = () => {
     const [filterName, setFilterName] = useState('');
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [exams, setExams] = useState([])
-    const { courseId, id } = useContext(CourseContext)
+    const { courseId} = useContext(CourseContext)
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
@@ -160,7 +160,7 @@ const ListExaminationTeacher = () => {
                                 />
                                 <TableBody>
                                     {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                                        const { id: idExam, slug: slugExam, name, count, status, numberofQuestions, maxTimes, isVerified } = row;
+                                        const { id: idExam, slug: slugExam, name, count, status, numberofQuestions, maxTimes } = row;
 
                                         return (
                                             <TableRow

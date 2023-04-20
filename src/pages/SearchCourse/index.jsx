@@ -1,5 +1,5 @@
-import { Typography, Button, Stack, Card, CardMedia, Paper, IconButton, Skeleton, InputBase } from '@mui/material';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { Typography, Button, Stack, Card, CardMedia, Paper, IconButton, InputBase } from '@mui/material';
+import { useCallback, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import AssignmentIcon from '@mui/icons-material/Assignment'
 import SendIcon from '@mui/icons-material/Send'
@@ -16,9 +16,9 @@ function SearchCourse() {
     const [courses, setCourses] = useState([])
     const [value, setValue] = useState('');
     const refreshToken = useSelector(state => state.auth?.refreshToken)
+    
     const debounceFn = useCallback(_debounce(handleDebounceFn, 500), []);
     
-
     function handleDebounceFn(inputValue) {
        apiCourse.getSearchCourse({search:inputValue})
        .then((res) => {

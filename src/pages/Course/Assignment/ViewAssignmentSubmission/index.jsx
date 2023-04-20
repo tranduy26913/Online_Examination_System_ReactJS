@@ -11,19 +11,15 @@ import {
     Paper,
     Avatar,
     Typography,
-    Button,
 } from "@mui/material"
 import { TableToolbar, TableHeadCustom } from 'components/TableCustom'
-import { useContext } from 'react';
 import moment from 'moment';
 import EmptyList from 'components/UI/EmptyList';
 import Page from 'components/Page';
 import LoadingRoller from 'components/LoadingPage/LoadingRoller';
 import { useParams } from 'react-router-dom';
-import apiSubmission from 'apis/apiSubmission';
 import ChangePoint from './component/ChangePoint';
 import { calcDurationTime } from 'utils/formatTime';
-import CourseContext from 'pages/Course/LayoutCourse/CourseContext';
 import apiSubmitAssignment from 'apis/apiSubmitassignment';
 import ButtonExport from 'components/ButtonExport';
 
@@ -76,7 +72,7 @@ const ListSubmission = () => {
     const [rowsPerPage, setRowsPerPage] = useState(25);
     const [submissions, setSubmissions] = useState([])
     const [loadingData, setLoadingData] = useState(false)
-    const { courseId } = useContext(CourseContext)
+    //const { courseId } = useContext(CourseContext)
     const { slug } = useParams()
 
     const handleRequestSort = (event, property) => {

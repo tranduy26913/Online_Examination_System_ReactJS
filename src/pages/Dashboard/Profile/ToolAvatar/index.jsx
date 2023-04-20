@@ -1,7 +1,6 @@
 import { useState } from "react";
 import ImageUploading from "react-images-uploading";
 import { toast } from 'react-toastify';
-import premium from 'assets/img/premium.png'
 //Material UI
 import {
     Avatar,

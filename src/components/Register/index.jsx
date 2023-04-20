@@ -112,6 +112,7 @@ const Register = () => {
         if (user) {
             navigate('/my/profile')
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [user])
 
     return (

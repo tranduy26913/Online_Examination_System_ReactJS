@@ -38,6 +38,7 @@ function FaceRecognition() {
            videoRef.current.srcObject.getTracks().forEach(track => track.stop())
             clearInterval(intervalRef.current)
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     const startVideo = () => {
         navigator.mediaDevices.getUserMedia({ video: true })
@@ -70,16 +71,16 @@ function FaceRecognition() {
                 toast.warning('Không phát hiện khuôn mặt quá 5 lần. Bài thi tự động nộp')
                 handleSubmit()
             }
-
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     },[time,count])
 
     const faceDetection = async () => {
         intervalRef.current =  setInterval(async () => {
             const detections = await faceapi.detectAllFaces
                 (videoRef.current, new faceapi.TinyFaceDetectorOptions())
-            canvasRef.current.innerHtml = faceapi.
-                createCanvasFromMedia(videoRef.current);
+            canvasRef.current.innerHtml = faceapi
+                .createCanvasFromMedia(videoRef.current);
             faceapi.matchDimensions(canvasRef.current, {
                 width: 240,
                 height: 180,

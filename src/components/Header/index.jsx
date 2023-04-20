@@ -202,10 +202,10 @@ function Header() {
           <Stack height='100%' direction='row' sx={{ display: { xs: 'none', sm: 'flex' } }} alignItems='center'>
          
             {/* <AdbIcon sx={{ mr: 1 }} /> */}
-            <img src={Logo} height='32px' style={{
+            <img src={Logo} alt='logo' height='32px' style={{
               'WebkitFilter': 'brightness(0) invert(1)',
               'filter': 'brightness(0) invert(1)',
-              marginRight:'8px'
+              marginRight:'8px' 
               }}/>
             <Typography
               variant="h5"

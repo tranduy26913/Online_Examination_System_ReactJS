@@ -39,7 +39,7 @@ export class MyUploadAdapter {
     _initListeners(resolve, reject) {
         const xhr = this.xhr;
         const loader = this.loader;
-        const genericErrorText = 'Couldn\'t upload file:' + ` ${loader.file.name}.`;
+        const genericErrorText = `Couldn't upload file: ${loader.file.name}.`;
         xhr.addEventListener('error', () => reject(genericErrorText));
         xhr.addEventListener('abort', () => reject());
         xhr.addEventListener('load', () => {
@@ -68,7 +68,7 @@ export class MyUploadAdapter {
 
     // Prepares the data and sends the request.
     _sendRequest(file, resolve, reject) {
-        const genericErrorText = 'Couldn\'t upload file:' + ` ${file.name}.`;
+        const genericErrorText = `Couldn't upload file: ${file.name}.`;
         const data = new FormData();
 
         data.append('upload', file);

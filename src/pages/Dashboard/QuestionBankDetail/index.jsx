@@ -57,6 +57,7 @@ const QuestionBankDetail = () => {
                 })
         }
         GetData()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [slug])
     return (
         <Page title='Danh sách câu hỏi'>

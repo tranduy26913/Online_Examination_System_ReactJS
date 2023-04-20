@@ -12,7 +12,6 @@ import {
   lighten,
   alpha,
   TextField,
-  Box,
 } from '@mui/material'
 import { darken } from "@mui/material";
 import FlagIcon from '@mui/icons-material/Flag';
@@ -88,11 +87,13 @@ const Question = (props) => {
 
   const handleChangeStateFlag = useCallback(() => {
     dispatch(changeStateFlag({ questionId: question.id }))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const handleChangeFillin = useCallback((event) => {
     setValue([event.target.value])
     // handleCreateLog()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   const handleFocusOutFillin = useCallback((value) => {
     console.log(value)
@@ -103,6 +104,7 @@ const Question = (props) => {
     }))
     dispatch(changeStateDone({ questionId: question.id, value: true }))
     // handleCreateLog()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const handleChangeSingle = useCallback((event) => {//đổi lựa chọn cho câu hỏi một lựa chọn
@@ -114,6 +116,7 @@ const Question = (props) => {
     }))
     dispatch(changeStateDone({ questionId: question.id, value: true }))
     handleCreateLog()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const handleChangeMulti = useCallback((event) => {//đổi lựa chọn cho câu hỏi nhiều lựa chọn
@@ -131,6 +134,7 @@ const Question = (props) => {
     dispatch(changeStateDone({ questionId: question.id, value: true }))
     //setValue(newValue)
     handleCreateLog()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value])
 
   const handleCreateLog = useCallback(() => {
@@ -138,6 +142,7 @@ const Question = (props) => {
       action: `Thay đổi đáp án cho câu hỏi số ${indexQuestion}`,
       takeExamId
     })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   return (
     <StackQuestionContent id={`question-${props.index}`} spacing={1} pr={2} className={isDone ? 'done' : ''} >

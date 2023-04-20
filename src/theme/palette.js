@@ -7,7 +7,6 @@ import {
   lightBlue,
   amber,
   teal,
-  cyan,
   yellow,
   deepOrange,
 } from "@mui/material/colors";
@@ -16,8 +15,8 @@ import {
 // Setup color
 /** PRIMARY */
 const PRIMARY = {
-  light: lightBlue["A200"],
-  main: cyan["600"],
+  //light: lightBlue["A200"],
+  //main: cyan["600"],
   light: '#85CDFD',
   dark: lightBlue["800"],
   main: lightBlue["500"],

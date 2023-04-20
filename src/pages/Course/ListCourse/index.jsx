@@ -25,11 +25,12 @@ import LinearProgressWithLabel from 'components/LinearProgressWithLabel';
 const ListCourse = () => {
     const role = useSelector(state => state.setting?.role)
     const [courses, setCourses] = useState([])
-    const [page, setPage] = useState(1)
-    const [totalPage, setTotalPage] = useState(5)
+    //const [page, setPage] = useState(1)
+    const page = 1
+   // const [totalPage, setTotalPage] = useState(5)
     const [loadingData, setLoadingData] = useState(false)
     const limit = 10
-    console.log('COurse')
+
     useEffect(() => {
         const getData = () => {
             const params = {
@@ -42,7 +43,7 @@ const ListCourse = () => {
             setLoadingData(true)
             request.then(res => {
                 setCourses(res)
-                setTotalPage(Math.round(res.pagination.totalRows / limit))
+                //setTotalPage(Math.round(res.pagination.totalRows / limit))
             })
                 .finally(() => setLoadingData(false))
         }

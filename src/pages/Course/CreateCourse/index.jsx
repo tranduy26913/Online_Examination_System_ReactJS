@@ -121,6 +121,8 @@ function CreateCourse(props) {
             slug,
             name,
             description,
+            pin,
+            status,
             username: user.username,
             file: fileImage,
             startTime: startTime.toDate(),
@@ -192,6 +194,7 @@ function CreateCourse(props) {
                 })
         }
         getCourse()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [courseId])
 
     return (

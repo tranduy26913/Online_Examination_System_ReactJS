@@ -15,15 +15,12 @@ import { useEffect } from 'react';
 import apiQuestionBank from 'apis/apiQuestionBank';
 import Grid from '@mui/material/Unstable_Grid2';
 import CreateQuestionBank from './CreateQuestionBank';
-import { toast } from 'react-toastify';
 import { Link } from 'react-router-dom';
 import EmptyList from 'components/UI/EmptyList';
-import { useSelector } from 'react-redux';
 import Page from 'components/Page';
 
 
 const QuestionBank = () => {
-    const role = useSelector(state=>state.setting?.role)
     const [questionBanks, setQuestionBanks] = useState([])
 
     useEffect(() => {
@@ -31,6 +28,7 @@ const QuestionBank = () => {
             reloadList()
         }
         loadList()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
     const reloadList = useCallback(() => {
         apiQuestionBank.getQuestionBanks()
@@ -39,13 +37,13 @@ const QuestionBank = () => {
             })
     }, [])
 
-    const handleDeleteQB = (slug) => {
-        apiQuestionBank.deleteQuestionBank({ slug })
-            .then(res => {
-                toast.success("Xoá thành công")
-                reloadList()
-            })
-    }
+    // const handleDeleteQB = (slug) => {
+    //     apiQuestionBank.deleteQuestionBank({ slug })
+    //         .then(res => {
+    //             toast.success("Xoá thành công")
+    //             reloadList()
+    //         })
+    // }
     return (
         <Page title='Ngân hàng câu hỏi'>
 

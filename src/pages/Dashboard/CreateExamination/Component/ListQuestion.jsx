@@ -12,7 +12,7 @@ import {
     PaperQuestion,
 
 } from './MUI'
-import { useCallback, useContext, useEffect, useState } from 'react'
+import { useCallback, useContext, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { memo } from 'react';
 import ExamContext from '../ExamContext';
@@ -49,6 +49,8 @@ function ListQuestion() {
                 console.log(err)
                 toast.update(id, { render: 'Xoá câu hỏi không thành công', isLoading: false, type: 'warning', autoClose: 1200 })
             })
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [examId, reloadExam])
 
     const handleSelectQuestionEdit = useCallback((value) => {

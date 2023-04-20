@@ -4,7 +4,6 @@ import { Link, useParams } from "react-router-dom"
 import Page from 'components/Page'
 import { useState, useEffect } from 'react'
 import apiTakeExam from 'apis/apiTakeExam'
-import { toast } from 'react-toastify'
 import LoadingRoller from 'components/LoadingPage/LoadingRoller'
 function ResultExamination() {
     const { takeExamId } = useParams()

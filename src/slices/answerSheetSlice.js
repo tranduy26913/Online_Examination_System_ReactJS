@@ -73,9 +73,6 @@ export const answerSheetSlice = createSlice({
     }
 })
 
-const delItem = (arr, item) => arr.filter(e => e.question !== item.question)
-
-
 export const {
     changeAnswer,
     clearAnswerSheet,

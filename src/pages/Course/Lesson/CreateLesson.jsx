@@ -1,16 +1,12 @@
-import { Box, Button, FormControl, FormControlLabel, FormGroup, FormHelperText, Paper, Stack, Switch, Typography } from '@mui/material'
-import { useTheme } from '@mui/system';
+import { Box, Button, FormControl, FormControlLabel, FormGroup, FormHelperText, Stack, Switch } from '@mui/material'
 import moment from 'moment'
 import { CKEditor } from '@ckeditor/ckeditor5-react';
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useState } from 'react'
 import { useSelector } from 'react-redux';
-import apiAssignment from 'apis/apiAssignment';
 import { toast } from 'react-toastify';
-import { useNavigate, useParams } from 'react-router-dom';
 import CourseContext from 'pages/Course/LayoutCourse/CourseContext';
 import { useForm, Controller } from 'react-hook-form'
 import LoadingButton from 'components/LoadingButton';
-import { getMessageError } from 'utils';
 import DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
 import { MyUploadAdapter } from 'config/MyCustomUploadAdapterPlugin';
 import { Stack2Column, StackLabel } from 'pages/Dashboard/CreateExamination/Component/MUI';
@@ -27,9 +23,9 @@ function CreateLesson({ getData }) {
     const accessToken = useSelector(state => state.auth.accessToken)
     const [loading, setLoading] = useState(false)
 
-    const { courseId, id: courseObjId } = useContext(CourseContext)
+    const { id: courseObjId } = useContext(CourseContext)
 
-    const { handleSubmit, setValue, control } = useForm({
+    const { handleSubmit, control } = useForm({
         mode: "onChange",
         resolver: yupResolver(schema),
         reValidateMode: "onChange",

@@ -9,8 +9,9 @@ import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
+import { coursesPublic } from 'constraints/coursesPublic';
 const CoursesInHome = () => {
-  const [courses, setCourses] = useState([])
+  const [courses, setCourses] = useState(coursesPublic)
   const theme = useTheme();
   const smScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const mdScreen = useMediaQuery(theme.breakpoints.down('md'));

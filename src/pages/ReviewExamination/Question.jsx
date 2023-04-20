@@ -61,7 +61,7 @@ const TypographyQuestion = styled(Typography)(({ theme }) => ({
 
 
 const Question = (props) => {
-    const { question, viewPoint, viewAnswer } = props
+    const { question } = props
     const point = question?.point
     const statusQuestion = (() => {
         if (point === undefined)

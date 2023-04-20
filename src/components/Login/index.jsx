@@ -104,6 +104,7 @@ const Login = () => {
         if (user) {
             navigate('/my/profile')
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [user])
     return (
         <Page title='Đăng nhập'>

@@ -1,6 +1,5 @@
 import { Player } from '@lottiefiles/react-lottie-player';
 import { Grid, Typography, Button, Stack, Box } from '@mui/material';
-import HeroGif from 'assets/img/hero.gif'
 import { Link } from 'react-router-dom';
 
 const Hero = () => {

@@ -1,13 +1,9 @@
-import { Box, Divider, InputBase, Paper, Stack, TextField, styled, Typography, useTheme } from '@mui/material'
+import { Box, Divider, InputBase, Paper, Stack, styled, Typography, useTheme } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { Configuration, OpenAIApi } from "openai";
 import IconButton from '@mui/material/IconButton';
-import MenuIcon from '@mui/icons-material/Menu';
-import SearchIcon from '@mui/icons-material/Search';
 import SendIcon from '@mui/icons-material/Send';
-import DirectionsIcon from '@mui/icons-material/Directions';
 import TerminalIcon from '@mui/icons-material/Terminal';
-import SettingsIcon from '@mui/icons-material/Settings';
 import PersonIcon from '@mui/icons-material/Person';
 import ChatGPT_Logo from 'assets/img/ChatGPT_logo.webp'
 import { useDispatch, useSelector } from 'react-redux';
@@ -77,7 +73,7 @@ function ChatGPT() {
                             {
                                 chat.sender === 'gpt' ? <Box px={1.5} py={0.25} ml={0.25}>
                                     {/* <SettingsIcon /> */}
-                                    <img src={ChatGPT_Logo} width={'24px'} />
+                                    <img src={ChatGPT_Logo} width={'24px'} alt='logo chatgpt'/>
                                 </Box> :
                                     <Box px={1.5} py={0.25} ml={0.25}>
                                         <PersonIcon />

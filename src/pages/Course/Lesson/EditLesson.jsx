@@ -1,17 +1,14 @@
-import { Box, Button, Chip, Divider, FormControl, FormControlLabel, FormGroup, FormHelperText, IconButton, Paper, Stack, Switch, Typography } from '@mui/material'
-import { useTheme } from '@mui/system';
+import { Box, Button, Chip, Divider, FormControl, FormControlLabel, FormGroup, FormHelperText, IconButton, Stack, Switch, Typography } from '@mui/material'
 import UploadIcon from '@mui/icons-material/Upload';
 import moment from 'moment'
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import { useContext, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
-import apiAssignment from 'apis/apiAssignment';
 import { toast } from 'react-toastify';
-import { useNavigate, useParams } from 'react-router-dom';
 import CourseContext from 'pages/Course/LayoutCourse/CourseContext';
 import { useForm, Controller } from 'react-hook-form'
 import LoadingButton from 'components/LoadingButton';
-import { getMessageError } from 'utils';
+// import { getMessageError } from 'utils';
 import DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
 import { MyUploadAdapter } from 'config/MyCustomUploadAdapterPlugin';
 import { Stack2Column, StackLabel } from 'pages/Dashboard/CreateExamination/Component/MUI';
@@ -35,9 +32,9 @@ function EditLesson(props) {
     const [status, setStatus] = useState(true)
     const accessToken = useSelector(state => state.auth.accessToken)
     const role = useSelector(state => state.setting.role) || 'student'
-    const { courseId, id: courseObjId ,UpdateProcessing} = useContext(CourseContext)
+    const {  id: courseObjId ,UpdateProcessing} = useContext(CourseContext)
 
-    const { handleSubmit, setValue, control } = useForm({
+    const { handleSubmit,  control } = useForm({
         mode: "onChange",
         resolver: yupResolver(schema),
         reValidateMode: "onChange",
@@ -54,6 +51,7 @@ function EditLesson(props) {
         setLessonId(props.lessonId)
         setSeen(props.seen)
         setFile(props.file)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [props.content, props.title])
     const onClickEdit = () => {
         setIsEdit(true)

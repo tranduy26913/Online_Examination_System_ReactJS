@@ -1,5 +1,3 @@
-
-import { useCallback, useEffect, useLayoutEffect, useState } from 'react'
 import {
     Button,
     Stack,
@@ -11,12 +9,11 @@ import {
     AccordionDetails
 } from "@mui/material"
 import Grid from '@mui/material/Unstable_Grid2';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { addAllQuestion, clearAnswerSheet, clearTakeExamId, setTakeExamId } from 'slices/answerSheetSlice';
-import { ButtonQuestion, BoxTime } from './Examination.style'
+import { clearAnswerSheet, clearTakeExamId } from 'slices/answerSheetSlice';
+import { ButtonQuestion } from './Examination.style'
 import apiTakeExam from 'apis/apiTakeExam';
-import { toast } from 'react-toastify';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 //import FaceRecognition from './FaceRecognition';
 

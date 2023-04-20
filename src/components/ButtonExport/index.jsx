@@ -1,6 +1,6 @@
 import React from 'react'
 import { Button } from '@mui/material'
-import { Player, Controls } from '@lottiefiles/react-lottie-player';
+import { Player } from '@lottiefiles/react-lottie-player';
 import SaveAltIcon from '@mui/icons-material/SaveAlt';
 import { toast } from 'react-toastify';
 import * as FileSaver from 'file-saver';

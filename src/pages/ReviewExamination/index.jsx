@@ -10,7 +10,6 @@ import { ButtonQuestion } from 'pages/Examination/Examination.style'
 import React from 'react'
 import { useEffect } from 'react'
 import { useState } from 'react'
-import { useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import Question from './Question'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -42,7 +41,6 @@ function ReviewExamination() {
   const [questions, setQuestions] = useState([])
   const [indexQuestion, setIndexQuestion] = useState([])
   const [isLoading, setIsLoading] = useState(false)
-  const user = useSelector(state => state.user.info)
 
   const setupQuestion = (questions) => {
     const newIndexQuestion = []
