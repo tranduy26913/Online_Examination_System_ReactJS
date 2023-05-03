@@ -11,6 +11,11 @@ export const schema = Yup.object().shape({
   pin: Yup
     .string()
     .min(5,"Mật khẩu tham gia khoá học có ít nhất 5 kí tự"),
+  isSell: Yup
+    .boolean().default(false),
+  price: Yup
+    .number()
+    .min(1000,"Giá khoá học phải lớn hơn 1000VND"),
   status: Yup
     .boolean()
     

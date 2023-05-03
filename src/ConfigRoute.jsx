@@ -9,6 +9,7 @@ import Dashboard from "pages/Dashboard"
 import { DASHBOARD_STUDENT, DASHBOARD_TEACHER } from "constraints/StudentDashboard";
 import { useSelector } from 'react-redux';
 import SearchCourse from 'pages/SearchCourse';
+import SellCourse from 'pages/SellCourse';
 const Home = lazy(() => import("./pages/Home"));
 //const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Login = lazy(() => import("./components/Login"));
@@ -246,6 +247,7 @@ function ConfigRoute() {
         <Route path="reset-password/:token" element={<ResetPassword />} />
         <Route path="active/:token" element={<Active />} />
         <Route path="search-course" element={<SearchCourse />} />
+        <Route path="sell-course" element={<SellCourse />} />
         <Route path="chatgpt" element={<ChatGPT />} />
         <Route path="/*" element={<Page404 />} />
 
@@ -270,7 +272,7 @@ function ConfigRoute() {
           <Route path='assignment/:slug' element={makeLoading(<CreateAssignment isEdit={true} />)} />
         </Route>
         <Route path="exam/:examId" element={<Examination />} />
-        <Route path="desposit" element={<Payment />} />
+        <Route path="deposit" element={<Payment />} />
         <Route path="result-exam/:takeExamId" element={<ResultExamination />} />
         <Route path="result-payment" element={<ResultPayment />} />
         <Route path="review-exam/:takeExamId" element={<ReviewExamination />} />

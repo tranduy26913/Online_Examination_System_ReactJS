@@ -4,7 +4,7 @@ import { forwardRef, useState } from 'react'
 const Transition = forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
-function ConfirmButton({ handleFunc, title, description, children, ...buttonProps }) {
+function ConfirmButton({ handleFunc, title, description,textConfirm='Xoá', children, ...buttonProps }) {
     const [open, setOpen] = useState(false)
     const handleOpen = () => setOpen(true)
     const handleClose = () => setOpen(false)
@@ -33,7 +33,7 @@ function ConfirmButton({ handleFunc, title, description, children, ...buttonProp
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose}>Huỷ</Button>
-                    <Button onClick={handleOnclick}>Xoá</Button>
+                    <Button onClick={handleOnclick}>{textConfirm}</Button>
                 </DialogActions>
             </Dialog>}
         </>

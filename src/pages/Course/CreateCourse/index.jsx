@@ -27,6 +27,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import moment from 'moment'
 import { useEffect } from 'react';
 import { getMessageError } from 'utils';
+import { IOSSwitch } from 'pages/Dashboard/CreateExamination/Component/MUI';
 
 const alpha = [...Array.from(Array(26)).map((e, i) => i + 65),
 ...Array.from(Array(26)).map((e, i) => i + 97),
@@ -42,8 +43,21 @@ function CreateCourse(props) {
     const [endTime, setEndTime] = useState(moment(new Date()).add(60, 'days'))
     const [error, setError] = useState({ isError: false, msg: "" })
     const user = useSelector(state => state.user.info) //lấy thông tin user
+    const role = useSelector(state => state.setting.role) //lấy thông tin role
     const { courseId } = useParams()
     const navigate = useNavigate()
+
+    const { handleSubmit, setValue, control, watch } = useForm({
+        mode: "onChange",
+        resolver: yupResolver(schema),
+        reValidateMode: "onChange",
+        defaultValues: {
+            name: "",
+            description: "",
+            pin: ""
+        }
+    });
+    const isSell = watch("isSell", false)
 
     const checkTime = (start, end) => {
         let isError = false
@@ -86,20 +100,9 @@ function CreateCourse(props) {
             setImage(URL.createObjectURL(e.target.files[0]))
         }
     }
-    const { handleSubmit, setValue, control } = useForm({
-        mode: "onChange",
-        resolver: yupResolver(schema),
-        reValidateMode: "onChange",
-        defaultValues: {
-            name: "",
-            description: "",
-            pin:""
-        }
-    });
-
 
     const handleCreate = (data) => {
-        const { name, description ,pin, status} = data
+        const { name, description, pin, status,isSell,price } = data
         let random = ''
         for (let i = 0; i < 7; i++) {
             random += alphabet[Math.floor(Math.random() * alphabet.length)]
@@ -122,6 +125,7 @@ function CreateCourse(props) {
             name,
             description,
             pin,
+            price,
             status,
             username: user.username,
             file: fileImage,
@@ -141,7 +145,7 @@ function CreateCourse(props) {
     }
 
     const handleUpdate = (data) => {
-        const { name, description,pin } = data
+        const { name, description, pin,isSell, price } = data
         let random = ''
         for (let i = 0; i < 7; i++) {
             random += alphabet[Math.floor(Math.random() * alphabet.length)]
@@ -165,6 +169,7 @@ function CreateCourse(props) {
             name,
             description,
             pin,
+            price,
             file: fileImage,
             startTime: startTime.toDate(),
             endTime: endTime.toDate(),
@@ -183,11 +188,12 @@ function CreateCourse(props) {
 
     useEffect(() => {
         const getCourse = () => {
-            apiCourse.getCourseByCourseID({ courseId })
+            apiCourse.getCourseByCourseID({ courseId }, role)
                 .then(res => {
                     setValue('name', res.name)
                     setValue('description', res.description)
-                    setValue('pin',res.pin)
+                    setValue('pin', res.pin)
+                    setValue('isSell', res.price > 0)
                     setImage(res.image)
                     setStartTime(moment(res.startTime))
                     setEndTime(moment(res.endTime))
@@ -234,7 +240,6 @@ function CreateCourse(props) {
                                     render={({ field, fieldState: { error } }) => (
                                         <TextField
                                             {...field}
-                                            
                                             size='small'
                                             type='text'
                                             label="Tên khoá học"
@@ -251,7 +256,7 @@ function CreateCourse(props) {
                                     render={({ field, fieldState: { error } }) => (
                                         <TextField
                                             {...field}
-                                            
+
                                             size='small'
                                             type='text'
                                             label="Mô tả khoá học"
@@ -263,22 +268,48 @@ function CreateCourse(props) {
                                             variant="outlined" />
                                     )}
                                 />
-                                <Controller
-                                    name={"pin"}
-                                    control={control}
-                                    render={({ field, fieldState: { error } }) => (
-                                        <TextField
-                                            {...field}
-                                            
-                                            size='small'
-                                            type='text'
-                                            label="Mật khẩu tham gia"
-                                            error={error !== undefined}
-                                            helperText={error ? error.message : ''}
-                                            variant="outlined" />
-                                    )}
-                                />
-                                
+                                <Stack direction={'row'} spacing={2} alignItems='center'>
+                                    <label>Bán khoá học</label>
+                                    <Controller
+                                        name={"isSell"}
+                                        control={control}
+                                        render={({ field, fieldState: { error } }) => (
+                                            <IOSSwitch checked={field.value} onChange={field.onChange} />
+                                        )}
+                                    />
+                                </Stack>
+                                {isSell ?
+                                    <Controller
+                                        name={"price"}
+                                        control={control}
+                                        render={({ field, fieldState: { error } }) => (
+                                            <TextField
+                                                {...field}
+                                                size='small'
+                                                type='text'
+                                                label="Giá khoá học"
+                                                error={error !== undefined}
+                                                helperText={error ? error.message : ''}
+                                                variant="outlined" />
+                                        )}
+                                    />
+                                    :
+                                    <Controller
+                                        name={"pin"}
+                                        control={control}
+                                        render={({ field, fieldState: { error } }) => (
+                                            <TextField
+                                                {...field}
+                                                size='small'
+                                                type='text'
+                                                label="Mật khẩu tham gia"
+                                                error={error !== undefined}
+                                                helperText={error ? error.message : ''}
+                                                variant="outlined" />
+                                        )}
+                                    />
+                                }
+
                                 <LocalizationProvider dateAdapter={AdapterMoment}>
                                     <DesktopDatePicker
                                         inputFormat="DD/MM/YYYY"

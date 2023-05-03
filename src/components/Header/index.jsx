@@ -25,6 +25,7 @@ import { changeRole, toggleTheme } from 'slices/settingSlice';
 import { clearInterceptor } from 'apis/axiosClient';
 import { toast } from 'react-toastify';
 import Logo from 'assets/img/logo.ico'
+import { numWithCommas } from 'utils';
 
 
 const MaterialUISwitch = styled(Switch)(({ theme }) => ({
@@ -130,7 +131,7 @@ function Header() {
 
   const handleChangeRole = (role) => {
     if (role === 'teacher' || role === 'student') {
-      if(role==='teacher' && user.role === 'STUDENT'){
+      if (role === 'teacher' && user.role === 'STUDENT') {
         toast.warning("Phân quyền hiện tại của bạn là HỌC VIÊN. Vui lòng nâng cấp lên quyền GIÁO VIÊN!")
         return
       }
@@ -147,8 +148,8 @@ function Header() {
 
   return (
 
-    <AppBarShadow position="sticky" 
-    color='primary'
+    <AppBarShadow position="sticky"
+      color='primary'
     // sx={{backgroundColor:'#e8eaf6'}}
     >
       <Container maxWidth="xl" >
@@ -159,7 +160,7 @@ function Header() {
             //justifyContent: isDashboard ? 'flex-end' : 'unset',
             alignItems: 'center'
           }}>
-          
+
 
           <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
             <IconButton
@@ -191,39 +192,41 @@ function Header() {
               }}
             >
               {pages.map((page) => (
-                <MenuItem key={page.path} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page.display}</Typography>
-                </MenuItem>
+                <Link key={page.path} to={page.path}>
+                  <MenuItem onClick={handleCloseNavMenu}>
+                    <Typography textAlign="center">{page.display}</Typography>
+                  </MenuItem>
+                </Link>
               ))}
             </Menu>
           </Box>
           <Link to='/'>
 
-          <Stack height='100%' direction='row' sx={{ display: { xs: 'none', sm: 'flex' } }} alignItems='center'>
-         
-            {/* <AdbIcon sx={{ mr: 1 }} /> */}
-            <img src={Logo} alt='logo' height='32px' style={{
-              'WebkitFilter': 'brightness(0) invert(1)',
-              'filter': 'brightness(0) invert(1)',
-              marginRight:'8px' 
-              }}/>
-            <Typography
-              variant="h5"
-              noWrap
-              sx={{
-                mr: 2,
-                fontSize: { xs: '14px', sm: '18px' },
-                flexGrow: 1,
-                fontFamily: 'monospace',
-                fontWeight: 700,
-                letterSpacing: '.05rem',
-                color: 'inherit',
-                textDecoration: 'none',
-              }}
-            >
-              Bello Quiz
-            </Typography>
-          </Stack>
+            <Stack height='100%' direction='row' sx={{ display: { xs: 'none', sm: 'flex' } }} alignItems='center'>
+
+              {/* <AdbIcon sx={{ mr: 1 }} /> */}
+              <img src={Logo} alt='logo' height='32px' style={{
+                'WebkitFilter': 'brightness(0) invert(1)',
+                'filter': 'brightness(0) invert(1)',
+                marginRight: '8px'
+              }} />
+              <Typography
+                variant="h5"
+                noWrap
+                sx={{
+                  mr: 2,
+                  fontSize: { xs: '14px', sm: '18px' },
+                  flexGrow: 1,
+                  fontFamily: 'monospace',
+                  fontWeight: 700,
+                  letterSpacing: '.05rem',
+                  color: 'inherit',
+                  textDecoration: 'none',
+                }}
+              >
+                Bello Quiz
+              </Typography>
+            </Stack>
           </Link>
           <Box height='100%' alignItems='center' sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {pages.map((page) => (
@@ -238,75 +241,81 @@ function Header() {
             ))}
           </Box>
 
-          <Stack direction='row' alignItems='center' justifyContent='flex-end'flex={1}>
+          <Stack direction='row' alignItems='center' justifyContent='flex-end' flex={1}>
+
             <MaterialUISwitch sx={{ m: 1 }} checked={isLight} onChange={handleChangeTheme} />
-          
-          <Box sx={{ flexGrow: 0, minWidth:'140px' }}>
-            {user ?
-              <>
-                <Tooltip title={user.fullname}>
-                  <Stack direction='row' onClick={handleOpenUserMenu} alignItems='center' mr={2} spacing={1}
-                    sx={{ cursor: 'pointer' }}>
 
-                    <IconButton sx={{ p: 0 }}>
-                      <Avatar alt="Remy Sharp" src={user.avatar} />
-                    </IconButton>
-                    <Stack>
-                    <Typography>{role==='teacher' ? 'Giáo viên':'Học viên'}</Typography>
-                    <Typography className='text-overflow-1-lines'>{user.fullname}</Typography>
+            <Box sx={{ flexGrow: 0, minWidth: '140px' }}>
+              {user ?
+                <>
+                  <Tooltip title={user.fullname}>
+                    <Stack direction='row' onClick={handleOpenUserMenu} alignItems='center' mr={2} spacing={1}
+                      sx={{ cursor: 'pointer' }}>
+
+                      <IconButton sx={{ p: 0 }}>
+                        <Avatar alt="Remy Sharp" src={user.avatar} />
+                      </IconButton>
+                      <Stack>
+                        <Typography>{role === 'teacher' ? 'Giáo viên' : 'Học viên'}</Typography>
+                        <Typography className='text-overflow-1-lines'>{user.fullname}</Typography>
+                      </Stack>
                     </Stack>
-                  </Stack>
-                </Tooltip>
-                <Menu
-                  sx={{ mt: '45px' }}
-                  id="menu-appbar"
-                  anchorEl={anchorElUser}
-                  anchorOrigin={{
-                    vertical: 'top',
-                    horizontal: 'center',
-                  }}
-                  keepMounted
-                  transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'center',
-                  }}
-                  open={Boolean(anchorElUser)}
-                  onClose={handleCloseUserMenu}
-                >
-                  {settings.map((setting) => {
-                    return (
-                      <Link key={setting.path} to={`/my/${setting.path}`}>
-                        <MenuItem onClick={handleCloseUserMenu}>
-                          <Typography textAlign="center">{setting.display}</Typography>
-                        </MenuItem>
-                      </Link>
-
-                    )
-                  })}
-                  {role === 'student' ?
-                    <MenuItem onClick={() => handleChangeRole('teacher')}>
-                      <Typography textAlign="center">Vào giao diện giáo viên</Typography>
-                    </MenuItem> :
-                    <MenuItem onClick={() => handleChangeRole('student')}>
-                      <Typography textAlign="center">Vào giao diện học viên</Typography>
+                  </Tooltip>
+                  <Menu
+                    sx={{ mt: '45px' }}
+                    id="menu-appbar"
+                    anchorEl={anchorElUser}
+                    anchorOrigin={{
+                      vertical: 'top',
+                      horizontal: 'center',
+                    }}
+                    keepMounted
+                    transformOrigin={{
+                      vertical: 'top',
+                      horizontal: 'center',
+                    }}
+                    open={Boolean(anchorElUser)}
+                    onClose={handleCloseUserMenu}
+                  >
+                    <Link to='/deposit'>
+                    <MenuItem>
+                      <Typography>Số dư: {numWithCommas(user.balance || 0)}đ</Typography>
                     </MenuItem>
-                  }
-                  <MenuItem onClick={handleLogout}>
-                    <Typography textAlign="center">Đăng xuất</Typography>
-                  </MenuItem>
-                </Menu>
-              </> :
-              <Stack direction='row' justifyContent='space-between' p={1} spacing={0.5}>
-                <Link to='/login'>
-                  <Button sx={{ color: '#fff' }}>Đăng nhập</Button>
-                </Link>
-                <Divider orientation="vertical" flexItem sx={{ borderColor: '#ccc' }} />
-                <Link to='/register'>
-                  <Button sx={{ color: '#fff' }}>Đăng ký</Button>
-                </Link>
-              </Stack>
-            }
-          </Box>
+                    </Link>
+                    {settings.map((setting) => {
+                      return (
+                        <Link key={setting.path} to={`/my/${setting.path}`}>
+                          <MenuItem onClick={handleCloseUserMenu}>
+                            <Typography>{setting.display}</Typography>
+                          </MenuItem>
+                        </Link>
+
+                      )
+                    })}
+                    {role === 'student' ?
+                      <MenuItem onClick={() => handleChangeRole('teacher')}>
+                        <Typography>Vào giao diện giáo viên</Typography>
+                      </MenuItem> :
+                      <MenuItem onClick={() => handleChangeRole('student')}>
+                        <Typography>Vào giao diện học viên</Typography>
+                      </MenuItem>
+                    }
+                    <MenuItem onClick={handleLogout}>
+                      <Typography>Đăng xuất</Typography>
+                    </MenuItem>
+                  </Menu>
+                </> :
+                <Stack direction='row' justifyContent='space-between' p={1} spacing={0.5}>
+                  <Link to='/login'>
+                    <Button sx={{ color: '#fff' }}>Đăng nhập</Button>
+                  </Link>
+                  <Divider orientation="vertical" flexItem sx={{ borderColor: '#ccc' }} />
+                  <Link to='/register'>
+                    <Button sx={{ color: '#fff' }}>Đăng ký</Button>
+                  </Link>
+                </Stack>
+              }
+            </Box>
           </Stack>
 
         </Toolbar>

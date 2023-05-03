@@ -18,8 +18,16 @@ import { axiosClientWithToken } from "./axiosClient";
         const res = await axiosClientWithToken.get(`/course/s`, {params})
         return res.data;
     },
+    getCourseSell: async () => {
+        const res = await axiosClientWithToken.get(`/course/course-sell`)
+        return res.data;
+    },
     getCourseByCourseID: async (params,role) => {
         const res = await axiosClientWithToken.get(`/course/by-courseid-${role}`, {params})
+        return res.data;
+    },
+    getCourseInfo: async (params) => {
+        const res = await axiosClientWithToken.get(`/course/info`, {params})
         return res.data;
     },
     getListCourseByTeacher: async (params) => {
@@ -79,6 +87,10 @@ import { axiosClientWithToken } from "./axiosClient";
     },
     exitCourse: async (params) => {
         const res = await axiosClientWithToken.post('/course/exit-course', params)
+        return res.data;
+    },
+   purchaseCourse: async (params) => {
+        const res = await axiosClientWithToken.post('/payment/purchase-course', params)
         return res.data;
     },
 }

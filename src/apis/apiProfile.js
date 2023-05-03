@@ -46,6 +46,11 @@ const apiProfile = {
         const res = await axiosClientWithToken.post(`/payment/create-payment/${method.toLowerCase()}`,params)
         return res.data;
     },
+    upgradeAccount: async (method,params) => {
+
+        const res = await axiosClientWithToken.post(`/payment/upgrade-account`,params)
+        return res.data;
+    },
 
 
     

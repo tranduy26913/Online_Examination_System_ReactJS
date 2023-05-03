@@ -22,6 +22,10 @@ const apiStatistic = {
         const res = await axiosClientWithToken.get('/statistic/detail-of-teacher', { params })
         return res.data;
     },
+    getDetailQuestionOfExam: async (params) => {
+        const res = await axiosClientWithToken.get('/takeexam/view-accuracy-rate-of-exam-questions', { params })
+        return res.data;
+    },
   
 
 }
