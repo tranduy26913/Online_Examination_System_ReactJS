@@ -18,6 +18,7 @@ import { useParams } from 'react-router-dom';
 import moment from 'moment';
 import TableTeacherGroup from './StatisticTable/TableTeacherGroup';
 import { PropTypes } from 'prop-types';
+import TableQuestion from './StatisticTable/TableQuestion';
 
 function StatisticExam(props) {
   const role = useSelector(state => state.setting.role)
@@ -27,7 +28,7 @@ function StatisticExam(props) {
   const [maxPoints, setMaxPoints] = useState(0)
   const { slug } = useParams()//lấy slug exam
   const [tabIndex, setTabIndex] = React.useState(0);
-
+  const [questions, setQuestions] = useState([])
   const handleChangeTabIndex = (event, newTabIndex) => {
     setTabIndex(newTabIndex);
   };
@@ -45,8 +46,19 @@ function StatisticExam(props) {
         setMaxPoints(res.maxPoints)
       })
     }
+
+    const getQuestions = ()=>{
+      apiStatistic.getDetailQuestionOfExam({slug})
+      .then(res=>{
+        if(Array.isArray(res.result)){
+          setQuestions(res.result)
+        }
+      })
+    }
     getStatistic()
+    getQuestions()
   }, [role, slug])
+
 
   const count = exams.length
   const avgPoints = (count && exams.reduce((total, cur) => total + cur.points, 0) / count).toFixed(2) || 0
@@ -66,7 +78,7 @@ function StatisticExam(props) {
         pass++
 
     })
-    return (count && pass*100 / count).toFixed(2) || 0
+    return (count && pass * 100 / count).toFixed(2) || 0
   })()
 
   return (
@@ -91,19 +103,23 @@ function StatisticExam(props) {
         </Grid>
 
         <Paper elevation={12}>
-          {role === 'student' ? <TableStudent exams={exams} maxPoints={maxPoints} typeofPoint={typeofPoint}/> :
+          {role === 'student' ? <TableStudent exams={exams} maxPoints={maxPoints} typeofPoint={typeofPoint} /> :
             <>
               <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <Tabs value={tabIndex} onChange={handleChangeTabIndex} centered>
                   <Tab label="Tất cả lượt thi" {...a11yProps(0)} />
                   <Tab label="Nhóm điểm theo học viên" {...a11yProps(1)} />
+                  <Tab label="Tỉ lệ đúng" {...a11yProps(1)} />
                 </Tabs>
               </Box>
               <TabPanel value={tabIndex} index={0}>
-                <TableTeacher exams={exams} maxPoints={maxPoints}/>
+                <TableTeacher exams={exams} maxPoints={maxPoints} />
               </TabPanel>
               <TabPanel value={tabIndex} index={1}>
-                <TableTeacherGroup exams={exams} typeofPoint={typeofPoint}/>
+                <TableTeacherGroup exams={exams} typeofPoint={typeofPoint} />
+              </TabPanel>
+              <TabPanel value={tabIndex} index={2}>
+                <TableQuestion questions={questions}  />
               </TabPanel>
 
             </>
