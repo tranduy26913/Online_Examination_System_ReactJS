@@ -23,7 +23,7 @@ function Payment() {
     }
 
     const handleChangeAmount = (e) => {
-        setAmount(e.target.value)
+        setAmount(Number(e.target.value))
     }
 
     const handlePayment = () => {
@@ -57,7 +57,7 @@ function Payment() {
 
                     <Stack width='500px'p={3} spacing={2}>
                         <Typography fontSize='24px' color='primary' align='center'>Nạp tiền</Typography>
-                        <TextField placeholder='Nhập số tiền' />
+                        <TextField placeholder='Nhập số tiền' onChange={handleChangeAmount} />
                         <FormControl>
                             <FormLabel>Loại hình thanh toán</FormLabel>
                             <RadioGroup

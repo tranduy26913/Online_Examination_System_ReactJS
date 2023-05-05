@@ -18,6 +18,7 @@ import {
 } from '@mui/material';
 
 import MenuIcon from '@mui/icons-material/Menu';
+import PaidIcon from '@mui/icons-material/Paid';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { logoutSuccess } from 'slices/authSlice';
@@ -277,11 +278,17 @@ function Header() {
                     open={Boolean(anchorElUser)}
                     onClose={handleCloseUserMenu}
                   >
-                    <Link to='/deposit'>
-                    <MenuItem>
-                      <Typography>Số dư: {numWithCommas(user.balance || 0)}đ</Typography>
-                    </MenuItem>
-                    </Link>
+
+                    <Box p='6px 16px'>
+                      <Stack direction={'row'} justifyContent='space-between' spacing={2}>
+                        <Typography>Số dư: {numWithCommas(user.balance || 0)}đ</Typography>
+                        <Link to='/deposit'>
+                          <Stack direction='row'>Nạp <PaidIcon />
+                          </Stack>
+                        </Link>
+                      </Stack>
+                    </Box>
+
                     {settings.map((setting) => {
                       return (
                         <Link key={setting.path} to={`/my/${setting.path}`}>

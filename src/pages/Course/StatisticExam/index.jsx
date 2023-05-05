@@ -9,7 +9,7 @@ import {
 } from '@mui/material'
 import Grid from '@mui/material/Unstable_Grid2';
 import AppWidgetSummary from 'components/AppWidgetSummary';
-//import PieChartPoint from './PieChartPoint';
+
 import TableStudent from './StatisticTable/TableStudent';
 import TableTeacher from './StatisticTable/TableTeacher';
 import { useSelector } from 'react-redux';
@@ -19,6 +19,7 @@ import moment from 'moment';
 import TableTeacherGroup from './StatisticTable/TableTeacherGroup';
 import { PropTypes } from 'prop-types';
 import TableQuestion from './StatisticTable/TableQuestion';
+import BarChartPoint from './BarChartPoint';
 
 function StatisticExam(props) {
   const role = useSelector(state => state.setting.role)
@@ -29,6 +30,7 @@ function StatisticExam(props) {
   const { slug } = useParams()//lấy slug exam
   const [tabIndex, setTabIndex] = React.useState(0);
   const [questions, setQuestions] = useState([])
+  const [scoreDistribution, setScoreDistribution] = useState([])
   const handleChangeTabIndex = (event, newTabIndex) => {
     setTabIndex(newTabIndex);
   };
@@ -55,8 +57,17 @@ function StatisticExam(props) {
         }
       })
     }
+    const getScoreDistribution = ()=>{
+      apiStatistic.getScoreDistributionOfExam({slug})
+      .then(res=>{
+        if(Array.isArray(res.labels)){
+          setScoreDistribution(res.labels)
+        }
+      })
+    }
     getStatistic()
     getQuestions()
+    getScoreDistribution()
   }, [role, slug])
 
 
@@ -101,6 +112,10 @@ function StatisticExam(props) {
             <AppWidgetSummary title="Tổng kết" text={`Đạt ${summary}%`} total={234} color="error" />
           </Grid>
         </Grid>
+
+        <BarChartPoint title='Phổ điểm'
+        seriesData={scoreDistribution}
+        />
 
         <Paper elevation={12}>
           {role === 'student' ? <TableStudent exams={exams} maxPoints={maxPoints} typeofPoint={typeofPoint} /> :

@@ -26,6 +26,10 @@ const apiStatistic = {
         const res = await axiosClientWithToken.get('/takeexam/view-accuracy-rate-of-exam-questions', { params })
         return res.data;
     },
+    getScoreDistributionOfExam: async (params) => {
+        const res = await axiosClientWithToken.get('/takeexam/view-exam-score-distribution', { params })
+        return res.data;
+    },
   
 
 }
