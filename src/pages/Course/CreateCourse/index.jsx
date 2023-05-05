@@ -54,7 +54,6 @@ function CreateCourse(props) {
         defaultValues: {
             name: "",
             description: "",
-            pin: ""
         }
     });
     const isSell = watch("isSell", false)
