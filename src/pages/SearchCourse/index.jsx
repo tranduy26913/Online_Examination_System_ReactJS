@@ -58,10 +58,11 @@ function SearchCourse() {
 
             <Stack width='50%'>
                 <Paper
-                    component="form"
+                    component="div"
                     sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: '100%' }}
                 >
                     <InputBase
+                    type='text'
                         sx={{ ml: 1, flex: 1 }}
                         placeholder="Tên khoá học"
                         value={value}
