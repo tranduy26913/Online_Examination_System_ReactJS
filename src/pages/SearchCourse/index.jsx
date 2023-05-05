@@ -11,6 +11,7 @@ import { toast } from 'react-toastify';
 import Grid from '@mui/material/Unstable_Grid2/Grid2';
 import _debounce from 'lodash/debounce';
 import EmptyList from 'components/UI/EmptyList';
+import CourseItem from 'components/CourseItem';
 
 function SearchCourse() {
     const [courses, setCourses] = useState([])
@@ -86,8 +87,9 @@ function SearchCourse() {
                             :
                             courses.map((course, index) =>
                                 <Grid xs={12} sm={6} md={4} lg={3} key={index}>
+                                    <CourseItem course={course} />
 
-                                    <Card className='hover-element' sx={{ border: "1px solid #00e67660", height: '100%' }}>
+                                    {/* <Card className='hover-element' sx={{ border: "1px solid #00e67660", height: '100%' }}>
                                         <CardMedia
                                             component="img"
                                             height="170"
@@ -112,20 +114,20 @@ function SearchCourse() {
                                             justifyContent="center"
                                             sx={{ flexWrap: 'wrap' }}
                                             gap={1.5}>
-                                            {/* <Link to={`/course/${course.courseId}`}> */}
+                                            
                                             <Button
                                                 onClick={() => onClickDetail(course.courseId)}
                                                 variant="outlined"
                                                 size="small"
                                                 endIcon={<AssignmentIcon />}
                                             >Chi tiết</Button>
-                                            {/* </Link> */}
                                             <ShareTray quote={course.name} title={course.name}
                                                 url={`https://oes.vercel.app/enroll-course/${course.courseId}`}
                                                 text='Chia sẻ' variant="outlined" size="small"
                                                 endIcon={<SendIcon />} />
-                                        </Stack>
-                                    </Card>
+                                        </Stack> 
+                                    </Card>  
+                                */}
                                 </Grid>
 
                             )}

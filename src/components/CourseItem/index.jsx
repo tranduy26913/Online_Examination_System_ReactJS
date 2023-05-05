@@ -1,4 +1,4 @@
-import { Button, Card, CardMedia, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Stack, Typography } from '@mui/material'
+import { Box, Button, Card, CardMedia, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Stack, Typography } from '@mui/material'
 import React from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import AssignmentIcon from '@mui/icons-material/Assignment'
@@ -9,11 +9,15 @@ import { getMessageError, numWithCommas } from 'utils';
 import { useMutation } from 'react-query';
 import moment from 'moment';
 import LoadingRoller from 'components/LoadingPage/LoadingRoller';
+import SendIcon from '@mui/icons-material/Send'
+import ShareTray from 'components/ShareTray';
+import { useSelector } from 'react-redux';
 function CourseItem({ course }) {
 
     const [isShowInfo, setIsShowInfo] = React.useState(false);
     const navigate = useNavigate()
     const courseId = course.courseId
+    const refreshToken = useSelector(state => state.auth?.refreshToken)
     const handleClickOpen = () => {
         setIsShowInfo(true);
         mutate({ course_id: courseId })
@@ -25,9 +29,9 @@ function CourseItem({ course }) {
 
     const { mutate, data: courseInfo, isLoading, error } = useMutation(['info-course', courseId],
         (params) => apiCourse.getCourseInfo(params))
-console.log(courseInfo)
+    console.log(courseInfo)
     const handlePurchase = () => {
-       
+
         apiCourse.purchaseCourse({ courseId: course?.courseId })
             .then(res => {
                 toast.success('Thanh toán thành công')
@@ -36,6 +40,13 @@ console.log(courseInfo)
             .catch(err => {
                 toast.success(getMessageError(err))
             })
+    }
+
+    const onClickDetail = (courseId) => {
+        if (refreshToken)
+            navigate(`/course/${courseId}`)
+        else
+            toast.info('Vui lòng đăng nhập để truy cập vào khoá học')
     }
 
 
@@ -60,37 +71,69 @@ console.log(courseInfo)
                         {course.name}
                     </Typography>
                 </Link>
-                <Typography color="primary" variant="h5" component="div"
-                    sx={{
-                        textAlign: "left",
-                        paddingLeft: '6px'
-                    }}>
-                    Giá: {numWithCommas(course?.price || 0)} đ
-                </Typography>
+                {
+                    course?.isSell && !course?.isInCourse?
+                    
+                    <>
+                            <Typography color="primary" component="div" fontSize='20px'
+                                sx={{
+                                    textAlign: "left",
+                                    paddingLeft: '18px',
+                                }}>
+                                Giá: {numWithCommas(course?.price || 0)} đ
+                            </Typography>
 
-                <Stack
-                    p='0.5rem'
-                    direction='row'
-                    justifyContent="center"
-                    sx={{ flexWrap: 'wrap' }}
-                    gap={1.5}>
+                            <Stack
+                                p='0.5rem'
+                                direction='row'
+                                justifyContent="center"
+                                sx={{ flexWrap: 'wrap' }}
+                                gap={1.5}>
 
-                    <Button
-                        variant="outlined"
-                        size="small"
-                        onClick={handleClickOpen}
-                        endIcon={<AssignmentIcon />}
-                    >Chi tiết</Button>
-                    <ConfirmButton
-                        variant="outlined"
-                        size="small"
-                        title="Xác nhận mua khoá học"
-                        description='Vui lòng xác nhận mua khoá học bằng số dư hiện có của tài khoản'
-                        textConfirm='Mua khoá học'
-                        handleFunc={handlePurchase}
-                        endIcon={<AssignmentIcon />}
-                    >Mua</ConfirmButton>
-                </Stack>
+                                <Button
+                                    variant="outlined"
+                                    size="small"
+                                    onClick={handleClickOpen}
+                                    endIcon={<AssignmentIcon />}
+                                >Chi tiết</Button>
+                                <ConfirmButton
+                                    variant="outlined"
+                                    size="small"
+                                    title="Xác nhận mua khoá học"
+                                    description='Vui lòng xác nhận mua khoá học bằng số dư hiện có của tài khoản'
+                                    textConfirm='Mua khoá học'
+                                    handleFunc={handlePurchase}
+                                    endIcon={<AssignmentIcon />}
+                                >Mua</ConfirmButton>
+                            </Stack>
+                        </>
+                        :
+                        <>
+                            <Box height='30px'></Box>
+
+                            <Stack
+                                p='0.5rem'
+                                direction='row'
+                                justifyContent="center"
+                                sx={{ flexWrap: 'wrap' }}
+                                gap={1.5}>
+                                {/* <Link to={`/course/${course.courseId}`}> */}
+                                <Button
+                                    onClick={() => onClickDetail(course.courseId)}
+                                    variant="outlined"
+                                    size="small"
+                                    endIcon={<AssignmentIcon />}
+                                >Chi tiết</Button>
+                                {/* </Link> */}
+                                <ShareTray quote={course.name} title={course.name}
+                                    url={`https://oes.vercel.app/enroll-course/${course.courseId}`}
+                                    text='Chia sẻ' variant="outlined" size="small"
+                                    endIcon={<SendIcon />} />
+                            </Stack>
+                        </>
+                        
+                }
+
             </Card>
             {
                 isShowInfo &&
