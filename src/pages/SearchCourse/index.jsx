@@ -41,13 +41,7 @@ function SearchCourse() {
     };
     const navigate = useNavigate()
     useEffect(() => {
-        apiCourse.getCoursesPublic()
-            .then(res => {
-                if (Array.isArray(res)) {
-                    setCourses(res)
-                }
-            })
-
+        debounceFn(value)
     }, [])
 
 
