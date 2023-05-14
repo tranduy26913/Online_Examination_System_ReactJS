@@ -29,7 +29,6 @@ function CourseItem({ course }) {
 
     const { mutate, data: courseInfo, isLoading, error } = useMutation(['info-course', courseId],
         (params) => apiCourse.getCourseInfo(params))
-    console.log(courseInfo)
     const handlePurchase = () => {
 
         apiCourse.purchaseCourse({ courseId: course?.courseId })

@@ -54,9 +54,11 @@ function CreateCourse(props) {
         defaultValues: {
             name: "",
             description: "",
+            price: 0
         }
     });
     const isSell = watch("isSell", false)
+    const price = watch("price", 0)
 
     const checkTime = (start, end) => {
         let isError = false
@@ -101,7 +103,7 @@ function CreateCourse(props) {
     }
 
     const handleCreate = (data) => {
-        const { name, description, pin, status,isSell,price } = data
+        const { name, description, pin, status, isSell, price } = data
         let random = ''
         for (let i = 0; i < 7; i++) {
             random += alphabet[Math.floor(Math.random() * alphabet.length)]
@@ -144,7 +146,7 @@ function CreateCourse(props) {
     }
 
     const handleUpdate = (data) => {
-        const { name, description, pin,isSell, price } = data
+        const { name, description, pin, isSell, price } = data
         let random = ''
         for (let i = 0; i < 7; i++) {
             random += alphabet[Math.floor(Math.random() * alphabet.length)]
@@ -192,7 +194,9 @@ function CreateCourse(props) {
                     setValue('name', res.name)
                     setValue('description', res.description)
                     setValue('pin', res.pin)
+
                     setValue('isSell', res.price > 0)
+                    setValue('price', res.price)
                     setImage(res.image)
                     setStartTime(moment(res.startTime))
                     setEndTime(moment(res.endTime))
@@ -277,37 +281,38 @@ function CreateCourse(props) {
                                         )}
                                     />
                                 </Stack>
-                                {isSell ?
-                                    <Controller
-                                        name={"price"}
-                                        control={control}
-                                        render={({ field, fieldState: { error } }) => (
-                                            <TextField
-                                                {...field}
-                                                size='small'
-                                                type='text'
-                                                label="Giá khoá học"
-                                                error={error !== undefined}
-                                                helperText={error ? error.message : ''}
-                                                variant="outlined" />
-                                        )}
-                                    />
-                                    :
-                                    <Controller
-                                        name={"pin"}
-                                        control={control}
-                                        render={({ field, fieldState: { error } }) => (
-                                            <TextField
-                                                {...field}
-                                                size='small'
-                                                type='text'
-                                                label="Mật khẩu tham gia"
-                                                error={error !== undefined}
-                                                helperText={error ? error.message : ''}
-                                                variant="outlined" />
-                                        )}
-                                    />
-                                }
+                                <Controller
+                                    name={"price"}
+                                    control={control}
+                                    render={({ field, fieldState: { error } }) => (
+                                        <TextField
+                                            {...field}
+                                            size='small'
+                                            type="text"
+                                            sx={!isSell && { display: 'none' }}
+                                            label="Giá khoá học"
+                                            error={error !== undefined}
+                                            helperText={error ? error.message : ''}
+                                            variant="outlined" />
+                                    )}
+                                />
+
+                                <Controller
+                                    name={"pin"}
+                                    control={control}
+                                    render={({ field, fieldState: { error } }) => (
+                                        <TextField
+                                            {...field}
+                                            size='small'
+                                            type='text'
+                                            sx={isSell && { display: 'none' }}
+                                            label="Mật khẩu tham gia"
+                                            error={error !== undefined}
+                                            helperText={error ? error.message : ''}
+                                            variant="outlined" />
+                                    )}
+                                />
+
 
                                 <LocalizationProvider dateAdapter={AdapterMoment}>
                                     <DesktopDatePicker

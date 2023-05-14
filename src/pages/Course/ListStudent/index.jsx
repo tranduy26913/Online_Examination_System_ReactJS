@@ -174,7 +174,7 @@ const ListStudent = () => {
                                                         </Typography>
                                                     </Stack>
                                                 </TableCell>
-                                                <TableCell sx={{ width: '15%' }} align="center">{gender === 'female' ? "Nữ" : "Nam"}</TableCell>
+                                                <TableCell sx={{ width: '15%' }} align="center">{gender === 'Male' ? "Nam" : "Nữ"}</TableCell>
                                                 <TableCell sx={{ width: '15%' }} align="center">{moment(birthday).format("DD/MM/YYYY")}</TableCell>
                                                 <TableCell sx={{ width: '20%' }} align="center">{count}</TableCell>
                                                 <TableCell sx={{ width: '15%' }} align="center">
