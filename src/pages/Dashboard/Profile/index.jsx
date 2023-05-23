@@ -36,6 +36,7 @@ import LoadingButton from "components/LoadingButton";
 import ToolAvatar from "./ToolAvatar";
 import UpgradeRole from "./UpgradeRole";
 import Page from "components/Page";
+import Withdrawal from "./Withdrawal";
 
 const Profile = () => {
     const user = useSelector(state => state.user.info);
@@ -238,6 +239,23 @@ const Profile = () => {
                                 {
                                     user?.role === 'STUDENT' &&
                                     <UpgradeRole />
+                                }
+                            </Stack>
+
+                            <Stack
+                                direction="row"
+                                alignItems="center"
+                                justifyContent="space-between"
+                            >
+                                <Stack direction="row" spacing={1}>
+                                    <DiamondIcon color="primary" />
+                                    <ListItemText
+                                        sx={{ '& span': { fontSize: "13px" } }}
+                                        primary="Số dư" secondary={user?.role === 'TEACHER' ? "Giáo viên" : "Học sinh"} />
+                                </Stack>
+                                {
+                                    user?.role === 'TEACHER' &&
+                                    <Withdrawal />
                                 }
                             </Stack>
 

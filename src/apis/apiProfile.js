@@ -51,6 +51,11 @@ const apiProfile = {
         const res = await axiosClientWithToken.post(`/payment/upgrade-account`,params)
         return res.data;
     },
+    Withdrawal: async (params) => {
+
+        const res = await axiosClientWithToken.post(`/payment/withdraw-money`,params)
+        return res.data;
+    },
 
 
     

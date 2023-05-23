@@ -8,6 +8,11 @@ import {
     TextField,
     Typography,
     Divider,
+    Radio,
+    FormControlLabel,
+    RadioGroup,
+    FormLabel,
+    FormControl,
 } from '@mui/material'
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -42,6 +47,11 @@ function CreateCourse(props) {
     const [startTime, setStartTime] = useState(moment(new Date()))
     const [endTime, setEndTime] = useState(moment(new Date()).add(60, 'days'))
     const [error, setError] = useState({ isError: false, msg: "" })
+    const [certification, setCertification] = useState('not allow');
+
+  const handleChange = (event) => {
+    setCertification(event.target.value);
+  };
     const user = useSelector(state => state.user.info) //lấy thông tin user
     const role = useSelector(state => state.setting.role) //lấy thông tin role
     const { courseId } = useParams()
@@ -127,6 +137,7 @@ function CreateCourse(props) {
             description,
             pin,
             price,
+            certification,
             status,
             username: user.username,
             file: fileImage,
@@ -169,6 +180,7 @@ function CreateCourse(props) {
             courseId,
             name,
             description,
+            certification,
             pin,
             price,
             file: fileImage,
@@ -200,6 +212,7 @@ function CreateCourse(props) {
                     setImage(res.image)
                     setStartTime(moment(res.startTime))
                     setEndTime(moment(res.endTime))
+                    setCertification(res.certification)
                 })
         }
         getCourse()
@@ -313,7 +326,19 @@ function CreateCourse(props) {
                                     )}
                                 />
 
-
+                                <FormControl>
+                                    <FormLabel id="demo-controlled-radio-buttons-group">Cấp chứng chỉ</FormLabel>
+                                    <RadioGroup
+                                        aria-labelledby="demo-controlled-radio-buttons-group"
+                                        name="controlled-radio-buttons-group"
+                                        value={certification}
+                                        onChange={handleChange}
+                                    >
+                                        <FormControlLabel value="not allow" control={<Radio />} label="Không cấp" />
+                                        <FormControlLabel value="when done" control={<Radio />} label="Khi hoàn thành khoá học" />
+                                        <FormControlLabel value="when course done" control={<Radio />} label="Khi khoá học kết thúc" />
+                                    </RadioGroup>
+                                </FormControl>
                                 <LocalizationProvider dateAdapter={AdapterMoment}>
                                     <DesktopDatePicker
                                         inputFormat="DD/MM/YYYY"
