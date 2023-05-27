@@ -189,10 +189,13 @@ const LayoutCourse = () => {
                     variant='outlined'
                     endIcon={<SendIcon />}
                     text='Chia sẻ' />
-                    <Button
-                        variant='outlined'
-                        endIcon={<WorkspacePremiumIcon />}
-                      >Nhận chứng chỉ</Button>
+                    {
+                     role === 'student' && course?.isQualifỉed && <Button
+                      variant='outlined'
+                      endIcon={<WorkspacePremiumIcon />}
+                    >Nhận chứng chỉ</Button>
+                    }
+                    
                   {/* <FacebookShareCount  /> */}
                 </Stack>
                 <Box>
