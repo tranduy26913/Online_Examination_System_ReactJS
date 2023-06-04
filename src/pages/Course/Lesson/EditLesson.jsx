@@ -1,4 +1,4 @@
-import { Box, Button, Chip, Divider, FormControl, FormControlLabel, FormGroup, FormHelperText, IconButton, Stack, Switch, Typography } from '@mui/material'
+import { Box, Button, Chip, Divider, FormControl, FormControlLabel, FormGroup, FormHelperText, IconButton, Paper, Stack, Switch, Typography } from '@mui/material'
 import UploadIcon from '@mui/icons-material/Upload';
 import moment from 'moment'
 import { CKEditor } from '@ckeditor/ckeditor5-react';
@@ -126,7 +126,9 @@ function EditLesson(props) {
     return (
         <Box spacing={2}>
             {isEdit ?
-                <Stack spacing={2}>
+            <Paper elevation={6}>
+                <Stack spacing={2} p={2}>
+                <Typography align="center" fontSize="20px" color="primary">Chỉnh sửa bài giảng</Typography>
                     <Stack2Column>
 
                         <StackLabel>
@@ -232,14 +234,16 @@ function EditLesson(props) {
                         </Button>
                     </Box>
 
-                    <Stack direction='row' justifyContent='flex-end'>
+                    <Stack direction='row' justifyContent='flex-end' gap={2}>
+                    <Button variant='contained' color='error' onClick={hideEditor}>Huỷ</Button>
                         <LoadingButton
                             variant='contained'
                             loading={loading} onClick={handleSubmit(editLesson)}>Cập nhật</LoadingButton>
 
-                        <Button variant='contained' onClick={hideEditor}>Huỷ</Button>
+                        
                     </Stack>
                 </Stack>
+                </Paper>
                 :
                 <Stack spacing={1.5}>
                     <Stack

@@ -108,10 +108,9 @@ const Withdrawal = (props) => {
                 Rút tiền
             </Button>
             <Dialog open={open} onClose={handleClose} maxWidth={"md"}>
-                <DialogTitle>Nâng cấp lên tài khoản giáo viên</DialogTitle>
+                <DialogTitle align='center'>RÚT TIỀN</DialogTitle>
                 <DialogContent>
                     <Stack width='500px' p={3} spacing={2}>
-                        <Typography fontSize='24px' color='primary' align='center'>Nạp tiền</Typography>
                         <TextField placeholder='Nhập số tiền' onChange={handleChangeAmount} />
                        
                             <FormControl >

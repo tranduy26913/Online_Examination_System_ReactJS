@@ -37,11 +37,12 @@ import ToolAvatar from "./ToolAvatar";
 import UpgradeRole from "./UpgradeRole";
 import Page from "components/Page";
 import Withdrawal from "./Withdrawal";
+import {numWithCommas} from "utils/index"
 
 const Profile = () => {
     const user = useSelector(state => state.user.info);
     const dispatch = useDispatch();
-    const { handleSubmit, control } = useForm({
+    const { handleSubmit, control, setValue} = useForm({
         mode: "onChange",
         resolver: yupResolver(schema),
         reValidateMode: "onChange",
@@ -91,6 +92,10 @@ const Profile = () => {
                 let newUser = res
                 setBirthday(moment(res.birthday))
                 dispatch(setUserInfo(newUser))
+                setValue("fullname", res.fullname)
+                setValue("phone",res.phone)
+                setValue("address",res.address)
+                setValue("school", res.school)
             })
     }
 
@@ -251,7 +256,7 @@ const Profile = () => {
                                     <DiamondIcon color="primary" />
                                     <ListItemText
                                         sx={{ '& span': { fontSize: "13px" } }}
-                                        primary="Số dư" secondary={user?.role === 'TEACHER' ? "Giáo viên" : "Học sinh"} />
+                                        primary="Số dư" secondary={`${numWithCommas(user?.balance || 0)}đ`} />
                                 </Stack>
                                 {
                                     user?.role === 'TEACHER' &&

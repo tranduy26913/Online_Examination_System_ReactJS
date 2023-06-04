@@ -15,9 +15,9 @@ import {
 // Setup color
 /** PRIMARY */
 const PRIMARY = {
-  //light: lightBlue["A200"],
+  light: lightBlue["A200"],
   //main: cyan["600"],
-  light: '#85CDFD',
+  //light: '#85CDFD',
   dark: lightBlue["600"],
   main: lightBlue["500"],
   //main:'#00B7C2',

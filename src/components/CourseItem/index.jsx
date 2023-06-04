@@ -64,6 +64,7 @@ function CourseItem({ course }) {
                 />
                 <Link to={`/course/${course.courseId}`}>
                     <Typography color="primary" variant="h5" component="div"
+                    className="text-overflow-1-lines "
                         sx={{
                             textAlign: "center",
                         }}>

@@ -1,4 +1,4 @@
-import { Box, Button, FormControl, FormControlLabel, FormGroup, FormHelperText, Stack, Switch } from '@mui/material'
+import { Box, Button, FormControl, FormControlLabel, FormGroup, FormHelperText, Paper, Stack, Switch,Typography} from '@mui/material'
 import moment from 'moment'
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import { useContext, useState } from 'react'
@@ -77,9 +77,11 @@ function CreateLesson({ getData }) {
     }
 
     return (
-        <Box spacing={2}>
+        <Box spacing={2} mt={2}>
             {isAdd ?
-                <Stack spacing={2}>
+            <Paper elevation={6}>
+                <Stack spacing={2} p={2}>
+                    <Typography align="center" fontSize="20px" color="primary">Thêm bài giảng</Typography>
                     <Stack2Column>
 
                         <StackLabel>
@@ -180,19 +182,21 @@ function CreateLesson({ getData }) {
                         <Button variant='contained' component="label" width='160px'
                             endIcon={<UploadIcon />}
                         >
-                            Tải ảnh lên
+                            Tải file lên
                             <input hidden accept="image/*" type="file" onChange={handleChooseFile} />
                         </Button>
                     </Box>
 
                     <Stack direction='row' justifyContent='flex-end' spacing={2}>
+                    <Button variant='contained' color="error"
+                            onClick={hideEditor}>Huỷ</Button>
                         <LoadingButton variant='contained'
                             loading={loading}
                             onClick={handleSubmit(createLesson)}>Thêm</LoadingButton>
-                        <Button variant='contained'
-                            onClick={hideEditor}>Huỷ</Button>
+                       
                     </Stack>
                 </Stack>
+                </Paper>
                 :
                 <Stack direction={'row'} justifyContent={'center'}>
                     <Button variant='contained' onClick={onClickAdd}>Thêm nội dung</Button>
