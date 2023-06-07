@@ -73,7 +73,7 @@ export const StackLabel = styled(Stack)(({ theme }) => ({
         height:'40px',
         paddingLeft: '12px',
         borderRadius: '8px 0 0px 8px',
-        backgroundColor: `${theme.palette.primary.main}c0`,
+        backgroundColor: `${theme.palette.primary.light}c0`,
         color: '#222',
         display: 'flex',
         alignItems: 'center',

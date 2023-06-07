@@ -32,6 +32,7 @@ import ShareTray from "components/ShareTray";
 import LinearProgressWithLabel from "components/LinearProgressWithLabel";
 import { getMessageError } from "utils";
 import WorkspacePremiumIcon from '@mui/icons-material/WorkspacePremium';
+import GetCertification from "./GetCertification";
 //import { CSSTransition } from 'react-transition-group';
 
 const checkSelectedTab = (item, pathname) => {
@@ -190,10 +191,8 @@ const LayoutCourse = () => {
                     endIcon={<SendIcon />}
                     text='Chia sẻ' />
                     {
-                     role === 'student' && course?.isQualifỉed && <Button
-                      variant='outlined'
-                      endIcon={<WorkspacePremiumIcon />}
-                    >Nhận chứng chỉ</Button>
+                     role === 'student' && course?.isQualified && 
+                     <GetCertification />
                     }
                     
                   {/* <FacebookShareCount  /> */}

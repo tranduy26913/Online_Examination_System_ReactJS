@@ -14,6 +14,10 @@ import { axiosClientWithToken } from "./axiosClient";
         const res = await axiosClientWithToken.get(`/course/course-public`, {params})
         return res.data;
     },
+    getCertificate: async (params) => {
+        const res = await axiosClientWithToken.post(`/certificate/create`, null,{params:params})
+        return res.data;
+    },
     getSearchCourse: async (params) => {
         const res = await axiosClientWithToken.get(`/course/s`, {params})
         return res.data;
