@@ -48,34 +48,6 @@ function StatisticExam(props) {
         </Grid>
 
 
-        {/* <Grid container spacing={2}>
-          <Grid item xs={6}>
-            <Paper>
-              <PieChartPoint
-                chartData={[
-                  { label: '0-2', value: 4344 },
-                  { label: '2-4', value: 5435 },
-                  { label: '4-6', value: 1443 },
-                  { label: '6-8', value: 4443 },
-                  { label: '8-10', value: 4443 },
-                ]}
-              /></Paper>
-          </Grid>
-          <Grid item xs={6}>
-            <Paper>
-              <PieChartPoint
-                chartData={[
-                  { label: 'America', value: 4344 },
-                  { label: 'Asia', value: 5435 },
-                  { label: 'Europe', value: 1443 },
-                  { label: 'Africa', value: 4443 },
-                ]}
-              /></Paper>
-          </Grid>
-        </Grid> */}
-
-
-
       </Stack>
     </Page>
   )

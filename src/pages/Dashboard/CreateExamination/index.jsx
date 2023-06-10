@@ -100,7 +100,6 @@ const CreateExamination = (props) => {
             else
               setValue('attemptsAllowed', exam.attemptsAllowed)
             setId(exam.id || exam._id)
-            console.log(moment(exam.startTime).format("YYYY-MM-DDTHH:mm"))
             if (new Date(exam.startTime).toLocaleString() !== "Invalid Date")
               setValue('startTime', moment(exam.startTime).format("YYYY-MM-DDTHH:mm"))
 

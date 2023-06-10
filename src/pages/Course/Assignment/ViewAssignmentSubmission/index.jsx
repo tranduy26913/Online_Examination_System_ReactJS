@@ -181,7 +181,7 @@ const ListSubmission = () => {
                                         return (
                                             <TableRow
                                                 hover
-                                                key={id}
+                                                key={id || index}
                                                 tabIndex={-1}
                                                 role="checkbox"
                                             >

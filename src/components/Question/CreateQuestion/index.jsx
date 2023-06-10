@@ -102,7 +102,6 @@ const CreateQuestion = (props) => {
 
   useEffect(() => {
     if (question) {
-      console.log(question)
       setContent(question.content)
       setMaxPoints(question.maxPoints)
       // setTypeQuestion(question.type)
@@ -132,7 +131,6 @@ const CreateQuestion = (props) => {
       ...newAnswers[chooseAnswerIndex],
       type: event.target.value
     }
-    //console.log(chooseAnswerIndex)
     setAnswers(newAnswers)
   };
 

@@ -18,7 +18,6 @@ import {
 import apiProfile from "apis/apiProfile";
 import LoadingButton from 'components/LoadingButton';
 import { useDispatch } from 'react-redux';
-import { setUserInfo } from 'slices/userSlice';
 import UpgradeIcon from '@mui/icons-material/Upgrade';
 import { getMessageError } from 'utils';
 
@@ -58,7 +57,6 @@ const listBank = {
     KIENLONGBANK: "NHTMCP Kiên Long (Kien Long bank)",
   }
 const Withdrawal = (props) => {
-    const [uploading, setUploading] = useState(false);
     const [open, setOpen] = useState(false)
     const [loading, setLoading] = useState(false)
     
@@ -72,14 +70,13 @@ const Withdrawal = (props) => {
     };
     const handleClose = () => setOpen(false)
     const handleOpen = () => setOpen(true)
-    const dispatch = useDispatch()
 
     const handleChangeAmount = (e) => {
         setAmount(Number(e.target.value))
     }
 
         const handlePayment = () => {
-        setUploading(true)
+            setLoading(true)
         const params = {
             creditNumber,
             password,
@@ -97,7 +94,7 @@ const Withdrawal = (props) => {
             })
             .finally(() => {
                 setOpen(false)
-                setUploading(false)
+                setLoading(false)
             })
     };
 
@@ -122,8 +119,8 @@ const Withdrawal = (props) => {
                                     onChange={handleChange}
                                 >
                                     {
-                                        Object.entries(listBank).map(item=>
-                                            <MenuItem value={item[0]}>{item[1]}</MenuItem> )
+                                        Object.entries(listBank).map((item,index)=>
+                                            <MenuItem key={index} value={item[0]}>{item[1]}</MenuItem> )
                                     }
                                 </Select>
                             </FormControl>

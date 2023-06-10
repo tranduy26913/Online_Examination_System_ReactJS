@@ -13,6 +13,7 @@ function FaceRecognition() {
     const intervalRef = useRef();
     const [time, setTime] = useState(0)
     const [count, setCount] = useState(0)
+    const [countFace, setCountFace] = useState(0)
 
     const answerSheet = useSelector(state => state.answerSheet?.result)
     const takeExamId = useSelector(state => state.answerSheet?.takeExamId)
@@ -46,6 +47,8 @@ function FaceRecognition() {
                 videoRef.current.srcObject = currentStream;
             }).catch((err) => {
                 console.error(err)
+                toast.warning("Vui lòng bật camera để tiếp tục thi!")
+                navigate('/')
             });
     }
     const loadModels = () => {
@@ -61,8 +64,6 @@ function FaceRecognition() {
     };
 
     useEffect(()=>{
-        // console.log(time)
-        // console.log('count:'+count)
         if(time > 5000){
             setTime(0)
             toast.warning(`Không phát hiện khuôn mặt quá 5 giây lần ${count+1}`)
@@ -71,6 +72,10 @@ function FaceRecognition() {
                 toast.warning('Không phát hiện khuôn mặt quá 5 lần. Bài thi tự động nộp')
                 handleSubmit()
             }
+        }
+
+        if(countFace > 1){
+            toast.warning(`Phát hiện ${count} khuôn mặt khi thực hiện bài thi.`)
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     },[time,count])
@@ -89,10 +94,11 @@ function FaceRecognition() {
                 width: 240,
                 height: 180,
             });
-            console.log('run')
             if(resized.length !== 0){
-                console.log(resized[0]._score)
                 setTime(0)
+                if(resized.length > 1){
+                    setCountFace(resized.length)
+                }
             }
             else{
                 setTime(prev=>prev+1000)
