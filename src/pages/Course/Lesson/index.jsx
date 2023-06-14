@@ -48,7 +48,7 @@ function Lesson() {
           </Stack>
           {role==='teacher' &&
           <Stack>
-            <CreateLesson />
+            <CreateLesson getData={getData}/>
           </Stack>
           }
         </Stack>

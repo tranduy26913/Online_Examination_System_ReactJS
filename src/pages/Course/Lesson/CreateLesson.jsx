@@ -62,6 +62,7 @@ function CreateLesson({ getData }) {
                 getData()
             })
             .catch(err => {
+                console.log(err)
                 toast.warning("Thêm không thành công")
             })
             .finally(() => setLoading(false))
@@ -69,12 +70,17 @@ function CreateLesson({ getData }) {
 
     const handleChooseFile = (e) => {
         if (e.target.files.lenght !== 0) {
-            apiUpload.updateFile({ upload: e.target.files[0] })
-                .then(res => {
-                    setFile(res.url)
-                })
+          const id = toast.loading("Đang tải lên")
+          apiUpload.updateFileDeta({ upload: e.target.files[0] })
+            .then(res => {
+              setFile(res.url)
+              toast.update(id, { render: "Tải lên thành công",isLoading:false, type:'success',autoClose: 1500 })
+            })
+            .catch(err => {
+              toast.update(id, { render: "Tải lên không thành công",isLoading:false, type:'warning',autoClose: 1500 })
+            })
         }
-    }
+      }
 
     return (
         <Box spacing={2} mt={2}>

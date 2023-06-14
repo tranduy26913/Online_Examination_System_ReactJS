@@ -1,4 +1,4 @@
-import { useRef, useEffect ,useLayoutEffect, useState} from 'react';
+import { useRef, useEffect, useLayoutEffect, useState } from 'react';
 import * as faceapi from "face-api.js";
 import { Box } from '@mui/material';
 import { toast } from 'react-toastify';
@@ -12,11 +12,13 @@ function FaceRecognition() {
     const canvasRef = useRef();
     const intervalRef = useRef();
     const [time, setTime] = useState(0)
-    const [count, setCount] = useState(0)
+    const [countTime, setCountTime] = useState(0)
+    const [face, setFace] = useState(0)
     const [countFace, setCountFace] = useState(0)
 
     const answerSheet = useSelector(state => state.answerSheet?.result)
     const takeExamId = useSelector(state => state.answerSheet?.takeExamId)
+    const step = 500
     const navigate = useNavigate()
     const dispatch = useDispatch()
 
@@ -35,9 +37,12 @@ function FaceRecognition() {
         startVideo();
         videoRef && loadModels();
 
-        return ()=>{
-           videoRef.current.srcObject.getTracks().forEach(track => track.stop())
-            clearInterval(intervalRef.current)
+        return () => {
+            if (videoRef.current.srcObject) {
+                videoRef.current.srcObject.getTracks().forEach(track => track.stop())
+                clearInterval(intervalRef.current)
+            }
+
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -46,7 +51,6 @@ function FaceRecognition() {
             .then((currentStream) => {
                 videoRef.current.srcObject = currentStream;
             }).catch((err) => {
-                console.error(err)
                 toast.warning("Vui lòng bật camera để tiếp tục thi!")
                 navigate('/')
             });
@@ -64,24 +68,29 @@ function FaceRecognition() {
     };
 
     useEffect(()=>{
-        if(time > 5000){
+        if (time > 5000) {
             setTime(0)
-            toast.warning(`Không phát hiện khuôn mặt quá 5 giây lần ${count+1}`)
-            setCount(prev => prev+ 1)
-            if(count+1 > 5){
+            toast.warning(`Không phát hiện khuôn mặt quá 5 giây lần ${countTime + 1}`)
+            setCountTime(prev => prev + 1)
+            if (countTime + 1 > 5) {
                 toast.warning('Không phát hiện khuôn mặt quá 5 lần. Bài thi tự động nộp')
                 handleSubmit()
             }
         }
-
-        if(countFace > 1){
-            toast.warning(`Phát hiện ${count} khuôn mặt khi thực hiện bài thi.`)
+        if(face > 5000){
+            setFace(0)
+            toast.warning(`Phát hiện nhiều khuôn mặt quá 5 giây lần ${countFace + 1}`)
+            setCountFace(prev => prev + 1)
+            if (countFace + 1 > 5) {
+                toast.warning('Phát hiện nhiều khuôn mặt quá 5 lần. Bài thi tự động nộp')
+                handleSubmit()
+            }
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    },[time,count])
+    },[countTime, countFace, face, time])
 
     const faceDetection = async () => {
-        intervalRef.current =  setInterval(async () => {
+        clearInterval(intervalRef.current)
+        intervalRef.current = setInterval(async () => {
             const detections = await faceapi.detectAllFaces
                 (videoRef.current, new faceapi.TinyFaceDetectorOptions())
             canvasRef.current.innerHtml = faceapi
@@ -94,27 +103,31 @@ function FaceRecognition() {
                 width: 240,
                 height: 180,
             });
-            if(resized.length !== 0){
+            if (resized.length !== 0) {
                 setTime(0)
-                if(resized.length > 1){
-                    setCountFace(resized.length)
+                if (resized.length > 1) {
+                    setFace(prev => prev + step)
+                }
+                else {
+                    setFace(0)
                 }
             }
-            else{
-                setTime(prev=>prev+1000)
+            else {
+                setTime(prev => prev + step)
             }
+            
             // to draw the detection onto the detected face i.e the box
             faceapi.draw.drawDetections(canvasRef.current, resized);
             //to draw the the points onto the detected face
             // faceapi.draw.drawFaceLandmarks(canvasRef.current, resized);
             // //to analyze and output the current expression by the detected face
             // faceapi.draw.drawFaceExpressions(canvasRef.current, resized);
-        }, 1000)
+        }, step)
     }
-    
+
     return (
         <>
-            <Box sx={{ width: '240px',height:'180px', position: 'relative' }}>
+            <Box sx={{ width: '240px', height: '180px', position: 'relative' }}>
                 <video crossOrigin='anonymous' style={{ width: '100%', height: '100%' }} ref={videoRef} autoPlay>
                 </video>
                 <canvas ref={canvasRef} width="240" height="180"

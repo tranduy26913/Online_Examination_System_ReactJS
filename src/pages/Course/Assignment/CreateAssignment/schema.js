@@ -25,10 +25,10 @@ export const schema = Yup.object().shape({
       function (value) {
         return moment(value, "YYYY-MM-DDTHH:mm").isValid();
       })
-    .test("endTime", "Thời gian bắt đầu phải sau thời điểm này",
-      function (value) {
-        return moment().diff(moment(value, "YYYY-MM-DDTHH:mm"), "minutes") < 0;
-      })
+    // .test("endTime", "Thời gian bắt đầu phải sau thời điểm này",
+    //   function (value) {
+    //     return moment().diff(moment(value, "YYYY-MM-DDTHH:mm"), "minutes") < 0;
+    //   })
     .test(
       'endTime2',
       "Thời gian kết thúc phải lớn hơn thời gian làm bài",

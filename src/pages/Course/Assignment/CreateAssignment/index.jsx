@@ -9,6 +9,8 @@ import {
   FormGroup,
   FormHelperText,
   FormControl,
+  IconButton,
+  Button,
 } from '@mui/material'
 import { useTheme } from '@mui/system';
 import moment from 'moment'
@@ -30,6 +32,10 @@ import LoadingButton from 'components/LoadingButton';
 import { getMessageError } from 'utils';
 import DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
 import { MyUploadAdapter } from 'config/MyCustomUploadAdapterPlugin';
+import apiUpload from 'apis/apiUpload';
+import UploadIcon from '@mui/icons-material/Upload';
+import AttachFileIcon from '@mui/icons-material/AttachFile';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const CreateAssignment = (props) => {
   const theme = useTheme()
@@ -40,6 +46,7 @@ const CreateAssignment = (props) => {
   const [id, setId] = useState('')
   const [status, setStatus] = useState('')
   const [content, setContent] = useState('')
+  const [file, setFile] = useState('')
   const [allowReSubmit, setAllowReSubmit] = useState(false)//cho phép nộp lại
   const [allowSubmitLate, setAllowSubmitLate] = useState(false)//cho phép nộp trễ
   const [loading, setLoading] = useState(false)//loading button
@@ -77,6 +84,7 @@ const CreateAssignment = (props) => {
             setAllowSubmitLate(res.allowSubmitLate)
             setContent(res.content)
             setId(res.id || res._id)
+            setFile(res.file)
           }
           catch (err) {
           }
@@ -88,7 +96,7 @@ const CreateAssignment = (props) => {
   }, [slug, accessToken])
 
   const handleCreate = (data) => {
-    const { name, startTime, endTime, maxPoints } = data
+    const { name, startTime, endTime, maxPoints} = data
 
     const params = {
       name,
@@ -99,7 +107,8 @@ const CreateAssignment = (props) => {
       startTime: new Date(startTime),
       endTime: new Date(endTime),
       allowReSubmit,
-      allowSubmitLate
+      allowSubmitLate,
+      file
     }
     apiAssignment.createAssignment(params)
       .then(res => {
@@ -122,7 +131,8 @@ const CreateAssignment = (props) => {
       startTime: new Date(startTime),
       endTime: new Date(endTime),
       allowReSubmit,
-      allowSubmitLate
+      allowSubmitLate,
+      file
     }
     setLoading(true)
     apiAssignment.updateAssignment(params)
@@ -153,6 +163,24 @@ const CreateAssignment = (props) => {
         toast.warning(getMessageError(err))
       })
       .finally(() => setLoadingPublish(false))
+  }
+
+  const handleChooseFile = (e) => {
+    if (e.target.files.lenght !== 0) {
+      const id = toast.loading("Đang tải lên")
+      apiUpload.updateFileDeta({ upload: e.target.files[0] })
+        .then(res => {
+          setFile(res.url)
+          toast.update(id, { render: "Tải lên thành công",isLoading:false, type:'success',autoClose: 1500 })
+        })
+        .catch(err => {
+          toast.update(id, { render: "Tải lên không thành công",isLoading:false, type:'warning',autoClose: 1500 })
+        })
+    }
+  }
+
+  const onClickDeleteFile = () => {
+    setFile(null)
   }
 
   return (
@@ -266,9 +294,9 @@ const CreateAssignment = (props) => {
             <CKEditor
               editor={DecoupledEditor}
               data={content}
-              config = {{
-                mediaEmbed:{
-                  previewsInData :true,
+              config={{
+                mediaEmbed: {
+                  previewsInData: true,
                 }
               }}
               onReady={editor => {
@@ -288,6 +316,28 @@ const CreateAssignment = (props) => {
 
             />
           </Stack>
+
+          {
+            file ?
+              <Stack direction='row' spacing={1} alignItems={'center'}>
+                <a href={`https://be-oes.vercel.app/api/upload/download?filename=${file}`} target="_blank" rel="noopener noreferrer">
+                  <AttachFileIcon sx={{ 'transform': 'translateY(6px)' }} />
+                  {file.split('__').pop()}</a>
+                <IconButton onClick={onClickDeleteFile} size="small" color='warning' sx={{ 'transform': 'translateY(3px)' }} >
+                  <DeleteIcon fontSize="small" color="error"  />
+                </IconButton>
+              </Stack>
+
+              :
+              <Box>
+                <Button variant='contained' component="label" width='160px'
+                  endIcon={<UploadIcon />}
+                >
+                  Tải file lên
+                  <input hidden type="file" onChange={handleChooseFile} />
+                </Button>
+              </Box>
+          }
 
         </Stack>
         {

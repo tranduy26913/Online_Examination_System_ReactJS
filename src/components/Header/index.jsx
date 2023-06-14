@@ -142,6 +142,7 @@ function Header() {
   }
   const handleLogout = () => {
     dispatch(logoutSuccess())
+    navigate('/')
     setAnchorElUser(null);
     clearInterceptor()
   }

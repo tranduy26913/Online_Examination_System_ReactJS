@@ -5,8 +5,10 @@ import {
   Typography,
   Stack,
   Accordion,
+  Button,
   AccordionSummary,
   AccordionDetails,
+  IconButton,
 } from '@mui/material'
 import { useTheme } from '@mui/system';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
@@ -27,6 +29,10 @@ import DOMPurify from 'dompurify';
 import { calcDurationTime } from 'utils/formatTime';
 import apiSubmitAssignment from 'apis/apiSubmitassignment';
 import { ContentWrap } from 'components/UI/Content';
+import apiUpload from 'apis/apiUpload';
+import UploadIcon from '@mui/icons-material/Upload';
+import AttachFileIcon from '@mui/icons-material/AttachFile';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const SubmitAssignment = (props) => {
   const theme = useTheme()
@@ -41,6 +47,7 @@ const SubmitAssignment = (props) => {
   const [content, setContent] = useState('')
   const [contentSubmission, setContentSubmission] = useState('')
   const [submitAssignmentId, setSubmitAssignmentId] = useState('')
+  const [file, setFile] = useState('')
   const [submitTime, setSubmitTime] = useState('')
   const [allowReSubmit, setAllowReSubmit] = useState(false)//cho phép nộp lại
   const [allowSubmitLate, setAllowSubmitLate] = useState(false)//cho phép nộp trễ
@@ -74,6 +81,7 @@ const SubmitAssignment = (props) => {
             setContentSubmission(submitAssignment.content)
             setSubmitTime(submitAssignment.submitTime)
             setPoints(submitAssignment.points)
+            setFile(submitAssignment.file)
             diff = moment(assignment.endTime).diff(submitAssignment.submitTime, 'seconds')
           }
           else {
@@ -92,7 +100,8 @@ const SubmitAssignment = (props) => {
     setLoading(true)
     const params = {
       assignmentId,
-      content: contentSubmission
+      content: contentSubmission,
+      file
     }
     apiSubmitAssignment.CreateSubmitAssignment(params)
       .then(res => {
@@ -117,7 +126,8 @@ const SubmitAssignment = (props) => {
   const handleUpdate = (data) => {
     const params = {
       submitAssignmentId,
-      content: contentSubmission
+      content: contentSubmission,
+      file
     }
     setLoading(true)
     apiSubmitAssignment.UpdateSubmitAssignment(params)
@@ -159,6 +169,23 @@ const SubmitAssignment = (props) => {
       .finally(() => setLoadingDelete(false))
   }
 
+  const handleChooseFile = (e) => {
+    if (e.target.files.lenght !== 0) {
+      const id = toast.loading("Đang tải lên")
+      apiUpload.updateFileDeta({ upload: e.target.files[0] })
+        .then(res => {
+          setFile(res.url)
+          toast.update(id, { render: "Tải lên thành công",isLoading:false, type:'success',autoClose: 1500 })
+        })
+        .catch(err => {
+          toast.update(id, { render: "Tải lên không thành công", isLoading:false,type:'warning',autoClose: 1500 })
+        })
+    }
+  }
+
+  const onClickDeleteFile = () => {
+    setFile(null)
+  }
 
   const submitTimeText = (() => {
     let textDuration = calcDurationTime(duration)
@@ -244,7 +271,7 @@ const SubmitAssignment = (props) => {
             <AccordionDetails sx={{ padding: 0 }}>
               <Paper elevation={6}>
                 <ContentWrap>
-                  <Box dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(content,{ ADD_TAGS: ["iframe"], ADD_ATTR: ['allow', 'allowfullscreen', 'frameborder', 'scrolling'] }) }} />
+                  <Box dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(content, { ADD_TAGS: ["iframe"], ADD_ATTR: ['allow', 'allowfullscreen', 'frameborder', 'scrolling'] }) }} />
                 </ContentWrap>
               </Paper>
             </AccordionDetails>
@@ -277,6 +304,28 @@ const SubmitAssignment = (props) => {
                   setContentSubmission(editor.getData());
                 }}
               />
+
+              {
+                file ?
+                  <Stack direction='row' spacing={1} alignItems={'center'}>
+                    <a href={`https://be-oes.vercel.app/api/upload/download?filename=${file}`} target="_blank" rel="noopener noreferrer">
+                      <AttachFileIcon sx={{ 'transform': 'translateY(6px)' }} />
+                      {file.split('__').pop()}</a>
+                    <IconButton onClick={onClickDeleteFile} size="small" color='warning' sx={{ 'transform': 'translateY(3px)' }} >
+                      <DeleteIcon fontSize="small" color="error" />
+                    </IconButton>
+                  </Stack>
+
+                  :
+                  <Box>
+                    <Button variant='contained' component="label" width='160px'
+                      endIcon={<UploadIcon />}
+                    >
+                      Tải file lên
+                      <input hidden type="file" onChange={handleChooseFile} />
+                    </Button>
+                  </Box>
+              }
             </Stack>
 
             <Stack direction='row' justifyContent='center' spacing={2}>

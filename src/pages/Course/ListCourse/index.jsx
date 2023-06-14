@@ -98,7 +98,7 @@ const ListCourse = () => {
                                         <Grid container spacing={2} p={1.5}>
                                             {
                                                 coursesCurrent.map(item =>
-                                                    <Grid key={item.id} xs={12} sm={6} md={6} lg={3} >
+                                                    <Grid key={item._id} xs={12} sm={6} md={6} lg={3} >
                                                         <CourseItem course={item} />
                                                     </Grid>)
                                             }
@@ -108,7 +108,7 @@ const ListCourse = () => {
                                         <Grid container spacing={2} p={1.5}>
                                             {
                                                 coursesOld.map(item =>
-                                                    <Grid key={item.id} xs={12} sm={6} md={6} lg={3} >
+                                                    <Grid key={item._id} xs={12} sm={6} md={6} lg={3} >
                                                         <CourseItem course={item} />
                                                     </Grid>)
                                             }

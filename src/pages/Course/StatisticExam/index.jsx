@@ -43,9 +43,16 @@ function StatisticExam(props) {
         response = apiStatistic.getStatisticExamByTeacher(params)
 
       response.then(res => {
-        setExams(res?.takeExams)
+        let maxPoints = res.maxPoints
+        if( Array.isArray(res?.takeExams)){
+          let newArr = res?.takeExams.map(item=>({
+            ...item,
+            points: (item.points*10/maxPoints)
+          }))
+          setExams(newArr)
+        }
         setTypeofPoint(res.typeofPoint)
-        setMaxPoints(res.maxPoints)
+        setMaxPoints(10)
       })
     }
 
@@ -112,10 +119,11 @@ function StatisticExam(props) {
             <AppWidgetSummary title="Tổng kết" text={`Đạt ${summary}%`} total={234} color="error" />
           </Grid>
         </Grid>
-
-        <BarChartPoint title='Phổ điểm'
+{scoreDistribution.length !== 0 &&
+  <BarChartPoint title='Phổ điểm'
         seriesData={scoreDistribution}
-        />
+        />}
+        
 
         <Paper elevation={12}>
           {role === 'student' ? <TableStudent exams={exams} maxPoints={maxPoints} typeofPoint={typeofPoint} /> :

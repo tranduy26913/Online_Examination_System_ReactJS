@@ -1,5 +1,6 @@
 import { useTheme } from '@mui/material';
 import React, { useEffect,useMemo } from 'react';
+import { useLocation } from 'react-router-dom';
 
 function BackgroundAnimation() {
     const theme = useTheme()
@@ -15,7 +16,8 @@ function BackgroundAnimation() {
         linkRadius: 120
     }),[theme.palette.mode])
 
-    
+    const location = useLocation()
+    const isTakeExam = location.pathname.includes('/exam/') ? true : false
 
     useEffect(() => {
 
@@ -143,13 +145,19 @@ function BackgroundAnimation() {
             }
         }
 
-        init()
-
+        
+        if(isTakeExam){
+            if(id)
+                window.cancelAnimationFrame(id);
+        }
+        else{
+            init()
+        }
         return (() => {
             console.log('remove')
             window.cancelAnimationFrame(id);
         })
-    }, [options])
+    }, [options,isTakeExam])
     return (
         <canvas id="canvas" style={{
             display: 'block',
