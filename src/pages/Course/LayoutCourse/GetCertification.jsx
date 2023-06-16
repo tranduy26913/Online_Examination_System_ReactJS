@@ -18,6 +18,7 @@ import apiCourse from 'apis/apiCourse';
 import CourseContext from './CourseContext';
 import {Document, Page, pdfjs} from 'react-pdf';
 import ex from 'assets/file/ex.pdf'
+import FileSaver from 'file-saver';
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
@@ -30,34 +31,19 @@ function GetCertification() {
     const [urlCertificate, setUrlCertificate] = useState(ex)
 
     const handleClose = () => setOpen(false)
-    const handleOpen = () => setOpen(true)
+    const handleOpen = () => {
+        apiCourse.getCertificate({courseId})
+        .then(res=>{
+            FileSaver.saveAs(
+                res.link,
+                "MyCertificate.pdf"
+              );
+        })
+        setOpen(true)
+    } 
     const dispatch = useDispatch()
     const { courseId,  } = useContext(CourseContext)
 
-    const handleUpgrade = () => {
-        setUploading(true)
-        apiProfile.updateRole()
-            .then((response) => {
-                if(response.user)
-                    dispatch(setUserInfo(response.user))
-                toast.success(response.message)
-            })
-            .catch((error) => {
-                console.log(error.response)
-                toast.error(error.response);
-            })
-            .finally(() => {
-                setOpen(false)
-                setUploading(false)
-            })
-    };
-
-    useEffect(()=>{
-        apiCourse.getCertificate({courseId})
-        .then(res=>{
-            //setUrlCertificate(res.link)
-        })
-    },[])
     function onDocumentLoadSuccess({ numPages }) {
         setNumPages(numPages);
       }
@@ -68,7 +54,7 @@ function GetCertification() {
                 onClick={handleOpen}
                 endIcon={<WorkspacePremiumIcon />}
             >Nhận chứng chỉ</Button>
-
+{/* 
 <Dialog open={open} onClose={handleClose}>
                 <DialogTitle>Nâng cấp lên tài khoản giáo viên</DialogTitle>
                 <DialogContent>
@@ -80,7 +66,7 @@ function GetCertification() {
                     <Button  variant='contained' onClick={handleClose}>Huỷ</Button>
                     <LoadingButton variant='contained' loading={uploading} onClick={handleUpgrade}>Nâng cấp</LoadingButton>
                 </DialogActions>
-            </Dialog>
+            </Dialog> */}
         </>
     )
 }

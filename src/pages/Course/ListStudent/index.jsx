@@ -109,7 +109,6 @@ const ListStudent = () => {
                                 newStatus[index] = snapshot.val().state === 'online'
                             else
                                 newStatus[index] = false
-                                console.log(newStatus)
                             return newStatus
                         })
                     })

@@ -20,6 +20,7 @@ import { toast } from 'react-toastify';
 import { getMessageError } from 'utils';
 import { forwardRef } from 'react';
 import PropTypes from 'prop-types'
+import { useSelector } from 'react-redux';
 
 // ----------------------------------------------------------------------
 const Transition = forwardRef(function Transition(props, ref) {
@@ -32,7 +33,7 @@ UserMoreMenu.propTypes = {
 export default function UserMoreMenu({ studentId, reloadList }) {
   const [dialog, setDialog] = useState(false)
   const { id } = useContext(CourseContext)//lấy id khoá học
-
+ const role = useSelector(state => state.setting.role)
   const handleDeleteStudent = () => {
     setDialog(false)
     apiCourse.deleteStudentInCourse({
@@ -55,17 +56,20 @@ export default function UserMoreMenu({ studentId, reloadList }) {
 
   return (
     <>
-      <Stack direction='row' justifyContent='space-between'>
+      <Stack direction='row' justifyContent='center'>
         <Tooltip title="Thống kê">
           <IconButton>
             <BarChartIcon color='primary' width={24} height={24} />
           </IconButton>
         </Tooltip>
+        {
+          role ==='teacher' && 
         <Tooltip title="Xoá">
           <IconButton onClick={() => setDialog(true)}>
             <DeleteForeverIcon color='error' width={24} height={24} />
           </IconButton>
         </Tooltip>
+        }
       </Stack>
       <Dialog
         open={dialog}
