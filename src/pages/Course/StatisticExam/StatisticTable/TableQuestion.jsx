@@ -7,7 +7,6 @@ import {
     TableCell,
     TableContainer,
     TablePagination,
-    Chip,
     Box,
     Typography
 } from "@mui/material"
@@ -17,16 +16,15 @@ import moment from 'moment';
 import EmptyList from 'components/UI/EmptyList';
 import ButtonExport from 'components/ButtonExport';
 import { applySortFilter, getComparator } from 'components/TableCustom/FunctionHelper';
-import TakeExamAction from '../TakeExamAction';
 import DOMPurify from 'dompurify';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
     { id: 'question', label: 'Câu hỏi', align: 'left' },
-    { id: 'count', label: 'Tổng học viên làm', align: 'center' },
-    { id: 'correct', label: 'Học viên làm đúng', align: 'center' },
-    { id: 'wrong', label: 'Học viên làm sai', align: 'center' },
+    { id: 'count', label: 'Tổng lượt làm', align: 'center' },
+    { id: 'correct', label: 'Lượt làm đúng', align: 'center' },
+    { id: 'wrong', label: 'Lượt làm sai', align: 'center' },
     { id: 'percent', label: 'Tỉ lệ đúng', align: 'center' },
 ];
 
@@ -105,7 +103,7 @@ const TableQuestion = ({ questions }) => {
                             />
                             <TableBody>
                                 {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row,index) => {
-                                    const { question, tongSoHVDaLamCauHoi, soHVDaLamDung, soHVDaLamSai, status } = row;
+                                    const { question, tongSoHVDaLamCauHoi, soHVDaLamDung, soHVDaLamSai } = row;
                                     
                                     return (
                                         <TableRow

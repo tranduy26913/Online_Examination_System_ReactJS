@@ -16,18 +16,12 @@ import CourseContext from '../LayoutCourse/CourseContext';
 function StatisticExam(props) {
   const { courseId } = useContext(CourseContext)
 
-  const [noStudents, setNoStudents] = useState(0)
-  const [noExams, setNoExams] = useState(0)
-  const [noAssignments, setNoAssignments] = useState(0)
-  const [noTakeExams, setNoTakeExams] = useState(0)
+  const [statistic, setStatistic] = useState({})
   useEffect(() => {
     const getData = async () => {
       apiStatistic.getDetailOfCourse({ courseId })
         .then(res => {
-          setNoTakeExams(res?.countTakeExams)
-          setNoExams(res?.countExams)
-          setNoAssignments(res?.countAssignments)
-          setNoStudents(res?.countStudents)
+          setStatistic(res)
         })
 
     }
@@ -38,22 +32,28 @@ function StatisticExam(props) {
   return (
     <Page title='Thống kê khoá học'>
       <Stack spacing={2}>
-        <Grid container spacing={2}>
+        <Grid container spacing={2} justifyContent={'center'}>
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="Số học viên" total={noStudents} Icon={SchoolIcon} />
+            <AppWidgetSummary title="Số học viên" total={statistic.countStudents} Icon={SchoolIcon} />
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="Số bài thi" total={noExams} color="info" Icon={TipsAndUpdatesIcon}/>
-          </Grid>
-
-
-          <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="Lượt làm bài thi" total={noTakeExams} color="warning" Icon={ListAltIcon}/>
+            <AppWidgetSummary title="Số bài thi" total={statistic.countExams} color="info" Icon={TipsAndUpdatesIcon}/>
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="Số bài tập" total={noAssignments} color="error" Icon={AssignmentTurnedInIcon}/>
+            <AppWidgetSummary title="Lượt làm bài thi" total={statistic.countTakeExams} color="warning" Icon={ListAltIcon}/>
+          </Grid>
+
+          <Grid item xs={12} sm={6} md={3}>
+            <AppWidgetSummary title="Số bài tập" total={statistic.countAssignments} color="error" Icon={AssignmentTurnedInIcon}/>
+          </Grid>
+          <Grid item xs={12} sm={6} md={3}>
+            <AppWidgetSummary title="Lượt nộp bài tập" total={statistic.countSubmitAssignments} color="warning" Icon={ListAltIcon}/>
+          </Grid>
+
+          <Grid item xs={12} sm={6} md={3}>
+            <AppWidgetSummary title="Số học viên" total={statistic.countStudents} color="error" Icon={AssignmentTurnedInIcon}/>
           </Grid>
         </Grid>
 

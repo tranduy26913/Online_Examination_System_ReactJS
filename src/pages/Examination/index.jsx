@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useState } from 'react'
 import {
     Box,
     Button,
@@ -31,6 +31,7 @@ const Examination = () => {
     const [pin, setPin] = useState('')
     const [endTime, setEndTime] = useState()
     const [countExit, setCountExit] = useState(0)
+    const [countOutFace, setCountOutFace] = useState(0)
     const [loadingExam, setLoadingExam] = useState(true)
 
     const [questions, setQuestions] = useState([])
@@ -57,6 +58,8 @@ const Examination = () => {
                         setEndTime(new Date(resExam.exam.endTime))
                         setIsTracking(resExam.exam.tracking)
                         setName(resExam.exam.name)
+                        setCountExit(resExam.countOutTab)
+                        setCountOutFace(resExam.countOutFace)
                     }
                 })
                 .catch(err => {
@@ -75,12 +78,14 @@ const Examination = () => {
         questions = questions.map(item => ({
             question: item.id,
             answers: [],
-            type:item.type,
+            type: item.type,
             isDone: false,
             isFlag: false
         }))
         dispatch(addAllQuestion(questions))
     }
+
+    const increaseCountOutFace = useCallback(() => setCountOutFace(prev => prev + 1), [])
 
     const handleTakeExam = () => {
         apiTakeExam.CreateTakeExam({ slug: examId, pin })
@@ -94,6 +99,8 @@ const Examination = () => {
                 setEndTime(new Date(res.exam.endTime))
                 setName(res.exam.name)
                 setIsTracking(res.exam.tracking)
+                setCountExit(res.countOutTab || 0)
+                setCountOutFace(res.countOutFace || 0)
             })
             .catch(err => {
                 const text = getMessageError(err)
@@ -107,7 +114,9 @@ const Examination = () => {
     const handleSubmit = () => {
         apiTakeExam.submitAnswerSheet({
             takeExamId,
-            answerSheet
+            answerSheet,
+            countOutTab: countExit + 1,
+            countOutFace: countOutFace + 1
         })
             .then(res => {
                 navigate('/result-exam/' + takeExamId)
@@ -129,14 +138,14 @@ const Examination = () => {
 
             if (document.visibilityState === 'visible') {
                 handleCreateLog(`Thoát khỏi màn hình lần thứ ${countExit + 1}`)
-                if (countExit === 5) {
+                if (countExit + 1 >= 5) {
                     handleSubmit()
                     toast.warning(`Bài thi đã tự động nộp do bạn đã chuyển Tab 5 lần!`,
                         { autoClose: false })
                 }
                 else {
                     if (countExit > 0)
-                        toast.warning(`Cảnh báo! Bạn đã chuyển Tab ${countExit} lần. Chuyển Tab lần thứ 5 bài thi sẽ tự động được nộp!!!`,
+                        toast.warning(`Cảnh báo! Bạn đã chuyển Tab ${countExit + 1} lần. Chuyển Tab lần thứ 5 bài thi sẽ tự động được nộp!!!`,
                             { autoClose: false })
                     setCountExit(i => i + 1)
                 }
@@ -155,11 +164,11 @@ const Examination = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [countExit, takeExamId, isTracking])
 
-    const handleCreateLog = (action) => {
+    const handleCreateLog = useCallback((action) => {
         apiTakeExam.createLog({
-            action, takeExamId
+            action, takeExamId, countOutTab: countExit + 1, countOutFace
         })
-    }
+    }, [takeExamId, countExit, countOutFace])
     const style = {
 
         flexDirection: { xs: 'column', md: 'row' },
@@ -231,10 +240,14 @@ const Examination = () => {
                                         <BoxIndex />
 
                                         {
-                                            isTracking && 
-                                        <Paper elevation={12} sx={{ overflow: 'hidden' }}>
-                                            <FaceRecognition />
-                                        </Paper>
+                                            isTracking &&
+                                            <Paper elevation={12} sx={{ overflow: 'hidden' }}>
+                                                <FaceRecognition
+                                                    increaseCountOutFace={increaseCountOutFace}
+                                                    handleSubmit={handleSubmit}
+                                                    handleCreateLog={handleCreateLog}
+                                                    countOutFace={countOutFace} />
+                                            </Paper>
                                         }
                                     </Stack>
                                 </Stack>

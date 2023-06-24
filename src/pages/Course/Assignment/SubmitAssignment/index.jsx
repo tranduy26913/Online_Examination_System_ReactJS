@@ -132,10 +132,10 @@ const SubmitAssignment = (props) => {
     setLoading(true)
     apiSubmitAssignment.UpdateSubmitAssignment(params)
       .then(res => {
-        if (res.message === 'Không nằm trong thời gian nộp bài!')
-          toast.warning('Không nằm trong thời gian nộp bài!')
-        else
+        if (res.message === 'Cập nhật bài tập thành công')
           toast.success("Cập nhật bài tập thành công")
+        else
+          toast.warning(res.message)
 
         const submitAssignment = res.updateSubmitAssignment
         setSubmitAssignmentId(submitAssignment.id || submitAssignment._id)
@@ -175,10 +175,10 @@ const SubmitAssignment = (props) => {
       apiUpload.updateFileDeta({ upload: e.target.files[0] })
         .then(res => {
           setFile(res.url)
-          toast.update(id, { render: "Tải lên thành công",isLoading:false, type:'success',autoClose: 1500 })
+          toast.update(id, { render: "Tải lên thành công", isLoading: false, type: 'success', autoClose: 1500 })
         })
         .catch(err => {
-          toast.update(id, { render: "Tải lên không thành công", isLoading:false,type:'warning',autoClose: 1500 })
+          toast.update(id, { render: "Tải lên không thành công", isLoading: false, type: 'warning', autoClose: 1500 })
         })
     }
   }

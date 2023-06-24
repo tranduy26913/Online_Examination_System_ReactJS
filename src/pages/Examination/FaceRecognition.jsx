@@ -2,37 +2,15 @@ import { useRef, useEffect, useLayoutEffect, useState } from 'react';
 import * as faceapi from "face-api.js";
 import { Box } from '@mui/material';
 import { toast } from 'react-toastify';
-import { clearAnswerSheet, clearTakeExamId } from 'slices/answerSheetSlice';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import apiTakeExam from 'apis/apiTakeExam';
 
-function FaceRecognition() {
+function FaceRecognition({countOutFace, increaseCountOutFace,handleCreateLog, handleSubmit}) {
     const videoRef = useRef();
     const canvasRef = useRef();
     const intervalRef = useRef();
     const [time, setTime] = useState(0)
-    const [countTime, setCountTime] = useState(0)
-    const [face, setFace] = useState(0)
-    const [countFace, setCountFace] = useState(0)
-
-    const answerSheet = useSelector(state => state.answerSheet?.result)
-    const takeExamId = useSelector(state => state.answerSheet?.takeExamId)
     const step = 500
     const navigate = useNavigate()
-    const dispatch = useDispatch()
-
-    const handleSubmit = () => {
-        apiTakeExam.submitAnswerSheet({
-            takeExamId,
-            answerSheet
-        })
-            .then(res => {
-                navigate('/result-exam/' + takeExamId)
-                dispatch(clearTakeExamId())
-                dispatch(clearAnswerSheet())
-            })
-    }
     useLayoutEffect(() => {
         startVideo();
         videoRef && loadModels();
@@ -57,7 +35,7 @@ function FaceRecognition() {
     }
     const loadModels = () => {
         Promise.all([
-            faceapi.nets.tinyFaceDetector.loadFromUri('/models'),
+             faceapi.nets.tinyFaceDetector.loadFromUri('/models'),
             //faceapi.nets.mtcnn.loadFromUri('/models'),
             // faceapi.nets.faceLandmark68Net.loadFromUri('/models'),
             // faceapi.nets.faceRecognitionNet.loadFromUri('/models'),
@@ -68,31 +46,26 @@ function FaceRecognition() {
     };
 
     useEffect(()=>{
-        if (time > 5000) {
+        if(time > 50000){
             setTime(0)
-            toast.warning(`Không phát hiện khuôn mặt quá 5 giây lần ${countTime + 1}`)
-            setCountTime(prev => prev + 1)
-            if (countTime + 1 > 5) {
-                toast.warning('Không phát hiện khuôn mặt quá 5 lần. Bài thi tự động nộp')
+            toast.warning(`Không phát hiện hoặc phát hiện nhiều khuôn mặt quá 5 giây lần ${countOutFace + 1}`)
+            handleCreateLog(
+                `Không phát hiện hoặc phát hiện nhiều khuôn mặt quá 5 giây lần ${countOutFace + 1}`
+            )
+            increaseCountOutFace();           
+            if (countOutFace + 1 > 5) {
+                toast.warning('Không phát hiện hoặc phát hiện nhiều khuôn mặt quá 5 lần. Bài thi tự động nộp')
                 handleSubmit()
             }
         }
-        if(face > 5000){
-            setFace(0)
-            toast.warning(`Phát hiện nhiều khuôn mặt quá 5 giây lần ${countFace + 1}`)
-            setCountFace(prev => prev + 1)
-            if (countFace + 1 > 5) {
-                toast.warning('Phát hiện nhiều khuôn mặt quá 5 lần. Bài thi tự động nộp')
-                handleSubmit()
-            }
-        }
-    },[countTime, countFace, face, time])
+    },[countOutFace, time,increaseCountOutFace])
 
     const faceDetection = async () => {
         clearInterval(intervalRef.current)
         intervalRef.current = setInterval(async () => {
             const detections = await faceapi.detectAllFaces
                 (videoRef.current, new faceapi.TinyFaceDetectorOptions())
+                // (videoRef.current).withFaceLandmarks(true)
             canvasRef.current.innerHtml = faceapi
                 .createCanvasFromMedia(videoRef.current);
             faceapi.matchDimensions(canvasRef.current, {
@@ -103,17 +76,11 @@ function FaceRecognition() {
                 width: 240,
                 height: 180,
             });
-            if (resized.length !== 0) {
-                setTime(0)
-                if (resized.length > 1) {
-                    setFace(prev => prev + step)
-                }
-                else {
-                    setFace(0)
-                }
+            if (resized.length !== 1) {
+                setTime(prev => prev + step)
             }
             else {
-                setTime(prev => prev + step)
+                setTime(0);
             }
             
             // to draw the detection onto the detected face i.e the box
