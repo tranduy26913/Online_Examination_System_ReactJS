@@ -35,11 +35,12 @@ function FaceRecognition({countOutFace, increaseCountOutFace,handleCreateLog, ha
     }
     const loadModels = () => {
         Promise.all([
-             faceapi.nets.tinyFaceDetector.loadFromUri('/models'),
+             //faceapi.nets.tinyFaceDetector.loadFromUri('/models'),
             //faceapi.nets.mtcnn.loadFromUri('/models'),
-            // faceapi.nets.faceLandmark68Net.loadFromUri('/models'),
+            //faceapi.nets.faceLandmark68Net.loadFromUri('/models'),
             // faceapi.nets.faceRecognitionNet.loadFromUri('/models'),
             // faceapi.nets.faceExpressionNet.loadFromUri('/models'),
+            //faceapi.nets.ssdMobilenetv1.loadFromUri('/models')
         ]).then(() => {
             faceDetection();
         })
@@ -65,7 +66,7 @@ function FaceRecognition({countOutFace, increaseCountOutFace,handleCreateLog, ha
         intervalRef.current = setInterval(async () => {
             const detections = await faceapi.detectAllFaces
                 (videoRef.current, new faceapi.TinyFaceDetectorOptions())
-                // (videoRef.current).withFaceLandmarks(true)
+                //(videoRef.current).withFaceLandmarks(true).withFaceDescriptors()
             canvasRef.current.innerHtml = faceapi
                 .createCanvasFromMedia(videoRef.current);
             faceapi.matchDimensions(canvasRef.current, {
