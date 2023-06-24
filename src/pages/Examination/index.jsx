@@ -65,7 +65,11 @@ const Examination = () => {
                 .catch(err => {
                     console.log(err)
                     toast.warning(getMessageError(err), { autoClose: false })
-                    navigate('/')
+                    const courseId = err?.response?.data?.courseId
+                    if (courseId)
+                        navigate(`/course/${courseId}`)
+                    else
+                        navigate('/')
                 })
                 .finally(() => { setLoadingExam(false) })
         }
