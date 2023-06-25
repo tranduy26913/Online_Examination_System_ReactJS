@@ -79,7 +79,7 @@ function EditLesson(props) {
                 props.getData()
             })
             .catch(err => {
-                toast.warning(getMessageErrorS(err) || "Cập nhật không thành công")
+                toast.warning(getMessageError(err) || "Cập nhật không thành công")
             })
             .finally(() => setLoading(false))
     }
