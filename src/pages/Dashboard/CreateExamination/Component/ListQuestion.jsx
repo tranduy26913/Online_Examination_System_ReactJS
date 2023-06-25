@@ -46,7 +46,6 @@ function ListQuestion() {
                 toast.update(id, { render: 'Xoá câu hỏi thành công', isLoading: false, type: 'success', autoClose: 1200 })
             })
             .catch(err => {
-                console.log(err)
                 toast.update(id, { render: 'Xoá câu hỏi không thành công', isLoading: false, type: 'warning', autoClose: 1200 })
             })
 

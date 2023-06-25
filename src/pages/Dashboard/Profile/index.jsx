@@ -37,7 +37,7 @@ import ToolAvatar from "./ToolAvatar";
 import UpgradeRole from "./UpgradeRole";
 import Page from "components/Page";
 import Withdrawal from "./Withdrawal";
-import {numWithCommas} from "utils/index"
+import {getMessageError, numWithCommas} from "utils/index"
 
 const Profile = () => {
     const user = useSelector(state => state.user.info);
@@ -81,8 +81,7 @@ const Profile = () => {
                 getUserProfile();
             })
             .catch((error) => {
-                toast.error(error.response.data.message);
-                console.log(error)
+                toast.error(getMessageError(error) || "Thay đổi không thành công");
             })
             .finally(() => setUpdating(false))
     };

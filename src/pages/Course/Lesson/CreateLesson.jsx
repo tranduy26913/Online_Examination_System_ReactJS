@@ -58,13 +58,12 @@ function CreateLesson({ getData }) {
         setLoading(true)
         apiLessons.createLesson(params)
             .then(res => {
-                toast.success("Thêm thành công")
+                toast.success("Thêm bài giảng thành công")
                 setIsAdd(false)
                 getData()
             })
             .catch(err => {
-                console.log(err)
-                toast.warning(getMessageError(err) || "Thêm không thành công")
+                toast.warning(getMessageError(err) || "Thêm bài giảng không thành công")
             })
             .finally(() => setLoading(false))
     }

@@ -28,7 +28,7 @@ function LoginFacebook() {
             appId="811103459901244"
             onSuccess={handleFacebookLogin}
             onFail={(error) => {
-                console.log('Login Failed!', error);
+                
             }}
             // onProfileSuccess={(response) => {
             //     console.log('Get Profile Success!', response);

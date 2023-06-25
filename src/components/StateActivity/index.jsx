@@ -32,27 +32,6 @@ export default function StateActivity() {
                     set(userStatusDatabaseRef, isOnlineForDatabase);
                 });
             });
-            // onMessage(messaging, (payload) => {
-            //     if (!payload?.notification) {
-
-            //         return;
-            //     }
-            //     const { notification } = payload
-            //     toast.success(notification.title)
-            // })
-            // Notification.requestPermission().then(() =>
-            //     getToken(messaging)
-            // )
-            //     .then(token => {
-            //         console.log(token)
-            //         apiProfile.updateDeviceToken({ deviceToken: token })
-            //             .then(response => {
-            //                 console.log(response)
-            //             })
-
-            //     }).catch(err => {
-            //         console.log(err)
-            //     })
 
         }
         else {

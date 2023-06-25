@@ -33,6 +33,7 @@ import apiUpload from 'apis/apiUpload';
 import UploadIcon from '@mui/icons-material/Upload';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { getMessageError } from 'utils';
 
 const SubmitAssignment = (props) => {
   const theme = useTheme()
@@ -164,7 +165,7 @@ const SubmitAssignment = (props) => {
         setDuration(moment(endTime).diff(new Date(), 'seconds') || 0)
       })
       .catch(err => {
-        toast.success("Xoá bài nộp không thành công")
+        toast.warning(getMessageError(err) || "Xoá bài nộp không thành công")
       })
       .finally(() => setLoadingDelete(false))
   }

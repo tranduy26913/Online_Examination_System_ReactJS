@@ -117,6 +117,9 @@ const CreateAssignment = (props) => {
         setSlug(res.slug)
         setIsEdit(true)
       })
+      .catch(err=>{
+        toast.warning(getMessageError(err) || "Cập nhật không thành công")
+      })
   }
 
   const handleUpdate = (data) => {
@@ -139,6 +142,9 @@ const CreateAssignment = (props) => {
       .then(res => {
         toast.success("Cập nhật bài tập thành công")
         navigate(`/course/${courseId}/manage-assignment`)
+      })
+      .catch(err=>{
+        toast.warning(getMessageError(err) || "Cập nhật không thành công")
       })
       .finally(() => setLoading(false))
   }

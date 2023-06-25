@@ -164,7 +164,7 @@ const CreateExamination = (props) => {
         setIsEdit(true)
       })
       .catch(err => {
-        toast.warning("Tạo đề thi không thành công")
+        toast.warning(getMessageError(err) || "Tạo đề thi không thành công")
       })
       .finally(() => setLoading(false))
   }

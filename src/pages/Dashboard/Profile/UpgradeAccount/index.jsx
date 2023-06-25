@@ -8,11 +8,6 @@ import { getMessageError } from 'utils';
 const UpgradeAccount = (props) => {
     const {refreshProfile}  = useProfile()
     const handlePayment = () => {
-        const params = {
-            amount: 50000,
-            bankCode: null,
-            language: 'vn'
-        }
         const id = toast.loading("Đang nâng cấp")
         apiProfile
             .upgradeAccount()
@@ -23,7 +18,6 @@ const UpgradeAccount = (props) => {
 
             })
             .catch((error) => {
-                console.log(error)
                 toast.update(id, { type: 'success', render: getMessageError(error) , isLoading: false,autoClose:1200});
 
             })

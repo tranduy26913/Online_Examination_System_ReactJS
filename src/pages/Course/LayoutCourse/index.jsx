@@ -31,9 +31,7 @@ import ExitCourse from "./ExitCourse";
 import ShareTray from "components/ShareTray";
 import LinearProgressWithLabel from "components/LinearProgressWithLabel";
 import { getMessageError } from "utils";
-import WorkspacePremiumIcon from '@mui/icons-material/WorkspacePremium';
 import GetCertification from "./GetCertification";
-//import { CSSTransition } from 'react-transition-group';
 
 const checkSelectedTab = (item, pathname) => {
   const splitPath = pathname.split('/')
@@ -74,7 +72,6 @@ const LayoutCourse = () => {
           setCourse(res)
         })
         .catch(err => {
-          console.log(getMessageError(err))
           if(getMessageError(err)==='Học viên Không thuộc khoá học!'){
             toast.warning("Học viên Không thuộc khoá học!")
             navigate(`/enroll/${courseId}`)

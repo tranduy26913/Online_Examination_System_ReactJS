@@ -27,7 +27,6 @@ function Active(props) {
                 navigate('/my/profile')
             })
             .catch(err=>{
-                console.log(err)
                 toast.warning(getMessageError(err))
             })
         }

@@ -30,6 +30,7 @@ import LoadingButton from 'components/LoadingButton';
 import LoginFacebook from 'components/Login/LoginFacebook';
 import LoginGoogle from 'components/Login/LoginGoogle';
 import { useSelector } from 'react-redux';
+import { getMessageError } from 'utils';
 
 
 
@@ -96,7 +97,7 @@ const Register = () => {
                 navigate('/login')
             })
             .catch(err => {
-                toast.error("Đăng ký tài khoản không thành công")
+                toast.warning(getMessageError(err) || "Đăng ký không thành công")
             })
             .finally(() => {
                 setLoading(false)

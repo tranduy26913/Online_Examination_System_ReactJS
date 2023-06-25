@@ -69,7 +69,7 @@ function applySortFilter(array, comparator, query) {
     return stabilizedThis.map((el) => el[0]);
 }
 
-const ListExaminationTeacher = () => {
+const ManageFile = () => {
     document.title = "Danh sách bài kiểm tra"
     const [page, setPage] = useState(0);
     const [order, setOrder] = useState('asc');
@@ -110,7 +110,6 @@ const ListExaminationTeacher = () => {
             const params = {
                 courseId
             }
-            console.log(courseId)
             apiCourse.getListExamOfCourse(params)
                 .then(res => {
                     setExams(res)
@@ -124,7 +123,7 @@ const ListExaminationTeacher = () => {
         if (e.target.files.lenght !== 0) {
             apiUpload.updateFile({file:e.target.files[0]})
             .then(res=>{
-                console.log(res.message)
+                
             })
         }
     }
@@ -246,4 +245,4 @@ const ListExaminationTeacher = () => {
 }
 
 
-export default ListExaminationTeacher
+export default ManageFile

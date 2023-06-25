@@ -63,7 +63,6 @@ const Examination = () => {
                     }
                 })
                 .catch(err => {
-                    console.log(err)
                     toast.warning(getMessageError(err), { autoClose: false })
                     const courseId = err?.response?.data?.courseId
                     if (courseId)

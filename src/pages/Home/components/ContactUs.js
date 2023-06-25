@@ -19,7 +19,6 @@ const ContactUs = () => {
 
   const submitForm = (e) => {
     e.preventDefault();
-    console.log({ email, firstName, subject });
   };
 
   return (

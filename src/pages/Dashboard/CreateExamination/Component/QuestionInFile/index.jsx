@@ -174,13 +174,7 @@ function QuestionInFile() {
                         }
                     }
                     const listCorrect = corrects.split(',')
-                    // console.log({
-                    //     id: index,
-                    //     content,
-                    //     type: (listCorrect.length > 1 && listCorrect[1]) ? 'multi' : 'single',
-                    //     maxPoints,
-                    //     answers
-                    // })
+                    
                     dispatch(addQuestionInFile({
                         id: index,
                         content,

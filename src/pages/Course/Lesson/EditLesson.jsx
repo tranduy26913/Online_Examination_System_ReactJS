@@ -74,12 +74,12 @@ function EditLesson(props) {
         setLoading(true)
         apiLessons.updateLesson(params)
             .then(res => {
-                toast.success("Cập nhật thành công")
+                toast.success("Cập nhật bài giảng thành công")
                 setIsEdit(false)
                 props.getData()
             })
             .catch(err => {
-                toast.warning(getMessageError(err) || "Cập nhật không thành công")
+                toast.warning(getMessageError(err) || "Cập nhật bài giảng không thành công")
             })
             .finally(() => setLoading(false))
     }

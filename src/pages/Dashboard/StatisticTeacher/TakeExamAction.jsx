@@ -55,7 +55,6 @@ function TakeExamAction({ takeExamId }) {
         const GetLogs = () => {
             apiTakeExam.getLogs({ takeExamId })
                 .then(res => {
-                    console.log(res)
                     setLogs(res.logs)
                 })
         }

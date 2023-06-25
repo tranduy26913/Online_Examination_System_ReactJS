@@ -90,7 +90,6 @@ const Question = (props) => {
                             }
                             else
                                 isCorrect = false
-                            console.log(isCorrect)
                             return(<TextField
                                     id="outlined-multiline-static"
                                     label="Câu trả lời"

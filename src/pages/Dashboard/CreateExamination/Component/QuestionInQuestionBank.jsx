@@ -34,6 +34,7 @@ import apiExamination from 'apis/apiExamination';
 import { toast } from 'react-toastify';
 import { useSelector } from 'react-redux';
 import LoadingButton from 'components/LoadingButton';
+import { getMessageError } from 'utils';
 
 const BoxAnswer = styled(Box)(({ theme }) => ({
     display: 'flex',
@@ -97,11 +98,11 @@ function QuestionInQuestionBank(props) {
             questionIds: selectedQuestion
         })
             .then(res => {
-                toast.success('Thêm thành công')
+                toast.success('Thêm câu hỏi thành công')
                 reloadExam()
             })
             .catch(err=>{
-                toast.warning('Thêm không thành công')
+                toast.warning(getMessageError(err) || "Thêm câu hỏi không thành công")
             })
             .finally(()=>setIsLoading(false))
     }

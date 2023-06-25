@@ -96,7 +96,6 @@ const Question = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   const handleFocusOutFillin = useCallback((value) => {
-    console.log(value)
     dispatch(changeAnswer({
       question: question.id,
       type:'fillin',

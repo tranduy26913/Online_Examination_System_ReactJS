@@ -8,7 +8,6 @@ import {
     FormLabel,
     TextField,
     Paper,
-    Box,
     Typography
 } from '@mui/material'
 import apiProfile from 'apis/apiProfile'
@@ -36,7 +35,6 @@ function Payment() {
         apiProfile
             .makePayment(type, params)
             .then((response) => {
-                console.log(response)
                 if (response.payUrl) {
                     window.location.replace(response.payUrl)
                 }

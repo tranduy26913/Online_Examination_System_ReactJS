@@ -7,7 +7,6 @@ import {
     DialogTitle,
     DialogContent,
     DialogActions,
-    Typography,
     InputLabel,
     FormControl,
     Select,
@@ -17,7 +16,6 @@ import {
 } from "@mui/material";
 import apiProfile from "apis/apiProfile";
 import LoadingButton from 'components/LoadingButton';
-import { useDispatch } from 'react-redux';
 import UpgradeIcon from '@mui/icons-material/Upgrade';
 import { getMessageError } from 'utils';
 
@@ -89,7 +87,6 @@ const Withdrawal = (props) => {
                 toast.success(response.message)
             })
             .catch((error) => {
-                console.log(error.response)
                 toast.error(getMessageError(error));
             })
             .finally(() => {

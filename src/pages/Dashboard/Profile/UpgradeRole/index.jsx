@@ -31,7 +31,6 @@ const UpgradeRole = (props) => {
                 toast.success(response.message)
             })
             .catch((error) => {
-                console.log(error.response)
                 toast.error(error.response);
             })
             .finally(() => {
