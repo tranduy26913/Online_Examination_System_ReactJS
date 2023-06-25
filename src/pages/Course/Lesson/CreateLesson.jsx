@@ -15,6 +15,7 @@ import apiLessons from 'apis/apiLessons';
 import { schema } from './schema';
 import { yupResolver } from '@hookform/resolvers/yup';
 import apiUpload from 'apis/apiUpload';
+import { getMessageError } from 'utils';
 function CreateLesson({ getData }) {
     const [content, setContent] = useState('')
     const [isAdd, setIsAdd] = useState(false)
@@ -63,7 +64,7 @@ function CreateLesson({ getData }) {
             })
             .catch(err => {
                 console.log(err)
-                toast.warning("Thêm không thành công")
+                toast.warning(getMessageError(err) || "Thêm không thành công")
             })
             .finally(() => setLoading(false))
     }

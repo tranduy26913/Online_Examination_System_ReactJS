@@ -22,6 +22,7 @@ import apiLessons from 'apis/apiLessons';
 import ConfirmButton from 'components/ConfirmDialog';
 import apiUpload from 'apis/apiUpload';
 import CheckIcon from '@mui/icons-material/Check';
+import { getMessageError } from 'utils';
 function EditLesson(props) {
     const [content, setContent] = useState('')
     const [lessonId, setLessonId] = useState('')
@@ -78,7 +79,7 @@ function EditLesson(props) {
                 props.getData()
             })
             .catch(err => {
-                toast.warning("Cập nhật không thành công")
+                toast.warning(getMessageErrorS(err) || "Cập nhật không thành công")
             })
             .finally(() => setLoading(false))
     }
