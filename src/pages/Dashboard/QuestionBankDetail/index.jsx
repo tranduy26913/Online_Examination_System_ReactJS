@@ -17,7 +17,7 @@ import { useEffect } from 'react';
 import apiQuestionBank from 'apis/apiQuestionBank';
 import { useDispatch, useSelector } from 'react-redux';
 import { addQuestion, clearQuestion } from 'slices/userSlice';
-import CreateQuestion from './CreateQuestion'
+import CreateQuestion from 'components/Question/CreateQuestion';
 
 const PaperQuestion = styled(Paper)(({ theme }) => ({
     borderTop: `6px solid ${theme.palette.primary.light}`
