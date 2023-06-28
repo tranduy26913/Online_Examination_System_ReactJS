@@ -254,7 +254,9 @@ const CreateQuestion = (props) => {
     }
     setLoading(true)
     response.then((res) => {
-      reloadExam()
+      if (reloadExam) {
+        reloadExam()
+      }
       let newQuestion = res.question
       dispatch(addQuestion(newQuestion))
       handleClearData()
@@ -405,7 +407,7 @@ const CreateQuestion = (props) => {
               variant='contained'
               onClick={handleEditQuestion}>Sửa câu hỏi</LoadingButton>
             :
-            status === 'private' && <LoadingButton
+            (questionBankId || status === 'private') && <LoadingButton
               loading={loading}
               variant='contained'
               onClick={handleCreateQuestion}>Tạo câu hỏi</LoadingButton>
