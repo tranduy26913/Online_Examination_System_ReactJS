@@ -257,7 +257,7 @@ const CreateQuestion = (props) => {
       if (reloadExam) {
         reloadExam()
       }
-      let newQuestion = res.question
+      let newQuestion = res.question || res.newQuestion
       dispatch(addQuestion(newQuestion))
       handleClearData()
       toast.success('Tạo câu hỏi mới thành công')
