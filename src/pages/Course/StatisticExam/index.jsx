@@ -26,6 +26,7 @@ function StatisticExam(props) {
 
   const [exams, setExams] = useState([])
   const [typeofPoint, setTypeofPoint] = useState('')
+  const [viewPoint, setViewPoint] = useState('')
   const [maxPoints, setMaxPoints] = useState(0)
   const { slug } = useParams()//lấy slug exam
   const [tabIndex, setTabIndex] = React.useState(0);
@@ -52,6 +53,7 @@ function StatisticExam(props) {
           setExams(newArr)
         }
         setTypeofPoint(res.typeofPoint)
+        setViewPoint(res.viewPoint)
         setMaxPoints(10)
       })
     }
@@ -126,7 +128,7 @@ function StatisticExam(props) {
         
 
         <Paper elevation={12}>
-          {role === 'student' ? <TableStudent exams={exams} maxPoints={maxPoints} typeofPoint={typeofPoint} /> :
+          {role === 'student' ? <TableStudent exams={exams} maxPoints={maxPoints} viewPoint={viewPoint} typeofPoint={typeofPoint} /> :
             <>
               <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <Tabs value={tabIndex} onChange={handleChangeTabIndex} centered>
@@ -136,7 +138,7 @@ function StatisticExam(props) {
                 </Tabs>
               </Box>
               <TabPanel value={tabIndex} index={0}>
-                <TableTeacher exams={exams} maxPoints={maxPoints} />
+                <TableTeacher exams={exams} />
               </TabPanel>
               <TabPanel value={tabIndex} index={1}>
                 <TableTeacherGroup exams={exams} typeofPoint={typeofPoint} />

@@ -20,7 +20,7 @@ import { styled } from '@mui/material/styles';
 import MuiDrawer from '@mui/material/Drawer';
 import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
 import MenuIcon from '@mui/icons-material/Menu';
-const drawerWidth = 200;
+const drawerWidth = 220;
 
 const openedMixin = (theme) => ({
   width: drawerWidth,
