@@ -4,7 +4,7 @@ import { Box } from '@mui/material';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 
-function FaceRecognition({countOutFace, increaseCountOutFace,handleCreateLog, handleSubmit}) {
+function FaceRecognition({ countOutFace, increaseCountOutFace, handleCreateLog, handleSubmit }) {
     const videoRef = useRef();
     const canvasRef = useRef();
     const intervalRef = useRef();
@@ -35,7 +35,7 @@ function FaceRecognition({countOutFace, increaseCountOutFace,handleCreateLog, ha
     }
     const loadModels = () => {
         Promise.all([
-             //faceapi.nets.tinyFaceDetector.loadFromUri('/models'),
+            //faceapi.nets.tinyFaceDetector.loadFromUri('/models'),
             //faceapi.nets.mtcnn.loadFromUri('/models'),
             //faceapi.nets.faceLandmark68Net.loadFromUri('/models'),
             // faceapi.nets.faceRecognitionNet.loadFromUri('/models'),
@@ -46,27 +46,27 @@ function FaceRecognition({countOutFace, increaseCountOutFace,handleCreateLog, ha
         })
     };
 
-    useEffect(()=>{
-        if(time > 50000){
+    useEffect(() => {
+        if (time > 5000) {
             setTime(0)
             toast.warning(`Không phát hiện hoặc phát hiện nhiều khuôn mặt quá 5 giây lần ${countOutFace + 1}`)
             handleCreateLog(
                 `Không phát hiện hoặc phát hiện nhiều khuôn mặt quá 5 giây lần ${countOutFace + 1}`
             )
-            increaseCountOutFace();           
+            increaseCountOutFace();
             if (countOutFace + 1 > 5) {
                 toast.warning('Không phát hiện hoặc phát hiện nhiều khuôn mặt quá 5 lần. Bài thi tự động nộp')
                 handleSubmit()
             }
         }
-    },[countOutFace, time,increaseCountOutFace])
+    }, [countOutFace, time, increaseCountOutFace])
 
     const faceDetection = async () => {
         clearInterval(intervalRef.current)
         intervalRef.current = setInterval(async () => {
             const detections = await faceapi.detectAllFaces
                 (videoRef.current, new faceapi.TinyFaceDetectorOptions())
-                //(videoRef.current).withFaceLandmarks(true).withFaceDescriptors()
+            //(videoRef.current).withFaceLandmarks(true).withFaceDescriptors()
             canvasRef.current.innerHtml = faceapi
                 .createCanvasFromMedia(videoRef.current);
             faceapi.matchDimensions(canvasRef.current, {
@@ -83,7 +83,7 @@ function FaceRecognition({countOutFace, increaseCountOutFace,handleCreateLog, ha
             else {
                 setTime(0);
             }
-            
+
             // to draw the detection onto the detected face i.e the box
             faceapi.draw.drawDetections(canvasRef.current, resized);
             //to draw the the points onto the detected face
