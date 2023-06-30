@@ -1,4 +1,4 @@
-import {  Box, Button, Paper, Stack, Typography, useMediaQuery, useTheme } from '@mui/material'
+import { Box, Button, Paper, Stack, Typography, useMediaQuery, useTheme } from '@mui/material'
 import React, { useCallback, useContext, useState } from 'react'
 import DownloadIcon from '@mui/icons-material/Download';
 import * as XLSX from "xlsx";
@@ -30,7 +30,7 @@ const styleStack = {
 }
 
 function QuestionInFile() {
-    const { examId, reloadExam } = useContext(ExamContext)
+    const { examId, reloadExam, status } = useContext(ExamContext)
     const QUESTIONS = useSelector(state => state.user.questionsInFile)
     const [idQuestion, setIdQuestion] = useState('')
     //const [expanded, setExpanded] = useState(false);
@@ -40,7 +40,6 @@ function QuestionInFile() {
     const theme = useTheme()
     const user = useSelector(state => state.user?.info)
     const screenSM = useMediaQuery(theme.breakpoints.up('sm'));
-   
     // const handleChangeQuestion = (panel) => (event, isExpanded) => {
     //     setExpanded(isExpanded ? panel : false);
     // };
@@ -174,7 +173,7 @@ function QuestionInFile() {
                         }
                     }
                     const listCorrect = corrects.split(',')
-                    
+
                     dispatch(addQuestionInFile({
                         id: index,
                         content,
@@ -240,16 +239,19 @@ function QuestionInFile() {
                 >
                     Tải mẫu Word
                 </Button>
-                <Button variant='contained' component="label" width='160px'
-                    endIcon={<AnimationIcon src="https://assets7.lottiefiles.com/packages/lf20_rZQs81.json"
-                        style={{ height: '30px', width: '30px' }} />}
-                    onClick={(!user?.premium) ? lockUpload : null}
-                >
-                    Tải lên File
-                    {user?.premium &&
-                        <input hidden type="file" onInput={handleChooseFile} />
-                    }
-                </Button>
+                {
+                    status === 'private' &&
+                    <Button variant='contained' component="label" width='160px'
+                        endIcon={<AnimationIcon src="https://assets7.lottiefiles.com/packages/lf20_rZQs81.json"
+                            style={{ height: '30px', width: '30px' }} />}
+                        onClick={(!user?.premium) ? lockUpload : null}
+                    >
+                        Tải lên File
+                        {user?.premium &&
+                            <input hidden type="file" onInput={handleChooseFile} />
+                        }
+                    </Button>
+                }
 
                 {QUESTIONS.length !== 0 &&
                     <LoadingButton loading={isLoading} variant='contained' onClick={handleCreateQuestionWithFile}>Thêm câu hỏi</LoadingButton>}
@@ -261,7 +263,7 @@ function QuestionInFile() {
                     <Typography color='primary' align='center' fontSize='20px'>Xem trước kết quả</Typography>
                     <Stack p={2} direction={'row'} height={'calc(100vh - 120px)'} spacing={2}>
                         <Stack flex={1} spacing={1} height='100%'>
-                        <Typography fontWeight={600} align='center'>Danh sách</Typography>
+                            <Typography fontWeight={600} align='center'>Danh sách</Typography>
                             <Stack spacing={1} sx={styleStack}>
 
                                 {
@@ -275,14 +277,14 @@ function QuestionInFile() {
                                                 direction={'row'}
                                                 justifyContent='space-between'
                                                 alignItems='center'>
-                                               {screenSM && 'Câu hỏi '}{index + 1}
+                                                {screenSM && 'Câu hỏi '}{index + 1}
 
                                                 <ConfirmButton
                                                     title={'Xoá câu hỏi'}
                                                     description='Bạn có chắc chắn muốn xoá câu hỏi này khỏi đề thi'
                                                     handleFunc={() => handleDeleteQuestion(item.id)}
                                                     color='error'
-                                                    sx={{minWidth:'40px'}}>
+                                                    sx={{ minWidth: '40px' }}>
                                                     Xoá
                                                 </ConfirmButton>
 
@@ -293,7 +295,7 @@ function QuestionInFile() {
                             </Stack>
                         </Stack>
 
-                        <Box flex={{xs:2,md:3,lg:4}} sx={{overflowY:'auto'}}>
+                        <Box flex={{ xs: 2, md: 3, lg: 4 }} sx={{ overflowY: 'auto' }}>
                             <CreateQuestion
                                 isEdit={true}
                                 id={idQuestion}

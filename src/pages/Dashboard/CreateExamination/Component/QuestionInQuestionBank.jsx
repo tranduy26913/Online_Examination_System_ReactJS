@@ -55,7 +55,7 @@ const MenuProps = {
 
 
 function QuestionInQuestionBank(props) {
-    const { examId,reloadExam } = useContext(ExamContext)
+    const { examId, reloadExam, status } = useContext(ExamContext)
     const [expanded, setExpanded] = useState(false);
 
     const handleChangeQuestion = (panel) => (event, isExpanded) => {
@@ -81,11 +81,11 @@ function QuestionInQuestionBank(props) {
         let newList = [...selectedQuestion]
         if (selectedQuestion.includes(id))
             setSelectedQuestion(newList.filter(item => item !== id))
-        else{
+        else {
             newList.push(id)
             setSelectedQuestion(newList)
         }
-            
+
     }
 
     const handleCreate = () => {
@@ -101,10 +101,10 @@ function QuestionInQuestionBank(props) {
                 toast.success('Thêm câu hỏi thành công')
                 reloadExam()
             })
-            .catch(err=>{
+            .catch(err => {
                 toast.warning(getMessageError(err) || "Thêm câu hỏi không thành công")
             })
-            .finally(()=>setIsLoading(false))
+            .finally(() => setIsLoading(false))
     }
 
     useEffect(() => {
@@ -120,14 +120,14 @@ function QuestionInQuestionBank(props) {
         const loadQuestionsInQB = () => {
             apiQuestionBank.getQuestionsByListQB({ arrSlug: [selectedQB] })
                 .then(res => {
-                    if(Array.isArray(res)){
-                        res = res.filter(item=> !QUESTIONS.find(question => question.id === item.id))
+                    if (Array.isArray(res)) {
+                        res = res.filter(item => !QUESTIONS.find(question => question.id === item.id))
                         setQuestionsQB(res)
                     }
                 })
         }
         loadQuestionsInQB()
-    }, [selectedQB,QUESTIONS])
+    }, [selectedQB, QUESTIONS])
     return (
         <>
             <Paper elevation={24}>
@@ -209,12 +209,13 @@ function QuestionInQuestionBank(props) {
                         }
                     </Stack>
                     <Stack direction='row' justifyContent='center'>
-                        <LoadingButton 
-                        loading={isLoading}
-                         onClick={handleCreate}
-                          variant='contained'>
-                            Thêm câu hỏi
-                          </LoadingButton>
+                        {status === "private" &&
+                            <LoadingButton
+                                loading={isLoading}
+                                onClick={handleCreate}
+                                variant='contained'>
+                                Thêm câu hỏi
+                            </LoadingButton>}
                     </Stack>
                 </Stack>
             </Paper>

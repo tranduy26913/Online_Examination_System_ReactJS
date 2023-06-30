@@ -81,7 +81,7 @@ const CreateQuestion = (props) => {
   const [answers, setAnswers] = useState(question ? question.answers : [])
   const [maxPoints, setMaxPoints] = useState(1)
   const [loading, setLoading] = useState(false)
-  const [typeQuestion, setTypeQuestion] = useState('single')//single:1 đáp án đúng, multi: nhiều đáp án đúng
+  const [typeQuestion, setTypeQuestion] = useState(question?.type ?? 'single')//single:1 đáp án đúng, multi: nhiều đáp án đúng
   const dispatch = useDispatch()
   const refreshToken = useSelector(state => state.auth.refreshToken)
   const { reloadExam, status } = useContext(ExamContext) || {}
@@ -99,20 +99,6 @@ const CreateQuestion = (props) => {
       handleClearData()
     }
   }, [question])
-
-  useEffect(() => {
-    if (question) {
-      setContent(question.content)
-      setMaxPoints(question.maxPoints)
-      // setTypeQuestion(question.type)
-      let newAnswers = question.answers?.map(item => ({ ...item })) || []
-      setAnswers(newAnswers)
-    }
-    else {
-      handleClearData()
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [typeQuestion, question])
 
   const handleChangeMaxPoints = (e) => {
     setMaxPoints(e.target.value)
