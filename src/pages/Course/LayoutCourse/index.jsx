@@ -67,16 +67,16 @@ const LayoutCourse = () => {
       {
         return
       }
-      apiCourse.getCourseByCourseID({ courseId },role)
+      apiCourse.getCourseByCourseID({ courseId }, role)
         .then(res => {
           setCourse(res)
         })
         .catch(err => {
-          if(getMessageError(err)==='Học viên Không thuộc khoá học!'){
+          if (getMessageError(err) === 'Học viên Không thuộc khoá học!') {
             toast.warning("Học viên Không thuộc khoá học!")
             navigate(`/enroll/${courseId}`)
           }
-          else{
+          else {
             navigate('/my/list-course')
             toast.warning("Khoá học không xác định")
           }
@@ -140,13 +140,13 @@ const LayoutCourse = () => {
     document.title =
       sidebarCourse.find(item => item.id === selectedTabId)?.text ||
       "Bello Quiz";
-  }, [selectedTabId,sidebarCourse]);
+  }, [selectedTabId, sidebarCourse]);
 
-  const UpdateProcessing = ()=>{
-    apiCourse.getCourseByCourseID({ courseId },role)
-        .then(res => {
-          setCourse(res)
-        })
+  const UpdateProcessing = () => {
+    apiCourse.getCourseByCourseID({ courseId }, role)
+      .then(res => {
+        setCourse(res)
+      })
   }
 
   return (
@@ -154,7 +154,7 @@ const LayoutCourse = () => {
       handleChangeTab={handleChangeTab}
       heading={'Khoá học'}
       Breadcrumbs={DashboardBreadcrumbs}>
-      <CourseContext.Provider value={{ id: course?.id || "", courseId: courseId || "" ,UpdateProcessing:UpdateProcessing}}>
+      <CourseContext.Provider value={{ id: course?.id || "", courseId: courseId || "", UpdateProcessing: UpdateProcessing }}>
         <Paper elevation={12}>
 
           <Stack direction={{ xs: 'column', sm: 'row' }} className='listtest__course'>
@@ -167,8 +167,10 @@ const LayoutCourse = () => {
                   fontSize={'18px'}
                   color='primary'
                 >Khoá học: {course?.name}</Typography>
-                <Typography >{course?.description}</Typography>
-                <Typography >Số lượng bài kiểm tra: {course?.exams?.length}</Typography>
+                <Box overflow={"scroll"} maxHeight="105px">
+
+                  <Typography >{course?.description}</Typography>
+                </Box>
                 <Stack flex={1} direction={{ xs: 'column', sm: 'row' }}
 
                   spacing={2} justifyContent='flex-start' alignItems='center' >
@@ -187,15 +189,15 @@ const LayoutCourse = () => {
                     variant='outlined'
                     endIcon={<SendIcon />}
                     text='Chia sẻ' />
-                    {
-                     role === 'student' && course?.isQualified && 
-                     <GetCertification />
-                    }
-                    
+                  {
+                    role === 'student' && course?.isQualified &&
+                    <GetCertification />
+                  }
+
                   {/* <FacebookShareCount  /> */}
                 </Stack>
                 <Box>
-                 {role === 'student' &&<LinearProgressWithLabel value={Math.floor(course?.avg*100 || 0)}/>} 
+                  {role === 'student' && <LinearProgressWithLabel value={Math.floor(course?.avg * 100 || 0)} />}
                 </Box>
               </Stack>
               <ExitCourse />
