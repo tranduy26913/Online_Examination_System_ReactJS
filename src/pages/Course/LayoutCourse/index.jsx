@@ -40,7 +40,7 @@ const checkSelectedTab = (item, pathname) => {
   const regex = new RegExp(item.regex)
   return regex.test(pathname)
 }
-
+const defaultImg = "https://prod-discovery.edx-cdn.org/media/course/image/156313d6-f892-4b08-9cee-43ea582f4dfb-7b98c686abcc.small.png"
 const LayoutCourse = () => {
   const location = useLocation()
   const role = useSelector(state => state.setting.role)
@@ -159,20 +159,22 @@ const LayoutCourse = () => {
 
           <Stack direction={{ xs: 'column', sm: 'row' }} className='listtest__course'>
             <Stack flex={1} p='0 10px' width={{ xs: '60%' }} m={'auto'} sx={{ borderRadius: '10px' }}>
-              <img alt='' src={course.image} />
+              <img alt='' src={course?.image || defaultImg} />
             </Stack>
             <Stack px={2} flex={{ xs: 1, sm: 2, lg: 3 }} direction='row' alignItems='flex-start'>
-              <Stack flex={1} spacing={1}>
-                <Typography
-                  fontSize={'18px'}
-                  color='primary'
-                >Khoá học: {course?.name}</Typography>
-                <Box overflow={"scroll"} maxHeight="105px">
-
-                  <Typography >{course?.description}</Typography>
+              <Stack flex={1} spacing={1} justifyContent={"space-between"} height="100%">
+                <Box flex={1}>
+                  <Typography
+                    fontSize={'18px'}
+                    color='primary'
+                  >Khoá học: {course?.name}
+                  </Typography>
+                  <Box overflow={"auto"} maxHeight="105px">
+                    <Typography >{course?.description}</Typography>
+                  </Box>
                 </Box>
-                <Stack flex={1} direction={{ xs: 'column', sm: 'row' }}
 
+                <Stack direction={{ xs: 'column', sm: 'row' }}
                   spacing={2} justifyContent='flex-start' alignItems='center' >
                   {
                     role === 'teacher' &&
@@ -194,7 +196,6 @@ const LayoutCourse = () => {
                     <GetCertification />
                   }
 
-                  {/* <FacebookShareCount  /> */}
                 </Stack>
                 <Box>
                   {role === 'student' && <LinearProgressWithLabel value={Math.floor(course?.avg * 100 || 0)} />}

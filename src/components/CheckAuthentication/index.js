@@ -5,9 +5,8 @@ import { logoutSuccess } from 'slices/authSlice'
 import { toast } from 'react-toastify'
 import jwt_decode from 'jwt-decode'
 import apiProfile from 'apis/apiProfile'
-import { clearUserInfo, setUserInfo } from 'slices/userSlice'
+import { clearUserInfo, fetchingInfo, setUserInfo } from 'slices/userSlice'
 import { useState } from 'react'
-import LoadingPage from 'components/LoadingPage'
 
 const privatePath = [
     '/my/', '/admin/', '/payment',
@@ -37,8 +36,9 @@ function CheckAuthentication(props) {
                     if (isPrivate)
                         navigate('/')
                 }
-                setLoading(false)
+                //setLoading(false)
                 if (!user) {
+                    dispatch(fetchingInfo())
                     apiProfile.getUserInfo()
                         .then(res => {
                             dispatch(setUserInfo(res))
@@ -68,10 +68,12 @@ function CheckAuthentication(props) {
     return (
         <>
             {
-                loading ?
-                    <LoadingPage content='Đang tải dữ liệu...' />
-                    : props.children
+                // loading ?
+                //     <LoadingPage content='Đang tải dữ liệu...' />
+                //     : props.children
+                // loading && <OverlayLoading content='Đang tải dữ liệu...' />
             }
+            {props.children}
         </>
     )
 }

@@ -1,4 +1,4 @@
-import { Box, Button, Card, CardMedia, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Stack, Typography } from '@mui/material'
+import { Box, Button, Card, CardMedia, Dialog, DialogActions, DialogContent, DialogTitle, Stack, Typography } from '@mui/material'
 import React from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import AssignmentIcon from '@mui/icons-material/Assignment'
@@ -27,7 +27,7 @@ function CourseItem({ course }) {
         setIsShowInfo(false);
     };
 
-    const { mutate, data: courseInfo, isLoading, error } = useMutation(['info-course', courseId],
+    const { mutate, data: courseInfo, isLoading } = useMutation(['info-course', courseId],
         (params) => apiCourse.getCourseInfo(params))
     const handlePurchase = () => {
 

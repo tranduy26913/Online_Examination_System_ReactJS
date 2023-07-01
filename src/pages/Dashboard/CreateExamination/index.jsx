@@ -162,6 +162,7 @@ const CreateExamination = (props) => {
         navigate(`/course/${courseId}/detail-exam/${res.slug}`)
         setSlug(res.slug)
         setIsEdit(true)
+        setStatus('private')
       })
       .catch(err => {
         toast.warning(getMessageError(err) || "Tạo đề thi không thành công")

@@ -3,22 +3,27 @@ import { createSlice } from "@reduxjs/toolkit";
 
 export const userSlice = createSlice({
     name: "user",
-    initialState:{
-        info:null,
-        questions:[],
-        questionsInFile:[]
+    initialState: {
+        isFetchingInfo: false,
+        info: null,
+        questions: [],
+        questionsInFile: []
     },
     reducers: {
-        setUserInfo:(state,action)=>{
-            state.info = action.payload
+        fetchingInfo: (state) => {
+            state.isFetchingInfo = true
         },
-        clearUserInfo:(state,action)=>{
+        setUserInfo: (state, action) => {
+            state.info = action.payload
+            state.isFetchingInfo = false
+        },
+        clearUserInfo: (state, action) => {
             state.info = null
         },
-        updateAvatar:(state,action) =>{
+        updateAvatar: (state, action) => {
             state.info = {
                 ...state.info,
-                avatar:action.payload
+                avatar: action.payload
             }
         },
         addQuestion: (state, action) => {
@@ -27,43 +32,43 @@ export const userSlice = createSlice({
         replaceListQuestion: (state, action) => {
             state.questions = [...action.payload]
         },
-        updateQuestion:(state,action)=>{
+        updateQuestion: (state, action) => {
             const newQuestion = action.payload
-            const index = state.questions.findIndex(item=>item.id===newQuestion.id)
-            if(index>=0){
+            const index = state.questions.findIndex(item => item.id === newQuestion.id)
+            if (index >= 0) {
                 const newState = [...state.questions]
                 newState[index] = action.payload
                 state.questions = newState
             }
         },
-        deleteQuestion:(state,action)=>{
+        deleteQuestion: (state, action) => {
             const questionId = action.payload
-            const newQuestions = state.questions.filter(item=>item.id!==questionId)
-           
-                state.questions = newQuestions
+            const newQuestions = state.questions.filter(item => item.id !== questionId)
+
+            state.questions = newQuestions
         },
-        clearQuestion: (state, action)=>{
+        clearQuestion: (state, action) => {
             state.questions = []
         },
         addQuestionInFile: (state, action) => {
             state.questionsInFile = [...state.questionsInFile, action.payload]
         },
-        updateQuestionInFile:(state,action)=>{
+        updateQuestionInFile: (state, action) => {
             const newQuestion = action.payload
-            const index = state.questionsInFile.findIndex(item=>item.id===newQuestion.id)
-            if(index>=0){
+            const index = state.questionsInFile.findIndex(item => item.id === newQuestion.id)
+            if (index >= 0) {
                 const newState = [...state.questionsInFile]
                 newState[index] = action.payload
                 state.questionsInFile = newState
             }
         },
-        deleteQuestionInFile:(state,action)=>{
+        deleteQuestionInFile: (state, action) => {
             const questionId = action.payload
-            const newQuestions = state.questionsInFile.filter(item=>item.id!==questionId)
-           
-                state.questionsInFile = newQuestions
+            const newQuestions = state.questionsInFile.filter(item => item.id !== questionId)
+
+            state.questionsInFile = newQuestions
         },
-        clearQuestionInFile: (state, action)=>{
+        clearQuestionInFile: (state, action) => {
             state.questionsInFile = []
         }
     }
@@ -71,6 +76,7 @@ export const userSlice = createSlice({
 
 
 export const {
+    fetchingInfo,
     addQuestion,
     replaceListQuestion,
     updateQuestion,

@@ -14,7 +14,8 @@ import {
   styled,
   Stack,
   Switch,
-  Divider
+  Divider,
+  CircularProgress
 } from '@mui/material';
 
 import MenuIcon from '@mui/icons-material/Menu';
@@ -116,6 +117,7 @@ function Header() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const user = useSelector(state => state.user.info)
+  const isFetchingInfo = useSelector(state => state.user.isFetchingInfo)
   const isLight = useSelector(state => state.setting.isLight)
   const dispatch = useDispatch()
   const navigate = useNavigate()
@@ -250,16 +252,16 @@ function Header() {
             <Box sx={{ flexGrow: 0, minWidth: '140px' }}>
               {user ?
                 <>
-                  <Tooltip title={user.fullname}>
+                  <Tooltip title={user?.fullname}>
                     <Stack direction='row' onClick={handleOpenUserMenu} alignItems='center' mr={2} spacing={1}
                       sx={{ cursor: 'pointer' }}>
 
                       <IconButton sx={{ p: 0 }}>
-                        <Avatar alt="Remy Sharp" src={user.avatar} />
+                        <Avatar alt="Remy Sharp" src={user?.avatar} />
                       </IconButton>
                       <Stack>
                         <Typography>{role === 'teacher' ? 'Giáo viên' : 'Học viên'}</Typography>
-                        <Typography className='text-overflow-1-lines'>{user.fullname}</Typography>
+                        <Typography className='text-overflow-1-lines'>{user?.fullname}</Typography>
                       </Stack>
                     </Stack>
                   </Tooltip>
@@ -282,7 +284,7 @@ function Header() {
 
                     <Box p='6px 16px'>
                       <Stack direction={'row'} justifyContent='space-between' spacing={2}>
-                        <Typography>Số dư: {numWithCommas(user.balance || 0)}đ</Typography>
+                        <Typography>Số dư: {numWithCommas(user?.balance || 0)}đ</Typography>
                         <Link to='/deposit'>
                           <Stack direction='row'>Nạp <PaidIcon />
                           </Stack>
@@ -313,14 +315,21 @@ function Header() {
                     </MenuItem>
                   </Menu>
                 </> :
-                <Stack direction='row' justifyContent='space-between' p={1} spacing={0.5}>
-                  <Link to='/login'>
-                    <Button sx={{ color: '#fff' }}>Đăng nhập</Button>
-                  </Link>
-                  <Divider orientation="vertical" flexItem sx={{ borderColor: '#ccc' }} />
-                  <Link to='/register'>
-                    <Button sx={{ color: '#fff' }}>Đăng ký</Button>
-                  </Link>
+                <Stack direction='row' justifyContent='center' p={1} spacing={0.5}>
+                  {
+                    isFetchingInfo ?
+                      <CircularProgress size="2rem" color="inherit" />
+                      :
+                      <>
+                        <Link to='/login'>
+                          <Button sx={{ color: '#fff' }}>Đăng nhập</Button>
+                        </Link>
+                        <Divider orientation="vertical" flexItem sx={{ borderColor: '#ccc' }} />
+                        <Link to='/register'>
+                          <Button sx={{ color: '#fff' }}>Đăng ký</Button>
+                        </Link>
+                      </>
+                  }
                 </Stack>
               }
             </Box>

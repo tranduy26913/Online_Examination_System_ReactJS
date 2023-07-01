@@ -25,32 +25,28 @@ import ShareTray from 'components/ShareTray';
 import LinearProgressWithLabel from 'components/LinearProgressWithLabel';
 import moment from 'moment';
 import { TabPanel, a11yProps } from 'components/TabPanel';
+import { useMutation, } from 'react-query';
 
 const ListCourse = () => {
     const role = useSelector(state => state.setting?.role)
     const [courses, setCourses] = useState([])
     const [tabIndex, setTabIndex] = useState(0);
-    const page = 1
     const [coursesOld, setCoursesOld] = useState([])
     const [coursesCurrent, setCoursesCurrent] = useState([])
-    const [loadingData, setLoadingData] = useState(false)
-    const limit = 10
+    const { data, isLoading: loadingData, mutate } = useMutation(() => apiCourse.getListCourse(role))
 
     useEffect(() => {
-        const getData = () => {
-            const params = {
-                page,
-                limit
-            }
-            let request = apiCourse.getListCourseByStudent(params)
-            if (role === 'teacher')
-                request = apiCourse.getListCourseByTeacher(params)
-            setLoadingData(true)
-            request.then(res => {
-                setCourses(res)
+        mutate();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
+
+    useEffect(() => {
+        const setData = () => {
+            if (Array.isArray(data)) {
+                setCourses(data)
                 let arrCoursesOld = []
                 let arrCoursesCurrent = []
-                res.forEach(item => {
+                data.forEach(item => {
                     if (moment(item.endTime).isAfter(moment())) {
                         arrCoursesCurrent.push(item)
                     }
@@ -60,13 +56,11 @@ const ListCourse = () => {
                 })
                 setCoursesOld(arrCoursesOld)
                 setCoursesCurrent(arrCoursesCurrent)
-                //setTotalPage(Math.round(res.pagination.totalRows / limit))
-            })
-                .finally(() => setLoadingData(false))
+            }
         }
-        getData()
+        setData()
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [role])
+    }, [data])
 
     return (
         <Page title='Danh sách khoá học'>
@@ -123,6 +117,7 @@ const ListCourse = () => {
     )
 }
 
+const defaultImg = "https://prod-discovery.edx-cdn.org/media/course/image/156313d6-f892-4b08-9cee-43ea582f4dfb-7b98c686abcc.small.png"
 const CourseItem = ({ course }) => {
     const role = useSelector(state => state.setting?.role)
     return (
@@ -131,10 +126,7 @@ const CourseItem = ({ course }) => {
                 component="img"
                 height="170"
                 width="180"
-                image={course.image || 'https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg'}
-                onError={e => {
-                    e.target.src = 'https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg'
-                }}
+                image={course.image || defaultImg}
                 alt="image course"
             />
             <Link to={`/course/${course.courseId}`}>
