@@ -1,13 +1,7 @@
-import { Typography, Button, Stack, Card, CardMedia, Paper, IconButton, InputBase } from '@mui/material';
+import { Stack, Paper, IconButton, InputBase } from '@mui/material';
 import { useCallback, useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import AssignmentIcon from '@mui/icons-material/Assignment'
-import SendIcon from '@mui/icons-material/Send'
-import ShareTray from 'components/ShareTray';
 import apiCourse from 'apis/apiCourse';
 import SearchIcon from '@mui/icons-material/Search';
-import { useSelector } from 'react-redux';
-import { toast } from 'react-toastify';
 import Grid from '@mui/material/Unstable_Grid2/Grid2';
 import _debounce from 'lodash/debounce';
 import EmptyList from 'components/UI/EmptyList';
@@ -17,7 +11,6 @@ import Page from 'components/Page';
 function SearchCourse() {
     const [courses, setCourses] = useState([])
     const [value, setValue] = useState('');
-    const refreshToken = useSelector(state => state.auth?.refreshToken)
 
     const debounceFn = useCallback(_debounce(handleDebounceFn, 500), []);
 
@@ -40,9 +33,8 @@ function SearchCourse() {
     function handleClickSearch(event) {
         debounceFn(value);
     };
-    const navigate = useNavigate()
     useEffect(() => {
-        debounceFn(value)
+        debounceFn("")
     }, [])
 
     return (

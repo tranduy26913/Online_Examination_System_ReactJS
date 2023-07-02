@@ -2,7 +2,6 @@
 import { useNavigate } from 'react-router-dom';
 import FacebookRoundedIcon from "@mui/icons-material/FacebookRounded";
 import { toast } from 'react-toastify';
-import FacebookLogin from '@greatsumini/react-facebook-login';
 import apiSocial from 'apis/apiSocial';
 import { useDispatch } from 'react-redux';
 import { loginSuccess } from 'slices/authSlice';
@@ -10,21 +9,8 @@ import { loginSuccess } from 'slices/authSlice';
 function LoginFacebook() {
     const navigate = useNavigate()
     const dispatch = useDispatch()
-    const handleFacebookLogin = (response) => {
-        const id = toast.loading("Đang lấy thông tin...")
-        const accessToken = response.accessToken
-        apiSocial.loginFacebook({ accessToken })
-            .then(res => {
-                dispatch(loginSuccess(res.user))
-                navigate('/')
-                toast.update(id, { render: "Đăng nhập thành công", isLoading: false, type: 'success', autoClose: 1200 })
-            })
-            .catch(err => {
-                toast.update(id, { render: "Đăng nhập không thành công. Vui lòng thử lại", isLoading: false, type: 'warning', autoClose: 1200 })
-            })
-    }
 
-    const test = () => {
+    const handleFacebookLogin = () => {
         window.FB.login(function (response) {
             if (response.status === 'connected') {
                 const id = toast.loading("Đang lấy thông tin...")
@@ -50,8 +36,7 @@ function LoginFacebook() {
     return (
         <>
             <div class="fb-login-button"
-                onClick={test}
-                onlogin="checkLoginState();">
+                onClick={handleFacebookLogin}>
                 <FacebookRoundedIcon
                     sx={{
                         cursor: 'pointer',

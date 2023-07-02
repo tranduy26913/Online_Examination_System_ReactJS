@@ -15,6 +15,7 @@ import ErrorBoundary from 'components/ErrorPage/ErrorBoundary';
 import ScrollToTop from 'components/ScrollToTop';
 import moment from 'moment'
 import 'moment/locale/vi';
+import ChatMessenger from 'components/ChatMessenger';
 
 function App() {
   const refreshToken = useSelector((state) => state.auth.refreshToken);
@@ -75,6 +76,7 @@ function App() {
             <StateActivity />
           </GoogleOAuthProvider>
         </CheckAuthentication>
+        <ChatMessenger />
       </ErrorBoundary>
     </BrowserRouter>
 
