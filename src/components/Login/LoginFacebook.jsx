@@ -28,7 +28,11 @@ function LoginFacebook() {
         window.FB.login(function (response) {
             if (response.status === 'connected') {
                 const id = toast.loading("Đang lấy thông tin...")
-                const accessToken = response.accessToken
+                const accessToken = response.authResponse?.accessToken
+                if (!accessToken) {
+                    toast.update(id, { render: "Đăng nhập không thành công. Vui lòng thử lại", isLoading: false, type: 'warning', autoClose: 1200 })
+                    return;
+                }
                 apiSocial.loginFacebook({ accessToken })
                     .then(res => {
                         dispatch(loginSuccess(res.user))
