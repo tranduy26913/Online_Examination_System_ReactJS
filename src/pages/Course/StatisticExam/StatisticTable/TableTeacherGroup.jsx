@@ -24,7 +24,8 @@ import { applySortFilter, getComparator } from 'components/TableCustom/FunctionH
 
 const TABLE_HEAD = [
     { id: 'name', label: 'Tên người thi', align: 'left' },
-    { id: 'point', label: 'Điểm', align: 'center' },
+    { id: 'points10', label: 'Điểm (Thang 10)', align: 'center' },
+    { id: 'points', label: 'Điểm', align: 'center' },
     { id: 'startTime', label: 'Thời gian thi', align: 'center' },
     { id: 'duration', label: 'Thời lượng', align: 'center' },
     { id: 'status', label: 'Trạng thái', align: 'center' },
@@ -49,7 +50,7 @@ function groupBy(list, keyGetter) {
     return map;
 }
 
-const TableTeacherGroup = ({ exams, typeofPoint }) => {
+const TableTeacherGroup = ({ exams, typeofPoint}) => {
     exams = groupBy(exams, exam => exam.name);
     let groupExams = []
     exams.forEach(item => {
@@ -135,9 +136,18 @@ const TableTeacherGroup = ({ exams, typeofPoint }) => {
                         />
                         <TableBody>
                             {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
-                                const { _id: takeExamId, userAvatar,name, submitTime, startTime, points, maxPoints, status } = row;
+                                const { _id: takeExamId, userAvatar,name, submitTime,maxPoints,points10, startTime, points, status } = row;
                                 const duration = moment(submitTime).diff(startTime, 'minutes')
-
+                                let textDuration = '0 giây'
+                                if (duration > 0) {
+                                    let hours = moment.duration(duration, "seconds").hours()
+                                    let minutes = moment.duration(duration, "seconds").minutes()
+                                    let seconds = moment.duration(duration, "seconds").seconds()
+                                    hours = hours ? `${hours} giờ ` : ''
+                                    minutes = minutes ? `${minutes} phút ` : ''
+                                    seconds = seconds ? `${seconds} giây` : ''
+                                    textDuration = hours + minutes + seconds
+                                }
                                 return (
                                     <TableRow
                                         hover
@@ -152,9 +162,10 @@ const TableTeacherGroup = ({ exams, typeofPoint }) => {
                                                 </Typography>
                                             </Stack>
                                         </TableCell>
+                                        <TableCell align="center">{Math.round(((points10 + Number.EPSILON) * 100)) / 100}/{10}</TableCell>
                                         <TableCell align="center">{Math.round(((points + Number.EPSILON) * 100)) / 100}/{maxPoints}</TableCell>
                                         <TableCell align="center">{moment(startTime).format('DD/MM/YYYY HH:mm')}</TableCell>
-                                        <TableCell align="center">{duration} phút</TableCell>
+                                        <TableCell align="center">{textDuration}</TableCell>
                                         <TableCell align="center">
                                             {status === 'not submitted' ? 'Chưa nộp bài' : 'Đã nộp'}
                                         </TableCell>

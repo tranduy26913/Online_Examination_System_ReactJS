@@ -48,7 +48,7 @@ function StatisticExam(props) {
         if( Array.isArray(res?.takeExams)){
           let newArr = res?.takeExams.map(item=>({
             ...item,
-            points: (item.points*10/maxPoints)
+            points10:(item.points*10/maxPoints)
           }))
           setExams(newArr)
         }
@@ -81,7 +81,7 @@ function StatisticExam(props) {
 
 
   const count = exams.length
-  const avgPoints = (count && exams.reduce((total, cur) => total + cur.points, 0) / count).toFixed(2) || 0
+  const avgPoints = (count && exams.reduce((total, cur) => total + cur.points10, 0) / count).toFixed(2) || 0
 
   const avgDuration = (() => {
     let duration = 0
@@ -138,10 +138,10 @@ function StatisticExam(props) {
                 </Tabs>
               </Box>
               <TabPanel value={tabIndex} index={0}>
-                <TableTeacher exams={exams} />
+                <TableTeacher exams={exams} maxPoints={maxPoints} />
               </TabPanel>
               <TabPanel value={tabIndex} index={1}>
-                <TableTeacherGroup exams={exams} typeofPoint={typeofPoint} />
+                <TableTeacherGroup exams={exams} maxPoints={maxPoints}  typeofPoint={typeofPoint} />
               </TabPanel>
               <TabPanel value={tabIndex} index={2}>
                 <TableQuestion questions={questions}  />
