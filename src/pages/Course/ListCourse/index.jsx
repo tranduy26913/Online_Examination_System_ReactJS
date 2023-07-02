@@ -92,7 +92,7 @@ const ListCourse = () => {
                                         <Grid container spacing={2} p={1.5}>
                                             {
                                                 coursesCurrent.map(item =>
-                                                    <Grid key={item._id} xs={12} sm={6} md={6} lg={3} >
+                                                    <Grid key={item.id || item._id} xs={12} sm={6} md={6} lg={3} >
                                                         <CourseItem course={item} />
                                                     </Grid>)
                                             }
@@ -102,7 +102,7 @@ const ListCourse = () => {
                                         <Grid container spacing={2} p={1.5}>
                                             {
                                                 coursesOld.map(item =>
-                                                    <Grid key={item._id} xs={12} sm={6} md={6} lg={3} >
+                                                    <Grid key={item.id ||item._id} xs={12} sm={6} md={6} lg={3} >
                                                         <CourseItem course={item} />
                                                     </Grid>)
                                             }
@@ -129,7 +129,20 @@ const CourseItem = ({ course }) => {
                 image={course.image || defaultImg}
                 alt="image course"
             />
-            <Link to={`/course/${course.courseId}`}>
+            <Box height="55px" px={1}>
+                <Link to={`/course/${course.courseId}`}>
+                    <Typography color="primary" component="div"
+                        className="text-overflow-2-lines "
+                        sx={{
+                            textAlign: "center",
+                            fontSize: '22px',
+                            lineHeight: '1.25'
+                        }}>
+                        {course.name}
+                    </Typography>
+                </Link>
+            </Box>
+            {/* <Link to={`/course/${course.courseId}`}>
                 <Typography color="primary" variant="h5" component="div"
                     className="text-overflow-1-lines "
                     sx={{
@@ -137,7 +150,7 @@ const CourseItem = ({ course }) => {
                     }}>
                     {course.name}
                 </Typography>
-            </Link>
+            </Link> */}
             <Stack
                 p='0.5rem'
                 direction='row'

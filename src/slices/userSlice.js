@@ -19,6 +19,7 @@ export const userSlice = createSlice({
         },
         clearUserInfo: (state, action) => {
             state.info = null
+            state.isFetchingInfo = false
         },
         updateAvatar: (state, action) => {
             state.info = {

@@ -12,6 +12,7 @@ import LoadingRoller from 'components/LoadingPage/LoadingRoller';
 import SendIcon from '@mui/icons-material/Send'
 import ShareTray from 'components/ShareTray';
 import { useSelector } from 'react-redux';
+import { defaultImg } from 'constraints/Variables';
 function CourseItem({ course }) {
 
     const [isShowInfo, setIsShowInfo] = React.useState(false);
@@ -56,26 +57,30 @@ function CourseItem({ course }) {
                     component="img"
                     height="170"
                     width="180"
-                    image={course.image || 'https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg'}
+                    image={course.image || defaultImg}
                     onError={e => {
                         e.target.src = 'https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg'
                     }}
                     alt="image course"
                 />
-                <Link to={`/course/${course.courseId}`}>
-                    <Typography color="primary" variant="h5" component="div"
-                    className="text-overflow-1-lines "
-                        sx={{
-                            textAlign: "center",
-                        }}>
-                        {course.name}
-                    </Typography>
-                </Link>
+                <Box height="55px" px={1}>
+                    <Link to={`/course/${course.courseId}`}>
+                        <Typography color="primary" component="div"
+                            className="text-overflow-2-lines "
+                            sx={{
+                                textAlign: "center",
+                                fontSize: '22px',
+                                lineHeight: '1.25'
+                            }}>
+                            {course.name}
+                        </Typography>
+                    </Link>
+                </Box>
                 {
-                    course?.isSell && !course?.isInCourse?
-                    
-                    <>
-                            <Typography color="primary" component="div" fontSize='20px'
+                    course?.isSell && !course?.isInCourse ?
+
+                        <>
+                            <Typography color="primary" component="div" fontSize='18px'
                                 sx={{
                                     textAlign: "left",
                                     paddingLeft: '18px',
@@ -109,7 +114,13 @@ function CourseItem({ course }) {
                         </>
                         :
                         <>
-                            <Box height='30px'></Box>
+                            <Typography color="primary" component="div" fontSize='18px'
+                                sx={{
+                                    textAlign: "left",
+                                    paddingLeft: '18px',
+                                }}>
+                                Giá: Miễn phí
+                            </Typography>
 
                             <Stack
                                 p='0.5rem'
@@ -131,7 +142,7 @@ function CourseItem({ course }) {
                                     endIcon={<SendIcon />} />
                             </Stack>
                         </>
-                        
+
                 }
 
             </Card>

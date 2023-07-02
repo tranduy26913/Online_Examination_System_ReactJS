@@ -47,3 +47,5 @@ export const STATUS = {
     PRIVATE:'private',
     CLOSE:'close'
 };
+
+export const defaultImg = "https://prod-discovery.edx-cdn.org/media/course/image/156313d6-f892-4b08-9cee-43ea582f4dfb-7b98c686abcc.small.png"

@@ -25,11 +25,12 @@ function LoginFacebook() {
     }
     return (
         <FacebookLogin
-            appId="811103459901244"
+            appId="924184595294405"
             onSuccess={handleFacebookLogin}
             onFail={(error) => {
                 
             }}
+            useCustomerChat={true}
             // onProfileSuccess={(response) => {
             //     console.log('Get Profile Success!', response);
             // }}

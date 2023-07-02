@@ -43,9 +43,13 @@ function CheckAuthentication(props) {
                         .then(res => {
                             dispatch(setUserInfo(res))
                         })
-                        // .catch(err=>{
-                        //     navigate('/')
-                        // })
+                        .catch(err => {
+                            dispatch(clearUserInfo())
+                            if (isPrivate) {
+                                toast.warning("Vui lòng đăng nhập để thực hiện thao tác này")
+                                navigate('/')
+                            }
+                        })
                         .finally(() => setLoading(false))
                 }
                 else {
