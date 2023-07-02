@@ -11,17 +11,19 @@ import moment from 'moment';
 import LoadingRoller from 'components/LoadingPage/LoadingRoller';
 import SendIcon from '@mui/icons-material/Send'
 import ShareTray from 'components/ShareTray';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { defaultImg } from 'constraints/Variables';
+import { changeRole } from 'slices/settingSlice';
 function CourseItem({ course }) {
 
     const [isShowInfo, setIsShowInfo] = React.useState(false);
     const navigate = useNavigate()
     const courseId = course.courseId
     const refreshToken = useSelector(state => state.auth?.refreshToken)
+    const dispatch = useDispatch()
     const handleClickOpen = () => {
         setIsShowInfo(true);
-        mutate({ course_id: courseId })
+        mutate({ courseId: Number(courseId) })
     };
 
     const handleClose = () => {
@@ -43,8 +45,12 @@ function CourseItem({ course }) {
     }
 
     const onClickDetail = (courseId) => {
-        if (refreshToken)
-            navigate(`/course/${courseId}`)
+        if (refreshToken){
+            if(course.isInCourse){
+                dispatch(changeRole('student'))
+                navigate(`/course/${courseId}`)
+            }
+        }
         else
             toast.info('Vui lòng đăng nhập để truy cập vào khoá học')
     }
@@ -119,7 +125,7 @@ function CourseItem({ course }) {
                                     textAlign: "left",
                                     paddingLeft: '18px',
                                 }}>
-                                Giá: Miễn phí
+                                {course?.isInCourse ? "Đang tham gia" : "Giá: Miễn phí"}
                             </Typography>
 
                             <Stack
@@ -153,13 +159,13 @@ function CourseItem({ course }) {
                     <DialogContent>
                         {isLoading ? <LoadingRoller /> :
                             <Stack>
-                                <Typography>Mô tả: {courseInfo?.[0].description}</Typography>
-                                <Typography>Thời gian bắt đầu: {moment(courseInfo?.[0].startTime).format('DD-MM-YYYY')}</Typography>
-                                <Typography>Thời gian kết thúc: {moment(courseInfo?.[0].endTime).format('DD-MM-YYYY')}</Typography>
-                                <Typography>Số bài kiểm tra: {courseInfo?.[0].numberOfExams}</Typography>
-                                <Typography>Số bài tập: {courseInfo?.[0].numberOfAssignments}</Typography>
-                                <Typography>Số bài giảng: {courseInfo?.[0].numberOfLessons}</Typography>
-                                <Typography>Số học viên: {courseInfo?.[0].numberOfStudents}</Typography>
+                                <Typography>Mô tả: {courseInfo?.[0]?.description}</Typography>
+                                <Typography>Thời gian bắt đầu: {moment(courseInfo?.[0]?.startTime).format('DD-MM-YYYY')}</Typography>
+                                <Typography>Thời gian kết thúc: {moment(courseInfo?.[0]?.endTime).format('DD-MM-YYYY')}</Typography>
+                                <Typography>Số bài kiểm tra: {courseInfo?.[0]?.numberOfExams}</Typography>
+                                <Typography>Số bài tập: {courseInfo?.[0]?.numberOfAssignments}</Typography>
+                                <Typography>Số bài giảng: {courseInfo?.[0]?.numberOfLessons}</Typography>
+                                <Typography>Số học viên: {courseInfo?.[0]?.numberOfStudents}</Typography>
                             </Stack>
                         }
 

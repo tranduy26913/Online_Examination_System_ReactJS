@@ -49,9 +49,9 @@ function CreateCourse(props) {
     const [error, setError] = useState({ isError: false, msg: "" })
     const [certification, setCertification] = useState('not allow');
 
-  const handleChange = (event) => {
-    setCertification(event.target.value);
-  };
+    const handleChange = (event) => {
+        setCertification(event.target.value);
+    };
     const user = useSelector(state => state.user.info) //lấy thông tin user
     const role = useSelector(state => state.setting.role) //lấy thông tin role
     const { courseId } = useParams()
@@ -113,7 +113,7 @@ function CreateCourse(props) {
     }
 
     const handleCreate = (data) => {
-        const { name, description, pin, status, isSell, price } = data
+        const { name, description, pin, status, price } = data
         let random = ''
         for (let i = 0; i < 7; i++) {
             random += alphabet[Math.floor(Math.random() * alphabet.length)]
@@ -157,7 +157,7 @@ function CreateCourse(props) {
     }
 
     const handleUpdate = (data) => {
-        const { name, description, pin, isSell, price } = data
+        let { name, description, pin, isSell, price } = data
         let random = ''
         for (let i = 0; i < 7; i++) {
             random += alphabet[Math.floor(Math.random() * alphabet.length)]
@@ -174,7 +174,9 @@ function CreateCourse(props) {
         if (error.isError) {
             return
         }
-
+        if (!isSell) {
+            price = 0
+        }
         const params = {
             slug,
             courseId,

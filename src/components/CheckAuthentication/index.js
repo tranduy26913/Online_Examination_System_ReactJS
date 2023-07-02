@@ -17,16 +17,12 @@ const privatePath = [
 function CheckAuthentication(props) {
     const user = useSelector(state => state.user.info)
     const refreshToken = useSelector(state => state.auth.refreshToken)
-    const [loading, setLoading] = useState(false)
     const navigate = useNavigate()
     const location = useLocation()
     const dispatch = useDispatch()
     useLayoutEffect(() => {
         const check = () => {
             const isPrivate = privatePath.findIndex(e => location.pathname.includes(e)) >= 0 ? true : false
-            if (isPrivate) {
-                setLoading(true)
-            }
             if (refreshToken) {
                 const tokenDecode = jwt_decode(refreshToken)
                 let date = new Date();
@@ -50,10 +46,6 @@ function CheckAuthentication(props) {
                                 navigate('/')
                             }
                         })
-                        .finally(() => setLoading(false))
-                }
-                else {
-                    setLoading(false)
                 }
             }
             else {
@@ -62,7 +54,6 @@ function CheckAuthentication(props) {
                     toast.warning("Vui lòng đăng nhập để thực hiện thao tác này")
                     navigate('/')
                 }
-                setLoading(false)
             }
         }
         check()

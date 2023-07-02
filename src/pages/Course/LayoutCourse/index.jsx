@@ -169,7 +169,7 @@ const LayoutCourse = () => {
                     color='primary'
                   >Khoá học: {course?.name}
                   </Typography>
-                  <Box overflow={"auto"} maxHeight="105px">
+                  <Box overflow={"auto"} maxHeight="90px">
                     <Typography >{course?.description}</Typography>
                   </Box>
                 </Box>
