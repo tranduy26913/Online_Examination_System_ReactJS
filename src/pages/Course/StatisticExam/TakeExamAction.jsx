@@ -18,7 +18,7 @@ import {
 } from '@mui/material'
 import InfoIcon from '@mui/icons-material/Info';
 import PreviewIcon from '@mui/icons-material/Preview';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import apiTakeExam from 'apis/apiTakeExam';
 import moment from 'moment';
 
@@ -32,6 +32,9 @@ function TakeExamAction({ takeExamId }) {
     const [open, setOpen] = React.useState(false);
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
+    const location = useLocation()
+    const pathname = location.pathname
+
     const handleClickOpen = () => {
         setOpen(true);
     };
@@ -69,7 +72,7 @@ function TakeExamAction({ takeExamId }) {
 
             </Tooltip>
             <Tooltip title='Xem lại bài thi'>
-                <Link to={`/review-exam/${takeExamId}`}>
+                <Link to={`/review-exam/${takeExamId}?returnUrl=${pathname}`}>
                     <IconButton onClick={handleClickOpen}>
                         <PreviewIcon color='primary' width={20} height={20} />
                     </IconButton>

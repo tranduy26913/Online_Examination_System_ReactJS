@@ -20,6 +20,7 @@ import TableTeacherGroup from './StatisticTable/TableTeacherGroup';
 import { PropTypes } from 'prop-types';
 import TableQuestion from './StatisticTable/TableQuestion';
 import BarChartPoint from './BarChartPoint';
+import { useMutation } from 'react-query';
 
 function StatisticExam(props) {
   const role = useSelector(state => state.setting.role)
@@ -36,48 +37,50 @@ function StatisticExam(props) {
     setTabIndex(newTabIndex);
   };
 
+  const { mutate } = useMutation(() => apiStatistic.getStatisticExam({ examSlug: slug }, role),
+    {
+      onSuccess(data) {
+        if (data) {
+          let maxPoints = data.maxPoints
+          if (Array.isArray(data?.takeExams)) {
+            let newArr = data?.takeExams.map(item => ({
+              ...item,
+              points10: (item.points * 10 / maxPoints)
+            }))
+            setExams(newArr)
+          }
+          setTypeofPoint(data.typeofPoint)
+          setViewPoint(data.viewPoint)
+          setMaxPoints(10)
+        }
+      }
+    })
+
   useEffect(() => {
     const getStatistic = () => {
-      const params = { examSlug: slug }
-      let response = apiStatistic.getStatisticExamByStudent(params)
-      if (role === 'teacher')
-        response = apiStatistic.getStatisticExamByTeacher(params)
-
-      response.then(res => {
-        let maxPoints = res.maxPoints
-        if( Array.isArray(res?.takeExams)){
-          let newArr = res?.takeExams.map(item=>({
-            ...item,
-            points10:(item.points*10/maxPoints)
-          }))
-          setExams(newArr)
-        }
-        setTypeofPoint(res.typeofPoint)
-        setViewPoint(res.viewPoint)
-        setMaxPoints(10)
-      })
+      mutate();
     }
 
-    const getQuestions = ()=>{
-      apiStatistic.getDetailQuestionOfExam({slug})
-      .then(res=>{
-        if(Array.isArray(res.result)){
-          setQuestions(res.result)
-        }
-      })
+    const getQuestions = () => {
+      apiStatistic.getDetailQuestionOfExam({ slug })
+        .then(res => {
+          if (Array.isArray(res.result)) {
+            setQuestions(res.result)
+          }
+        })
     }
-    const getScoreDistribution = ()=>{
-      apiStatistic.getScoreDistributionOfExam({slug})
-      .then(res=>{
-        if(Array.isArray(res.labels)){
-          setScoreDistribution(res.labels)
-        }
-      })
+    const getScoreDistribution = () => {
+      apiStatistic.getScoreDistributionOfExam({ slug })
+        .then(res => {
+          if (Array.isArray(res.labels)) {
+            setScoreDistribution(res.labels)
+          }
+        })
     }
     getStatistic()
     getQuestions()
     getScoreDistribution()
-  }, [role, slug])
+  }, [slug])
 
 
   const count = exams.length
@@ -121,11 +124,11 @@ function StatisticExam(props) {
             <AppWidgetSummary title="Tổng kết" text={`Đạt ${summary}%`} total={234} color="error" />
           </Grid>
         </Grid>
-{scoreDistribution.length !== 0 &&
-  <BarChartPoint title='Phổ điểm'
-        seriesData={scoreDistribution}
-        />}
-        
+        {scoreDistribution.length !== 0 &&
+          <BarChartPoint title='Phổ điểm'
+            seriesData={scoreDistribution}
+          />}
+
 
         <Paper elevation={12}>
           {role === 'student' ? <TableStudent exams={exams} maxPoints={maxPoints} viewPoint={viewPoint} typeofPoint={typeofPoint} /> :
@@ -141,10 +144,10 @@ function StatisticExam(props) {
                 <TableTeacher exams={exams} maxPoints={maxPoints} />
               </TabPanel>
               <TabPanel value={tabIndex} index={1}>
-                <TableTeacherGroup exams={exams} maxPoints={maxPoints}  typeofPoint={typeofPoint} />
+                <TableTeacherGroup exams={exams} maxPoints={maxPoints} typeofPoint={typeofPoint} />
               </TabPanel>
               <TabPanel value={tabIndex} index={2}>
-                <TableQuestion questions={questions}  />
+                <TableQuestion questions={questions} />
               </TabPanel>
 
             </>

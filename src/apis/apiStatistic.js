@@ -2,12 +2,8 @@ import { axiosClientWithToken } from "./axiosClient";
 const apiStatistic = {
 
   
-    getStatisticExamByTeacher: async (params) => {
-        const res = await axiosClientWithToken.get('/statistic/take-exam-by-teacher', { params })
-        return res.data;
-    },
-    getStatisticExamByStudent: async (params) => {
-        const res = await axiosClientWithToken.get('/statistic/take-exam-by-student', { params })
+    getStatisticExam: async (params, role) => {
+        const res = await axiosClientWithToken.get(`/statistic/take-exam-by-${role}`, { params })
         return res.data;
     },
     getDetailOfCourse: async (params) => {
