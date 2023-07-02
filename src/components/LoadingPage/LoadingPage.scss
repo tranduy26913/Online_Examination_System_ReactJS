@@ -23,6 +23,13 @@ $loader-direction: normal;
     top: 60%;
 }
 
+.loading-page-overlay {
+    position: absolute;
+    margin: -50px 0 0 -74px;
+    left: 50%;
+    top: 60%;
+}
+
 .loader-wrapper {
     width: 148px;
     height: 100px;
