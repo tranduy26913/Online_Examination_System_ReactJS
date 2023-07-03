@@ -52,8 +52,8 @@ function EditLesson(props) {
         setLessonId(props.lessonId)
         setSeen(props.seen)
         setFile(props.file)
-        setValue("startTime", props.startTime)
-        setValue("endTime", props.endTime)
+        setValue("startTime", moment(new Date(props.startTime)).format("YYYY-MM-DDTHH:mm"))
+        setValue("endTime", moment(new Date(props.endTime)).format("YYYY-MM-DDTHH:mm"))
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [props.content, props.title])
