@@ -18,12 +18,13 @@ import { getMessageError } from 'utils';
 import LoadingButton from 'components/LoadingButton';
 import apiSubmitAssignment from 'apis/apiSubmitassignment';
 import DOMPurify from 'dompurify';
-
+import AttachFileIcon from '@mui/icons-material/AttachFile';
 
 function ChangePoint({ submitAssignmentId, maxPoints, reloadList }) {
     const [open, setOpen] = React.useState(false);
     const [points, setPoints] = React.useState(0);
     const [content, setContent] = React.useState('')
+    const [file, setFile] = React.useState('')
     const [loading, setLoading] = React.useState(false)
 
     const onChangePoints = (e) => {
@@ -35,28 +36,29 @@ function ChangePoint({ submitAssignmentId, maxPoints, reloadList }) {
         setOpen(false);
     }
     React.useEffect(() => {
-        apiSubmitAssignment.getSubmitAssignmentById({ id:submitAssignmentId })
+        apiSubmitAssignment.getSubmitAssignmentById({ id: submitAssignmentId })
             .then(res => {
                 const { submitAssignment } = res;
                 if (submitAssignment) {
-                    let { content, points } = submitAssignment
+                    let { content, points, file } = submitAssignment
                     setContent(content)
                     setPoints(points || 0)
+                    setFile(file)
                 }
             })
     }, [submitAssignmentId])
 
     const handleChangePoints = () => {
-        
+
         if (points.toString().trim() === '') {
             toast.warning("Vui lòng nhập điểm")
             return
         }
-        if(Number.isNaN(Number(points))){
+        if (Number.isNaN(Number(points))) {
             toast.warning("Vui lòng nhập điểm là số hợp lệ")
             return
         }
-        if(points < 0 || points > maxPoints){
+        if (points < 0 || points > maxPoints) {
             toast.warning(`Vui lòng nhập điểm là số dương và không quá ${maxPoints} điểm`)
             return
         }
@@ -90,7 +92,7 @@ function ChangePoint({ submitAssignmentId, maxPoints, reloadList }) {
                     <Stack direction='row' alignItems='flex-end' mb={2}>
                         <TextField
                             align='center'
-                            sx={{width:'90px'}}
+                            sx={{ width: '90px' }}
                             type="text"
                             label='Nhập điểm'
                             variant="standard"
@@ -110,6 +112,10 @@ function ChangePoint({ submitAssignmentId, maxPoints, reloadList }) {
                             }
                         </Box>
                     </Paper>
+
+                    <a href={`https://be-oes.vercel.app/api/upload/download-deta?filename=${file}`} target="_blank" rel="noopener noreferrer">
+                        <AttachFileIcon sx={{ 'transform': 'translateY(6px)' }} />
+                        {file.split('__').pop()}</a>
                 </DialogContent>
                 <DialogActions>
                     <Button variant='contained' color='error' onClick={handleClose}>Huỷ</Button>
