@@ -38,6 +38,8 @@ function Lesson() {
                   content={item.content}
                   name={item.name}
                   status={item.status}
+                  startTime={item.startTime}
+                  endTime={item.endTime}
                   lessonId={item._id || item.id}
                   file={item.file}
                   seen={item.seen}

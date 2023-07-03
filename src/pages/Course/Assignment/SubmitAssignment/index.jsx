@@ -49,6 +49,7 @@ const SubmitAssignment = (props) => {
   const [contentSubmission, setContentSubmission] = useState('')
   const [submitAssignmentId, setSubmitAssignmentId] = useState('')
   const [file, setFile] = useState('')
+  const [fileOfAssign, setFileOfAssign] = useState('')
   const [submitTime, setSubmitTime] = useState('')
   const [allowReSubmit, setAllowReSubmit] = useState(false)//cho phép nộp lại
   const [allowSubmitLate, setAllowSubmitLate] = useState(false)//cho phép nộp trễ
@@ -75,6 +76,7 @@ const SubmitAssignment = (props) => {
           setAllowReSubmit(assignment.allowReSubmit)
           setAllowSubmitLate(assignment.allowSubmitLate)
           setAssignmentId(assignment.id || assignment._id)
+          setFileOfAssign(assignment.file)
           let diff = 0
           if (submitAssignment) {
             setSubmitAssignmentId(submitAssignment.id || submitAssignment._id)
@@ -256,6 +258,15 @@ const SubmitAssignment = (props) => {
             <Box>Chỉnh sửa lần cuối</Box>
             <Box>{isSubmitted ? moment(submitTime).format('LLL') : 'Chưa nộp'}</Box>
           </StackLabel>
+          {fileOfAssign &&
+            <StackLabel>
+              <Box>File đính kèm</Box>
+              <Box>
+                <a href={`https://be-oes.vercel.app/api/upload/download-deta?filename=${fileOfAssign}`} target="_blank" rel="noopener noreferrer">
+                  {fileOfAssign.split('__').pop()}</a>
+              </Box>
+            </StackLabel>
+          }
 
           <Accordion
             sx={{
@@ -309,7 +320,7 @@ const SubmitAssignment = (props) => {
               {
                 file ?
                   <Stack direction='row' spacing={1} alignItems={'center'}>
-                    <a href={`https://be-oes.vercel.app/api/upload/download?filename=${file}`} target="_blank" rel="noopener noreferrer">
+                    <a href={`https://be-oes.vercel.app/api/upload/download-deta?filename=${file}`} target="_blank" rel="noopener noreferrer">
                       <AttachFileIcon sx={{ 'transform': 'translateY(6px)' }} />
                       {file.split('__').pop()}</a>
                     <IconButton onClick={onClickDeleteFile} size="small" color='warning' sx={{ 'transform': 'translateY(3px)' }} >

@@ -326,7 +326,7 @@ const CreateAssignment = (props) => {
           {
             file ?
               <Stack direction='row' spacing={1} alignItems={'center'}>
-                <a href={`https://be-oes.vercel.app/api/upload/download?filename=${file}`} target="_blank" rel="noopener noreferrer">
+                <a href={`https://be-oes.vercel.app/api/upload/download-deta?filename=${file}`} target="_blank" rel="noopener noreferrer">
                   <AttachFileIcon sx={{ 'transform': 'translateY(6px)' }} />
                   {file.split('__').pop()}</a>
                 <IconButton onClick={onClickDeleteFile} size="small" color='warning' sx={{ 'transform': 'translateY(3px)' }} >

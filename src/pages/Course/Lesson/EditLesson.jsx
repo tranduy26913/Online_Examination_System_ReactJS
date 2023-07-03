@@ -70,6 +70,7 @@ function EditLesson(props) {
             courseId: courseObjId,
             name,
             content,
+            file,
             startTime,
             endTime,
             status
@@ -241,7 +242,7 @@ function EditLesson(props) {
                         {
                             file ?
                                 <Stack direction='row'>
-                                    <a href={`https://be-oes.vercel.app/api/upload/download?filename=${file}`} target="_blank" rel="noopener noreferrer">
+                                    <a href={`https://be-oes.vercel.app/api/upload/download-deta?filename=${file}`} target="_blank" rel="noopener noreferrer">
                                         <AttachFileIcon sx={{ 'transform': 'translateY(6px)' }} />
                                         {file.split('__').pop()}</a>
                                     <IconButton onClick={onClickDeleteFile} size="small" color='warning'>
@@ -255,7 +256,7 @@ function EditLesson(props) {
                                         endIcon={<UploadIcon />}
                                     >
                                         Tải file lên
-                                        <input hidden accept="image/*" type="file" onChange={handleChooseFile} />
+                                        <input hidden type="file" onChange={handleChooseFile} />
                                     </Button>
                                 </Box>
                         }
@@ -312,9 +313,9 @@ function EditLesson(props) {
                     <Box mt={1} pl={2}>
                         <Box dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(content) }} />
                         {file &&
-                            <a href={file} target="_blank" rel="noopener noreferrer">
+                            <a href={`https://be-oes.vercel.app/api/upload/download-deta?filename=${file}`} target="_blank" rel="noopener noreferrer">
                                 <AttachFileIcon sx={{ 'transform': 'translateY(6px)' }} />
-                                {file.split('/').pop()}</a>}
+                                {file.split('__').pop()}</a>}
                     </Box>
 
                     <Divider />
