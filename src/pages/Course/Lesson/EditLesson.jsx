@@ -35,7 +35,7 @@ function EditLesson(props) {
     const role = useSelector(state => state.setting.role) || 'student'
     const { id: courseObjId, UpdateProcessing } = useContext(CourseContext)
 
-    const { handleSubmit, control } = useForm({
+    const { handleSubmit, control, setValue } = useForm({
         mode: "onChange",
         resolver: yupResolver(schema),
         reValidateMode: "onChange",
@@ -52,6 +52,9 @@ function EditLesson(props) {
         setLessonId(props.lessonId)
         setSeen(props.seen)
         setFile(props.file)
+        setValue("startTime", props.startTime)
+        setValue("endTime", props.endTime)
+
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [props.content, props.title])
     const onClickEdit = () => {
