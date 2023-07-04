@@ -1,10 +1,11 @@
-import { Box, Dialog, DialogActions, DialogContent, DialogTitle, Divider, Paper, Stack, Typography } from '@mui/material'
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Divider, Paper, Stack, Typography } from '@mui/material'
 import apiLessons from 'apis/apiLessons';
 import moment from 'moment';
 import AssignmentIcon from '@mui/icons-material/Assignment';
-import React, { useEffect,  useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
+import { Link } from 'react-router-dom';
 
 function CalendarSchedule() {
     const [open, setOpen] = React.useState(false);
@@ -85,19 +86,28 @@ function CalendarSchedule() {
                                 (item) =>
                                     <>
                                         <Box mb={1}>
-                                            <Typography fontWeight={500}  key={item.name}>
-                                                <AssignmentIcon color='primary'sx={{ marginRight:'8px',transform: 'translateY(6px)' }} />
+                                            <Typography fontWeight={500} key={item.name}>
+                                                <AssignmentIcon color='primary' sx={{ marginRight: '8px', transform: 'translateY(6px)' }} />
                                                 {item.nameCourse}: {item.name}
                                             </Typography>
                                             <Stack ml={4}>
                                                 <Typography>Sự kiện: {item.type === 'exam' ? 'Bài kiểm tra' : 'Bài tập'}</Typography>
 
                                                 <Typography>
-                                                    Ngày bắt đầu:{moment(item.startTime).format('DD/MM/YYYY hh:mm')}
+                                                    Ngày bắt đầu: {moment(item.startTime).format('DD/MM/YYYY hh:mm')}
                                                 </Typography>
                                                 <Typography>
-                                                    Ngày kết thúc:{moment(item.endTime).format('DD/MM/YYYY hh:mm')}
+                                                    Ngày kết thúc: {moment(item.endTime).format('DD/MM/YYYY hh:mm')}
                                                 </Typography>
+                                                <Stack direction={'row'} p={1} justifyContent={"center"}>
+
+                                                    <Link to={
+                                                        item.type === 'exam' ? `/exam/${item.slug}` : `/course/${item.courseId}/submit-assignment/${item.slug}`
+                                                    }>
+                                                        <Button variant="contained">{item.type === 'exam' ? 'Vào thi' : 'Nộp bài'}</Button>
+                                                    </Link>
+                                                </Stack>
+
                                             </Stack>
 
                                         </Box>

@@ -53,7 +53,7 @@ function StatisticExam(props) {
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="Số học viên" total={statistic.countStudents} color="error" Icon={AssignmentTurnedInIcon}/>
+            <AppWidgetSummary title="Số bài giảng" total={statistic.countLessons} color="error" Icon={AssignmentTurnedInIcon}/>
           </Grid>
         </Grid>
 
