@@ -1,4 +1,4 @@
-import { Box, Button, FormControl, FormControlLabel, FormGroup, FormHelperText, Paper, Stack, Switch,Typography} from '@mui/material'
+import { Box, Button, FormControl, FormControlLabel, FormGroup, FormHelperText, IconButton, Paper, Stack, Switch, Typography } from '@mui/material'
 import moment from 'moment'
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import { useContext, useState } from 'react'
@@ -10,6 +10,8 @@ import LoadingButton from 'components/LoadingButton';
 import DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
 import { MyUploadAdapter } from 'config/MyCustomUploadAdapterPlugin';
 import { Stack2Column, StackLabel } from 'pages/Dashboard/CreateExamination/Component/MUI';
+import AttachFileIcon from '@mui/icons-material/AttachFile';
+import DeleteIcon from '@mui/icons-material/Delete';
 import UploadIcon from '@mui/icons-material/Upload';
 import apiLessons from 'apis/apiLessons';
 import { schema } from './schema';
@@ -51,8 +53,8 @@ function CreateLesson({ getData }) {
             name,
             content,
             file,
-            startTime,
-            endTime,
+            startTime: new Date(startTime),
+            endTime: new Date(endTime),
             status: isPublic ? 'public' : 'private'
         }
         setLoading(true)
@@ -70,138 +72,153 @@ function CreateLesson({ getData }) {
 
     const handleChooseFile = (e) => {
         if (e.target.files.lenght !== 0) {
-          const id = toast.loading("Đang tải lên")
-          apiUpload.updateFileDeta({ upload: e.target.files[0] })
-            .then(res => {
-              setFile(res.url)
-              toast.update(id, { render: "Tải lên thành công",isLoading:false, type:'success',autoClose: 1500 })
-            })
-            .catch(err => {
-              toast.update(id, { render: "Tải lên không thành công",isLoading:false, type:'warning',autoClose: 1500 })
-            })
+            const id = toast.loading("Đang tải lên")
+            apiUpload.updateFileDeta({ upload: e.target.files[0] })
+                .then(res => {
+                    setFile(res.url)
+                    toast.update(id, { render: "Tải lên thành công", isLoading: false, type: 'success', autoClose: 1500 })
+                })
+                .catch(err => {
+                    toast.update(id, { render: "Tải lên không thành công", isLoading: false, type: 'warning', autoClose: 1500 })
+                })
         }
-      }
-
+    }
+    const onClickDeleteFile = () =>{
+        setFile(null)
+    }
     return (
         <Box spacing={2} mt={2}>
             {isAdd ?
-            <Paper elevation={6}>
-                <Stack spacing={2} p={2}>
-                    <Typography align="center" fontSize="20px" color="primary">Thêm bài giảng</Typography>
-                    <Stack2Column>
+                <Paper elevation={6}>
+                    <Stack spacing={2} p={2}>
+                        <Typography align="center" fontSize="20px" color="primary">Thêm bài giảng</Typography>
+                        <Stack2Column>
 
-                        <StackLabel>
-                            <Box>Tiêu đề nội dung</Box>
-                            <FormControl>
-                                <Controller
-                                    name={"name"}
-                                    control={control}
-                                    render={({ field, fieldState: { error } }) => (
-                                        <>
-                                            <input
-                                                {...field}
-                                            />
-                                            {error && <FormHelperText>{error.message}</FormHelperText>}
-                                        </>
-                                    )}
-                                />
-                            </FormControl>
-                        </StackLabel>
-                        <StackLabel>
-                            <Box>Hiện nội dung</Box>
-                            <FormGroup row>
-                                <FormControlLabel
-                                    control={<Switch checked={isPublic}
-                                        onChange={() => setIsPublic(!isPublic)} />} />
-                            </FormGroup>
-                        </StackLabel>
-                    </Stack2Column>
+                            <StackLabel>
+                                <Box>Tiêu đề nội dung</Box>
+                                <FormControl>
+                                    <Controller
+                                        name={"name"}
+                                        control={control}
+                                        render={({ field, fieldState: { error } }) => (
+                                            <>
+                                                <input
+                                                    {...field}
+                                                />
+                                                {error && <FormHelperText>{error.message}</FormHelperText>}
+                                            </>
+                                        )}
+                                    />
+                                </FormControl>
+                            </StackLabel>
+                            <StackLabel>
+                                <Box>Hiện nội dung</Box>
+                                <FormGroup row>
+                                    <FormControlLabel
+                                        control={<Switch checked={isPublic}
+                                            onChange={() => setIsPublic(!isPublic)} />} />
+                                </FormGroup>
+                            </StackLabel>
+                        </Stack2Column>
 
-                    <Stack2Column>
-                        <StackLabel>
-                            <Box>Thời gian bắt đầu</Box>
-                            <FormControl>
-                                <Controller
-                                    name={"startTime"}
-                                    control={control}
-                                    render={({ field, fieldState: { error } }) => (
-                                        <>
-                                            <input type='datetime-local'
-                                                {...field}
+                        <Stack2Column>
+                            <StackLabel>
+                                <Box>Thời gian bắt đầu</Box>
+                                <FormControl>
+                                    <Controller
+                                        name={"startTime"}
+                                        control={control}
+                                        render={({ field, fieldState: { error } }) => (
+                                            <>
+                                                <input type='datetime-local'
+                                                    {...field}
 
-                                                pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}" />
-                                            {error && <FormHelperText>{error.message}</FormHelperText>}
-                                        </>
-                                    )}
-                                />
-                            </FormControl>
+                                                    pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}" />
+                                                {error && <FormHelperText>{error.message}</FormHelperText>}
+                                            </>
+                                        )}
+                                    />
+                                </FormControl>
 
 
-                        </StackLabel>
-                        <StackLabel>
-                            <Box>Thời gian kết thúc</Box>
-                            <FormControl>
-                                <Controller
-                                    name={"endTime"}
-                                    control={control}
-                                    render={({ field, fieldState: { error } }) => (
-                                        <>
-                                            <input type='datetime-local'
-                                                {...field}
-                                                min="1997-01-01T00:00" max="2030-12-31T00:00"
-                                                pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}" />
-                                            {error && <FormHelperText>{error.message}</FormHelperText>}
-                                        </>
-                                    )}
-                                />
-                            </FormControl>
-                        </StackLabel>
-                    </Stack2Column>
-                    <Box>
-                        <CKEditor
-                            editor={DecoupledEditor}
-                            data={content}
-                            config={{
-                                mediaEmbed: {
-                                    previewsInData: true,
-                                }
-                            }}
-                            onReady={editor => {
+                            </StackLabel>
+                            <StackLabel>
+                                <Box>Thời gian kết thúc</Box>
+                                <FormControl>
+                                    <Controller
+                                        name={"endTime"}
+                                        control={control}
+                                        render={({ field, fieldState: { error } }) => (
+                                            <>
+                                                <input type='datetime-local'
+                                                    {...field}
+                                                    min="1997-01-01T00:00" max="2030-12-31T00:00"
+                                                    pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}" />
+                                                {error && <FormHelperText>{error.message}</FormHelperText>}
+                                            </>
+                                        )}
+                                    />
+                                </FormControl>
+                            </StackLabel>
+                        </Stack2Column>
+                        <Box>
+                            <CKEditor
+                                editor={DecoupledEditor}
+                                data={content}
+                                config={{
+                                    mediaEmbed: {
+                                        previewsInData: true,
+                                    }
+                                }}
+                                onReady={editor => {
 
-                                editor.ui
-                                    .getEditableElement()
-                                    .parentElement.insertBefore(
-                                        editor.ui.view.toolbar.element,
-                                        editor.ui.getEditableElement()
-                                    );
-                                editor.plugins.get("FileRepository").createUploadAdapter = (loader) => {
-                                    return new MyUploadAdapter(loader, accessToken);
-                                };
-                            }}
-                            onChange={(event, editor) => {
-                                setContent(editor.getData());
-                            }}
-                        />
-                    </Box>
+                                    editor.ui
+                                        .getEditableElement()
+                                        .parentElement.insertBefore(
+                                            editor.ui.view.toolbar.element,
+                                            editor.ui.getEditableElement()
+                                        );
+                                    editor.plugins.get("FileRepository").createUploadAdapter = (loader) => {
+                                        return new MyUploadAdapter(loader, accessToken);
+                                    };
+                                }}
+                                onChange={(event, editor) => {
+                                    setContent(editor.getData());
+                                }}
+                            />
+                        </Box>
 
-                    <Box>
-                        <Button variant='contained' component="label" width='160px'
-                            endIcon={<UploadIcon />}
-                        >
-                            Tải file lên
-                            <input hidden accept="image/*" type="file" onChange={handleChooseFile} />
-                        </Button>
-                    </Box>
+                        {
+                            file ?
+                                <Stack direction='row'>
+                                    <a href={`https://be-oes.vercel.app/api/upload/download-deta?filename=${file}`} target="_blank" rel="noopener noreferrer">
+                                        <AttachFileIcon sx={{ 'transform': 'translateY(6px)' }} />
+                                        {file.split('__').pop()}</a>
+                                    <IconButton onClick={onClickDeleteFile} size="small" color='warning'>
+                                        <DeleteIcon fontSize="small" />
+                                    </IconButton>
+                                </Stack>
 
-                    <Stack direction='row' justifyContent='flex-end' spacing={2}>
-                    <Button variant='contained' color="error"
-                            onClick={hideEditor}>Huỷ</Button>
-                        <LoadingButton variant='contained'
-                            loading={loading}
-                            onClick={handleSubmit(createLesson)}>Thêm</LoadingButton>
-                       
+                                :
+                                <Box>
+                                    <Button variant='contained' component="label" width='160px'
+                                        endIcon={<UploadIcon />}
+                                    >
+                                        Tải file lên
+                                        <input hidden type="file" onChange={handleChooseFile} />
+                                    </Button>
+                                </Box>
+                        }
+
+                        <Stack direction='row' justifyContent='flex-end' spacing={2}>
+                            <Button variant='contained' color="error"
+                                onClick={hideEditor}>Huỷ</Button>
+                            <LoadingButton variant='contained'
+                                loading={loading}
+                                onClick={handleSubmit(createLesson)}>Thêm</LoadingButton>
+
+                        </Stack>
                     </Stack>
-                </Stack>
                 </Paper>
                 :
                 <Stack direction={'row'} justifyContent={'center'}>

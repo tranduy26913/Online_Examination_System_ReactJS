@@ -45,6 +45,9 @@ const EnrollCourse = () => {
                 toast.success("Tham gia khoá học thành công")
                 navigate('/course/' + courseId)
             })
+            .catch(err=>{
+                toast.warning(getMessageError(err) || "Tham gia khoá học không thành công");
+            })
             .finally(()=>setLoading(false))
     }
 

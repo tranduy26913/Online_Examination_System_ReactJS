@@ -71,8 +71,8 @@ function EditLesson(props) {
             name,
             content,
             file,
-            startTime,
-            endTime,
+            startTime: new Date(startTime),
+            endTime: new Date(endTime),
             status
         }
         setLoading(true)
