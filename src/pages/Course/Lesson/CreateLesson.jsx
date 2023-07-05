@@ -83,7 +83,7 @@ function CreateLesson({ getData }) {
                 })
         }
     }
-    const onClickDeleteFile = () =>{
+    const onClickDeleteFile = () => {
         setFile(null)
     }
     return (
@@ -168,7 +168,9 @@ function CreateLesson({ getData }) {
                                 config={{
                                     mediaEmbed: {
                                         previewsInData: true,
-                                    }
+                                    },
+
+
                                 }}
                                 onReady={editor => {
 

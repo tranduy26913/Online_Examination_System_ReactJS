@@ -220,7 +220,7 @@ function EditLesson(props) {
                                 config={{
                                     mediaEmbed: {
                                         previewsInData: true,
-                                    }
+                                    },
                                 }}
                                 onReady={editor => {
 
@@ -311,7 +311,8 @@ function EditLesson(props) {
 
                     </Stack>
                     <Box mt={1} pl={2}>
-                        <Box dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(content) }} />
+                        <Box dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(content, 
+                            { ALLOWED_TAGS: ["iframe"], ADD_ATTR: ['allow', 'allowfullscreen', 'frameborder', 'scrolling'] }) }} />
                         {file &&
                             <a href={`https://be-oes.vercel.app/api/upload/download-deta?filename=${file}`} target="_blank" rel="noopener noreferrer">
                                 <AttachFileIcon sx={{ 'transform': 'translateY(6px)' }} />
