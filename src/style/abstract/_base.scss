@@ -76,3 +76,10 @@
     opacity: 1;
     transition: opacity 500ms ease-in;
 }
+
+.lesson>iframe {
+    position: unset !important;
+    width: 50% !important;
+    min-width: 300px !important;
+    min-height: 300px !important;
+}

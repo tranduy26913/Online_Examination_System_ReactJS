@@ -109,7 +109,7 @@ function EditLesson(props) {
     const handleChooseFile = (e) => {
         if (e.target.files.lenght !== 0) {
           const id = toast.loading("Đang tải lên")
-          apiUpload.updateFileDeta({ upload: e.target.files[0] })
+          apiUpload.updateFileDeta({'upload': e.target.files[0]})
             .then(res => {
               setFile(res.url)
               toast.update(id, { render: "Tải lên thành công",isLoading:false, type:'success',autoClose: 1500 })
@@ -311,8 +311,8 @@ function EditLesson(props) {
 
                     </Stack>
                     <Box mt={1} pl={2}>
-                        <Box dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(content, 
-                            { ALLOWED_TAGS: ["iframe"], ADD_ATTR: ['allow', 'allowfullscreen', 'frameborder', 'scrolling'] }) }} />
+                        <Box className="lesson" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(content, 
+                            { ALLOWED_TAGS: ["iframe"], ADD_ATTR: ['allow', 'frameborder', 'scrolling'] }) }} />
                         {file &&
                             <a href={`https://be-oes.vercel.app/api/upload/download-deta?filename=${file}`} target="_blank" rel="noopener noreferrer">
                                 <AttachFileIcon sx={{ 'transform': 'translateY(6px)' }} />
