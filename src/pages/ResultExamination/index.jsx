@@ -60,7 +60,7 @@ function ResultExamination() {
                                     <Typography>Đề thi: <strong>{result?.name}</strong></Typography>
                                     <Typography>Trạng thái: <strong>{result?.status === 'not submitted' ? 'Chưa nộp' : 'Đã nộp'}</strong></Typography>
                                     <Typography>Điểm: <strong>{result?.points === undefined ? 'Không được phép xem điểm' :
-                                        <>{result?.points}/{result?.maxPoints}</>}</strong></Typography>
+                                        <>{Number(result?.points).toFixed(2)}/{result?.maxPoints}</>}</strong></Typography>
                                     <Typography>Lần thi: <strong>{result?.lanThi}</strong></Typography>
                                     <Stack direction='row' justifyContent='center' spacing={2}>
                                         {

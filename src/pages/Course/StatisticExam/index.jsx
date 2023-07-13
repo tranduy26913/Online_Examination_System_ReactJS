@@ -45,7 +45,8 @@ function StatisticExam(props) {
           if (Array.isArray(data?.takeExams)) {
             let newArr = data?.takeExams.map(item => ({
               ...item,
-              points10: (item.points * 10 / maxPoints)
+              points10: (item.points * 10 / maxPoints),
+              maxPoints
             }))
             setExams(newArr)
           }

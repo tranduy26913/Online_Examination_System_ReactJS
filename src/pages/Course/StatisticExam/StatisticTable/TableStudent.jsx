@@ -23,6 +23,7 @@ import TakeExamAction from '../TakeExamAction';
 
 const TABLE_HEAD = [
     { id: 'score', label: 'Điểm', align: 'left' },
+    { id: 'score10', label: 'Điểm (thang 10)', align: 'center' },
     { id: 'na', label: 'Thời gian thi', align: 'center' },
     { id: 'isVerified', label: 'Thời lượng', align: 'center' },
     { id: 'status', label: 'Trạng thái', align: 'center' },
@@ -33,7 +34,7 @@ const TABLE_HEAD = [
 // ----------------------------------------------------------------------
 
 
-const TableStudent = ({ exams, typeofPoint, maxPoints, viewPoint }) => {
+const TableStudent = ({ exams, typeofPoint, viewPoint }) => {
     const [page, setPage] = useState(0);
     const [order, setOrder] = useState('asc');
     const [orderBy, setOrderBy] = useState('name');
@@ -105,7 +106,7 @@ const TableStudent = ({ exams, typeofPoint, maxPoints, viewPoint }) => {
                             />
                             <TableBody>
                                 {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                                    const { _id: takeExamId, submitTime, startTime, points, status } = row;
+                                    const { _id: takeExamId, submitTime, startTime, points, points10, maxPoints,status } = row;
                                     let duration = moment(submitTime).diff(startTime, 'seconds')
                                     let textDuration = '0 giây'
                                     if (duration > 0) {
@@ -126,6 +127,10 @@ const TableStudent = ({ exams, typeofPoint, maxPoints, viewPoint }) => {
                                             {viewPoint === 'no'?
                                             <TableCell align="left">Không được xem</TableCell>
                                             :<TableCell align="left">{Math.round(((points + Number.EPSILON) * 100)) / 100}/{maxPoints}</TableCell>
+                                    }
+                                            {viewPoint === 'no'?
+                                            <TableCell align="left">Không được xem</TableCell>
+                                            :<TableCell align="left">{Math.round(((points10 + Number.EPSILON) * 100)) / 100}/{10}</TableCell>
                                     }
                                             <TableCell align="center">{moment(startTime).format('DD/MM/YYYY HH:mm')}</TableCell>
                                             <TableCell align="center">

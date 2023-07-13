@@ -312,7 +312,7 @@ function EditLesson(props) {
                     </Stack>
                     <Box mt={1} pl={2}>
                         <Box className="lesson" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(content, 
-                            { ALLOWED_TAGS: ["iframe"], ADD_ATTR: ['allow', 'frameborder', 'scrolling'] }) }} />
+                            { ADD_TAGS: ["iframe"], ADD_ATTR: ['allow', 'frameborder', 'scrolling'] }) }} />
                         {file &&
                             <a href={`https://be-oes.vercel.app/api/upload/download-deta?filename=${file}`} target="_blank" rel="noopener noreferrer">
                                 <AttachFileIcon sx={{ 'transform': 'translateY(6px)' }} />

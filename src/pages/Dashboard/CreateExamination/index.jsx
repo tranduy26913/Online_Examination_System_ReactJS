@@ -32,6 +32,7 @@ import { schema } from './schema'
 import { useForm, Controller } from 'react-hook-form'
 import LoadingButton from 'components/LoadingButton';
 import { getMessageError } from 'utils';
+import Page from 'components/Page';
 
 const CreateExamination = (props) => {
   const theme = useTheme()
@@ -128,8 +129,8 @@ const CreateExamination = (props) => {
         catch (err) {
         }
       })
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [slug])
 
 
   const handleChangeViewAnswer = event => setViewAnswer(event.target.value)
@@ -220,58 +221,22 @@ const CreateExamination = (props) => {
   }
 
   return (
-    <Stack spacing={1}>
-      <Paper elevation={12} sx={{ padding: '12px' }}>
-        <Typography align='center' fontSize='20px' fontWeight={600} sx={{ color: theme.palette.primary.main }} >
-          Thông tin đề thi
-        </Typography>
+    <Page title="Đề thi">
 
-        <Divider />
+      <Stack spacing={1}>
+        <Paper elevation={12} sx={{ padding: '12px' }}>
+          <Typography align='center' fontSize='20px' fontWeight={600} sx={{ color: theme.palette.primary.main }} >
+            Thông tin đề thi
+          </Typography>
 
-        <Stack spacing={1.5} my={1.5}>
-          <StackLabel>
-            <Box>Tên đề thi</Box>
-            <FormControl>
-              <Controller
-                name={"name"}
-                control={control}
-                render={({ field, fieldState: { error } }) => (
-                  <>
-                    <input
-                      {...field}
-                    />
-                    {error && <FormHelperText>{error.message}</FormHelperText>}
-                  </>
-                )}
-              />
-            </FormControl>
-          </StackLabel>
+          <Divider />
 
-          <Stack2Column>
+          <Stack spacing={1.5} my={1.5}>
             <StackLabel>
-              <Box>Thời lượng làm bài (phút)</Box>
+              <Box>Tên đề thi</Box>
               <FormControl>
                 <Controller
-                  name={"maxTimes"}
-                  control={control}
-                  render={({ field, fieldState: { error } }) => (
-                    <>
-                      <input
-                        {...field}
-                        type='number' min={1}
-                      />
-                      {error && <FormHelperText>{error.message}</FormHelperText>}
-                    </>
-                  )}
-                />
-              </FormControl>
-            </StackLabel>
-
-            <StackLabel>
-              <Box>Mật khẩu đề thi</Box>
-              <FormControl>
-                <Controller
-                  name={"pinExam"}
+                  name={"name"}
                   control={control}
                   render={({ field, fieldState: { error } }) => (
                     <>
@@ -284,123 +249,32 @@ const CreateExamination = (props) => {
                 />
               </FormControl>
             </StackLabel>
-          </Stack2Column>
 
-          <Stack2Column>
-            <StackLabel>
-              <Box>Giám sát tự động</Box>
-              <FormGroup row>
-                <FormControlLabel
-                  control={<Switch checked={tracking} onChange={() => setTracking(!tracking)} />} />
-              </FormGroup>
-            </StackLabel>
-
-            <StackLabel>
-              <Box>Đảo câu hỏi và đáp án</Box>
-              <FormGroup row>
-                <FormControlLabel
-                  control={<Switch checked={shuffle} onChange={() => setShuffle(!shuffle)} />} />
-              </FormGroup>
-            </StackLabel>
-          </Stack2Column>
-          <Stack2Column>
-            <StackLabel>
-              <Box>Thời gian bắt đầu</Box>
-              <FormControl>
-                <Controller
-                  name={"startTime"}
-                  control={control}
-                  render={({ field, fieldState: { error } }) => (
-                    <>
-                      <input type='datetime-local'
-                        {...field}
-
-                        pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}" />
-                      {error && <FormHelperText>{error.message}</FormHelperText>}
-                    </>
-                  )}
-                />
-              </FormControl>
-
-
-            </StackLabel>
-            <StackLabel>
-              <Box>Thời gian kết thúc</Box>
-              <FormControl>
-                <Controller
-                  name={"endTime"}
-                  control={control}
-                  render={({ field, fieldState: { error } }) => (
-                    <>
-                      <input type='datetime-local'
-                        {...field}
-                        min="1997-01-01T00:00" max="2030-12-31T00:00"
-                        pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}" />
-                      {error && <FormHelperText>{error.message}</FormHelperText>}
-                    </>
-                  )}
-                />
-              </FormControl>
-            </StackLabel>
-          </Stack2Column>
-
-
-          <StackLabel>
-            <Box className='LabelFormControl'>Cho xem đáp án</Box>
-            <RadioGroup
-              row
-              name="viewAnswer"
-              value={viewAnswer}
-              onChange={handleChangeViewAnswer}
-            >
-              <FormControlLabel value="no" control={<Radio size='small' />} label="Không" />
-              <FormControlLabel value="done" control={<Radio size='small' />} label="Khi thi xong" />
-              <FormControlLabel value="alldone" control={<Radio size='small' />} label="Khi tất cả thi xong" />
-            </RadioGroup>
-          </StackLabel>
-
-          <StackLabel>
-            <Box className='LabelFormControl'>Cho xem điểm</Box>
-            <RadioGroup
-              row
-              name="viewPoint"
-              value={viewPoint}
-              onChange={handleChangeViewPoint}
-            >
-              <FormControlLabel value="no" control={<Radio size='small' />} label="Không" />
-              <FormControlLabel value="done" control={<Radio size='small' />} label="Khi thi xong" />
-              <FormControlLabel value="alldone" control={<Radio size='small' />} label="Khi tất cả thi xong" />
-            </RadioGroup>
-          </StackLabel>
-
-          <StackLabel>
-            <Box className='LabelFormControl'>Cách tính điểm</Box>
-            <RadioGroup
-              row
-              name="typeofPoint"
-              value={typeofPoint}
-              onChange={handleChangeTypeofPoint}
-            >
-              <FormControlLabel value={'max'} control={<Radio size='small' />} label="Lấy điểm cao nhất" />
-              <FormControlLabel value={'last'} control={<Radio size='small' />} label="Lấy điểm lần thi cuối" />
-              <FormControlLabel value={'avg'} control={<Radio size='small' />} label="Lấy điểm trung bình các lần thi" />
-            </RadioGroup>
-          </StackLabel>
-          <Stack2Column>
-            <StackLabel>
-              <Box>Giới hạn số lần thi</Box>
-              <FormGroup row>
-                <FormControlLabel
-                  control={<Switch checked={isLimit} onChange={() => setIsLimit(!isLimit)} />} />
-              </FormGroup>
-            </StackLabel>
-            {
-              isLimit &&
+            <Stack2Column>
               <StackLabel>
-                <Box>Số lần thi tối đa</Box>
+                <Box>Thời lượng làm bài (phút)</Box>
                 <FormControl>
                   <Controller
-                    name={"attemptsAllowed"}
+                    name={"maxTimes"}
+                    control={control}
+                    render={({ field, fieldState: { error } }) => (
+                      <>
+                        <input
+                          {...field}
+                          type='number' min={1}
+                        />
+                        {error && <FormHelperText>{error.message}</FormHelperText>}
+                      </>
+                    )}
+                  />
+                </FormControl>
+              </StackLabel>
+
+              <StackLabel>
+                <Box>Mật khẩu đề thi</Box>
+                <FormControl>
+                  <Controller
+                    name={"pinExam"}
                     control={control}
                     render={({ field, fieldState: { error } }) => (
                       <>
@@ -413,53 +287,183 @@ const CreateExamination = (props) => {
                   />
                 </FormControl>
               </StackLabel>
-            }
-          </Stack2Column>
+            </Stack2Column>
 
-          {
-            isEdit &&
             <Stack2Column>
               <StackLabel>
-                <Box>Số câu hỏi</Box>
+                <Box>Giám sát tự động</Box>
+                <FormGroup row>
+                  <FormControlLabel
+                    control={<Switch checked={tracking} onChange={() => setTracking(!tracking)} />} />
+                </FormGroup>
+              </StackLabel>
+
+              <StackLabel>
+                <Box>Đảo câu hỏi và đáp án</Box>
+                <FormGroup row>
+                  <FormControlLabel
+                    control={<Switch checked={shuffle} onChange={() => setShuffle(!shuffle)} />} />
+                </FormGroup>
+              </StackLabel>
+            </Stack2Column>
+            <Stack2Column>
+              <StackLabel>
+                <Box>Thời gian bắt đầu</Box>
                 <FormControl>
-                  <input
-                    value={numberofQuestions}
-                    disabled
+                  <Controller
+                    name={"startTime"}
+                    control={control}
+                    render={({ field, fieldState: { error } }) => (
+                      <>
+                        <input type='datetime-local'
+                          {...field}
+
+                          pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}" />
+                        {error && <FormHelperText>{error.message}</FormHelperText>}
+                      </>
+                    )}
                   />
                 </FormControl>
+
+
               </StackLabel>
               <StackLabel>
-                <Box>Điểm tối đa</Box>
+                <Box>Thời gian kết thúc</Box>
                 <FormControl>
-                  <input
-                    value={maxPoints}
-                    disabled
+                  <Controller
+                    name={"endTime"}
+                    control={control}
+                    render={({ field, fieldState: { error } }) => (
+                      <>
+                        <input type='datetime-local'
+                          {...field}
+                          min="1997-01-01T00:00" max="2030-12-31T00:00"
+                          pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}" />
+                        {error && <FormHelperText>{error.message}</FormHelperText>}
+                      </>
+                    )}
                   />
                 </FormControl>
               </StackLabel>
             </Stack2Column>
-          }
 
-        </Stack>
 
-        <Stack direction='row' justifyContent='center' spacing={2}>
-          <LoadingButton variant='contained' loading={loading}
-            onClick={isEdit ? handleSubmit(handleUpdate) : handleSubmit(handleCreate)}>Lưu cấu hình</LoadingButton>
-          {status && status !== 'close' && <LoadingButton 
-          variant='contained' 
-          loading={loadingPublish}
-          color={status === 'private' ? 'primary' : 'warning'}
-            onClick={handleChangeStatus}>{status === 'private' ? 'Xuất bản' : 'Đóng bài thi'}</LoadingButton>}
-        </Stack>
-      </Paper>
-      {
-        isEdit &&
-        <ExamContext.Provider value={{ examId: id, status: status, reloadExam }}>
-          <LayoutListQuesion />
-        </ExamContext.Provider>
-      }
+            <StackLabel>
+              <Box className='LabelFormControl'>Cho xem đáp án</Box>
+              <RadioGroup
+                row
+                name="viewAnswer"
+                value={viewAnswer}
+                onChange={handleChangeViewAnswer}
+              >
+                <FormControlLabel value="no" control={<Radio size='small' />} label="Không" />
+                <FormControlLabel value="done" control={<Radio size='small' />} label="Khi thi xong" />
+                <FormControlLabel value="alldone" control={<Radio size='small' />} label="Khi tất cả thi xong" />
+              </RadioGroup>
+            </StackLabel>
 
-    </Stack >
+            <StackLabel>
+              <Box className='LabelFormControl'>Cho xem điểm</Box>
+              <RadioGroup
+                row
+                name="viewPoint"
+                value={viewPoint}
+                onChange={handleChangeViewPoint}
+              >
+                <FormControlLabel value="no" control={<Radio size='small' />} label="Không" />
+                <FormControlLabel value="done" control={<Radio size='small' />} label="Khi thi xong" />
+                <FormControlLabel value="alldone" control={<Radio size='small' />} label="Khi tất cả thi xong" />
+              </RadioGroup>
+            </StackLabel>
+
+            <StackLabel>
+              <Box className='LabelFormControl'>Cách tính điểm</Box>
+              <RadioGroup
+                row
+                name="typeofPoint"
+                value={typeofPoint}
+                onChange={handleChangeTypeofPoint}
+              >
+                <FormControlLabel value={'max'} control={<Radio size='small' />} label="Lấy điểm cao nhất" />
+                <FormControlLabel value={'last'} control={<Radio size='small' />} label="Lấy điểm lần thi cuối" />
+                <FormControlLabel value={'avg'} control={<Radio size='small' />} label="Lấy điểm trung bình các lần thi" />
+              </RadioGroup>
+            </StackLabel>
+            <Stack2Column>
+              <StackLabel>
+                <Box>Giới hạn số lần thi</Box>
+                <FormGroup row>
+                  <FormControlLabel
+                    control={<Switch checked={isLimit} onChange={() => setIsLimit(!isLimit)} />} />
+                </FormGroup>
+              </StackLabel>
+              {
+                isLimit &&
+                <StackLabel>
+                  <Box>Số lần thi tối đa</Box>
+                  <FormControl>
+                    <Controller
+                      name={"attemptsAllowed"}
+                      control={control}
+                      render={({ field, fieldState: { error } }) => (
+                        <>
+                          <input
+                            {...field}
+                          />
+                          {error && <FormHelperText>{error.message}</FormHelperText>}
+                        </>
+                      )}
+                    />
+                  </FormControl>
+                </StackLabel>
+              }
+            </Stack2Column>
+
+            {
+              isEdit &&
+              <Stack2Column>
+                <StackLabel>
+                  <Box>Số câu hỏi</Box>
+                  <FormControl>
+                    <input
+                      value={numberofQuestions}
+                      disabled
+                    />
+                  </FormControl>
+                </StackLabel>
+                <StackLabel>
+                  <Box>Điểm tối đa</Box>
+                  <FormControl>
+                    <input
+                      value={maxPoints}
+                      disabled
+                    />
+                  </FormControl>
+                </StackLabel>
+              </Stack2Column>
+            }
+
+          </Stack>
+
+          <Stack direction='row' justifyContent='center' spacing={2}>
+            <LoadingButton variant='contained' loading={loading}
+              onClick={isEdit ? handleSubmit(handleUpdate) : handleSubmit(handleCreate)}>Lưu cấu hình</LoadingButton>
+            {status && status !== 'close' && <LoadingButton
+              variant='contained'
+              loading={loadingPublish}
+              color={status === 'private' ? 'primary' : 'warning'}
+              onClick={handleChangeStatus}>{status === 'private' ? 'Xuất bản' : 'Đóng bài thi'}</LoadingButton>}
+          </Stack>
+        </Paper>
+        {
+          isEdit &&
+          <ExamContext.Provider value={{ examId: id, status: status, reloadExam }}>
+            <LayoutListQuesion />
+          </ExamContext.Provider>
+        }
+
+      </Stack >
+    </Page>
   )
 }
 
