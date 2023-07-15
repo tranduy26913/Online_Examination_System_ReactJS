@@ -4,7 +4,7 @@ import { Box } from '@mui/material';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 
-function FaceRecognition({ countOutFace, increaseCountOutFace, handleCreateLog, handleSubmit }) {
+function FaceRecognition({ countOutFace, allowOutFace, increaseCountOutFace, handleCreateLog, handleSubmit }) {
     const videoRef = useRef();
     const canvasRef = useRef();
     const intervalRef = useRef();
@@ -54,12 +54,12 @@ function FaceRecognition({ countOutFace, increaseCountOutFace, handleCreateLog, 
                 `Không phát hiện hoặc phát hiện nhiều khuôn mặt quá 5 giây lần ${countOutFace + 1}`
             )
             increaseCountOutFace();
-            if (countOutFace + 1 > 5) {
+            if (countOutFace + 1 > allowOutFace) {
                 toast.warning('Không phát hiện hoặc phát hiện nhiều khuôn mặt quá 5 lần. Bài thi tự động nộp')
                 handleSubmit()
             }
         }
-    }, [countOutFace, time, increaseCountOutFace])
+    }, [countOutFace, time, increaseCountOutFace, allowOutFace])
 
     const faceDetection = async () => {
         clearInterval(intervalRef.current)

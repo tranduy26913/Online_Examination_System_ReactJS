@@ -1,8 +1,9 @@
 import axios from 'axios';
 import { parse, stringify } from 'qs';
 import jwt_decode from 'jwt-decode';
-//const baseURL='http://localhost:5000/api'
-const baseURL='https://be-oes.vercel.app/api'
+// const baseURL='http://localhost:5000/api'
+// const baseURL='https://be-oes-dev.vercel.app/api'
+const baseURL=process.env.REACT_APP_BASE_API
 export const axiosClient = axios.create({
     baseURL: baseURL,
     headers: {

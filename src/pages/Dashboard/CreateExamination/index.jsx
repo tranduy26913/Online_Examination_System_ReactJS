@@ -67,6 +67,8 @@ const CreateExamination = (props) => {
       description: "",
       pinExam: "",
       attemptsAllowed: 1,
+      allowOutTab: 2,
+      allowOutFace: 2,
       numberofQuestions: 0,
       maxTimes: 10,
       startTime: moment(new Date()).format("YYYY-MM-DDTHH:mm"),
@@ -138,7 +140,7 @@ const CreateExamination = (props) => {
   const handleChangeTypeofPoint = event => setTypeofPoint(event.target.value)
 
   const handleCreate = (data) => {
-    const { name, startTime, endTime, maxTimes, attemptsAllowed, pinExam } = data
+    const { name, startTime, endTime, maxTimes, attemptsAllowed, pinExam, allowOutTab, allowOutFace } = data
 
     const params = {
       name,
@@ -154,7 +156,9 @@ const CreateExamination = (props) => {
       typeofPoint,
       viewPoint,
       viewAnswer,
-      pin: pinExam
+      pin: pinExam,
+      allowOutTab,
+      allowOutFace
     }
     setLoading(true)
     apiExamination.createExam(params)
@@ -172,7 +176,7 @@ const CreateExamination = (props) => {
   }
 
   const handleUpdate = (data) => {
-    const { name, startTime, endTime, maxTimes, attemptsAllowed, pinExam } = data
+    const { name, startTime, endTime, maxTimes, attemptsAllowed, pinExam, allowOutTab, allowOutFace } = data
 
     const params = {
       id,
@@ -188,7 +192,9 @@ const CreateExamination = (props) => {
       typeofPoint,
       viewPoint,
       viewAnswer,
-      pin: pinExam
+      pin: pinExam,
+      allowOutTab,
+      allowOutFace
     }
     setLoading(true)
     apiExamination.updateExam(params)
@@ -306,6 +312,46 @@ const CreateExamination = (props) => {
                 </FormGroup>
               </StackLabel>
             </Stack2Column>
+
+            {
+              tracking &&
+              <Stack2Column>
+                <StackLabel>
+                  <Box>Số lượt thoát Tab</Box>
+                  <FormControl>
+                    <Controller
+                      name={"allowOutTab"}
+                      control={control}
+                      render={({ field, fieldState: { error } }) => (
+                        <>
+                          <input
+                            {...field}
+                          />
+                          {error && <FormHelperText>{error.message}</FormHelperText>}
+                        </>
+                      )}
+                    />
+                  </FormControl>
+                </StackLabel>
+                <StackLabel>
+                  <Box>Số lượt thoát camera</Box>
+                  <FormControl>
+                    <Controller
+                      name={"allowOutFace"}
+                      control={control}
+                      render={({ field, fieldState: { error } }) => (
+                        <>
+                          <input
+                            {...field}
+                          />
+                          {error && <FormHelperText>{error.message}</FormHelperText>}
+                        </>
+                      )}
+                    />
+                  </FormControl>
+                </StackLabel>
+              </Stack2Column>
+            }
             <Stack2Column>
               <StackLabel>
                 <Box>Thời gian bắt đầu</Box>
@@ -418,6 +464,7 @@ const CreateExamination = (props) => {
                 </StackLabel>
               }
             </Stack2Column>
+
 
             {
               isEdit &&

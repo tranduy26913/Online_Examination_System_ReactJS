@@ -32,8 +32,10 @@ const Examination = () => {
     const [endTime, setEndTime] = useState()
     const [countExit, setCountExit] = useState(0)
     const [countOutFace, setCountOutFace] = useState(0)
+    const [allowOutTab, setAllowOutTab] = useState(5)
+    const [allowOutFace, setAllowOutFace] = useState(5)
     const [loadingExam, setLoadingExam] = useState(true)
-
+   
     const [questions, setQuestions] = useState([])
     const [isTracking, setIsTracking] = useState(false)
     //const user = useSelector(state => state.user.info)
@@ -60,6 +62,8 @@ const Examination = () => {
                         setName(resExam.exam.name)
                         setCountExit(resExam.countOutTab)
                         setCountOutFace(resExam.countOutFace)
+                        setAllowOutTab(resExam.allowOutTab || 5)
+                        setAllowOutFace(resExam.allowOutFace || 5)
                     }
                 })
                 .catch(err => {
@@ -104,6 +108,8 @@ const Examination = () => {
                 setIsTracking(res.exam.tracking)
                 setCountExit(res.countOutTab || 0)
                 setCountOutFace(res.countOutFace || 0)
+                setAllowOutTab(res.allowOutTab || 5)
+                setAllowOutFace(res.allowOutFace || 5)
             })
             .catch(err => {
                 const text = getMessageError(err)
@@ -141,7 +147,7 @@ const Examination = () => {
 
             if (document.visibilityState === 'visible') {
                 handleCreateLog(`Thoát khỏi màn hình lần thứ ${countExit + 1}`)
-                if (countExit + 1 >= 5) {
+                if (countExit + 1 > allowOutTab) {
                     handleSubmit()
                     toast.warning(`Bài thi đã tự động nộp do bạn đã chuyển Tab 5 lần!`,
                         { autoClose: false })
@@ -165,7 +171,7 @@ const Examination = () => {
                 document.removeEventListener('visibilitychange', changeVisibility)
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [countExit, takeExamId, isTracking])
+    }, [countExit, takeExamId, isTracking, allowOutTab])
 
     const handleCreateLog = useCallback((action) => {
         apiTakeExam.createLog({
@@ -249,6 +255,7 @@ const Examination = () => {
                                                     increaseCountOutFace={increaseCountOutFace}
                                                     handleSubmit={handleSubmit}
                                                     handleCreateLog={handleCreateLog}
+                                                    allowOutFace={allowOutFace}
                                                     countOutFace={countOutFace} />
                                             </Paper>
                                         }

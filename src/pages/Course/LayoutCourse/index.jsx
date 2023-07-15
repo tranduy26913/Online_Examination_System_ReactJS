@@ -32,6 +32,7 @@ import ShareTray from "components/ShareTray";
 import LinearProgressWithLabel from "components/LinearProgressWithLabel";
 import { getMessageError } from "utils";
 import GetCertification from "./GetCertification";
+import CloneCourse from "./CloneCourse";
 
 const checkSelectedTab = (item, pathname) => {
   const splitPath = pathname.split('/')
@@ -178,12 +179,15 @@ const LayoutCourse = () => {
                   spacing={2} justifyContent='flex-start' alignItems='center' >
                   {
                     role === 'teacher' &&
-                    <Link to={`/my/list-course/edit-course/${courseId}`}>
-                      <Button
-                        variant='outlined'
-                        endIcon={<EditIcon />}
-                      >Chỉnh sửa</Button>
-                    </Link>
+                    <>
+                      <Link to={`/my/list-course/edit-course/${courseId}`}>
+                        <Button
+                          variant='outlined'
+                          endIcon={<EditIcon />}
+                        >Chỉnh sửa</Button>
+                      </Link>
+                      <CloneCourse />
+                    </>
                   }
                   <ShareTray url={`https://oes.vercel.app/enroll/${courseId}`}
                     title={`Tham gia khoá học https://oes.vercel.app/enroll/${courseId}`}

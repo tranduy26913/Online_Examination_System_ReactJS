@@ -11,6 +11,14 @@ export const schema = Yup.object().shape({
     .number()
     .required('Vui lòng nhập vào trường này')
     .min(1, "Số lần thi ít nhất là 1"),
+    allowOutTab: Yup
+    .number()
+    .required('Vui lòng nhập vào trường này')
+    .min(1, "Số lượt cho phép thoát Tab ít nhất là 1"),
+    allowOutFace: Yup
+    .number()
+    .required('Vui lòng nhập vào trường này')
+    .min(1, "Số lượt cho phép thoát Camera ít nhất là 1"),
   // numberofQuestions: Yup
   //   .number()
   //   .required('Vui lòng nhập vào trường này')
