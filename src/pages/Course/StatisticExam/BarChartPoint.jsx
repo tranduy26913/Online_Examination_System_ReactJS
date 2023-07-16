@@ -47,7 +47,6 @@ export default function BarChartPoint({ title = 'Biểu đồ doanh thu theo ng�
         seriesData.forEach(e => {
             
             let index = Math.ceil(Number(e.points))
-            console.log(index)
             if (index >= 0 && index <= 10) {
                 if (index === 0) {
                     labelData[0].freq += e.freq
@@ -64,7 +63,6 @@ export default function BarChartPoint({ title = 'Biểu đồ doanh thu theo ng�
             type: 'column',
             data: labelData.map(e => e.freq)
         },]
-console.log(labelData)
         const labels = labelData.map(e => e.labels)
         return { series, labels }
     }
