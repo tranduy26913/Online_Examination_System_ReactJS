@@ -149,7 +149,7 @@ const Examination = () => {
                 handleCreateLog(`Thoát khỏi màn hình lần thứ ${countExit + 1}`)
                 if (countExit + 1 > allowOutTab) {
                     handleSubmit()
-                    toast.warning(`Bài thi đã tự động nộp do bạn đã chuyển Tab 5 lần!`,
+                    toast.warning(`Bài thi đã tự động nộp do bạn đã chuyển Tab ${allowOutTab+1} lần!`,
                         { autoClose: false })
                 }
                 else {
