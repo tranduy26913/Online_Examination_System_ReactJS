@@ -74,7 +74,11 @@ function StatisticExam(props) {
       apiStatistic.getScoreDistributionOfExam({ slug })
         .then(res => {
           if (Array.isArray(res.labels)) {
-            setScoreDistribution(res.labels)
+            let arr = res.labels.map(e => {
+              let points = ((e.points * 10) / res.maxPoints)
+              return { ...e, points }
+            })
+            setScoreDistribution(arr)
           }
         })
     }

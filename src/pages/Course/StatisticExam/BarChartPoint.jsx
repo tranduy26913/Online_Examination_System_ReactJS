@@ -36,25 +36,40 @@ BarChartPoint.propTypes = {
 
 export default function BarChartPoint({ title = 'Biểu đồ doanh thu theo ngày'
     , subheader, seriesData, chartColors, chartData, ...other }) {
-    const theme = useTheme();
 
     const makeLabels = (seriesData) => {
-        if (seriesData.length === 0)
-            seriesData = Array.from(Array(10).keys()).map((item) => ({
-                labels: item,
-                freq: 0
-            }))
+        let labelData = Array.from(Array(10).keys()).map((item) => ({
+            labels: `${item} - ${item + 1}`,
+            //labels: item,
+            freq: 0
+        }))
+
+        seriesData.forEach(e => {
+            
+            let index = Math.ceil(Number(e.points))
+            console.log(index)
+            if (index >= 0 && index <= 10) {
+                if (index === 0) {
+                    labelData[0].freq += e.freq
+                }
+                else {
+
+                    labelData[index - 1].freq += e.freq
+                }
+
+            }
+        })
         const series = [{
             name: 'Số lượng',
             type: 'column',
-            data: seriesData.map(e => e.freq)
+            data: labelData.map(e => e.freq)
         },]
-
-        const labels = seriesData.map(e => e.points)
-        return {series,labels}
+console.log(labelData)
+        const labels = labelData.map(e => e.labels)
+        return { series, labels }
     }
 
-    const {series,labels} = makeLabels(seriesData)
+    const { series, labels } = makeLabels(seriesData)
     const chartOptions = {
         //colors: chartColors,
         labels: labels,
