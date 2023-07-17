@@ -65,7 +65,7 @@ function ResultExamination() {
                                     <Stack direction='row' justifyContent='center' spacing={2}>
                                         {
                                             viewAnswer !== 'no' &&
-                                            <Link to={`/review-exam/${takeExamId}`}>
+                                            <Link to={`/review-exam/${takeExamId}?returnUrl=/course/${courseId}/statistic-exam/${result?.slug}`}>
                                                 <Button variant='contained'>Xem lại bài làm</Button>
                                             </Link>
                                         }

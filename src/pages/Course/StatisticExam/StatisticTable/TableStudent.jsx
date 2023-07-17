@@ -129,8 +129,8 @@ const TableStudent = ({ exams, typeofPoint, viewPoint }) => {
                                             :<TableCell align="left">{Math.round(((points + Number.EPSILON) * 100)) / 100}/{maxPoints}</TableCell>
                                     }
                                             {viewPoint === 'no'?
-                                            <TableCell align="left">Không được xem</TableCell>
-                                            :<TableCell align="left">{Math.round(((points10 + Number.EPSILON) * 100)) / 100}/{10}</TableCell>
+                                            <TableCell align="center">Không được xem</TableCell>
+                                            :<TableCell align="center">{Math.round(((points10 + Number.EPSILON) * 100)) / 100}/{10}</TableCell>
                                     }
                                             <TableCell align="center">{moment(startTime).format('DD/MM/YYYY HH:mm')}</TableCell>
                                             <TableCell align="center">
