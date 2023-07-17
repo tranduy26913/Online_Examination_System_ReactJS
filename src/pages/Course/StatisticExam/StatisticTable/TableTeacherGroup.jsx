@@ -137,7 +137,7 @@ const TableTeacherGroup = ({ exams, typeofPoint}) => {
                         <TableBody>
                             {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
                                 const { _id: takeExamId, userAvatar,name, submitTime,maxPoints,points10, startTime, points, status } = row;
-                                const duration = moment(submitTime).diff(startTime, 'minutes')
+                                const duration = moment(submitTime).diff(startTime, 'seconds')
                                 let textDuration = '0 giây'
                                 if (duration > 0) {
                                     let hours = moment.duration(duration, "seconds").hours()
