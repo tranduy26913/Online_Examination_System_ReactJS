@@ -147,14 +147,14 @@ const Examination = () => {
 
             if (document.visibilityState === 'visible') {
                 handleCreateLog(`Thoát khỏi màn hình lần thứ ${countExit + 1}`)
-                if (countExit + 1 > allowOutTab) {
+                if (countExit + 1 >= allowOutTab) {
                     handleSubmit()
-                    toast.warning(`Bài thi đã tự động nộp do bạn đã chuyển Tab ${allowOutTab+1} lần!`,
+                    toast.warning(`Bài thi đã tự động nộp do bạn đã chuyển Tab ${allowOutTab} lần!`,
                         { autoClose: false })
                 }
                 else {
                     if (countExit > 0)
-                        toast.warning(`Cảnh báo! Bạn đã chuyển Tab ${countExit + 1} lần. Chuyển Tab lần thứ 5 bài thi sẽ tự động được nộp!!!`,
+                        toast.warning(`Cảnh báo! Bạn đã chuyển Tab ${countExit + 1} lần. Chuyển Tab lần thứ ${allowOutTab} bài thi sẽ tự động được nộp!!!`,
                             { autoClose: false })
                     setCountExit(i => i + 1)
                 }

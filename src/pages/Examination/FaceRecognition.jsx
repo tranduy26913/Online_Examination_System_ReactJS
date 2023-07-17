@@ -54,8 +54,8 @@ function FaceRecognition({ countOutFace, allowOutFace, increaseCountOutFace, han
                 `Không phát hiện hoặc phát hiện nhiều khuôn mặt quá 5 giây lần ${countOutFace + 1}`
             )
             increaseCountOutFace();
-            if (countOutFace + 1 > allowOutFace) {
-                toast.warning(`Không phát hiện hoặc phát hiện nhiều khuôn mặt quá ${allowOutFace+1} lần. Bài thi tự động nộp`)
+            if (countOutFace + 1 >= allowOutFace) {
+                toast.warning(`Không phát hiện hoặc phát hiện nhiều khuôn mặt quá 5 giây ${allowOutFace} lần. Bài thi tự động nộp`)
                 handleSubmit()
             }
         }

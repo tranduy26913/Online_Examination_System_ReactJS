@@ -15,15 +15,21 @@ import { clearAnswerSheet, clearTakeExamId } from 'slices/answerSheetSlice';
 import { ButtonQuestion } from './Examination.style'
 import apiTakeExam from 'apis/apiTakeExam';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { toast } from "react-toastify";
+import { getMessageError } from "utils";
+import LoadingButton from "components/LoadingButton";
+import { useState } from "react";
 //import FaceRecognition from './FaceRecognition';
 
 function BoxIndex() {
     const answerSheet = useSelector(state => state.answerSheet?.result)
     const takeExamId = useSelector(state => state.answerSheet?.takeExamId)
+    const [isSubmit, setIsSubmit] = useState(false)
     const navigate = useNavigate()
     const dispatch = useDispatch()
 
     const handleSubmit = () => {
+        setIsSubmit(true)
         apiTakeExam.submitAnswerSheet({
             takeExamId,
             answerSheet
@@ -33,6 +39,10 @@ function BoxIndex() {
                 dispatch(clearTakeExamId())
                 dispatch(clearAnswerSheet())
             })
+            .catch(err=>{
+                toast.info(getMessageError(err) || "Nộp không thành công")
+            })
+            .finally(()=>setIsSubmit(false))
     }
 
 
@@ -72,7 +82,7 @@ function BoxIndex() {
                 <Divider />
                 <Stack alignItems='center'>
 
-                    <Button onClick={handleSubmit} variant='contained'>Nộp bài</Button>
+                    <LoadingButton loading={isSubmit} onClick={handleSubmit} variant='contained'>Nộp bài</LoadingButton>
                 </Stack>
             </Stack>
         </Paper>
